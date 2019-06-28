@@ -1,0 +1,114 @@
+/*
+.post_block
+{
+	
+}
+*/
+.post_title
+{
+	font-size: 3vmin;
+	font-weight: bold;
+	padding-bottom: 3%;
+	color:#117692;
+
+}
+
+.post_cell
+{
+	padding-bottom: 3%;
+	font-size: 2vmin;
+	/*font-weight: bold;*/
+}
+
+.post_cell:last-child
+{
+	padding-bottom: 0;
+	/*text-align:center;*/
+}
+
+.post_cell img
+{
+	width:100% !important;
+}
+
+.post_cell table img
+{
+	width:auto !important;
+}
+
+.post_cell .chart
+{
+	width:100%;
+}
+
+
+
+.post_cell img.img_auto
+{
+	/*width:auto;*/
+}
+
+.table1
+{
+
+}
+
+a
+{
+	text-decoration:none; !important
+}
+
+#activity_img1 {
+	background-image: url("uploads_activity/act1.jpg");
+}
+
+#activity_img2 {
+	background-image: url("uploads_activity/act2.jpg");
+}
+
+
+#activity_img3 {
+	background-image: url("uploads_activity/act3.jpg");
+}
+
+#activity_img4 {
+	background-image: url("uploads_activity/act4.jpg");
+}
+
+#op1 {
+	background-image: url("uploads_activity/op1.jpg");
+}
+
+#op2 {
+	background-image: url("uploads_activity/op2.jpg");
+}
+
+#op3 {
+	background-image: url("uploads_activity/op3.jpg");
+}
+
+#op4 {
+	background-image: url("uploads_activity/op4.jpg");
+}
+#op5 {
+	background-image: url("uploads_activity/op5.jpg");
+}
+
+
+.ppt_img{
+	width: 735px;
+	height:716px;
+	background-size: 735px 716px;
+	margin:5px;
+}
+
+.ppt_img2{
+	width: 735px;
+	height:551px;
+	background-size: 735px 551px;
+	margin:5px;
+}
+
+.ui.pagination.menu{
+	max-width:100%;
+}
