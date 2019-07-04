@@ -25,8 +25,10 @@
     $result 	= mysqli_query($conn,$sql);
     $rowcount	= mysqli_num_rows($result);
    		while($row = mysqli_fetch_assoc($result)) {
-			echo "<AgencyName>".$row['AgencyName']."</AgencyName>";
+			echo "<AgencyName>";
+			echo "<name>".$row['AgencyName']."</name>";
 			echo "<count>".$row['count']."</count>";
+			echo "</AgencyName>";
 		}
 	$sql = "SELECT UnitName,COUNT(UnitName) as count FROM security_event WHERE NOT UnitName LIKE '' GROUP BY UnitName ORDER by count desc LIMIT 10";
     $result 	= mysqli_query($conn,$sql);

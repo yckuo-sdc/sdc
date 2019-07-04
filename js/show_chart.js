@@ -134,18 +134,17 @@ $(document).ready(function(){
 				// console.log($(this).text());
 				 var name=$(this).children("name").text();
 				 var count=$(this).children("count").text();
-				 console.log(name);
-				 console.log(count);
+				 //console.log(name);
+				 //console.log(count);
 				 mArray.push([name,count]);
 
 			});
 			$(data).find("AgencyName").each(function(){
 				//console.log($(this).text());
-				nameArray.push($(this).text());
-			});
-			$(data).find("count").each(function(){
-				 //console.log($(this).text());
-				 countArray.push($(this).text());
+				 var name=$(this).children("name").text();
+				 var count=$(this).children("count").text();
+				 nameArray.push(name);
+				 countArray.push(count);
 			});
 			//add the label of bar chart
 			countArray.unshift('機關資安事件數量');
