@@ -13,7 +13,11 @@ switch($page){  // 依照 GET 參數載入共用的內容
     break;
 	case "query":
       include('query.php');
+	break;
+	case "nmap":
+      include('nmap.php');
     break;
+
 }
 include('footer.php'); // 載入共用的頁尾
 

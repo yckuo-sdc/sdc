@@ -15,6 +15,24 @@ function Call_retrieve_gs_ajax(){
 	return 0;
 }
 
+function Call_retrieve_nmap_ajax(){
+	$.ajax({
+		 url: 'ajax/sub_nmap.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {target:$('#target').val()},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 $('#nmap_btn').find('i.icon').removeClass('sync').addClass('play');
+			 $('.nmap_content').html("");
+			 $('.nmap_content').html(data);
+		 }
+	});
+	return 0;
+}
+
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
@@ -132,6 +150,11 @@ $(document).ready(function(){
 	//retrieve from Google Sheets
 	$('#gs_btn').click(function(){
 		Call_retrieve_gs_ajax();	
+	});
+	//retrieve from Google Sheets
+	$('#nmap_btn').click(function(){
+		$(this).find('i.icon').removeClass('play').addClass('sync');
+		Call_retrieve_nmap_ajax();	
 	});
 	//mobile menu icon
 	$('.ui.container a').click(function(){
