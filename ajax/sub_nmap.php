@@ -8,7 +8,7 @@
 	if(!empty($_GET['target'])){
 		$target = $_GET['target'];
 		echo "<pre>";
-		system("/usr/bin/nmap $target");
+		$last_line = system("/usr/bin/nmap $target");
 		echo "</pre>";
 		//kill the task
 		system("killall -q nmap");
