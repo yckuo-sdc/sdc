@@ -66,6 +66,8 @@
 						echo "<div class='content'>";
 							echo "<a>";
 							//echo $row['EventID']."&nbsp&nbsp"";
+							if($row['Status']=="已結案")echo "<i class='check circle icon' style='color:green'></i>";
+							else echo "<i class='exclamation circle icon'></i>";
                         	echo date_format(new DateTime($row['OccurrenceTime']),'Y-m-d')."&nbsp&nbsp";
                         	echo $row['Status']."&nbsp&nbsp";
                         	echo "<span style='background:#fde087'>".$row['EventTypeName']."</span>&nbsp&nbsp";

@@ -7,9 +7,11 @@
 
 	if(!empty($_GET['target'])){
 		$target = $_GET['target'];
-		echo "<pre>";
-		$last_line = system("/usr/bin/nmap $target");
-		echo "</pre>";
+		//echo $target."<br>";
+	
+		$output = shell_exec("/usr/bin/nmap $target");
+		echo "<pre>$output</pre>";
+	
 		//kill the task
 		system("killall -q nmap");
 	}else{

@@ -188,41 +188,6 @@ $(document).ready(function(){
 		
 	}	
 
-	function Call_sub_query_ajax(){
-		 $.ajax({
-			 url: 'ajax/sub_query.php',
-			 cache: false,
-			 dataType:'html',
-			 type:'GET',
-			 data: {key:$('#key').val(),keyword_type:$('#keyword_type').val()},
-			 error: function(xhr) {
-				 alert('Ajax failed');
-			 },success: function(data) {
-				 //console.log("success");
-				 $('.record_content').html("");
-				 $('.record_content').html(data);
-				 //console.log("done");
-			 }
-		});
-		return 0;
-	 }
-
-
-
-	//bind keypress
-	 $('#key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			console.log('keyup');     
-			Call_sub_query_ajax(); 
-		}
-	 });
-
-	//bind serach_btn
-	$('#search_btn').click(function (){
-		console.log('serach_btn');     
-		Call_sub_query_ajax();
-		console.log('serach_btn done');
-	});
 
 
 	//bind show_chart_btn

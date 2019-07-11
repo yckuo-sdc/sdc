@@ -15,7 +15,28 @@ function Call_retrieve_gs_ajax(){
 	return 0;
 }
 
+function Call_sub_query_ajax(){
+	 $.ajax({
+		 url: 'ajax/sub_query.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {key:$('#key').val(),keyword_type:$('#keyword_type').val()},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 //console.log("success");
+			 $('.record_content').html("");
+			 $('.record_content').html(data);
+			 //console.log("done");
+		 }
+	});
+	return 0;
+ }
+
+
 function Call_retrieve_nmap_ajax(){
+	$('.ui.inline.loader').addClass('active');
 	$.ajax({
 		 url: 'ajax/sub_nmap.php',
 		 cache: false,
@@ -25,7 +46,7 @@ function Call_retrieve_nmap_ajax(){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $('#nmap_btn').find('i.icon').removeClass('sync').addClass('play');
+			 $('.ui.inline.loader').removeClass('active');
 			 $('.nmap_content').html("");
 			 $('.nmap_content').html(data);
 		 }
@@ -146,6 +167,29 @@ $(document).ready(function(){
 			detail.addClass('show');
 		}
 	});
+	
+	//bind keypress
+	 $('#key').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			console.log('keyup');     
+			Call_sub_query_ajax(); 
+		}
+	 });
+	 $('#target').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			console.log('keyup');     
+			Call_retrieve_nmap_ajax();	
+		}
+	 });
+
+	//bind serach_btn
+	$('#search_btn').click(function (){
+		console.log('serach_btn');     
+		Call_sub_query_ajax();
+		console.log('serach_btn done');
+	});
+
+
 
 	//retrieve from Google Sheets
 	$('#gs_btn').click(function(){
@@ -153,7 +197,6 @@ $(document).ready(function(){
 	});
 	//retrieve from Google Sheets
 	$('#nmap_btn').click(function(){
-		$(this).find('i.icon').removeClass('play').addClass('sync');
 		Call_retrieve_nmap_ajax();	
 	});
 	//mobile menu icon

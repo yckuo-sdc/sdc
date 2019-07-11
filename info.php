@@ -36,7 +36,7 @@
                     	$sql = "SELECT * FROM security_event WHERE OccurrenceTime BETWEEN '".$date_from_week."' AND '".$date_to_week."'";
                     	$result = mysqli_query($conn,$sql);
                     	$num_thisWeek_entry = mysqli_num_rows($result);
-
+						$completion_rate = round($num_done_entry/$num_total_entry*100,2)."%"; 
 					?>
 
 					<table>
@@ -70,6 +70,10 @@
 					<tr>
 						<td>本周已發生</td>
 						<td><?php echo $num_thisWeek_entry ?></td>
+					</tr>
+					<tr>
+						<td>完成率</td>
+						<td><?php echo $completion_rate ?></td>
 					</tr>
 					</table>
 					<?php
