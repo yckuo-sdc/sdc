@@ -11,5 +11,5 @@ build/
 doc/*.txt
 # ignore all .txt files in the doc/ directory
 doc/**/*.txt
-# ignore all .inc.php files
-*.inc.php
+# ignore all .inc files
+*.inc
