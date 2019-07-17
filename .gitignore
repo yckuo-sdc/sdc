@@ -12,4 +12,4 @@ doc/*.txt
 # ignore all .txt files in the doc/ directory
 doc/**/*.txt
 # ignore all .inc files
-*.inc
+*.inc.php

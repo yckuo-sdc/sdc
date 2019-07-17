@@ -14,6 +14,9 @@ switch($page){  // 依照 GET 參數載入共用的內容
 	case "query":
       include('query.php');
 	break;
+	case "vulnerability":
+      include('vulnerability.php');
+    break;
 	case "nmap":
       include('nmap.php');
     break;

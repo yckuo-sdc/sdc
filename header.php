@@ -64,7 +64,7 @@
 				<li><a class="1" accesskey="1" title="" href="#">最新消息</a></li>
 				<li><a class="2" accesskey="2" title="" href="index.php?mainpage=info">圖形化資訊</a></li>
 				<li><a class="3" accesskey="3" title="" href="index.php?mainpage=query">ISMS資安查詢</a></li>
-				<li><a class="4" accesskey="4" title="" href="#">漏洞掃描</a></li>
+				<li><a class="4" accesskey="4" title="" href="index.php?mainpage=vulnerability">漏洞掃描</a></li>
 				<li><a class="5" accesskey="5" title="" href="index.php?mainpage=nmap">Nmap</a></li>
 				<li><a class="6" accesskey="6" title="" href="#">相關連結</a></li> 
 			</ul>
