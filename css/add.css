@@ -214,9 +214,17 @@
 }
 
 
-.post table
+.post_table table
 {
+	table-layout: fixed;
+	width: 100%;
+	word-wrap:break-word;
 	border:none;
+}
+ 
+.post_table table tr:hover
+{
+	background-color:#96c5d2;
 }
  
 
@@ -231,15 +239,6 @@
 {
 	text-align: center;
 }
-
-
-.post_table table,tr,th,td {
-   /* border: 2px solid #BBBBBB;
-	border-collapse:collapse;*/
-}
-
-
-
 
 
 
@@ -281,9 +280,6 @@ th
 }
 
 
-.post_table > table > tr >td{
-	color:blue;
-}
 
 
 

@@ -168,7 +168,7 @@ if (isset($rows['values'])) {
 	date_default_timezone_set("Asia/Taipei");
 
 
-	echo "update ".$count." records on ".date("Y-m-d H:m:s")."<br>";
+	echo "update ".$count." records on ".date("Y-m-d H:i:s")."<br>";
 
 }
 	$conn->close();	
