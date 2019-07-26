@@ -9,26 +9,31 @@ if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
  }
 
-$conn->query('SET NAMES UTF8');
+$conn->query('NAMES UTF8');
 
-$sql = "CREATE TABLE Customer
-		(SN int(11),
-		 state varchar(30),
-		date datetime,
-		class varchar(50),
-		area varchar(50),
-		IP varchar(50),
-		block_reason varchar(50),
-		device_class varchar(50),
+$sql = "CREATE TABLE urlscanResult
+		(
+    		vitem_id	int(11),
+			ou			varchar(30),
+			status  	varchar(30),
+			ip 			varchar(30),
+			system_name varchar(100),
+			flow_id 	int(11),
+			scan_no 	varchar(30),
+			affect_url	varchar(200),
+			manager 	varchar(30),
+			email 		varchar(100),
+			vitem_name 	varchar(30),
+			url 		varchar(200),
+			category 	varchar(30),
+			severity 	varchar(30),
+			scan_date 	DATETIME 
+		)";
 
-			Address char(50),
-			City char(50),
-			Country char(25),
-			Birth_Date datetime);
-		)		"
-
-$result = mysqli_query($conn,$sql);
-
+if($result = mysqli_query($conn,$sql)){
+}else{
+	echo("Error description: " . mysqli_error($conn));
+}
 
 $conn->close();	
 
