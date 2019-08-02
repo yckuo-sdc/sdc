@@ -15,6 +15,25 @@ function Call_retrieve_gs_ajax(){
 	return 0;
 }
 
+function Call_retrieve_vs_ajax(){
+	$('.ui.inline.loader').addClass('active');
+	$.ajax({
+		 url: 'ajax/retrieve_vs.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {key:1,keyword_type:2},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(response) {
+			 $('.ui.inline.loader').removeClass('active');
+			 $('.retrieve_vs_info').html("");
+			 $('.retrieve_vs_info').html(response);
+		 }
+	});
+	return 0;
+}
+
 function Call_sub_query_ajax(){
 	 $.ajax({
 		 url: 'ajax/sub_query.php',
@@ -194,6 +213,10 @@ $(document).ready(function(){
 	//retrieve from Google Sheets
 	$('#gs_btn').click(function(){
 		Call_retrieve_gs_ajax();	
+	});
+	//retrieve from Vulnerability Scans
+	$('#vs_btn').click(function(){
+		Call_retrieve_vs_ajax();	
 	});
 	//retrieve from Google Sheets
 	$('#nmap_btn').click(function(){

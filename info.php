@@ -161,14 +161,8 @@
 			<div class="post">
 				<div class="post_title">ChartD</div>
 					<div class="post_cell">
-						
-						本所學生畢業後任職公司約有30 % 在IC 設計公司 (含晶圓代工)、約有16% 在IT 系統廠商。
-						</br>(2016.2 製表，圖表內容為2013~2015)
-					</div>
 				
-					<div id='cht_graduate1' class='chart'></div>
 					
-					<div class="post_cell">
 						
 						下圖僅先列出前七名本所就業公司(共81人)，另外前三名依次為: 台積電、 聯發科 、華碩。
 						(2016.2 製表，圖表內容為2013~2015)
