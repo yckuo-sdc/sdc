@@ -21,27 +21,7 @@
 	$json = file_get_contents($preg_url);		
 	$data = json_decode($json,true);
 	$count = 0;
-	//TRUNCATE table of ipscanResult
-	$sql = "TRUNCATE ipscanResult";
-	$conn->query($sql); 	
-	
 	foreach($data as $ipscan){
-	/*
-		echo "vitem_id=".$ipscan['vitem_id']."<br>";
-		echo "ou=".$ipscan['ou']."<br>";
-		echo "status=".$ipscan['status']."<br>";
-		echo "ip=".$ipscan['ip']."<br>";
-		echo "system_name=".$ipscan['system_name']."<br>";
-		echo "flow_id=".$ipscan['flow_id']."<br>";
-		echo "scan_no=".$ipscan['scan_no']."<br>";
-		echo "manager=".$ipscan['manager']."<br>";
-		echo "email=".$ipscan['email']."<br>";
-		echo "vitem_name=".$ipscan['vitem_name']."<br>";
-		echo "url=".$ipscan['url']."<br>";
-		echo "category=".$ipscan['category']."<br>";
-		echo "severity=".$ipscan['severity']."<br>";
-		echo "scan_date=".$ipscan['scan_date']."<br>";
-	 */
 		$ipscan['vitem_id']= mysqli_real_escape_string($conn,$ipscan['vitem_id']);
 		$ipscan['ou']= mysqli_real_escape_string($conn,$ipscan['ou']);
 		$ipscan['status']= mysqli_real_escape_string($conn,$ipscan['status']);
@@ -58,7 +38,8 @@
 		$ipscan['scan_date']= mysqli_real_escape_string($conn,$ipscan['scan_date']);
 		$ipscan['is_duplicated']= mysqli_real_escape_string($conn,$ipscan['is_duplicated']);
 		// INSERT to table ON DUPLICATE KEY UPDATE data
-		$sql = "insert into ipscanResult(vitem_id,ou,status,ip,system_name,flow_id,scan_no,manager,email,vitem_name,url,category,severity,scan_date,is_duplicated ) values('".$ipscan['vitem_id']."','".$ipscan['ou']."','".$ipscan['status']."','".$ipscan['ip']."','".$ipscan['system_name']."','".$ipscan['flow_id']."','".$ipscan['scan_no']."','".$ipscan['manager']."','".$ipscan['email']."','".$ipscan['vitem_name']."','".$ipscan['url']."','".$ipscan['category']."','".$ipscan['severity']."','".$ipscan['scan_date']."','".$ipscan['is_duplicated']."')";
+		$sql = "insert into ipscanResult(vitem_id,ou,status,ip,system_name,flow_id,scan_no,manager,email,vitem_name,url,category,severity,scan_date,is_duplicated ) values('".$ipscan['vitem_id']."','".$ipscan['ou']."','".$ipscan['status']."','".$ipscan['ip']."','".$ipscan['system_name']."','".$ipscan['flow_id']."','".$ipscan['scan_no']."','".$ipscan['manager']."','".$ipscan['email']."','".$ipscan['vitem_name']."','".$ipscan['url']."','".$ipscan['category']."','".$ipscan['severity']."','".$ipscan['scan_date']."','".$ipscan['is_duplicated']."')
+		ON DUPLICATE KEY UPDATE vitem_id = '".$ipscan['vitem_id']."',ou = '".$ipscan['ou']."',status = '".$ipscan['status']."',ip = '".$ipscan['ip']."',system_name = '".$ipscan['system_name']."',scan_no = '".$ipscan['scan_no']."',manager = '".$ipscan['manager']."',email = '".$ipscan['email']."',vitem_name = '".$ipscan['vitem_name']."',url = '".$ipscan['url']."',category = '".$ipscan['category']."',severity = '".$ipscan['severity']."',scan_date = '".$ipscan['scan_date']."',is_duplicated = '".$ipscan['is_duplicated']."' ";
 		if ($conn->query($sql) == TRUE) {
 			//echo "此筆資料已被上傳成功\n\r";		
 			$count = $count + 1;							
@@ -67,7 +48,7 @@
 		}
 	}
 	echo "<p>";
-	echo "The ".$count." records have been inserted into the ipscanResult \n\r<br>";
+	echo "The ".$count." records have been inserted or updated into the ipscanResult \n\r<br>";
 
 
 	 
@@ -75,28 +56,8 @@
 	$json = file_get_contents($preg_url);		
 	$data = json_decode($json,true);
 	$count = 0;	
-	//TRUNCATE table of urlscanResult
-	$sql = "TRUNCATE urlscanResult";
-	$conn->query($sql); 	
 	
 	foreach($data as $urlscan){
-		/*
-		echo "vitem_id=".$urlscan['vitem_id']."<br>";
-		echo "ou=".$urlscan['ou']."<br>";
-		echo "status=".$urlscan['status']."<br>";
-		echo "ip=".$urlscan['ip']."<br>";
-		echo "system_name=".$urlscan['system_name']."<br>";
-		echo "flow_id=".$urlscan['flow_id']."<br>";
-		echo "scan_no=".$urlscan['scan_no']."<br>";
-		echo "affect_url=".$urlscan['affect_url']."<br>";
-		echo "manager=".$urlscan['manager']."<br>";
-		echo "email=".$urlscan['email']."<br>";
-		echo "vitem_name=".$urlscan['vitem_name']."<br>";
-		echo "url=".$urlscan['url']."<br>";
-		echo "category=".$urlscan['category']."<br>";
-		echo "severity=".$urlscan['severity']."<br>";
-		echo "scan_date=".$urlscan['scan_date']."<br>";
-		*/
 		$urlscan['vitem_id']= mysqli_real_escape_string($conn,$urlscan['vitem_id']);
 		$urlscan['ou']= mysqli_real_escape_string($conn,$urlscan['ou']);
 		$urlscan['status']= mysqli_real_escape_string($conn,$urlscan['status']);
@@ -114,7 +75,8 @@
 		$urlscan['scan_date']= mysqli_real_escape_string($conn,$urlscan['scan_date']);
 		$urlscan['is_duplicated']= mysqli_real_escape_string($conn,$urlscan['is_duplicated']);
 		// INSERT to table ON DUPLICATE KEY UPDATE data
-		$sql = "insert into urlscanResult(vitem_id,ou,status,ip,system_name,flow_id,scan_no,affect_url,manager,email,vitem_name,url,category,severity,scan_date,is_duplicated ) values('".$urlscan['vitem_id']."','".$urlscan['ou']."','".$urlscan['status']."','".$urlscan['ip']."','".$urlscan['system_name']."','".$urlscan['flow_id']."','".$urlscan['scan_no']."','".$urlscan['affect_url']."','".$urlscan['manager']."','".$urlscan['email']."','".$urlscan['vitem_name']."','".$urlscan['url']."','".$urlscan['category']."','".$urlscan['severity']."','".$urlscan['scan_date']."','".$urlscan['is_duplicated']."')";
+		$sql = "insert into urlscanResult(vitem_id,ou,status,ip,system_name,flow_id,scan_no,affect_url,manager,email,vitem_name,url,category,severity,scan_date,is_duplicated ) values('".$urlscan['vitem_id']."','".$urlscan['ou']."','".$urlscan['status']."','".$urlscan['ip']."','".$urlscan['system_name']."','".$urlscan['flow_id']."','".$urlscan['scan_no']."','".$urlscan['affect_url']."','".$urlscan['manager']."','".$urlscan['email']."','".$urlscan['vitem_name']."','".$urlscan['url']."','".$urlscan['category']."','".$urlscan['severity']."','".$urlscan['scan_date']."','".$urlscan['is_duplicated']."')
+		ON DUPLICATE KEY UPDATE vitem_id = '".$urlscan['vitem_id']."',ou = '".$urlscan['ou']."',status = '".$urlscan['status']."',ip = '".$urlscan['ip']."',system_name = '".$urlscan['system_name']."',scan_no = '".$urlscan['scan_no']."',affect_url = '".$urlscan['affect_url']."',manager = '".$urlscan['manager']."',email = '".$urlscan['email']."',vitem_name = '".$urlscan['vitem_name']."',url = '".$urlscan['url']."',category = '".$urlscan['category']."',severity = '".$urlscan['severity']."',scan_date = '".$urlscan['scan_date']."',is_duplicated = '".$urlscan['is_duplicated']."' ";
 		if ($conn->query($sql) == TRUE) {
 			//echo "此筆資料已被上傳成功\n\r";									
 			$count = $count + 1;							
@@ -123,7 +85,7 @@
 		}
 	}
 
-	echo "The ".$count." records have been inserted into the urlscanResult \n\r<br>";
+	echo "The ".$count." records have been inserted or updated into the urlscanResult \n\r<br>";
 	echo "</p>"; 
 	$conn->close();	
 
