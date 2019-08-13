@@ -7,10 +7,6 @@
 					<div class="post_table">
                		 <?php //select data form database
                     	require("mysql_connect.inc.php");
-                    	$conn = new mysqli($servername, $username, $password, $dbname);
-                    	if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
-                    	//set the charset of query
-						$conn->query('SET NAMES UTF8');
                    		 //select row_number,and other field value
                     	$sql = "SELECT OccurrenceTime FROM security_event";
                     	$result = mysqli_query($conn,$sql);
@@ -181,18 +177,4 @@
 	</div>
 	
 		<!-- end #content -->
-		<div id="sidebar" class="info_sidebar">
-			<ul>
-				<li>
-					<h2>圖形化資訊</h2>
-					<ul>
-						<li class="active title"><a>Enews Report</a></li>
-						<li class="title"><a>Comparison</a></li>
-						<li class="title"><a>Ranking Data</a></li>
-						<li class="title"><a>Chart D</a></li>
-					</ul>
-				</li>
 		
-			</ul>
-		</div>
-		<!-- end #sidebar -->

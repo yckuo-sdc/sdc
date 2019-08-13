@@ -20,7 +20,7 @@ $(document).ready(function(){
 	// }
 	function Call_retrieve_c3_chartA_ajax(){
 		 $.ajax({
-			 url: 'ajax/retrieve_chartA.php',
+			 url: 'ajax/chartA.php',
 			 cache: false,
 			 dataType:'html',
 			 type:'GET',
@@ -60,7 +60,7 @@ $(document).ready(function(){
 	 }
 	function Call_retrieve_c3_chartB_ajax(){
 		 $.ajax({
-			 url: 'ajax/retrieve_chartB.php',
+			 url: 'ajax/chartB.php',
 			 cache: false,
 			 dataType:'html',
 			 type:'GET',
@@ -119,7 +119,7 @@ $(document).ready(function(){
 
 	function Call_retrieve_c3_chartC_ajax(){
 	$.ajax({
-		url: 'ajax/retrieve_chartC.php',
+		url: 'ajax/chartC.php',
 		cache: false,
 		dataType:'html',
 		type:'GET',

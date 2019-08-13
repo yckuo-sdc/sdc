@@ -1,9 +1,5 @@
 <?php
     require("../mysql_connect.inc.php");
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
-    //set the charset of 
-	$conn->query('SET NAMES UTF8');
     //select row_number,and other field value
 	$sql = "SELECT EventTypeName,COUNT(EventTypeName) as count FROM security_event GROUP BY EventTypeName ORDER by count desc";
     $result 	= mysqli_query($conn,$sql);

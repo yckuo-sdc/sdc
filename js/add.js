@@ -40,13 +40,55 @@ function Call_sub_query_ajax(){
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:$('#key').val(),keyword_type:$('#keyword_type').val()},
+		 data: {key:$('.post.security_event #key').val(),keyword_type:$('.post.security_event #keyword_type').val()},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 //console.log("success");
-			 $('.record_content').html("");
-			 $('.record_content').html(data);
+			 $('.post.security_event .record_content').html("");
+			 $('.post.security_event .record_content').html(data);
+			 //console.log("done");
+		 }
+	});
+	return 0;
+ }
+
+function Call_sub_vs_query_ajax(type){
+	 var selector = ".post."+type+" ";
+	 var obj = $(selector+"input[name='status[]']");
+	 var unfinished = obj[0].checked;
+	 var finished   = obj[1].checked;
+	 $.ajax({
+		 url: 'ajax/sub_vs_query.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {key:$(selector+'#key').val(),keyword_type:$(selector+'#keyword_type').val(),type:type,unfinished:unfinished,finished:finished},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 //console.log("success");
+			 $(selector+'.record_content').html("");
+			 $(selector+'.record_content').html(data);
+			 //console.log("done");
+		 }
+	});
+	return 0;
+}
+
+function Call_retrieve_ou_vs_ajax(){
+	 $.ajax({
+		 url: 'ajax/retrieve_ou_vs.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {key:1,keyword_type:2},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 //console.log("success");
+			 $('.ou_vs_content').html("");
+			 $('.ou_vs_content').html(data);
 			 //console.log("done");
 		 }
 	});
@@ -108,7 +150,8 @@ function change_page()
 $(document).ready(function(){
 
 	change_page();
-	
+	//load ou_vs_content
+	Call_retrieve_ou_vs_ajax();
 
 	$('#menu a')
 		.hover(
@@ -186,12 +229,37 @@ $(document).ready(function(){
 			detail.addClass('show');
 		}
 	});
-	
+	/*query.php's component action*/
+	$('.ou_vs_content').delegate('.ou_block > a', 'click', function() {
+	//$('.ou_block > a').click(function() {
+		var icon = $(this).find('i.icon');
+		var detail = $(this).parent().find('.description');
+		if(detail.hasClass('show')){
+			icon.removeClass('up').addClass('down');
+			detail.removeClass('show');
+		}else{
+			icon.removeClass('down').addClass('up');
+			detail.addClass('show');
+		}
+	});
+
 	//bind keypress
-	 $('#key').keyup(function(event) {
+	 $('.post.security_event #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
 			console.log('keyup');     
 			Call_sub_query_ajax(); 
+		}
+	 });
+	 $('.post.ipscanResult #key').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			console.log('keyup');     
+			Call_sub_vs_query_ajax('ipscanResult'); 
+		}
+	 });
+	 $('.post.urlscanResult #key').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			console.log('keyup');     
+			Call_sub_vs_query_ajax('urlscanResult'); 
 		}
 	 });
 	 $('#target').keyup(function(event) {
@@ -202,13 +270,28 @@ $(document).ready(function(){
 	 });
 
 	//bind serach_btn
-	$('#search_btn').click(function (){
-		console.log('serach_btn');     
+	$('.post.security_event #search_btn').click(function (){
+		console.log('security_event serach_btn');     
 		Call_sub_query_ajax();
-		console.log('serach_btn done');
+		console.log('security_event serach_btn done');
 	});
 
+	$('.post.ipscanResult #search_btn').click(function (){
+		console.log('ipscanResult serach_btn');     
+		Call_sub_vs_query_ajax('ipscanResult');
+		var obj = $(".post.ipscanResult input[name='status[]']");
+		var i;
+		for (i = 0; i < obj.length; i++){
+			console.log(obj[i].checked);
+		}
+		console.log('ipscanResult serach_btn done');
+	});
 
+	$('.post.urlscanResult #search_btn').click(function (){
+		console.log('urlscanResult serach_btn');     
+		Call_sub_vs_query_ajax('urlscanResult');
+		console.log('urlscanResult serach_btn done');
+	});
 
 	//retrieve from Google Sheets
 	$('#gs_btn').click(function(){

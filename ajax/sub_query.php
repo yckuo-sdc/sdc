@@ -8,8 +8,6 @@
 
 	if(!empty($_GET['key']) && !empty($_GET['keyword_type'])){
 		//過濾特殊字元(')
-		//$key  		   = str_replace("'","\'",$_GET['key']);
-		//$keyword_type  = str_replace("'","\'",$_GET['keyword_type']);
 		$key  		   = $_GET['key'];
 		$keyword_type  = $_GET['keyword_type'];
 
@@ -18,10 +16,6 @@
 
 		//connect database
         require("../mysql_connect.inc.php");
-        $conn = new mysqli($servername, $username, $password, $dbname);
-        if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
-        //set the charset of query
-		$conn->query('SET NAMES UTF8');
 		 //特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
 		$key			 = mysqli_real_escape_string($conn,$key);
 		$keyword_type	 = mysqli_real_escape_string($conn,$keyword_type);

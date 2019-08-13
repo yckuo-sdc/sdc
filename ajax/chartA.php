@@ -1,9 +1,5 @@
 <?php
     require("../mysql_connect.inc.php");
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
-    //set the charset of 
-	$conn->query('SET NAMES UTF8');
 	$date_today = date('Y-m-d',strtotime('now'));
 	$date_1month_ago = date('Y-m-d',strtotime('-1 month'));
 	//echo $date_today;

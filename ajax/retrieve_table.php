@@ -31,12 +31,6 @@ $rows = $sheets->spreadsheets_values->get($spreadsheetId, $range, ['majorDimensi
 
 //mysql
 require("../mysql_connect.inc.php");
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-	die("Connection failed: " . $conn->connect_error);
- }
-$conn->query('SET NAMES UTF8');
 
 // Specify the start date. This date can be any English textual format  
 //Convert date to a UNXI timestamp

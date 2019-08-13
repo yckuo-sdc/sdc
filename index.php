@@ -22,6 +22,7 @@ switch($page){  // 依照 GET 參數載入共用的內容
     break;
 
 }
+include('sidebar.php'); // 載入共用的側欄
 include('footer.php'); // 載入共用的頁尾
 
 ?>

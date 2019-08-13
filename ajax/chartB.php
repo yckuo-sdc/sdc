@@ -1,9 +1,5 @@
 <?php
     require("../mysql_connect.inc.php");
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
-    //set the charset of 
-	$conn->query('SET NAMES UTF8');
     //select row_number,and other field value
 	$sql2018 = "SELECT MONTH(OccurrenceTime) as month,COUNT(*) as count FROM security_event WHERE YEAR(OccurrenceTime) LIKE '2018' GROUP BY MONTH(OccurrenceTime)";
 	$sql2019 = "SELECT MONTH(OccurrenceTime) as month,COUNT(*) as count FROM security_event WHERE YEAR(OccurrenceTime) LIKE '2019' GROUP BY MONTH(OccurrenceTime)";

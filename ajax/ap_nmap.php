@@ -6,12 +6,6 @@
 	}
 	//mysql
 	require("../mysql_connect.inc.php");
-	$conn = new mysqli($servername, $username, $password, $dbname);
-	// Check connection
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	 }
-	$conn->query('SET NAMES UTF8');
 	 //select row_number,and other field value
 	$sql = "SELECT * FROM application_system";
 	$result = mysqli_query($conn,$sql);

@@ -2,12 +2,6 @@
 	require("../chtsecurity.inc.php");
 	//mysql
 	require("../mysql_connect.inc.php");
-	$conn = new mysqli($servername, $username, $password, $dbname);
-	// Check connection
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	 }
-	$conn->query('SET NAMES UTF8');			
 	date_default_timezone_set("Asia/Taipei");
 	$nowTime 	= date("Y-m-d H:i:s");
 	$host_type 	= "ipscanResult";

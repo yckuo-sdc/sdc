@@ -1,7 +1,7 @@
 <!--query.php-->
 <div id="content">
 		<div class="sub-content show">
-			<div class="post">
+			<div class="post security_event">
 				<form class="ui form" action="javascript:void(0)">
 
  				<div class="fields">
@@ -12,6 +12,7 @@
 						<option value="IP" class="keyword_paper active" selected>設備IP</option>
 						<option value="Status" class="keyword_paper active">結案狀態</option>
 						<option value="EventTypeName" class="keyword_paper active">資安類型</option>
+						<option value="DeviceTypeName" class="keyword_paper active">設備類型</option>
 						<option value="DeviceOwnerName" class="keyword_paper active">所有人姓名</option>
 						<option value="OccurrenceTime" class="keyword_paper active">發現日期</option>
 						<option value="all" class="keyword_paper active">全部</option>
@@ -34,10 +35,6 @@
 				<div class="record_content">
                 <?php //select data form database
                     require("mysql_connect.inc.php");
-                    $conn = new mysqli($servername, $username, $password, $dbname);
-                    if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
-                    //set the charset of query
-                    $conn->query('SET NAMES UTF8');
                     //------------pagination----------//
                     $pages=" ";
                     if (!isset($_GET['page'])){ 
@@ -184,17 +181,3 @@
 	</div>
 	
 		<!-- end #content -->
-		<div id="sidebar" class="info_sidebar">
-			<ul>
-				<li>
-					<h2>ISMS資安查詢</h2>
-					<ul>
-						<li class="active title"><a>資安事件查詢</a></li>
-						<li class="title"><a>Retrieve GS</a></li>
-						<li class="title"><a>sub 3</a></li>
-					</ul>
-				</li>
-		
-			</ul>
-		</div>
-		<!-- end #sidebar -->

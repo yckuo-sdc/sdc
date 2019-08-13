@@ -62,7 +62,7 @@
 	<div id="menu">
 			<ul>
 				<li><a class="1" accesskey="1" title="" href="#">最新消息</a></li>
-				<li><a class="2" accesskey="2" title="" href="index.php?mainpage=info">圖形化資訊</a></li>
+				<li><a class="2" accesskey="2" title="" href="index.php?mainpage=info">視覺化資訊</a></li>
 				<li><a class="3" accesskey="3" title="" href="index.php?mainpage=query">ISMS資安查詢</a></li>
 				<li><a class="4" accesskey="4" title="" href="index.php?mainpage=vulnerability">漏洞掃描</a></li>
 				<li><a class="5" accesskey="5" title="" href="index.php?mainpage=nmap">Nmap</a></li>
@@ -91,13 +91,15 @@
 	</div>
 	
 	<div class="front"  id="4">
-		<div class="sub" onclick='location.href="index.php?mainpage=vulnerability&subpage=1"'>漏洞OverView</div>
+		<div class="sub" onclick='location.href="index.php?mainpage=vulnerability&subpage=1"'>OverView</div>
 		<div class="sub" onclick='location.href="index.php?mainpage=vulnerability&subpage=2"'>漏洞查詢(host)</div>
 		<div class="sub" onclick='location.href="index.php?mainpage=vulnerability&subpage=3"'>漏洞查詢(web)</div>
-		<div class="sub" onclick='location.href="index.php?mainpage=vulnerability&subpage=4"'>漏洞API</div>
+		<div class="sub" onclick='location.href="index.php?mainpage=vulnerability&subpage=4"'>Retrieve VS</div>
 	</div>
 
 	<div class="front"  id="5">
+		<div class="sub" onclick='location.href="index.php?mainpage=nmap&subpage=1"'>Nmap</div>
+		<div class="sub" onclick='location.href="index.php?mainpage=nmap&subpage=2"'>AP</div>
 	</div>
 
 	<div class="front"  id="6">
