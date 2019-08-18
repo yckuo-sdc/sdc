@@ -1,3 +1,5 @@
+<?php session_start();?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -36,28 +38,68 @@
 <!--[if IE 6]>
 <link href="default_ie6.css" rel="stylesheet" type="text/css" />
 <![endif]-->
+ <style type="text/css">
+    body {
+		background-color: #DADADA;
+	}
+	body > .grid {
+		height: 100%;
+	}
+	.image {
+		margin-top: -100px;
+	}
+	 .column {
+		max-width: 450px;
+	}
+ </style>
+
+
 </head>
 <body>
-<div style="margin:10% auto;max-width:80%">
-	<form class="ui form">
-		 <h4 class="ui dividing header">SDC-ISS System</h4>
+	<div class="ui middle aligned center aligned grid">
+	  <div class="column">
+		<h2 class="ui teal image header">
+		  <div class="content">
+			Log-in to your account
+		  </div>
+		</h2>
+		<form class="ui large form" method="post" action="actionlogin.php">
+		  <div class="ui stacked segment">
+			<div class="field">
+			  <div class="ui left icon input">
+				<i class="user icon"></i>
+				<input type="text" name="account" placeholder="AD acoount">
+			  </div>
+			</div>
+			<div class="field">
+			  <div class="ui left icon input">
+				<i class="lock icon"></i>
+				<input type="password" name="password" placeholder="Password">
+			  </div>
+			</div>
+			<!--<div class="ui fluid large teal submit button">-->
+				
+				<button class="ui teal fluid large button" type="submit">Login</button>
+				<input type="hidden" name="refer" value="<?php echo (isset($_GET['refer'])) ? $_GET['refer'] : 'login.php'; ?>">
+				
+				<!--</div>-->
+		  </div>
+			<?php
+				if(isset($_SESSION["error"])){
+				echo "<div class='ui error message' style='display:block'>";
+					$error = $_SESSION["error"];	
+					echo "<span>$error</span>";
+				echo "</div>";
+				}
+			?>
 
-		<div class="field">
-    	<label>First Name</label>
-    	<input type="text" name="first-name" placeholder="First Name">
- 		 </div>
- 		 <div class="field">
-    	<label>Last Name</label>
-    	<input type="text" name="last-name" placeholder="Last Name">
-  		</div>
-  		<div class="field">
-    	<div class="ui checkbox">
-     	<input type="checkbox" tabindex="0" class="hidden">
-      	<label>I agree to the Terms and Conditions</label>
-   		</div>
-  		</div>
-  		<button class="ui button" type="submit">Submit</button>
-	</form>
-</div>
+		</form>
+		<div class="ui message">
+			SDC-ISS System
+		 </div>
+	  </div>
+	</div>
+
 </body>
 </html>
+<?php unset($_SESSION["error"]); ?>

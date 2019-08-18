@@ -17,8 +17,12 @@
 					SELECT vitem_name,system_name,ip,scan_date,scan_no,CONCAT('http://',ip) as url FROM ipscanResult WHERE ou LIKE '".$row['ou']."' AND status IN ('待處理','待處理(經複查仍有弱點','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') UNION ALL SELECT vitem_name,system_name,ip,scan_date,scan_no,affect_url as url FROM urlscanResult WHERE ou LIKE '".$row['ou']."' AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)')
 				)A ORDER BY scan_date desc LIMIT 10";
 		//Query of system name 
-		$sql_s = "SELECT system_name FROM ipscanResult WHERE ou LIKE '".$row['ou']."' UNION SELECT system_name FROM urlscanResult WHERE ou LIKE '".$row['ou']."'" ;
-		$result_t = mysqli_query($conn,$sql_t);
+		//$sql_s = "SELECT system_name FROM ipscanResult WHERE ou LIKE '".$row['ou']."' UNION SELECT system_name FROM urlscanResult WHERE ou LIKE '".$row['ou']."'" ;
+	$sql_s = "SELECT system_name,count(system_name) as vulnerabilities,sum(CASE WHEN status IN ('已修補','豁免','誤判') THEN 1 ELSE 0 END) fixed_items 
+	FROM (
+		SELECT system_name,status FROM ipscanResult WHERE ou LIKE '".$row['ou']."' UNION ALL SELECT system_name,status FROM urlscanResult WHERE ou LIKE '".$row['ou']."'
+	)A GROUP BY system_name	ORDER BY system_name";
+$result_t = mysqli_query($conn,$sql_t);
 		$result_f = mysqli_query($conn,$sql_f);
 		$result_d = mysqli_query($conn,$sql_d);
 		$result_s = mysqli_query($conn,$sql_s);
@@ -37,7 +41,7 @@
 			echo "</div>";
 				
 			while($row_s = mysqli_fetch_assoc($result_s)) {
-				echo $row_s['system_name']."<br>";
+				echo $row_s['system_name']."(".$row_s['vulnerabilities']."/".$row_s['fixed_items'].")<br>";
 			}
 			echo "<a><div style='text-align:right;cursor:pointer;'>last 10 unfixed items...<i class='angle double down icon'></i></div></a>";
 			echo "<div class='description'>";

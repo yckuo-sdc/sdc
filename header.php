@@ -52,7 +52,7 @@
 					<li class="xx">|</li>
 					<li><a class="3" accesskey="3" title="" href="mailto:yckuo@mail.tainan.gov.tw">聯絡我們</a></li>
 					<li class="xx">|</li>
-					<li><a class="4" accesskey="4" title="" href="login/">登入</a></li>
+					<li><a class="4" accesskey="4" title="" href="login/logout.php">登出<?php echo "(".$_SESSION['UserName'].")";?></a></li>
 				</ul>
 			</div>
 			<input type="search" id="search" placeholder="Search..." />
@@ -60,54 +60,47 @@
 	</div>
 	
 	<div id="menu">
-			<ul>
-				<li><a class="1" accesskey="1" title="" href="#">最新消息</a></li>
-				<li><a class="2" accesskey="2" title="" href="index.php?mainpage=info">視覺化資訊</a></li>
-				<li><a class="3" accesskey="3" title="" href="index.php?mainpage=query">ISMS資安查詢</a></li>
-				<li><a class="4" accesskey="4" title="" href="index.php?mainpage=vulnerability">漏洞掃描</a></li>
-				<li><a class="5" accesskey="5" title="" href="index.php?mainpage=nmap">Nmap</a></li>
-				<li><a class="6" accesskey="6" title="" href="#">相關連結</a></li> 
-			</ul>
+		<ul class="drop-down-menu">
+			<li><a class="1" accesskey="1" title="" href="#">最新消息</a></li>
+			<li><a class="2" accesskey="2" title="" href="index.php?mainpage=info">視覺化資訊</a>
+				<ul>
+					<li><a href="index.php?mainpage=info&subpage=1">Enews Report</a></li>
+					<li><a href="index.php?mainpage=info&subpage=2">Comparison</a></li>
+					<li><a href="index.php?mainpage=info&subpage=3">Ranking Data</a></li>
+					<li><a href="index.php?mainpage=info&subpage=4">ChartD</a></li>
+				</ul>
+			</li>
+			<li><a class="3" accesskey="3" title="" href="index.php?mainpage=query">ISMS資安查詢</a>
+				<ul>
+					<li><a href="index.php?mainpage=query&subpage=1">資安事件查詢</a></li>
+					<li><a href="index.php?mainpage=query&subpage=2">Retrieve GS</a></li>
+					<li><a href="index.php?mainpage=query&subpage=3">Sub 3</a></li>
+				</ul>
+			</li>
+			<li><a class="4" accesskey="4" title="" href="index.php?mainpage=vulnerability">漏洞掃描</a>
+				<ul>		
+					<li><a href="index.php?mainpage=vulnerability&subpage=1">OverView</a></li>
+					<li><a href="index.php?mainpage=vulnerability&subpage=2">漏洞查詢(host)</a></li>
+					<li><a href="index.php?mainpage=vulnerability&subpage=3">漏洞查詢(web)</a></li>
+					<li><a href="index.php?mainpage=vulnerability&subpage=4">Retrieve VS</a></li>
+				</ul>
+
+			</li>
+			<li><a class="5" accesskey="5" title="" href="index.php?mainpage=nmap">Nmap</a>
+				<ul>	
+					<li><a href="index.php?mainpage=nmap&subpage=1">Nmap</a></li>
+					<li><a href="index.php?mainpage=nmap&subpage=2">AP</a></li>
+				</ul>
+			</li>
+			<li><a class="6" accesskey="6" title="" href="#">相關連結</a> 
+				<ul>
+					<li><a href="http://vision.tainan.gov.tw" target="_blank">推動友善資訊服務平台</a></li>
+					<li><a href="http://10.7.102.4/tndev/" target="_blank">IP查詢系統(芳彬)</a></li>
+					<li><a href="http://10.7.100.100/mrbs/" target="_blank">SDC會議室預約系統</a></li>
+				</ul>
+			</li>		
+			<li class="hide"><a class="7" accesskey="7" title="" href="login/logout.php">登出<?php echo "(".$_SESSION['UserName'].")";?></a></li> 
+		</ul>
 	</div>
 </div>
-
-
-<div id="page" class="container">
-	
-	<div class="front" id="1">
-	</div>
-	
-	<div class="front" id="2">
-		<div class="sub" onclick='location.href="index.php?mainpage=info&subpage=1"'>Enews Report</div>
-		<div class="sub" onclick='location.href="index.php?mainpage=info&subpage=2"'>Comparison </div>
-		<div class="sub" onclick='location.href="index.php?mainpage=info&subpage=3"'>Ranking Data</div>
-		<div class="sub" onclick='location.href="index.php?mainpage=info&subpage=4"'>ChartD</div>
-	</div>
-	
-	<div class="front" id="3">
-		<div class="sub" onclick='location.href="index.php?mainpage=query&subpage=1"'>資安查詢</div>
-		<div class="sub" onclick='location.href="index.php?mainpage=query&subpage=2"'>Retrieve GS</div>
-		<div class="sub" onclick='location.href="index.php?mainpage=query&subpage=3"'>sub 3</div>
-	</div>
-	
-	<div class="front"  id="4">
-		<div class="sub" onclick='location.href="index.php?mainpage=vulnerability&subpage=1"'>OverView</div>
-		<div class="sub" onclick='location.href="index.php?mainpage=vulnerability&subpage=2"'>漏洞查詢(host)</div>
-		<div class="sub" onclick='location.href="index.php?mainpage=vulnerability&subpage=3"'>漏洞查詢(web)</div>
-		<div class="sub" onclick='location.href="index.php?mainpage=vulnerability&subpage=4"'>Retrieve VS</div>
-	</div>
-
-	<div class="front"  id="5">
-		<div class="sub" onclick='location.href="index.php?mainpage=nmap&subpage=1"'>Nmap</div>
-		<div class="sub" onclick='location.href="index.php?mainpage=nmap&subpage=2"'>AP</div>
-	</div>
-
-	<div class="front"  id="6">
-		<div class="sub" onclick="window.open('http://vision.tainan.gov.tw');">推動友善資訊服務平台
-		</div>
-		<div class="sub" onclick="window.open('http://10.7.102.4/tndev/');">IP查詢系統(芳彬)</div>
-		<div class="sub" onclick="window.open('http://10.7.100.100/mrbs/');">SDC會議室預約系統</div>
-	</div>
-
-
 

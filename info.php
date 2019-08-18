@@ -1,4 +1,5 @@
 <!--info.php-->
+<div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">

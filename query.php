@@ -1,7 +1,9 @@
 <!--query.php-->
+<div id="page" class="container">
 <div id="content">
 		<div class="sub-content show">
 			<div class="post security_event">
+				<div class="post_title">資安事件查詢</div>
 				<form class="ui form" action="javascript:void(0)">
 
  				<div class="fields">
@@ -181,3 +183,5 @@
 	</div>
 	
 		<!-- end #content -->
+
+

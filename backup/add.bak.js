@@ -152,6 +152,57 @@ $(document).ready(function(){
 	change_page();
 	//load ou_vs_content
 	Call_retrieve_ou_vs_ajax();
+
+	$('#menu a')
+		.hover(
+		function(){
+			var num = $(this).parent().index();
+			console.log(num);
+			var content = $('#page').find('.front')[num];
+			$(content).stop().show();
+		},
+		function(){
+			$('.front').delay(300).hide(0);
+		});
+		
+	$('#menu a').click(function(){
+		if(!$(this).hasClass('selected'))
+		{
+			$('#menu a').removeClass('selected');
+			$(this).addClass('selected');
+
+		}
+	});
+	
+	//$('.front').css("width",$('#menu ul').width());
+	
+	//修正分頁的.front位置
+	$('#page #1').css("left",$('#menu ul li:first-child').offset().left-$('#page').offset().left);
+	//$('.front  #2').css("left",$('#menu ul li:nth-child(2)').offset().left-$('#page').offset().left);
+	$('#page #2').css("left",$('#menu ul li:nth-child(2)').offset().left-$('#page').offset().left);
+	$('#page #3').css("left",$('#menu ul li:nth-child(3)').offset().left-$('#page').offset().left);
+	$('#page #4').css("left",$('#menu ul li:nth-child(4)').offset().left-$('#page').offset().left);
+	$('#page #5').css("left",$('#menu ul li:nth-child(5)').offset().left-$('#page').offset().left);
+	$('#page #6').css("left",$('#menu ul li:nth-child(6)').offset().left-$('#page').offset().left);
+
+	
+	$('.front').hover(
+		function(){
+			console.log('front');
+			$(this).stop().show();
+		},
+		function(){
+			$(this).stop().hide();
+		})
+
+	$('.front .sub').hover(
+		function(){
+			$(this).css('color','#fff');
+		},
+		function(){
+			$(this).css('color','#ddd');
+		})
+	
 	$('#sidebar a').css('text-decoration','none');
 
 	//sidebar內容切換

@@ -1,7 +1,9 @@
 <!--nmap.php-->
+<div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
+				<div class="post_title">Nmap</div>
 				<form class="ui form" action="javascript:void(0)">
  				<!--<div class="fields">-->
 			    	<div class="field">
@@ -70,3 +72,4 @@
 	</div>
 	
 	<!-- end #content -->
+
