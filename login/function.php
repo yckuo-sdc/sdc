@@ -35,4 +35,11 @@
 			return false;	
 		}	
 	}
+	//alert message
+	function phpAlert($msg) {
+		echo '<script type="text/javascript">alert("' . $msg . '")</script>';
+	}
+
+
+
 ?>

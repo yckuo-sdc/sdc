@@ -156,22 +156,23 @@
 		-->
 		<div class="sub-content">
 			<div class="post">
-				<div class="post_title">ChartD</div>
+				<div class="post_title">VUL Bar Chart</div>
 					<div class="post_cell">
-				
+						臺南市政府弱掃平台各單位漏洞數量<br>
+					<!--	<ol>
+							<li>待修補數量(紅色)</li>
+							<li>已修補數量(綠色)</li>
+						</ol>-->
+					<div id="chartD" class="chart"></div>	
 					
-						
-						下圖僅先列出前七名本所就業公司(共81人)，另外前三名依次為: 台積電、 聯發科 、華碩。
-						(2016.2 製表，圖表內容為2013~2015)
-					</div>
-					
-					<div id='cht_graduate2' class='chart'></div>
+					<!--<div id='cht_graduate2' class='chart'></div>-->
 					<!--
 					<ol class="post_cell">
 						<img class="graduate_img_1" src="images/graduate.png"> 
 						<img class="graduate_img_2" src="images/row.png">						
 					</ol>
 					-->
+					</div>
 			</div>
 		</div>
 			<div style="clear: both;">&nbsp;</div>

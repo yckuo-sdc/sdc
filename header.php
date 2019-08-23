@@ -67,7 +67,7 @@
 					<li><a href="index.php?mainpage=info&subpage=1">Enews Report</a></li>
 					<li><a href="index.php?mainpage=info&subpage=2">Comparison</a></li>
 					<li><a href="index.php?mainpage=info&subpage=3">Ranking Data</a></li>
-					<li><a href="index.php?mainpage=info&subpage=4">ChartD</a></li>
+					<li><a href="index.php?mainpage=info&subpage=4">VUL Bar Chart</a></li>
 				</ul>
 			</li>
 			<li><a class="3" accesskey="3" title="" href="index.php?mainpage=query">ISMS資安查詢</a>

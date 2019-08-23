@@ -10,7 +10,7 @@
 						<li class="active title"><a>Enews Report</a></li>
 						<li class="title"><a>Comparison</a></li>
 						<li class="title"><a>Ranking Data</a></li>
-						<li class="title"><a>Chart D</a></li>
+						<li class="title"><a>VUL Bar Chart</a></li>
 					</ul>
 				</li>
 			</ul>

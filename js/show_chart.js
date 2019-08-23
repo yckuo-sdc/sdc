@@ -188,6 +188,82 @@ $(document).ready(function(){
 		
 	}	
 
+	function Call_retrieve_c3_chartD_ajax(){
+	$.ajax({
+		url: 'ajax/chartD.php',
+		cache: false,
+		dataType:'html',
+		type:'GET',
+		data: {key:1,keyword_type:2},
+		error: function(xhr) {
+			alert('Ajax failed');
+		},success: function(data) {	 
+			var ouArray=[],total_VULArray=[],fixed_VULArray=[],percentArray=[];
+			var unfixed_VULArray=[];
+			$(data).find("VUL").each(function(){
+				// console.log($(this).text());
+				 var ou=$(this).children("ou").text();
+				 var unfixed_VUL=$(this).children("unfixed_VUL").text();
+				 //var total_VUL=$(this).children("total_VUL").text();
+				 var fixed_VUL=$(this).children("fixed_VUL").text();
+				 //console.log(name);
+				 //console.log(count);
+				 ouArray.push(ou);
+				 unfixed_VULArray.push(-unfixed_VUL);
+				 //total_VULArray.push(total_VUL);
+				 fixed_VULArray.push(fixed_VUL);
+				 percentArray.push(fixed_VUL);
+			});
+			//add the label of bar chart
+			unfixed_VULArray.unshift('待修補數量');
+			//total_VULArray.unshift('漏洞數量');
+			fixed_VULArray.unshift('已修補數量');
+			//percentArray.unshift('data3');
+		
+
+			var chart = c3.generate({
+				bindto: '#chartD',
+				size: {
+				    //height: 800,
+					//width: 600
+				},
+				data:{ 
+					columns: [unfixed_VULArray,fixed_VULArray],
+					//columns: [total_VULArray,fixed_VULArray],
+					type: 'bar',
+					groups:[
+						['待修補數量','已修補數量']
+						//['漏洞數量','已修補數量']
+					],
+					colors: {
+						待修補數量: '#d62728',
+						已修補數量: '#2ca02c'
+					},
+					labels:{
+						format:{
+							待修補數量: d3.format(''),
+							已修補數量: d3.format(''),
+						}
+					}
+				},axis: {
+					rotated: true,
+				   	x: {
+							type: 'category',
+							categories: ouArray
+					}
+
+				},bar: {
+					width: {
+						ratio: 0.5 // this makes bar width 50% of length between ticks	
+					}
+				},
+			});
+	
+		}
+	});
+		
+	}	
+
 
 
 	//bind show_chart_btn
@@ -224,6 +300,8 @@ $(document).ready(function(){
 	Call_retrieve_c3_chartB_ajax();
 	//chartC
 	Call_retrieve_c3_chartC_ajax();
+	//chartD
+	Call_retrieve_c3_chartD_ajax();
 	
 	//student
 	c3.generate({
@@ -295,3 +373,4 @@ $(document).ready(function(){
 		onresize: function(){}
 	});
 });
+

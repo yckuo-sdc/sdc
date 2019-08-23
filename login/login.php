@@ -51,6 +51,21 @@
 	 .column {
 		max-width: 450px;
 	}
+
+	.ui.sdc-blue.header {
+		color: #4798b3;
+	}
+
+	.ui.sdc-blue.button{
+		background-color: #4798b3;
+		color: #FFFFFF;
+	}
+
+	.ui.sdc-blue.button:hover {
+    	background-color: #117692;
+    	color: #FFFFFF;
+		text-shadow: none; 
+	}
  </style>
 
 
@@ -58,9 +73,9 @@
 <body>
 	<div class="ui middle aligned center aligned grid">
 	  <div class="column">
-		<h2 class="ui teal image header">
+		<h2 class="ui sdc-blue image header">
 		  <div class="content">
-			Log-in to your account
+			<i class="shield icon"></i>Log-in to your account
 		  </div>
 		</h2>
 		<form class="ui large form" method="post" action="actionlogin.php">
@@ -79,7 +94,7 @@
 			</div>
 			<!--<div class="ui fluid large teal submit button">-->
 				
-				<button class="ui teal fluid large button" type="submit">Login</button>
+				<button class="ui sdc-blue fluid large button" type="submit">Login</button>
 				<input type="hidden" name="refer" value="<?php echo (isset($_GET['refer'])) ? $_GET['refer'] : 'login.php'; ?>">
 				
 				<!--</div>-->
