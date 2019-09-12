@@ -73,8 +73,8 @@
 			<li><a class="3" accesskey="3" title="" href="index.php?mainpage=query">ISMS資安查詢</a>
 				<ul>
 					<li><a href="index.php?mainpage=query&subpage=1">資安事件查詢</a></li>
-					<li><a href="index.php?mainpage=query&subpage=2">Retrieve GS</a></li>
-					<li><a href="index.php?mainpage=query&subpage=3">Sub 3</a></li>
+					<li><a href="index.php?mainpage=query&subpage=2">資安聯絡人</a></li>
+					<li><a href="index.php?mainpage=query&subpage=3">Retrieve GS & Ncert</a></li>
 				</ul>
 			</li>
 			<li><a class="4" accesskey="4" title="" href="index.php?mainpage=vulnerability">漏洞掃描</a>
@@ -96,7 +96,7 @@
 				<ul>
 					<li><a href="http://vision.tainan.gov.tw" target="_blank">推動友善資訊服務平台</a></li>
 					<li><a href="http://10.7.102.4/tndev/" target="_blank">IP查詢系統(芳彬)</a></li>
-					<li><a href="http://10.7.100.100/mrbs/" target="_blank">SDC會議室預約系統</a></li>
+					<li><a href="https://sdc-mrbs.tainan.gov.tw/" target="_blank">SDC會議室預約系統</a></li>
 				</ul>
 			</li>		
 			<li class="hide"><a class="7" accesskey="7" title="" href="login/logout.php">登出<?php echo "(".$_SESSION['UserName'].")";?></a></li> 

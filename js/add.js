@@ -34,19 +34,20 @@ function Call_retrieve_vs_ajax(){
 	return 0;
 }
 
-function Call_sub_query_ajax(){
+function Call_sub_query_ajax(type){
+	 var selector = ".post."+type+" ";
 	 $.ajax({
 		 url: 'ajax/sub_query.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:$('.post.security_event #key').val(),keyword_type:$('.post.security_event #keyword_type').val()},
+		 data: {key:$(selector+'#key').val(),keyword_type:$(selector+'#keyword_type').val(),type:type},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 //console.log("success");
-			 $('.post.security_event .record_content').html("");
-			 $('.post.security_event .record_content').html(data);
+			 $(selector+'.record_content').html("");
+			 $(selector+'.record_content').html(data);
 			 //console.log("done");
 		 }
 	});
@@ -222,18 +223,19 @@ $(document).ready(function(){
 	//bind serach_btn
 	$('.post.security_event #search_btn').click(function (){
 		console.log('security_event serach_btn');     
-		Call_sub_query_ajax();
+		Call_sub_query_ajax('security_event');
 		console.log('security_event serach_btn done');
+	});
+
+	$('.post.security_contact #search_btn').click(function (){
+		console.log('security_contact serach_btn');     
+		Call_sub_query_ajax('security_contact');
+		console.log('security_contact serach_btn done');
 	});
 
 	$('.post.ipscanResult #search_btn').click(function (){
 		console.log('ipscanResult serach_btn');     
 		Call_sub_vs_query_ajax('ipscanResult');
-		var obj = $(".post.ipscanResult input[name='status[]']");
-		var i;
-		for (i = 0; i < obj.length; i++){
-			console.log(obj[i].checked);
-		}
 		console.log('ipscanResult serach_btn done');
 	});
 
@@ -255,6 +257,32 @@ $(document).ready(function(){
 	$('#nmap_btn').click(function(){
 		Call_retrieve_nmap_ajax();	
 	});
+	
+	//semantic file input
+	$("input:text").click(function() {
+		  $(this).parent().find("input:file").click();
+	});
+	$('input:file', '.ui.action.input').on('change', function(e){
+		var name = e.target.files[0].name;
+		$('input:text', $(e.target).parent()).val(name);
+	});	
+	$("#upload_Form").on('submit',(function(e){
+		e.preventDefault();
+		$.ajax({
+			url: "ajax/upload_contact.php",
+			type: "POST",
+			data:  new FormData(this),
+			contentType: false,
+			cache: false,
+			processData:false,
+			success: function(data){
+				$(".retrieve_ncert").html("");
+				$(".retrieve_ncert").html(data);
+			},
+			error: function(){
+			}               
+		});
+    }));	
 	//mobile menu icon
 	$('.ui.container a').click(function(){
 		console.log("a");

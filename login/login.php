@@ -10,7 +10,7 @@
 <title>臺南市政府 智慧發展中心</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
-<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700|Archivo+Narrow:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700|Archivo+Narrow:400,700" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="../images/logo.ico" />
 
 <!-- add jQuery-->

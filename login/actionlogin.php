@@ -12,11 +12,15 @@ $password = mysqli_real_escape_string($conn,$password);
 $sql = "SELECT * FROM users where SSOID = '$account'";
 $result = mysqli_query($conn,$sql);
 $row = @mysqli_fetch_assoc($result);
+
 if(checkAccountByLDAP($account, $password) && $row['SSOID'] == $account){
 	session_start();
 	$_SESSION['account']	= $account;
 	$_SESSION['UserName']   = $row['UserName'];
-	//header("refresh:0;url=admin.php"); 
+	//echo $row['Level']; 
+	if($row['Level'] == 2){
+		$_SESSION['Level'] = $row['Level'];
+	}
 	header("refresh:0;url=../"); 
 }else{
 	session_start();

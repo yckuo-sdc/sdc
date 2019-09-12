@@ -39,7 +39,7 @@
 				 break;
 			case ($unfinished == 'true' and $finished == 'false'):
 				 //$condition =  "AND (status LIKE '待處理(經複查仍有弱點)' OR status LIKE '待處理' OR status LIKE '豁免(待簽核)' OR status LIKE '誤判(待簽核)')";
-				 $condition =  "AND status IN ('待處理','待處理(經複查仍有弱點','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)')";
+				 $condition =  "AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)')";
 				 break;
 			case ($unfinished == 'false' and $finished == 'true'):
 				 //$condition =  "AND (status LIKE '已修補' OR status LIKE '豁免' OR status LIKE '誤判')";
@@ -55,7 +55,7 @@
 			//FullText Seach excpet the EventID,OccurrenceTime
 			//$sql = "SELECT * FROM security_event WHERE Status LIKE '%".$key."%' OR EventTypeName LIKE '%".$key."%' OR Location LIKE '%".$key."%' OR IP LIKE '%".$key."%' OR BlockReason LIKE '%".$key."%' OR DeviceTypeName LIKE '%".$key."%' OR DeviceOwnerName LIKE '%".$key."%' OR DeviceOwnerPhone LIKE '%".$key."%' OR AgencyName LIKE '%".$key."%' OR UnitName LIKE '%".$key."%' OR NetworkProcessContent LIKE '%".$key."%' OR MaintainProcessContent LIKE '%".$key."%' OR AntivirusProcessContent LIKE '%".$key."%' OR UnprocessedReason LIKE '%".$key."%' OR Remarks LIKE '%".$key."%' ORDER by EventID DESC,OccurrenceTime DESC";
 		}else{
-			$sql = "SELECT * FROM ".$table." WHERE ".$keyword_type." LIKE '%".$key."%' ".$condition." ORDER by scan_date  DESC";
+			$sql = "SELECT * FROM ".$table." WHERE ".$keyword_type." LIKE '%".$key."%' ".$condition." ORDER by scan_no DESC,system_name DESC,status DESC";
 		}
 		$result = mysqli_query($conn,$sql);
 		if(!$result){
@@ -100,6 +100,7 @@
 						echo "<ol>";
 						echo "<li>弱點序號:".$row['vitem_id']."</li>";
 						echo "<li>弱點名稱:".$row['vitem_name']."</li>";
+						echo "<li>OID:".$row['OID']."</li>";
 						echo "<li>單位:".str_replace("/臺南市政府/","",$row['ou'])."</li>";
 						echo "<li>系統名稱:".$row['system_name']."</li>";
 						echo "<li>IP:".$row['ip']."</li>";
@@ -113,6 +114,7 @@
 						echo "<li>弱點詳細資訊:<a href='".$row['url']."' target='_blank'>".$row['url']."</a></li>";
 						echo "<li>總類:".$row['category']."</li>";
 						echo "<li>風險程度:".$row['severity']."</li>";
+						echo "<li>弱點處理情形:".$row['status']."</li>";
 						echo "<li>掃描期別:".$row['scan_no']."</li>";
 						echo "</ol>";
 					  

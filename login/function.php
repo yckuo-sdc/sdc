@@ -9,10 +9,20 @@
 			return false;
 		}
 	}	
+
+	function issetBySession($var){
+		if(isset($_SESSION[$var])){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}	
 		
 	function checkAccountByLDAP($user, $ldappass){
 		$ldaphost = "tainan.gov.tw";
 		$ldapconn = ldap_connect($ldaphost);
+		//$ldapconn = ldap_connect("10.6.2.1");
 		$ldaprdn = $user . "@" . $ldaphost;
 		ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);

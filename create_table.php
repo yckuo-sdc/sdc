@@ -11,23 +11,20 @@ if ($conn->connect_error) {
 
 $conn->query('NAMES UTF8');
 
-$sql = "CREATE TABLE urlscanResult
+$sql = "CREATE TABLE security_contact
 		(
-    		vitem_id	int(11),
-			ou			varchar(30),
-			status  	varchar(30),
-			ip 			varchar(30),
-			system_name varchar(100),
-			flow_id 	int(11),
-			scan_no 	varchar(30),
-			affect_url	varchar(200),
-			manager 	varchar(30),
-			email 		varchar(100),
-			vitem_name 	varchar(30),
-			url 		varchar(200),
-			category 	varchar(30),
-			severity 	varchar(30),
-			scan_date 	DATETIME 
+			CID				int(11) AUTO_INCREMENT PRIMARY KEY ,
+    		OID				varchar(50),
+			organization	varchar(30),
+			person_name  	varchar(30),
+			unit  			varchar(30),
+			position 		varchar(30),
+			person_type 	varchar(30),
+			address 		varchar(50),
+			tel 			varchar(30),
+			ext 			varchar(30),
+			fax 			varchar(30),
+			email 			varchar(30)
 		)";
 
 if($result = mysqli_query($conn,$sql)){

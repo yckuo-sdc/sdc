@@ -486,6 +486,9 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 .ui.list > .item{
 	font-size: 2vmin;
 }
+.ui.list > .item .content{
+	line-height: normal;
+}
 .ui.list > .item .content .description{
 	display:none;
 	word-break: break-all;
@@ -532,7 +535,7 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 }
 
 /*@media only screen and (min-width: 400px) and (max-width: 700px) and (orientation: portrait){*/
-@media screen and (orientation: portrait),screen and (min-width: 400px) and (max-width: 700px){
+@media screen and (orientation: portrait),screen and (min-width: 350px) and (max-width: 700px){
     /* For mobile phones: */
 	
 	html,body{
@@ -587,6 +590,7 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 
 	#page #content{
 		width:100%;
+		padding:2%;
 	}
 
 	#menu{
@@ -683,7 +687,9 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 	.ui.list > .item {
 		font-size:4vmin;
 	}
-
+	.ui.list > .item .content .description.show{
+		font-size:4vmin;
+	}
 	.ui.pagination.menu{
 	     display:none;
 	 }

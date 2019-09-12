@@ -318,14 +318,14 @@
 			<div class="post">
 				<div class="post_title">Retrieve from Google Sheets</div>
 				<div class="post_cell">
-					<button id="gs_btn" class="ui button">Retrieve GS</button>
+					<button id="gs_btn" class="ui button">Retrieve</button>
 					<div class="retrieve_info"></div>
 				</div>
 			</div>
 			<?php 
 				// admin is given permission to edit this block	
-				if(issetBySession("Level")){
-					//echo $_SESSION['Level'];
+				if(issetBySession('Level')){
+					echo $_SESSION['Level'];
 			?>
 			<div class="post">
 				<div class="post_title">Retrieve from Ncert</div>

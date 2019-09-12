@@ -45,7 +45,8 @@ $(document).ready(function(){
 	    				data: {
 							columns: [
 								countArray
-							]
+							],
+							type:  'area'
 						},axis: {
 				   			x: {
 								type: 'category',

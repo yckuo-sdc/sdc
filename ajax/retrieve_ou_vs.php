@@ -3,10 +3,10 @@
 	require("../mysql_connect.inc.php");
 	//create view
 	/* CREATE VIEW V_VUL_tableau AS 
-		SELECT REPLACE(ou, '/臺南市政府/', '') as ou, system_name, count(system_name) as total_VUL, sum(CASE WHEN status IN ('已修補','豁免','誤判') THEN 1 ELSE 0 END) fixed_VUL
+		SELECT OID,REPLACE(ou, '/臺南市政府/', '') as ou, system_name, count(system_name) as total_VUL, sum(CASE WHEN status IN ('已修補','豁免','誤判') THEN 1 ELSE 0 END) fixed_VUL
 	   FROM (
-	   SELECT ou,system_name,status FROM ipscanResult UNION ALL SELECT ou,system_name,status FROM urlscanResult
-	   )A GROUP BY ou, system_name 
+	   SELECT OID,ou,system_name,status FROM ipscanResult UNION ALL SELECT OID,ou,system_name,status FROM urlscanResult
+	   )A GROUP BY OID, ou, system_name 
 	*/
 	//select row_number,and other field value
 	$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL FROM V_VUL_tableau GROUP BY ou ORDER BY ou desc";
