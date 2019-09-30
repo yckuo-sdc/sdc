@@ -89,7 +89,7 @@
 					</div>
 			</div>
 			<div class="post">
-				<div class="post_title">資安事件趨勢圖(最近1個月)</div>
+				<div class="post_title">資安事件趨勢圖(最近3個月)</div>
 				<div class="cell">
 					<div id="chartA" class="chart"></div>	
 				</div>

@@ -2,7 +2,7 @@
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
-			<div class="post">
+			<div class="post nmap">
 				<div class="post_title">Nmap</div>
 				<form class="ui form" action="javascript:void(0)">
  				<!--<div class="fields">-->
@@ -21,7 +21,7 @@
 				<!--</div>-->	
 				</form>
 
-			<div class="nmap_content"></div>
+			<div class="record_content"></div>
 			</div>
 		</div>
 		<div class="sub-content">
@@ -66,6 +66,29 @@
 
 					</div>
 				</div>
+			</div>
+		</div>
+		<div class="sub-content show">
+			<div class="post ldap">
+				<div class="post_title">LDAP-Search</div>
+				<form class="ui form" action="javascript:void(0)">
+ 				<!--<div class="fields">-->
+			    	<div class="field">
+						<label>CN(=Login account)</label>
+						<div class="ui input">
+							<?php $target = "yckuo";?>
+							<input type="text" id="target" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
+						</div>
+					</div>
+					<div class="field">
+						<label>LDAP</label>
+						<button id="ldap_btn" class="ui button">Search</button>
+						<div class="ui centered inline loader"></div>
+					</div>
+				<!--</div>-->	
+				</form>
+
+			<div class="record_content"></div>
 			</div>
 		</div>
 		<div style="clear: both;">&nbsp;</div>

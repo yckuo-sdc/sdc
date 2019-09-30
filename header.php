@@ -17,6 +17,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
 <!-- node_modules-->
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
 <script src="node_modules/d3js/d3.min.js" charset="utf-8"></script>
 <link href="node_modules/c3js/c3.css" rel="stylesheet" type="text/css">
 <script src="node_modules/c3js/c3.min.js"></script>
@@ -90,13 +91,15 @@
 				<ul>	
 					<li><a href="index.php?mainpage=nmap&subpage=1">Nmap</a></li>
 					<li><a href="index.php?mainpage=nmap&subpage=2">AP</a></li>
+					<li><a href="index.php?mainpage=nmap&subpage=3">LDAP</a></li>
 				</ul>
 			</li>
 			<li><a class="6" accesskey="6" title="" href="#">相關連結</a> 
 				<ul>
 					<li><a href="http://vision.tainan.gov.tw" target="_blank">推動友善資訊服務平台</a></li>
-					<li><a href="http://10.7.102.4/tndev/" target="_blank">IP查詢系統(芳彬)</a></li>
+					<li><a href="http://10.7.102.4/tndev/" target="_blank">MIS網管系統(芳彬)</a></li>
 					<li><a href="https://sdc-mrbs.tainan.gov.tw/" target="_blank">SDC會議室預約系統</a></li>
+					<li><a href="https://sdc-iss.tainan.gov.tw:4000/" target="_blank">OpenVas(開源漏洞掃描工具)</a></li>
 				</ul>
 			</li>		
 			<li class="hide"><a class="7" accesskey="7" title="" href="login/logout.php">登出<?php echo "(".$_SESSION['UserName'].")";?></a></li> 

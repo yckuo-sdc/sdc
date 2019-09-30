@@ -178,8 +178,8 @@
 							<label>種類</label>
 							<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
 							 <!--<option value="" class="keyword_paper active" selected>關鍵字種類</option>-->
-							<option value="OID" class="keyword_paper active" selected>機關OID</option>
-							<option value="organization" class="keyword_paper active">機關名稱</option>
+							<option value="organization" class="keyword_paper active" selected>機關名稱</option>
+							<option value="OID" class="keyword_paper active">機關OID</option>
 							<option value="person_name" class="keyword_paper active">聯絡人姓名</option>
 							<option value="person_type" class="keyword_paper active">聯絡人類別</option>
 							<option value="all" class="keyword_paper active">全部</option>

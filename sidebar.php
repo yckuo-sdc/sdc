@@ -56,7 +56,8 @@
 					<h2>Nmap</h2>
 					<ul>
 						<li class="active title"><a>Nmap</a></li>
-						<li class=" title"><a>AP</a></li>
+						<li class="title"><a>AP</a></li>
+						<li class="title"><a>LDAP</a></li>
 					</ul>
 				</li>
 		

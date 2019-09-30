@@ -31,6 +31,7 @@ $(document).ready(function(){
 			 	 //console.log("data");
 				 
 				 var countArray=[],nameArray=[];
+				 var countArray_done=[],nameArray_done=[];
 				$(data).find("OccurrenceTime").each(function(){
 					// console.log($(this).text());
 					 nameArray.push($(this).text());
@@ -39,12 +40,22 @@ $(document).ready(function(){
 					// console.log($(this).text());
 					 countArray.push($(this).text());
 				});
+				$(data).find("OccurrenceTime_done").each(function(){
+					// console.log($(this).text());
+					 nameArray_done.push($(this).text());
+				});
+				$(data).find("count_done").each(function(){
+					// console.log($(this).text());
+					 countArray_done.push($(this).text());
+				});
 				countArray.unshift('資安事件(數量)');
+				countArray_done.unshift('已結案(數量)');
 				var chart = c3.generate({
 						bindto: '#chartA',
 	    				data: {
 							columns: [
-								countArray
+								countArray,
+								countArray_done
 							],
 							type:  'area'
 						},axis: {

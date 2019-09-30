@@ -84,7 +84,6 @@ if (isset($rows['values'])) {
 		if (empty($row[0])){
 			break;						
 		}
-		$count = $count + 1;
 
 		//filter non-exist the data(ex: $row[15] is not exist)
 		for($i=0;$i<17;$i++){
@@ -100,6 +99,7 @@ if (isset($rows['values'])) {
 		ON DUPLICATE KEY UPDATE Status = '$row[1]',OccurrenceTime = '$row[2]',EventTypeName = '$row[3]',Location = '$row[4]',IP = '$row[5]',BlockReason = '$row[6]',DeviceTypeName = '$row[7]',DeviceOwnerName = '$row[8]',DeviceOwnerPhone = '$row[9]',AgencyName = '$row[10]',UnitName = '$row[11]',NetworkProcessContent = '$row[12]',MaintainProcessContent = '$row[13]',AntivirusProcessContent = '$row[14]',UnprocessedReason = '$row[15]',Remarks = '$row[16]'	";
 
 		if ($conn->query($sql) == TRUE) {
+			$count = $count + 1;
 			//echo "此筆資料已被上傳成功\n\r";									
 		} else {
 			echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
@@ -163,7 +163,6 @@ if (isset($rows['values'])) {
 
 
 	echo "update ".$count." records on ".date("Y-m-d H:i:s")."<br>";
-
 }
 	$conn->close();	
 	//print_r($data);

@@ -97,20 +97,41 @@ function Call_retrieve_ou_vs_ajax(){
  }
 
 
-function Call_retrieve_nmap_ajax(){
+function Call_retrieve_nmap_ajax(type){
 	$('.ui.inline.loader').addClass('active');
+	var selector = ".post."+type+" ";
 	$.ajax({
 		 url: 'ajax/sub_nmap.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {target:$('#target').val()},
+		 data: {target:$(selector+'#target').val()},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 $('.ui.inline.loader').removeClass('active');
-			 $('.nmap_content').html("");
-			 $('.nmap_content').html(data);
+			 $(selector+'.record_content').html("");
+			 $(selector+'.record_content').html(data);
+		 }
+	});
+	return 0;
+}
+
+function Call_retrieve_ldap_ajax(type){
+	$('.ui.inline.loader').addClass('active');
+	var selector = ".post."+type+" ";
+	$.ajax({
+		 url: 'ajax/sub_ldap.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {target:$(selector+'#target').val()},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 $('.ui.inline.loader').removeClass('active');
+			 $(selector+'.record_content').html("");
+			 $(selector+'.record_content').html(data);
 		 }
 	});
 	return 0;
@@ -213,12 +234,19 @@ $(document).ready(function(){
 			Call_sub_vs_query_ajax('urlscanResult'); 
 		}
 	 });
-	 $('#target').keyup(function(event) {
+	 $('.post.nmap #target').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
 			console.log('keyup');     
-			Call_retrieve_nmap_ajax();	
+			Call_retrieve_nmap_ajax('namp');	
 		}
 	 });
+	 $('.post.ldap #target').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			console.log('keyup');     
+			Call_retrieve_ldap_ajax('ldap');	
+		}
+	 });
+
 
 	//bind serach_btn
 	$('.post.security_event #search_btn').click(function (){
@@ -253,9 +281,13 @@ $(document).ready(function(){
 	$('#vs_btn').click(function(){
 		Call_retrieve_vs_ajax();	
 	});
-	//retrieve from Google Sheets
-	$('#nmap_btn').click(function(){
-		Call_retrieve_nmap_ajax();	
+	//retrieve from nmap
+	$('.post.nmap #nmap_btn').click(function(){
+		Call_retrieve_nmap_ajax('nmap');	
+	});
+	//retrieve from ldap
+	$('.post.ldap #ldap_btn').click(function(){
+		Call_retrieve_ldap_ajax('ldap');	
 	});
 	
 	//semantic file input
