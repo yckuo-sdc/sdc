@@ -22,7 +22,9 @@
 		if($data["count"]!=0){
 			for($i=0; $i<=$data["count"];$i++) {
 				for ($j=0;$j<=$data[$i]["count"];$j++) {
-					echo $data[$i][$j].": ".$data[$i][$data[$i][$j]][0]."\n<br>";
+					if(isset($data[$i][$j])) {
+						echo $data[$i][$j].": ".$data[$i][$data[$i][$j]][0]."\n<br>";
+					}
 				}
 			}
 		}

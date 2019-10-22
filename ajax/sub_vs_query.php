@@ -1,10 +1,11 @@
 <?php
 	
 	header('Content-type: text/html; charset=utf-8');
+	include("../login/function.php");
 	//alert message
-	function phpAlert($msg) {
-		echo '<script type="text/javascript">alert("' . $msg . '")</script>';
-	}
+	//function phpAlert($msg) {
+	//	echo '<script type="text/javascript">alert("' . $msg . '")</script>';
+	//}
 
 	if(!empty($_GET['key']) && !empty($_GET['keyword_type'])){
 		//過濾特殊字元(')
@@ -38,11 +39,9 @@
 				 $condition =  "";
 				 break;
 			case ($unfinished == 'true' and $finished == 'false'):
-				 //$condition =  "AND (status LIKE '待處理(經複查仍有弱點)' OR status LIKE '待處理' OR status LIKE '豁免(待簽核)' OR status LIKE '誤判(待簽核)')";
 				 $condition =  "AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)')";
 				 break;
 			case ($unfinished == 'false' and $finished == 'true'):
-				 //$condition =  "AND (status LIKE '已修補' OR status LIKE '豁免' OR status LIKE '誤判')";
 				 $condition =  "AND status IN ('已修補','豁免','誤判')";
 				 break;
 			case ($unfinished == 'false' and $finished == 'false'):
@@ -51,12 +50,15 @@
 		}
 	
 		if($keyword_type == "all"){
-			//echo $key;
-			//FullText Seach excpet the EventID,OccurrenceTime
-			//$sql = "SELECT * FROM security_event WHERE Status LIKE '%".$key."%' OR EventTypeName LIKE '%".$key."%' OR Location LIKE '%".$key."%' OR IP LIKE '%".$key."%' OR BlockReason LIKE '%".$key."%' OR DeviceTypeName LIKE '%".$key."%' OR DeviceOwnerName LIKE '%".$key."%' OR DeviceOwnerPhone LIKE '%".$key."%' OR AgencyName LIKE '%".$key."%' OR UnitName LIKE '%".$key."%' OR NetworkProcessContent LIKE '%".$key."%' OR MaintainProcessContent LIKE '%".$key."%' OR AntivirusProcessContent LIKE '%".$key."%' OR UnprocessedReason LIKE '%".$key."%' OR Remarks LIKE '%".$key."%' ORDER by EventID DESC,OccurrenceTime DESC";
+			//FullText Seach
+			$condition = "(".getFullTextSearchSQL($conn,$table,$key).") ".$condition; 
+			//$sql="SELECT * FROM ".$table." WHERE vitem_id LIKE '%".$key."%' OR OID LIKE '%".$key."%' OR ou LIKE '%".$key."%' OR status LIKE '%".$key."%' OR ip LIKE '%".$key."%' OR system_name LIKE '%".$key."%' OR flow_id LIKE '%".$key."%' OR scan_no LIKE '%".$key."%' OR manager LIKE '%".$key."%' OR email LIKE '%".$key."%' OR vitem_name LIKE '%".$key."%' OR url LIKE '%".$key."%' OR category LIKE '%".$key."%' OR severity LIKE '%".$key."%' OR scan_date LIKE '%".$key."%' ORDER by scan_date DESC";
 		}else{
-			$sql = "SELECT * FROM ".$table." WHERE ".$keyword_type." LIKE '%".$key."%' ".$condition." ORDER by scan_no DESC,system_name DESC,status DESC";
+			$condition = $keyword_type." LIKE '%".$key."%' ".$condition;
 		}
+		$order = "ORDER by scan_no DESC,system_name DESC,status DESC";
+		$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
+		//echo $sql."<br>";
 		$result = mysqli_query($conn,$sql);
 		if(!$result){
 			echo"Error:".mysqli_error($conn);

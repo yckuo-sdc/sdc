@@ -159,23 +159,11 @@
 				<div class="post_title">VUL Bar Chart</div>
 					<div class="post_cell">
 						臺南市政府弱掃平台各單位漏洞數量<br>
-					<!--	<ol>
-							<li>待修補數量(紅色)</li>
-							<li>已修補數量(綠色)</li>
-						</ol>-->
-					<div id="chartD" class="chart"></div>	
-					
-					<!--<div id='cht_graduate2' class='chart'></div>-->
-					<!--
-					<ol class="post_cell">
-						<img class="graduate_img_1" src="images/graduate.png"> 
-						<img class="graduate_img_2" src="images/row.png">						
-					</ol>
-					-->
+						<div id="chartD" class="chart"></div>	
 					</div>
 			</div>
 		</div>
-			<div style="clear: both;">&nbsp;</div>
+		<div style="clear: both;">&nbsp;</div>
 	</div>
 	
 		<!-- end #content -->

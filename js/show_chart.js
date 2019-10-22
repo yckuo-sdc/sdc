@@ -1,7 +1,5 @@
-$(document).ready(function(){
-
 	//pass variables by keyword_input
-	//function Call_search_ajax(){
+	function Call_search_ajax(){
 		 $.ajax({
 			 url: 'ajax/retrieve_table.php',
 			 cache: false,
@@ -16,8 +14,8 @@ $(document).ready(function(){
 				// window.location.hash = "query";
 			 }
 		});
-	//	return 0;
-	// }
+		return 0;
+	}
 	function Call_retrieve_c3_chartA_ajax(){
 		 $.ajax({
 			 url: 'ajax/chartA.php',
@@ -161,7 +159,7 @@ $(document).ready(function(){
 			//add the label of bar chart
 			countArray.unshift('機關資安事件數量');
 		
-			var chart = c3.generate({
+			c3.generate({
 				bindto: '#chartC',
 	    		data:{ 
 					columns: [countArray],
@@ -179,6 +177,17 @@ $(document).ready(function(){
 					}
 				}
 			});
+
+			//the setting of pie chart
+			var cht_width = '500px';	//default width
+			var arr = $('.post_title');
+			for(i = 0; i < arr.length; i++){
+				if((width = $(arr[i]).css('width')) !== '0px'){
+					cht_width = width.replace(/px/,'');
+					break;	
+				}
+			}
+			var cht_height = cht_width * 0.4205;
 	
 			c3.generate({
 				bindto: '#chartC-2',
@@ -197,6 +206,7 @@ $(document).ready(function(){
 			});
 		}
 	});
+		return 0;
 		
 	}	
 
@@ -273,9 +283,12 @@ $(document).ready(function(){
 	
 		}
 	});
+		return 0;
 		
 	}	
 
+
+$(document).ready(function(){
 
 
 	//bind show_chart_btn
@@ -295,7 +308,6 @@ $(document).ready(function(){
 		}
 	});
 
-	//the setting of pie chart
 	var cht_width = '500px';	//default width
 	var arr = $('.post_title');
 	for(i = 0; i < arr.length; i++){
@@ -304,8 +316,9 @@ $(document).ready(function(){
 			break;	
 		}
 	}
-	var cht_height = cht_width * 0.4205;
 
+	//retrieve GS
+	Call_search_ajax();
 	//chartA
 	Call_retrieve_c3_chartA_ajax();
 	//chartB
@@ -314,7 +327,8 @@ $(document).ready(function(){
 	Call_retrieve_c3_chartC_ajax();
 	//chartD
 	Call_retrieve_c3_chartD_ajax();
-	
+
+	/*
 	//student
 	c3.generate({
 		bindto: '#cht_student',
@@ -384,5 +398,6 @@ $(document).ready(function(){
 		},
 		onresize: function(){}
 	});
+	*/
 });
 

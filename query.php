@@ -211,7 +211,9 @@
 						}
 						
 						//select row_number,and other field value
-						$sql = "SELECT * FROM security_contact ORDER by OID asc,person_type asc";
+						//$sql = "SELECT * FROM security_contact ORDER by OID asc,person_type asc";
+						// select security_contact from NCERT and Internal_Primary Unit from self-creation
+						$sql = "SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by OID asc,person_type asc";
 							
 						$result = mysqli_query($conn,$sql);
 						$rowcount = mysqli_num_rows($result);
@@ -276,7 +278,7 @@
 									echo "<li>電話:".$row['tel']."</li>";
 									echo "<li>分機:".$row['ext']."</li>";
 									echo "<li>傳真:".$row['fax']."</li>";
-									echo "<li>emai;:".$row['email']."</li>";
+									echo "<li>email:".$row['email']."</li>";
 									echo "</ol>";
 								echo "</div>";
 								echo "</div>";

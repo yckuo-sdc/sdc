@@ -1,10 +1,11 @@
 <?php
 	
 	header('Content-type: text/html; charset=utf-8');
+	include("../login/function.php");
 	//alert message
-	function phpAlert($msg) {
-		echo '<script type="text/javascript">alert("' . $msg . '")</script>';
-	}
+	//function phpAlert($msg) {
+	//	echo '<script type="text/javascript">alert("' . $msg . '")</script>';
+	//}
 
 	if(!empty($_GET['key']) && !empty($_GET['keyword_type']) && !empty($_GET['type']) ){
 		//過濾特殊字元(')
@@ -25,30 +26,34 @@
 				$table = "security_event";
 				$condition = $keyword_type." LIKE '%".$key."%'";
 			    $order = "ORDER by EventID DESC,OccurrenceTime DESC";	
-				$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
 				break;
 			case ($type == 'security_contact' and $keyword_type != 'all'):
 				$table = "security_contact";
 				$condition = $keyword_type." LIKE '%".$key."%'";
+				// select security_contact from NCERT and Internal_Primary Unit from self-creation
+				$table = "(SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra)A";
 			    $order = "ORDER by OID asc,person_type asc";	
-				$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
 				break;
 			case ($type == 'security_event' and $keyword_type == 'all'):
 				$table = "security_event";
-				//FullText Seach excpet the EventID,OccurrenceTime
-				//$condition = "MATCH(Status,EventTypeName,Location,IP,BlockReason,DeviceTypeName,DeviceOwnerName,DeviceOwnerPhone,AgencyName,UnitName,NetworkProcessContent,MaintainProcessContent,AntivirusProcessContent,UnprocessedReason,Remarks) AGAINST ('+".$key."' IN BOOLEAN MODE)";
-				$condition = "Status LIKE '%".$key."%' OR EventTypeName LIKE '%".$key."%' OR Location LIKE '%".$key."%' OR IP LIKE '%".$key."%' OR BlockReason LIKE '%".$key."%' OR DeviceTypeName LIKE '%".$key."%' OR DeviceOwnerName LIKE '%".$key."%' OR DeviceOwnerPhone LIKE '%".$key."%' OR AgencyName LIKE '%".$key."%' OR UnitName LIKE '%".$key."%' OR NetworkProcessContent LIKE '%".$key."%' OR MaintainProcessContent LIKE '%".$key."%' OR AntivirusProcessContent LIKE '%".$key."%' OR UnprocessedReason LIKE '%".$key."%' OR Remarks LIKE '%".$key."%'";
+				//FullText Seach
+				$condition = getFullTextSearchSQL($conn,$table,$key);
 			    $order = "ORDER by EventID DESC,OccurrenceTime DESC";	
-				$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
+				//$condition = "MATCH(Status,EventTypeName,Location,IP,BlockReason,DeviceTypeName,DeviceOwnerName,DeviceOwnerPhone,AgencyName,UnitName,NetworkProcessContent,MaintainProcessContent,AntivirusProcessContent,UnprocessedReason,Remarks) AGAINST ('+".$key."' IN BOOLEAN MODE)";
+				//$condition = "Status LIKE '%".$key."%' OR EventTypeName LIKE '%".$key."%' OR Location LIKE '%".$key."%' OR IP LIKE '%".$key."%' OR BlockReason LIKE '%".$key."%' OR DeviceTypeName LIKE '%".$key."%' OR DeviceOwnerName LIKE '%".$key."%' OR DeviceOwnerPhone LIKE '%".$key."%' OR AgencyName LIKE '%".$key."%' OR UnitName LIKE '%".$key."%' OR NetworkProcessContent LIKE '%".$key."%' OR MaintainProcessContent LIKE '%".$key."%' OR AntivirusProcessContent LIKE '%".$key."%' OR UnprocessedReason LIKE '%".$key."%' OR Remarks LIKE '%".$key."%'";
 				break;
 			case ($type == 'security_contact' and $keyword_type == 'all'):
 				$table = "security_contact";
-				$condition = "OID LIKE '%".$key."%' OR organization LIKE '%".$key."%' OR person_name LIKE '%".$key."%' OR unit LIKE '%".$key."%' OR position LIKE '%".$key."%' OR person_type LIKE '%".$key."%' OR address LIKE '%".$key."%' OR tel LIKE '%".$key."%' OR ext LIKE '%".$key."%' OR fax LIKE '%".$key."%' OR email LIKE '%".$key."%'";
-			    $order = "ORDER by OID asc,person_type asc";	
-				$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
+				//FullText Seach
+				$condition = getFullTextSearchSQL($conn,$table,$key);
+				// select security_contact from NCERT and Internal_Primary Unit from self-creation
+				$table = "(SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra)A";
+				$order = "ORDER by OID asc,person_type asc";
+				//$condition = "OID LIKE '%".$key."%' OR organization LIKE '%".$key."%' OR person_name LIKE '%".$key."%' OR unit LIKE '%".$key."%' OR position LIKE '%".$key."%' OR person_type LIKE '%".$key."%' OR address LIKE '%".$key."%' OR tel LIKE '%".$key."%' OR ext LIKE '%".$key."%' OR fax LIKE '%".$key."%' OR email LIKE '%".$key."%'";
 				break;
 		}
 		$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
+		//echo $sql."<br>";
 		$result = mysqli_query($conn,$sql);
 		if(!$result){
 			echo"Error:".mysqli_error($conn);
@@ -159,7 +164,7 @@
 								echo "<li>電話:".$row['tel']."</li>";
 								echo "<li>分機:".$row['ext']."</li>";
 								echo "<li>傳真:".$row['fax']."</li>";
-								echo "<li>emai;:".$row['email']."</li>";
+								echo "<li>email:".$row['email']."</li>";
 								echo "</ol>";
 							echo "</div>";
 						echo "</div>";

@@ -34,6 +34,8 @@
 <script src="js/add.js"></script>
 <script src='js/show_chart.js'></script>
 
+<!-- add php function-->
+<?php //include("login/function.php"); ?>
 <!--[if IE 6]>
 <link href="default_ie6.css" rel="stylesheet" type="text/css" />
 <![endif]-->
@@ -97,7 +99,7 @@
 			<li><a class="6" accesskey="6" title="" href="#">相關連結</a> 
 				<ul>
 					<li><a href="http://vision.tainan.gov.tw" target="_blank">推動友善資訊服務平台</a></li>
-					<li><a href="http://10.7.102.4/tndev/" target="_blank">MIS網管系統(芳彬)</a></li>
+					<li><a href="https://10.7.102.4/tndev/" target="_blank">MIS網管系統(芳彬)</a></li>
 					<li><a href="https://sdc-mrbs.tainan.gov.tw/" target="_blank">SDC會議室預約系統</a></li>
 					<li><a href="https://sdc-iss.tainan.gov.tw:4000/" target="_blank">OpenVas(開源漏洞掃描工具)</a></li>
 				</ul>

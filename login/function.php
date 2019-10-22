@@ -50,6 +50,25 @@
 		echo '<script type="text/javascript">alert("' . $msg . '")</script>';
 	}
 
+	function getFullTextSearchSQL($conn,$table,$key) {
+		$sql = "SELECT column_name FROM information_schema.columns WHERE table_name = '".$table."'";
+		$result = mysqli_query($conn,$sql);
+		$rowcount = mysqli_num_rows($result);
+		$result_sql = "";
+		$count = 0;
+
+		while($row = mysqli_fetch_assoc($result)){
+			if (++$count == $rowcount) {
+				//last row
+				$result_sql = $result_sql." ".$row['column_name']." LIKE '%".$key."%'";
+			} else {
+				//not last row
+				$result_sql = $result_sql." ".$row['column_name']." LIKE '%".$key."%' OR";
+			}
+		}
+		return $result_sql;
+	}
+
 
 
 ?>
