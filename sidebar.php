@@ -22,8 +22,9 @@
 				<li>
 					<h2>ISMS資安查詢</h2>
 					<ul>
-						<li class="active title"><a>資安事件查詢</a></li>
-						<li class="title"><a>資安聯絡人</a></li>
+						<li class="active title"><a>府內資安事件查詢</a></li>
+						<li class="title"><a>NCERT資安通報查詢</a></li>
+						<li class="title"><a>NCERT資安聯絡人</a></li>
 						<li class="title"><a>Retrieve GS & Ncert</a></li>
 					</ul>
 				</li>

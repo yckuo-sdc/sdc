@@ -303,7 +303,9 @@ th
  
 }
 
-
+.post .post_cell button{
+   margin: 0.25em 0.25em 0em 0em!important;
+}
 
 
 
@@ -518,7 +520,7 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 	padding: 3vw;
 	border-radius: 1vw;
 }
-.ou_block > .description.show{
+.ou_block > .description.show,.post.ldap .description{
 	display:block;
 	word-break: break-word;
     overflow-x: hidden;

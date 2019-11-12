@@ -75,9 +75,10 @@
 			</li>
 			<li><a class="3" accesskey="3" title="" href="index.php?mainpage=query">ISMS資安查詢</a>
 				<ul>
-					<li><a href="index.php?mainpage=query&subpage=1">資安事件查詢</a></li>
-					<li><a href="index.php?mainpage=query&subpage=2">資安聯絡人</a></li>
-					<li><a href="index.php?mainpage=query&subpage=3">Retrieve GS & Ncert</a></li>
+					<li><a href="index.php?mainpage=query&subpage=1">府內資安事件查詢</a></li>
+					<li><a href="index.php?mainpage=query&subpage=2">NCERT資安通報查詢</a></li>
+					<li><a href="index.php?mainpage=query&subpage=3">NCERT資安聯絡人</a></li>
+					<li><a href="index.php?mainpage=query&subpage=4">Retrieve GS & Ncert</a></li>
 				</ul>
 			</li>
 			<li><a class="4" accesskey="4" title="" href="index.php?mainpage=vulnerability">漏洞掃描</a>

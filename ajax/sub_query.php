@@ -27,20 +27,29 @@
 				$condition = $keyword_type." LIKE '%".$key."%'";
 			    $order = "ORDER by EventID DESC,OccurrenceTime DESC";	
 				break;
+			case ($type == 'tainangov_security_Incident' and $keyword_type != 'all'):
+				$table = "tainangov_security_Incident";
+				$condition = $keyword_type." LIKE '%".$key."%'";
+			    $order = "ORDER by IncidentID DESC,OccurrenceTime DESC";	
+				break;
 			case ($type == 'security_contact' and $keyword_type != 'all'):
 				$table = "security_contact";
-				$condition = $keyword_type." LIKE '%".$key."%'";
-				// select security_contact from NCERT and Internal_Primary Unit from self-creation
-				$table = "(SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra)A";
-			    $order = "ORDER by OID asc,person_type asc";	
+				$condition = $keyword_type." like '%".$key."%'";
+				// select security_contact from ncert and internal_primary unit from self-creation
+				$table = "(select * from security_contact union select * from security_contact_extra)a";
+			    $order = "order by oid asc,person_type asc";	
 				break;
 			case ($type == 'security_event' and $keyword_type == 'all'):
 				$table = "security_event";
-				//FullText Seach
-				$condition = getFullTextSearchSQL($conn,$table,$key);
-			    $order = "ORDER by EventID DESC,OccurrenceTime DESC";	
-				//$condition = "MATCH(Status,EventTypeName,Location,IP,BlockReason,DeviceTypeName,DeviceOwnerName,DeviceOwnerPhone,AgencyName,UnitName,NetworkProcessContent,MaintainProcessContent,AntivirusProcessContent,UnprocessedReason,Remarks) AGAINST ('+".$key."' IN BOOLEAN MODE)";
-				//$condition = "Status LIKE '%".$key."%' OR EventTypeName LIKE '%".$key."%' OR Location LIKE '%".$key."%' OR IP LIKE '%".$key."%' OR BlockReason LIKE '%".$key."%' OR DeviceTypeName LIKE '%".$key."%' OR DeviceOwnerName LIKE '%".$key."%' OR DeviceOwnerPhone LIKE '%".$key."%' OR AgencyName LIKE '%".$key."%' OR UnitName LIKE '%".$key."%' OR NetworkProcessContent LIKE '%".$key."%' OR MaintainProcessContent LIKE '%".$key."%' OR AntivirusProcessContent LIKE '%".$key."%' OR UnprocessedReason LIKE '%".$key."%' OR Remarks LIKE '%".$key."%'";
+				//fulltext seach
+				$condition = getfulltextsearchsql($conn,$table,$key);
+			    $order = "order by eventid desc,occurrencetime desc";	
+				break;
+			case ($type == 'tainangov_security_Incident' and $keyword_type == 'all'):
+				$table = "tainangov_security_Incident";
+				//fulltext seach
+				$condition = getfulltextsearchsql($conn,$table,$key);
+			    $order = "order by IncidentID desc,occurrencetime desc";	
 				break;
 			case ($type == 'security_contact' and $keyword_type == 'all'):
 				$table = "security_contact";
@@ -49,7 +58,6 @@
 				// select security_contact from NCERT and Internal_Primary Unit from self-creation
 				$table = "(SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra)A";
 				$order = "ORDER by OID asc,person_type asc";
-				//$condition = "OID LIKE '%".$key."%' OR organization LIKE '%".$key."%' OR person_name LIKE '%".$key."%' OR unit LIKE '%".$key."%' OR position LIKE '%".$key."%' OR person_type LIKE '%".$key."%' OR address LIKE '%".$key."%' OR tel LIKE '%".$key."%' OR ext LIKE '%".$key."%' OR fax LIKE '%".$key."%' OR email LIKE '%".$key."%'";
 				break;
 		}
 		$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
@@ -123,6 +131,73 @@
 								echo "</div>";
 							echo "</div>";
 
+						}
+					echo "</div>";
+					break;
+				case "tainangov_security_Incident": 
+					echo "<div class='ui relaxed divided list'>";
+						echo "<div class='item'>";
+							echo "<div class='content'>";
+								echo "<a class='header'>";
+									echo "發現日期&nbsp&nbsp";
+									echo "結案狀態&nbsp&nbsp";
+									echo "影響等級";
+									echo "資安事件類型&nbsp&nbsp";
+									echo "對外IP(URL)&nbsp&nbsp";
+									echo "機關&nbsp&nbsp";
+								echo "</a>";
+							echo "</div>";
+						echo "</div>";
+
+						while($row = mysqli_fetch_assoc($result)) {
+							echo "<div class='item'>";
+							echo "<div class='content'>";
+								echo "<a>";
+                        		echo date_format(new DateTime($row['OccurrenceTime']),'Y-m-d')."&nbsp&nbsp";
+								echo $row['Status']."&nbsp&nbsp";
+								echo "<span style='background:#DDDDDD'>".$row['ImpactLevel']."</span>&nbsp&nbsp";
+								echo $row['Classification']."&nbsp&nbsp";
+								echo "<span style='background:#fde087'>".$row['PublicIP']."</span>&nbsp&nbsp";
+								echo $row['OrganizationName'];
+								echo "<i class='angle double down icon'></i>";
+								echo "</a>";
+								
+								echo "<div class='description'>";
+									echo "<ol>";
+									echo "<li>編號:".$row['IncidentID']."</li>";
+									echo "<li>結案狀態:".$row['Status']."</li>";
+									echo "<li>事件編號:".$row['NccstID']."</li>";	
+									echo "<li>行政院攻防演練:".$row['NccstPT']."</li>";
+									echo "<li>攻防演練衝擊性:".$row['NccstPTImpact']."</li>";
+									echo "<li>機關名稱:".$row['OrganizationName']."</li>";
+									echo "<li>聯絡人:".$row['ContactPerson']."</li>";
+									echo "<li>電話:".$row['Tel']."</li>";
+									echo "<li>電子郵件:".$row['Email']."</li>";
+									echo "<li>資安維護廠商:".$row['SponsorName']."</li>";
+									echo "<li>對外IP或網址:".$row['PublicIP']."</li>";
+									echo "<li>使用用途:".$row['DeviceUsage']."</li>";
+									echo "<li>作業系統:".$row['OperatingSystem']."</li>";
+									echo "<li>入侵網址:".$row['IntrusionURL']."</li>";
+									echo "<li>影響等級:".$row['ImpactLevel']."</li>";
+									echo "<li>事故分類:".$row['Classification']."</li>";
+									echo "<li>事故說明:".$row['Explaination']."</li>";
+									echo "<li>影響評估:".$row['Evaluation']."</li>";
+									echo "<li>應變措施:".$row['Response']."</li>";
+									echo "<li>解決辦法/結報內容:".$row['Solution']."</li>";
+									echo "<li>發生時間:".$row['OccurrenceTime']."</li>";
+									echo "<li>通報時間:".$row['InformTime']."</li>";	
+									echo "<li>修復時間:".$row['RepairTime']."</li>";
+									echo "<li>審核機關審核時間:".$row['TainanGovVerificationTime']."</li>";
+									echo "<li>技服中心審核時間:".$row['NccstVerificationTime']."</li>";
+									echo "<li>通報結報時間:".$row['FinishTime']."</li>";	
+									echo "<li>通報執行時間(時:分):".$row['InformExecutionTime']."</li>";
+									echo "<li>結案執行時間(時:分):".$row['FinishExecutionTime']."</li>";
+									echo "<li>中華SOC複測結果:".$row['SOCConfirmation']."</li>";
+									echo "<li>改善計畫提報日期:".$row['ImprovementPlanTime']."</li>";	
+									echo "</ol>";
+								echo "</div>";
+								echo "</div>";
+							echo "</div>";
 						}
 					echo "</div>";
 					break;

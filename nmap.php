@@ -74,7 +74,7 @@
 				<form class="ui form" action="javascript:void(0)">
  				<!--<div class="fields">-->
 			    	<div class="field">
-						<label>CN(=Login account)</label>
+						<label>CN(=Login account or PC name)</label>
 						<div class="ui input">
 							<?php $target = "yckuo";?>
 							<input type="text" id="target" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
