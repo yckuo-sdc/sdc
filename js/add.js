@@ -1,3 +1,13 @@
+function uncheck() {
+	document.getElementById("new_password").disabled	 = true;
+	document.getElementById("confirm_password").disabled = true;
+}
+
+function check() {
+	document.getElementById("new_password").disabled 		= false;
+	document.getElementById("confirm_password").disabled 	= false;
+}
+
 function ldap_edit() {
 	console.log('ldap edit');
 	var selector = ".post.ldap ";

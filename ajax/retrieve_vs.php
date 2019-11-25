@@ -6,10 +6,13 @@
 	$nowTime 	= date("Y-m-d H:i:s");
 	$host_type 	= "ipscanResult";
 	$web_type 	= "urlscanResult";
+	$target_type 	= "scanTarget";
 	$host_auth	= hash("sha256",$host_type.$chtsecurity_key.$nowTime);
 	$web_auth	= hash("sha256",$web_type.$chtsecurity_key.$nowTime);
+	$target_auth	= hash("sha256",$target_type.$chtsecurity_key.$nowTime);
 	$host_url	= "https://tainan-vsms.chtsecurity.com/cgi-bin/api/portal.pl?type=".$host_type."&nowTime=".$nowTime."&auth=".$host_auth;
 	$web_url	= "https://tainan-vsms.chtsecurity.com/cgi-bin/api/portal.pl?type=".$web_type."&nowTime=".$nowTime."&auth=".$web_auth;
+	$target_url	= "https://tainan-vsms.chtsecurity.com/cgi-bin/api/portal.pl?type=".$target_type."&nowTime=".$nowTime."&auth=".$target_auth;
 	//replace all instances of spaces in urls with %20
 	$preg_url = preg_replace("/ /", "%20", $host_url);
 	$json = file_get_contents($preg_url);		
@@ -85,6 +88,36 @@
 		}
 
 		echo "The ".$count." records have been inserted or updated into the urlscanResult \n\r<br>";
+		echo "</p>"; 
+	}
+
+	$preg_url = preg_replace("/ /", "%20", $target_url);
+	$json = file_get_contents($preg_url);		
+	if(($data = json_decode($json,true)) == true){
+		$count = 0;	
+		$sql = "TRUNCATE TABLE scanTarget";
+		$conn->query($sql); 
+		foreach($data as $scanTarget){
+			$scanTarget['oid']= mysqli_real_escape_string($conn,$scanTarget['oid']);
+			$scanTarget['ou']= mysqli_real_escape_string($conn,$scanTarget['ou']);
+			$scanTarget['system_name']= mysqli_real_escape_string($conn,$scanTarget['system_name']);
+			$scanTarget['ip']= mysqli_real_escape_string($conn,$scanTarget['ip']);
+			$scanTarget['domain']= mysqli_real_escape_string($conn,$scanTarget['domain']);
+			$scanTarget['manager']= mysqli_real_escape_string($conn,$scanTarget['manager']);
+			$scanTarget['email']= mysqli_real_escape_string($conn,$scanTarget['email']);
+			// INSERT to table ON DUPLICATE KEY UPDATE data
+			$sql = "insert into scanTarget(oid,ou,ip,system_name,domain,manager,email) values('".$scanTarget['oid']."','".$scanTarget['ou']."','".$scanTarget['ip']."','".$scanTarget['system_name']."','".$scanTarget['domain']."','".$scanTarget['manager']."','".$scanTarget['email']."')
+			ON DUPLICATE KEY UPDATE oid = '".$scanTarget['oid']."',ou = '".$scanTarget['ou']."',ip = '".$scanTarget['ip']."',system_name = '".$scanTarget['system_name']."',domain = '".$scanTarget['domain']."',manager = '".$scanTarget['manager']."',email = '".$scanTarget['email']."' ";
+			if ($conn->query($sql) == TRUE) {
+				//echo "此筆資料已被上傳成功\n\r";									
+				//echo $sql."<br>";
+				$count = $count + 1;							
+			} else {
+				echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
+			}
+		}
+
+		echo "The ".$count." records have been inserted or updated into the scanTarget \n\r<br>";
 		echo "</p>"; 
 	}
 	$conn->close();	
