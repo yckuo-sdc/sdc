@@ -113,23 +113,9 @@
 	height:100px;
 }
 
-/*english*/
-#banner-font-en
-{
-	cursor:pointer;
-	float: left;
-	background-image:url("images/font_en.png");
-	background-size: 100% 100px;
-	width:40%;
-	height:100px;
-}
-
-
 #banner-subtitle
 {
 	float: right;
-	/*background-color:#2E75B7;*//*blue*/
-	background-color: #117692;
 	width:60%;
 	height: 100px;
 }
@@ -209,6 +195,10 @@
 	background-color:#fff;
 	border-right:0;
 	border-left: 0;
+}
+
+.image{
+	width:100%;
 }
 
 .post .ou_block{
@@ -302,11 +292,6 @@ th
 #content > .show > .post > table > td:hover{
  
 }
-
-.post .post_cell button{
-   margin: 0.25em 0.25em 0em 0em!important;
-}
-
 
 
 .graduate_img_1
@@ -490,6 +475,9 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 }
 .ui.list > .item .content{
 	line-height: normal;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 .ui.list > .item .content .description{
 	display:none;
@@ -657,6 +645,7 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 	}
 
 	.image{
+		width:100%;
 		height:50vh !important;
 	}
 
@@ -691,6 +680,9 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 	}
 	.ui.list > .item .content .description.show{
 		font-size:4vmin;
+	}
+	.ui.list > .item .content{
+		white-space: normal;
 	}
 	.ui.pagination.menu{
 	     display:none;

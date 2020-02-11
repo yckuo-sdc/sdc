@@ -15,19 +15,28 @@
 		if($ldapconn){
 			//bind user
 			$ldap_bd = ldap_bind($ldapconn,$account."@".$host_dn,$password);
-			$ou = ["TainanLocalUser","TainanComputer"];
+			$ou = ["TainanLocalUser","TainanComputer","TainanComputer"];
+			$keyword_type = ["CN","CN","objectClass"];
 			//Search CN Object From LocalUser and Local Computer
 			for($k=0;$k<count($ou);$k++){
-				$result = @ldap_search($ldapconn,"ou=".$ou[$k].",dc=tainan,dc=gov,dc=tw","(CN=".$target.")") or die ("Error in query");
+				$result = @ldap_search($ldapconn,"ou=".$ou[$k].",dc=tainan,dc=gov,dc=tw","(".$keyword_type[$k]."=".$target."*)") or die ("Error in query");
 				$data = @ldap_get_entries($ldapconn,$result);
 				echo $data["count"]. " entries returned from ".$ou[$k]."<br><br>\n\n";
 				if($data["count"]!=0){
+					if($k==2){
+						echo "<div class='description'>";
+							echo "<ol>";
+					}
 					for($i=0; $i<$data["count"];$i++){
+						if($k==2){
+							if(@isset($data[$i]['cn'][0]))	echo "<li>".$data[$i]['cn'][0];
+							if(@isset($data[$i]['description'][0]))	echo " | ".$data[$i]['description'][0]."</li>";
+						}else{
 						echo "<form id='form-ldap' class='ui form' action='javascript:void(0)'>";
 						echo "<h4 class='ui dividing header'>Entry Information</h4>";
 						echo "<div class='inline fields'>";
 							echo "<div class='twelve wide field'>";
-							echo "Setting";
+							echo "Setting(".$data[$i]['cn'][0].")";
 							echo "</div>";
 							echo "<div class='two wide field'>";
 								echo "<button class='ui button' onclick='ldap_clear()'>Cancel</button>";
@@ -42,13 +51,13 @@
 								echo "<label for='fruit'>Change password:</label>";
 								echo "<div class='field'>";
 									echo "<div class='ui radio checkbox'>";
-									echo  "<input type='radio' name='pwd_changed' value='no' onchange='uncheck()' tabindex='0' checked>";
+									echo  "<input type='radio' name='pwd_changed' value='no' onchange='uncheck('new_password')' tabindex='0' checked>";
 									echo  "<label>No</label>";
 									echo  "</div>";
 								echo  "</div>";
 								echo "<div class='field'>";
 									echo "<div class='ui radio checkbox'>";
-									echo  "<input type='radio' name='pwd_changed' value='yes' onchange='check()' tabindex='0'>";
+									echo  "<input type='radio' name='pwd_changed' value='yes' onchange='check('new_password')' tabindex='0'>";
 									echo  "<label>Yes</label>";
 									echo  "</div>";
 								echo  "</div>";
@@ -63,7 +72,7 @@
 									echo "<input type='text' id='confirm_password' name='confirm_password' value='' placeholder='confirm_password' disabled>";
 								echo "</div></li>";
 							echo "</li>";
-						for ($j=0;$j<=$data[$i]["count"];$j++){
+						for ($j=0;$j<$data[$i]["count"];$j++){
 							if(@isset($data[$i][$j][0])) {
 								if($data[$i][$j] == "displayname" || $data[$i][$j] == "title" || $data[$i][$j] == "description" || $data[$i][$j] == "telephonenumber" || $data[$i][$j] == "mail" || $data[$i][$j] == "physicaldeliveryofficename" ){
 									echo "<li>".$data[$i][$j].": ";
@@ -78,10 +87,14 @@
 											//echo $str_sec[$o]."(";
 											$result_ou = ldap_search($ldapconn,"ou=".$ou[$k].",dc=tainan,dc=gov,dc=tw","(".$str_sec[$o].")") or die ("Error in query");
 											$data_ou = ldap_get_entries($ldapconn,$result_ou);
-											echo $data_ou[0]["description"][0]."/";
+											if(isset($data_ou[0]['description'][0]))	echo $data_ou[0]["description"][0]."/";
 										}
 									}
 									echo "<input type='hidden' name='".$data[$i][$j]."' value='".$data[$i][$data[$i][$j]][0]."' placeholder='".$data[$i][$data[$i][$j]][0]."'>";
+								}elseif($data[$i][$j] == "dnshostname"){
+									echo "<li>".$data[$i][$j].": ".$data[$i][$data[$i][$j]][0]." | ";
+									$output = shell_exec("/usr/bin/dig +short ".$data[$i][$data[$i][$j]][0]);
+									echo "IP: ".$output."</li>";
 								}else{
 									echo "<li>".$data[$i][$j].": ".$data[$i][$data[$i][$j]][0]."</li>";
 								}
@@ -91,6 +104,10 @@
 						echo "</div>";
 					echo "</form>";
 					
+						}
+					}	
+					if($k==2){
+						echo "</ol></div>";
 					}
 				}
 			}

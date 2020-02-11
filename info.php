@@ -94,6 +94,12 @@
 					<div id="chartA" class="chart"></div>	
 				</div>
 			</div>
+			<div class="post">
+				<div class="post_title">資安事件SOP</div>
+				<div class="cell">
+					<a href="images/sop.png" target="_blank"><img class="image" src="images/sop.png"></a>
+				</div>
+			</div>
 		</div>
 		<div class="sub-content">
 			<div class="post">
@@ -159,7 +165,51 @@
 				<div class="post_title">VUL Bar Chart</div>
 					<div class="post_cell">
 						臺南市政府弱掃平台各單位漏洞數量<br>
-						<div id="chartD" class="chart"></div>	
+						<!-- <div id="chartD" class="chart"></div> -->
+						<div class="post_table">
+						<?php //select row_number,and other field value
+                    	require("mysql_connect.inc.php");
+						$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as completion FROM V_VUL_tableau GROUP BY ou ORDER BY completion desc";
+						$result 	= mysqli_query($conn,$sql);
+						$rowcount	= mysqli_num_rows($result);
+						?>
+						<table>
+							<thead>
+								<tr>
+									<th>OU</th>
+									<th>Total-VUL</th>
+									<th>Fixed-VUL</th>
+									<th>Completion</th>
+								</tr>
+							</thead>
+							<tbody>
+							<?php
+							while($row = mysqli_fetch_assoc($result)) {
+							    //hide the 區公所 ou
+								if(strchr($row['ou'],"區公所") == "區公所") echo "<tr style='color:#BBBBBB'>";
+								else echo "<tr>";
+									echo "<td data-label='OU'>".$row['ou']."</td>";
+									echo "<td data-label='Total-VUL'>".$row['total_VUL']."</td>";
+									echo "<td data-label='Fixed-VUL'>".$row['fixed_VUL']."</td>";
+									echo "<td data-label='Completion'>".round($row['completion'],2)."%</td>";
+								echo "</tr>";
+							}
+							$sql = "SELECT sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as completion FROM V_VUL_tableau";
+							$result 	= mysqli_query($conn,$sql);
+							$rowcount	= mysqli_num_rows($result);
+							while($row = mysqli_fetch_assoc($result)) {
+								 echo "<tr style='color:#FF0000'>";
+									echo "<td data-label='OU'>total</td>";
+									echo "<td data-label='Total-VUL'>".$row['total_VUL']."</td>";
+									echo "<td data-label='Fixed-VUL'>".$row['fixed_VUL']."</td>";
+									echo "<td data-label='Completion'>".round($row['completion'],2)."%</td>";
+								echo "</tr>";
+							}
+							$conn->close();
+							?>
+							</tbody>
+						</table>	
+						</div>
 					</div>
 			</div>
 		</div>

@@ -17,6 +17,5 @@
 			echo "</VUL>";
 		}
 	echo "</data>";
-
 	$conn->close();
 ?>

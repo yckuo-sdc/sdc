@@ -2,10 +2,6 @@
 	
 	header('Content-type: text/html; charset=utf-8');
 	include("../login/function.php");
-	//alert message
-	//function phpAlert($msg) {
-	//	echo '<script type="text/javascript">alert("' . $msg . '")</script>';
-	//}
 
 	if(!empty($_GET['key']) && !empty($_GET['keyword_type'])){
 		//過濾特殊字元(')
@@ -14,6 +10,8 @@
 		$type 		   = $_GET['type'];
 		$unfinished    = $_GET['unfinished'];
 		$finished 	   = $_GET['finished'];
+		if (!isset($_GET['page']))	$pages = 1; 
+		else						$pages = $_GET['page']; 
 
 		//connect database
         require("../mysql_connect.inc.php");
@@ -26,6 +24,9 @@
 
 		//ipscanResult or urlscanResult
 		switch($type){
+			case "ip_and_url_scanResult":
+				$table = "V_ip_and_url_scanResult";
+				break;
 			case "ipscanResult":
 				$table = "ipscanResult";
 				break;
@@ -52,7 +53,6 @@
 		if($keyword_type == "all"){
 			//FullText Seach
 			$condition = "(".getFullTextSearchSQL($conn,$table,$key).") ".$condition; 
-			//$sql="SELECT * FROM ".$table." WHERE vitem_id LIKE '%".$key."%' OR OID LIKE '%".$key."%' OR ou LIKE '%".$key."%' OR status LIKE '%".$key."%' OR ip LIKE '%".$key."%' OR system_name LIKE '%".$key."%' OR flow_id LIKE '%".$key."%' OR scan_no LIKE '%".$key."%' OR manager LIKE '%".$key."%' OR email LIKE '%".$key."%' OR vitem_name LIKE '%".$key."%' OR url LIKE '%".$key."%' OR category LIKE '%".$key."%' OR severity LIKE '%".$key."%' OR scan_date LIKE '%".$key."%' ORDER by scan_date DESC";
 		}else{
 			$condition = $keyword_type." LIKE '%".$key."%' ".$condition;
 		}
@@ -70,11 +70,32 @@
 		}
 		else{
 			echo "該分類共搜尋到".$rowcount."筆資料！";
+			//record number on each page & maxumun pages on pagination			
+			$per = 10; 	
+			$max_pages = 10;
+			list($sql_subpage,$prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages) = getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages);
+			$result = mysqli_query($conn,$sql_subpage);
+			if($table=="V_ip_and_url_scanResult"){
+				/*$condition_host = "type LIKE '主機弱點' AND ".$condition;
+				$condition_url 	= "type LIKE '網站弱點' AND ".$condition;
+				$sql_host 		= "SELECT * FROM ".$table." WHERE ".$condition_host." ".$order;
+				$sql_url 		= "SELECT * FROM ".$table." WHERE ".$condition_url." ".$order;
+				$result_host 	= mysqli_query($conn,$sql_host);
+				$result_url 	= mysqli_query($conn,$sql_url);
+				$rowcount_host  = mysqli_num_rows($result_host);
+				$rowcount_url  = mysqli_num_rows($result_url);
+				echo "該分類共搜尋到".$rowcount_host."筆資料！";
+				echo "該分類共搜尋到".$rowcount_url."筆資料！";
+			 */}
 				echo "<div class='ui relaxed divided list'>";
 					echo "<div class='item'>";
 						echo "<div class='content'>";
 							echo "<a class='header'>";
 							//echo "序號&nbsp";
+							if($table=="V_ip_and_url_scanResult"){
+								echo "弱點類別&nbsp&nbsp";
+							}
+							echo "流水號&nbsp&nbsp";
 							echo "單位&nbsp&nbsp";
 							echo "系統名稱&nbsp&nbsp";
 							echo "處理狀態&nbsp&nbsp";
@@ -88,6 +109,10 @@
 				echo "<div class='item'>";
 				echo "<div class='content'>";
 					echo "<a>";
+					if($table=="V_ip_and_url_scanResult"){
+						echo "<span style='background:#f3c4c4'>".$row['type']."</span>&nbsp&nbsp";
+					}
+					echo $row['flow_id']."&nbsp&nbsp";
 					echo str_replace("/臺南市政府/","",$row['ou'])."&nbsp&nbsp";
 					echo "<span style='background:#fde087'>".$row['system_name']."</span>&nbsp&nbsp";
 					echo $row['status']."&nbsp&nbsp";
@@ -98,8 +123,11 @@
 					echo "<i class='angle double down icon'></i>";
 					echo "</a>";
 					echo "<div class='description'>";
-					 
 						echo "<ol>";
+						if($table=="V_ip_and_url_scanResult"){
+							echo "<li>弱點類別:".$row['type']."</li>";
+						}
+						echo "<li>流水號:".$row['flow_id']."</li>";
 						echo "<li>弱點序號:".$row['vitem_id']."</li>";
 						echo "<li>弱點名稱:".$row['vitem_name']."</li>";
 						echo "<li>OID:".$row['OID']."</li>";
@@ -110,7 +138,7 @@
 						echo "<li>管理員:".$row['manager']."</li>";
 						echo "<li>Email:".$row['email']."</li>";
 						//urlscanResult's extra field 
-						if($table=="urlscanResult"){
+						if($table=="urlscanResult" || $table=="V_ip_and_url_scanResult"){
 							echo "<li>影響網址:<a href='".$row['affect_url']."' target='_blank'>".$row['affect_url']."</a></li>";
 						}
 						echo "<li>弱點詳細資訊:<a href='".$row['url']."' target='_blank'>".$row['url']."</a></li>";
@@ -125,7 +153,28 @@
 				echo "</div>";
 			}
 			echo "</div>";
+			//The href-link of bottom pages
+			echo "<div class='ui pagination menu'>";	
+			echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' >首頁</a>";
+			echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' > ← </a>";
+			for ($j = $lower_bound; $j <= $upper_bound ;$j++){
+				if($j == $pages){
+					echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>".$j."</a>";
+				}else{
+					echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>".$j."</a>";
+				}
+			}
+			echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' > → </a>";		
+			//last page
+			echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>末頁</a>";
+			echo "</div>";
 
+			//The mobile href-link of bottom pages
+			echo "<div class='ui pagination menu mobile'>";	
+			echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'> ← </a>";
+			echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>(".$pages."/".$Totalpages.")</a>";
+			echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'> → </a>";		
+			echo "</div>";
 		}
 		
 		$conn->close();

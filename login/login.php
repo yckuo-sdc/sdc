@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=big5" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>臺南市政府 智慧發展中心</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
@@ -18,22 +19,10 @@
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
-<!-- node_modules-->
-<script src="node_modules/d3js/d3.min.js" charset="utf-8"></script>
-<link href="node_modules/c3js/c3.css" rel="stylesheet" type="text/css">
-<script src="node_modules/c3js/c3.min.js"></script>
 <!-- semantic ui -->
 <link rel="stylesheet" type="text/css" href="../node_modules/semantic/semantic.css">
 <script src="../node_modules/semantic/semantic.js"></script>
-<!-- template css-->
-<link href="css/default.css" rel="stylesheet" type="text/css" media="all" />
-<!-- add my CSS-->
-<link href="css/add.css" rel="stylesheet"/>
-<link href="css/subpage.css" rel="stylesheet"/>
 
-<!-- add my JS-->
-<script src="js/add.js"></script>
-<script src='js/show_chart.js'></script>
 
 <!--[if IE 6]>
 <link href="default_ie6.css" rel="stylesheet" type="text/css" />
@@ -83,13 +72,13 @@
 			<div class="field">
 			  <div class="ui left icon input">
 				<i class="user icon"></i>
-				<input type="text" name="account" placeholder="AD acoount">
+				<input type="text" name="account" placeholder="AD acoount" required>
 			  </div>
 			</div>
 			<div class="field">
 			  <div class="ui left icon input">
 				<i class="lock icon"></i>
-				<input type="password" name="password" placeholder="Password">
+				<input type="password" name="password" placeholder="Password" required>
 			  </div>
 			</div>
 			<!--<div class="ui fluid large teal submit button">-->

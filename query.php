@@ -38,7 +38,29 @@
                 <?php //select data form database
                     require("mysql_connect.inc.php");
                     //------------pagination----------//
-                    $pages=" ";
+					/*$table = "security_event";
+					$condition = "1";
+					$order = "ORDER by EventID desc,OccurrenceTime desc"; 
+				
+					$loop_header =  "<div class='ui relaxed divided list'>";
+					$loop_header = $loop_header."<div class='item'>";
+					$loop_header = $loop_header."<div class='content'>";
+					$loop_header = $loop_header."<a class='header'>";
+				   	$loop_header = $loop_header."發現日期&nbsp&nbsp";
+					$loop_header = $loop_header."結案狀態&nbsp&nbsp";
+					$loop_header = $loop_header."資安事件類型&nbsp&nbsp";
+                   	$loop_header = $loop_header."位置&nbsp&nbsp";
+					$loop_header = $loop_header."設備IP&nbsp&nbsp";
+					$loop_header = $loop_header."姓名&nbsp&nbsp";
+					$loop_header = $loop_header."分機&nbsp&nbsp";
+					$loop_header = $loop_header."</a>";
+					$loop_header = $loop_header."</div>";
+					$loop_header = $loop_header."</div>";
+
+					include("pagination.php");
+					 */
+
+					$pages=" ";
                     if (!isset($_GET['page'])){ 
                         $pages = 1; 
                     }else{
@@ -47,25 +69,17 @@
                     
                     //select row_number,and other field value
                     $sql = "SELECT * FROM security_event ORDER by EventID desc,OccurrenceTime desc";
-                        
                     $result = mysqli_query($conn,$sql);
                     $rowcount = mysqli_num_rows($result);
-                                
-                    $per = 10; 		
+
+					//record number on each page			
+					$per = 10; 	
+					// maximum pages on pagination	
                     $max_pages = 10;
-                    $Totalpages = ceil($rowcount / $per); 
-                    $lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
-                    $upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
-                    $start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
-                    if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
-                    elseif($pages == $Totalpages)	$offset = $rowcount - $start;
-                    else							$offset = $per;
-                                
-                    $prev_page = ($pages > 1) ? $pages -1 : 1;
-                    $next_page = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
-                    $sql_subpage = $sql." limit ".$start.",".$offset;
-                                
-                    $result = mysqli_query($conn,$sql_subpage);
+
+					list($sql_subpage,$prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages) = getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages);
+
+					$result = mysqli_query($conn,$sql_subpage);
                                         
                     if($rowcount==0){
                         echo "查無此筆紀錄";
@@ -123,6 +137,7 @@
 								echo "<li>處理日期(三佑科技):".$row['MaintainProcessContent']."</li>";
 								echo "<li>處理日期(京稘或中華SOC):".$row['AntivirusProcessContent']."</li>";
 								echo "<li>未能處理之原因及因應方式:".$row['UnprocessedReason']."</li>";
+								echo "<li>備註:".$row['Remarks']."</li>";
 								echo "</ol>";
 							echo "</div>";
 							echo "</div>";
@@ -158,7 +173,6 @@
 					}
 
 					
-
                     $conn->close();
                         
                 ?>
@@ -459,25 +473,25 @@
 												
 						//The href-link of bottom pages
 						echo "<div class='ui pagination menu'>";	
-						echo "<a class='item test' href='?mainpage=query&subpage=2&page=1'>首頁</a>";
-						echo "<a class='item test' href='?mainpage=query&subpage=2&page=".$prev_page."'> ← </a>";
+						echo "<a class='item test' href='?mainpage=query&subpage=3&page=1'>首頁</a>";
+						echo "<a class='item test' href='?mainpage=query&subpage=3&page=".$prev_page."'> ← </a>";
 						for ($j = $lower_bound; $j <= $upper_bound ;$j++){
 							if($j == $pages){
-								echo"<a class='active item bold' href='?mainpage=query&subpage=2&page=".$j."'>".$j."</a>";
+								echo"<a class='active item bold' href='?mainpage=query&subpage=3&page=".$j."'>".$j."</a>";
 							}else{
-								echo"<a class='item test' href='?mainpage=query&subpage=2&page=".$j."'>".$j."</a>";
+								echo"<a class='item test' href='?mainpage=query&subpage=3&page=".$j."'>".$j."</a>";
 							}
 						}
-						echo"<a class='item test' href='?mainpage=query&subpage=2&page=".$next_page."'> → </a>";		
+						echo"<a class='item test' href='?mainpage=query&subpage=3&page=".$next_page."'> → </a>";		
 						//last page
-						echo"<a class='item test' href='?mainpage=query&subpage=2&page=".$Totalpages."'>末頁</a>";
+						echo"<a class='item test' href='?mainpage=query&subpage=3&page=".$Totalpages."'>末頁</a>";
 						echo "</div>";
 					   
 						//The mobile href-link of bottom pages
 						echo "<div class='ui pagination menu mobile'>";	
-						echo "<a class='item test' href='?mainpage=query&subpage=2&page=".$prev_page."'> ← </a>";
-						echo"<a class='active item bold' href='?mainpage=query&subpage=2&page=".$pages."'>(".$pages."/".$Totalpages.")</a>";
-						echo"<a class='item test' href='?mainpage=query&subpage=2&page=".$next_page."'> → </a>";		
+						echo "<a class='item test' href='?mainpage=query&subpage=3&page=".$prev_page."'> ← </a>";
+						echo"<a class='active item bold' href='?mainpage=query&subpage=3&page=".$pages."'>(".$pages."/".$Totalpages.")</a>";
+						echo"<a class='item test' href='?mainpage=query&subpage=3&page=".$next_page."'> → </a>";		
 						echo "</div>";
 						}
 						$conn->close();

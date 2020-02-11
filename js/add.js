@@ -1,13 +1,19 @@
-function uncheck() {
-	document.getElementById("new_password").disabled	 = true;
-	document.getElementById("confirm_password").disabled = true;
+function uncheck(ElementID) {
+	if(ElementID == "new_password"){
+		document.getElementById("new_password").disabled	 = true;
+		document.getElementById("confirm_password").disabled = true;
+	}else if(ElementID == "self_password"){
+		document.getElementById("self_password").disabled	 = true;
+	}
 }
-
-function check() {
-	document.getElementById("new_password").disabled 		= false;
-	document.getElementById("confirm_password").disabled 	= false;
+function check(ElementID) {
+	if(ElementID == "new_password"){
+		document.getElementById("new_password").disabled	 = false;
+		document.getElementById("confirm_password").disabled = false;
+	}else if(ElementID == "self_password"){
+		document.getElementById("self_password").disabled	 = false;
+	}
 }
-
 function ldap_edit() {
 	console.log('ldap edit');
 	var selector = ".post.ldap ";
@@ -111,6 +117,28 @@ function Call_sub_query_ajax(type){
 	return 0;
  }
 
+function Call_sub_query_pagination_ajax(page,key,keyword_type,type){
+	 var selector = ".post."+type+" ";
+	 $.ajax({
+		 url: 'ajax/sub_query.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {page:page,key:key,keyword_type:keyword_type,type:type},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 //console.log("success");
+			 $(selector+'.record_content').html("");
+			 $(selector+'.record_content').html(data);
+			 //$(selector+'.record_content').text("");
+			 //$(selector+'.record_content').text(data);
+			 //console.log("done");
+		 }
+	});
+	return 0;
+ }
+
 function Call_sub_vs_query_ajax(type){
 	 var selector = ".post."+type+" ";
 	 var obj = $(selector+"input[name='status[]']");
@@ -122,6 +150,26 @@ function Call_sub_vs_query_ajax(type){
 		 dataType:'html',
 		 type:'GET',
 		 data: {key:$(selector+'#key').val(),keyword_type:$(selector+'#keyword_type').val(),type:type,unfinished:unfinished,finished:finished},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 //console.log("success");
+			 $(selector+'.record_content').html("");
+			 $(selector+'.record_content').html(data);
+			 //console.log("done");
+		 }
+	});
+	return 0;
+}
+
+function Call_sub_vs_query_pagination_ajax(page,key,keyword_type,type,unfinished,finished){
+	 var selector = ".post."+type+" ";
+	 $.ajax({
+		 url: 'ajax/sub_vs_query.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {page:page,key:key,keyword_type:keyword_type,type:type,unfinished:unfinished,finished:finished},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -155,18 +203,18 @@ function Call_retrieve_ou_vs_ajax(){
 
 
 function Call_retrieve_nmap_ajax(type){
-	$('.ui.inline.loader').addClass('active');
 	var selector = ".post."+type+" ";
+	$(selector+'.ui.inline.loader').addClass('active');
 	$.ajax({
 		 url: 'ajax/sub_nmap.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {target:$(selector+'#target').val()},
+		 data: {target:$(selector+'.target').val()},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $('.ui.inline.loader').removeClass('active');
+			 $(selector+'.ui.inline.loader').removeClass('active');
 			 $(selector+'.record_content').html("");
 			 $(selector+'.record_content').html(data);
 		 }
@@ -175,18 +223,57 @@ function Call_retrieve_nmap_ajax(type){
 }
 
 function Call_retrieve_ldap_ajax(type){
-	$('.ui.inline.loader').addClass('active');
 	var selector = ".post."+type+" ";
+	$(selector+'.ui.inline.loader').addClass('active');
 	$.ajax({
 		 url: 'ajax/sub_ldap.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {target:$(selector+'#target').val()},
+		 data: {target:$(selector+'.target').val()},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $('.ui.inline.loader').removeClass('active');
+			 $(selector+'.ui.inline.loader').removeClass('active');
+			 $(selector+'.record_content').html("");
+			 $(selector+'.record_content').html(data);
+		 }
+	});
+	return 0;
+}
+
+function Call_retrieve_ldap_tree_ajax(){
+	var selector = ".post ";
+	$.ajax({
+		 url: 'ajax/sub_ldap_tree.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 $(selector+'.ldap_tree_content').html("");
+			 $(selector+'.ldap_tree_content').html(data);
+		 }
+	});
+	return 0;
+}
+
+function Call_retrieve_hydra_ajax(type){
+	var selector = ".post."+type+" ";
+	$(selector+'.ui.inline.loader').addClass('active');
+	console.log($(selector+"input[name='one_pwd_mode']:checked").val());
+	$.ajax({
+		 url: 'ajax/sub_hydra.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {target:$(selector+'.target').val(),protocol:$(selector+'#protocol').val(),account:$(selector+'#account').val(),one_pwd_mode:$(selector+"input[name='one_pwd_mode']:checked").val(),self_password:$(selector+'#self_password').val()},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 $(selector+'.ui.inline.loader').removeClass('active');
 			 $(selector+'.record_content').html("");
 			 $(selector+'.record_content').html(data);
 		 }
@@ -238,6 +325,9 @@ $(document).ready(function(){
 	Call_retrieve_ou_vs_ajax();
 	$('#sidebar a').css('text-decoration','none');
 
+	//load ldap's tree
+	Call_retrieve_ldap_tree_ajax();
+	
 	//sidebar內容切換
 	$('#sidebar li li').click(function(){
 			var num = $(this).index();
@@ -247,11 +337,40 @@ $(document).ready(function(){
 			$(this).addClass('active');
 			$('#content .sub-content').removeClass('show').hide();
 			$(content).addClass('show').show();
+			
+			// push state for changing browser history
+			var url=location.href;
+			if(getParameterByName('mainpage',url)!= null){
+				var mainpage = getParameterByName('mainpage',url);
+			}else{
+				var mainpage = 1;
+			}
+			subpage = num + 1;
+			history.pushState({"mainpage": mainpage,"subpage": subpage},"", "index.php?mainpage="+mainpage+"&subpage="+subpage);
+
 	});
 	
 	/*自己頁面的submenu內容切換*/
 
+	/*vs_query.php's component action*/
+	$('.post.ip_and_url_scanResult .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
+		page				= $(this).attr('page');
+		key 				= $(this).attr('key');
+		keyword_type 		= $(this).attr('keyword_type');
+		type 				= $(this).attr('type');
+		unfinished 			= $(this).attr('unfinished');
+		finished 			= $(this).attr('finished');
+		Call_sub_vs_query_pagination_ajax(page,key,keyword_type,type,unfinished,finished);
+	});
 	/*query.php's component action*/
+	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
+		page				 = $(this).attr('page');
+		key 				 = $(this).attr('key');
+		keyword_type 		 = $(this).attr('keyword_type');
+		type 				 = $(this).attr('type');
+		Call_sub_query_pagination_ajax(page,key,keyword_type,type);
+	});
+	/*query.php & vs_query's component action*/
 	$('.record_content').delegate('.ui.list > .item a', 'click', function() {
 		var icon = $(this).find('i.icon');
 		var detail = $(this).parent().find('.description');
@@ -276,6 +395,21 @@ $(document).ready(function(){
 			detail.addClass('show');
 		}
 	});
+	/*sub_ldap_tree.php's component action*/
+	$('.ldap_tree_content').delegate('li > i.square.icon', 'click', function() {
+		var icon1 = $(this);
+		var icon2 = $(this).parent('li').children('i.folder.icon');
+		var detail = $(this).parent('li');
+		if(detail.hasClass('hide')){
+			detail.removeClass('hide');
+			icon1.removeClass('plus').addClass('minus');
+			icon2.addClass('open');
+		}else{
+			detail.addClass('hide');
+			icon1.removeClass('minus').addClass('plus');
+			icon2.removeClass('open');
+		}
+	});
 
 	//bind keypress
 	 $('.post.security_event #key').keyup(function(event) {
@@ -296,6 +430,12 @@ $(document).ready(function(){
 			Call_sub_query_ajax('security_contact'); 
 		}
 	 });
+	 $('.post.ip_and_url_scanResult #key').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			console.log('keyup');     
+			Call_sub_vs_query_ajax('ip_and_url_scanResult'); 
+		}
+	 });
 	 $('.post.ipscanResult #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
 			console.log('keyup');     
@@ -311,7 +451,7 @@ $(document).ready(function(){
 	 $('.post.nmap #target').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
 			console.log('keyup');     
-			Call_retrieve_nmap_ajax('namp');	
+			Call_retrieve_nmap_ajax('nmap');	
 		}
 	 });
 	 $('.post.ldap #target').keyup(function(event) {
@@ -320,7 +460,6 @@ $(document).ready(function(){
 			Call_retrieve_ldap_ajax('ldap');	
 		}
 	 });
-
 
 	//bind serach_btn
 	$('.post.security_event #search_btn').click(function (){
@@ -339,6 +478,12 @@ $(document).ready(function(){
 		console.log('security_contact serach_btn');     
 		Call_sub_query_ajax('security_contact');
 		console.log('security_contact serach_btn done');
+	});
+	
+	$('.post.ip_and_url_scanResult #search_btn').click(function (){
+		console.log('ip_and_url_scanResult serach_btn');     
+		Call_sub_vs_query_ajax('ip_and_url_scanResult');
+		console.log('ip_and_url_scanResult serach_btn done');
 	});
 
 	$('.post.ipscanResult #search_btn').click(function (){
@@ -373,6 +518,12 @@ $(document).ready(function(){
 	$('.post.ldap #ldap_btn').click(function(){
 		Call_retrieve_ldap_ajax('ldap');	
 	});
+	//retrieve from hydra
+	$('.post.hydra #hydra_btn').click(function(){
+		Call_retrieve_hydra_ajax('hydra');
+		console.log("hydra");
+	});
+	
 	
 	//semantic file input
 	$("input:text").click(function() {

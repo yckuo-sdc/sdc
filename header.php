@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=big5" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>臺南市政府 智慧發展中心</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
@@ -81,20 +82,22 @@
 					<li><a href="index.php?mainpage=query&subpage=4">Retrieve GS & Ncert</a></li>
 				</ul>
 			</li>
-			<li><a class="4" accesskey="4" title="" href="index.php?mainpage=vulnerability">漏洞掃描</a>
+			<li><a class="4" accesskey="4" title="" href="index.php?mainpage=vulnerability">弱點掃描</a>
 				<ul>		
 					<li><a href="index.php?mainpage=vulnerability&subpage=1">OverView</a></li>
-					<li><a href="index.php?mainpage=vulnerability&subpage=2">漏洞查詢(host)</a></li>
-					<li><a href="index.php?mainpage=vulnerability&subpage=3">漏洞查詢(web)</a></li>
-					<li><a href="index.php?mainpage=vulnerability&subpage=4">Retrieve VS</a></li>
+					<li><a href="index.php?mainpage=vulnerability&subpage=2">弱點查詢(All)</a></li>
+					<!--<li><a href="index.php?mainpage=vulnerability&subpage=3">弱點查詢(Host)</a></li>
+					<li><a href="index.php?mainpage=vulnerability&subpage=4">弱點查詢(Web)</a></li>-->
+					<li><a href="index.php?mainpage=vulnerability&subpage=3">Retrieve VS</a></li>
 				</ul>
 
 			</li>
-			<li><a class="5" accesskey="5" title="" href="index.php?mainpage=nmap">Nmap</a>
+			<li><a class="5" accesskey="5" title="" href="index.php?mainpage=nmap">Tool</a>
 				<ul>	
 					<li><a href="index.php?mainpage=nmap&subpage=1">Nmap</a></li>
 					<li><a href="index.php?mainpage=nmap&subpage=2">AP</a></li>
 					<li><a href="index.php?mainpage=nmap&subpage=3">LDAP</a></li>
+					<li><a href="index.php?mainpage=nmap&subpage=4">Hydra</a></li>
 				</ul>
 			</li>
 			<li><a class="6" accesskey="6" title="" href="#">相關連結</a> 
@@ -102,6 +105,7 @@
 					<li><a href="http://vision.tainan.gov.tw" target="_blank">推動友善資訊服務平台</a></li>
 					<li><a href="https://10.7.102.4/tndev/" target="_blank">MIS網管系統(芳彬)</a></li>
 					<li><a href="https://sdc-mrbs.tainan.gov.tw/" target="_blank">SDC會議室預約系統</a></li>
+					<li><a href="https://sdc-mrbs.tainan.gov.tw/callcenter/login.php" target="_blank">Call Center預約</a></li>
 					<li><a href="https://sdc-iss.tainan.gov.tw:4000/" target="_blank">OpenVas(開源漏洞掃描工具)</a></li>
 				</ul>
 			</li>		

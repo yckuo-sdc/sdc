@@ -3,6 +3,7 @@
 	//mysql
 	require("../mysql_connect.inc.php");
 	date_default_timezone_set("Asia/Taipei");
+
 	$nowTime 	= date("Y-m-d H:i:s");
 	$host_type 	= "ipscanResult";
 	$web_type 	= "urlscanResult";
@@ -47,7 +48,6 @@
 				echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
 			}
 		}
-		echo "<p>";
 		echo "The ".$count." records have been inserted or updated into the ipscanResult \n\r<br>";
 	}
 	 
@@ -88,7 +88,6 @@
 		}
 
 		echo "The ".$count." records have been inserted or updated into the urlscanResult \n\r<br>";
-		echo "</p>"; 
 	}
 
 	$preg_url = preg_replace("/ /", "%20", $target_url);
@@ -118,10 +117,9 @@
 		}
 
 		echo "The ".$count." records have been inserted or updated into the scanTarget \n\r<br>";
-		echo "</p>"; 
 	}
+	
 	$conn->close();	
-
 
 
 

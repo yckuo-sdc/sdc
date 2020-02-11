@@ -1,7 +1,7 @@
 <?php
 
-include("function.php");
-include("../mysql_connect.inc.php");
+require_once("function.php");
+require_once("../mysql_connect.inc.php");
 	
 $account  = $_POST['account'];
 $password = $_POST['password'];

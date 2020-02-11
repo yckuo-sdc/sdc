@@ -42,6 +42,23 @@
 	padding:1px !important;
 }
 
+.post_cell ol { 
+	counter-reset: item ;
+}
+.post_cell li{ 
+	display: block;
+}
+.post_cell li:before {
+	 content: counters(item, "-") " "; 
+	 counter-increment: item;
+}
+.post_cell li.hide ol{ 
+	display: none; 
+}
+
+.post_cell button{
+   margin: 0.25em 0.25em 0em 0em!important;
+}
 
 
 .post_cell img.img_auto

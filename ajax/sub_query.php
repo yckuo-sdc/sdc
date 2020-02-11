@@ -12,6 +12,9 @@
 		$key  		   = $_GET['key'];
 		$keyword_type  = $_GET['keyword_type'];
 		$type  		   = $_GET['type'];
+		if (!isset($_GET['page']))	$pages = 1; 
+		else						$pages = $_GET['page']; 
+		
 		
 		//connect database
         require("../mysql_connect.inc.php");
@@ -74,7 +77,11 @@
 		}
 		else{
 			echo "該分類共搜尋到".$rowcount."筆資料！";
-
+			//record number on each page & maxumun pages on pagination			
+			$per = 10; 	
+			$max_pages = 10;
+			list($sql_subpage,$prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages) = getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages);
+			$result = mysqli_query($conn,$sql_subpage);
 			switch($type){
 				case "security_event": 
 				echo "<div class='ui relaxed divided list'>";
@@ -126,6 +133,7 @@
 									echo "<li>處理日期(三佑科技):".$row['MaintainProcessContent']."</li>";
 									echo "<li>處理日期(京稘或中華SOC):".$row['AntivirusProcessContent']."</li>";
 									echo "<li>未能處理之原因及因應方式:".$row['UnprocessedReason']."</li>";
+									echo "<li>備註:".$row['Remarks']."</li>";
 									echo "</ol>";
 								echo "</div>";
 								echo "</div>";
@@ -248,6 +256,29 @@
 				echo "</div>";
 				break;
 			}
+					
+			//The href-link of bottom pages
+			echo "<div class='ui pagination menu'>";	
+			echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' >首頁</a>";
+			echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' > ← </a>";
+			for ($j = $lower_bound; $j <= $upper_bound ;$j++){
+				if($j == $pages){
+					echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'>".$j."</a>";
+				}else{
+					echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'>".$j."</a>";
+				}
+			}
+			echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' > → </a>";		
+			//last page
+			echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'>末頁</a>";
+			echo "</div>";
+
+			//The mobile href-link of bottom pages
+			echo "<div class='ui pagination menu mobile'>";	
+			echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'> ← </a>";
+			echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'>(".$pages."/".$Totalpages.")</a>";
+			echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'> → </a>";		
+			echo "</div>";
 		}
 		$conn->close();
 	}else{
