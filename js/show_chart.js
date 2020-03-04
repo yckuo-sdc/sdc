@@ -18,11 +18,11 @@
 	}
 	function Call_retrieve_c3_chartA_ajax(){
 		 $.ajax({
-			 url: 'ajax/chartA.php',
+			 url: 'ajax/chart.php',
 			 cache: false,
 			 dataType:'html',
 			 type:'GET',
-			 data: {key:1},
+			 data: {chartID:'chartA'},
 			 error: function(xhr) {
 				 alert('Ajax failed');
 			 },success: function(data) {
@@ -70,11 +70,11 @@
 	 }
 	function Call_retrieve_c3_chartB_ajax(){
 		 $.ajax({
-			 url: 'ajax/chartB.php',
+			 url: 'ajax/chart.php',
 			 cache: false,
 			 dataType:'html',
 			 type:'GET',
-			 data: {key:1},
+			 data: {chartID:'chartB'},
 			 error: function(xhr) {
 				 alert('Ajax failed');
 			 },success: function(data) {
@@ -129,11 +129,11 @@
 
 	function Call_retrieve_c3_chartC_ajax(){
 	$.ajax({
-		url: 'ajax/chartC.php',
+		url: 'ajax/chart.php',
 		cache: false,
 		dataType:'html',
 		type:'GET',
-		data: {key:1,keyword_type:2},
+	 	data: {chartID:'chartC'},
 		error: function(xhr) {
 			alert('Ajax failed');
 		},success: function(data) {	 
@@ -212,11 +212,11 @@
 
 	function Call_retrieve_c3_chartD_ajax(){
 	$.ajax({
-		url: 'ajax/chartD.php',
+		url: 'ajax/chart.php',
 		cache: false,
 		dataType:'html',
 		type:'GET',
-		data: {key:1,keyword_type:2},
+	 	data: {chartID:'chartD'},
 		error: function(xhr) {
 			alert('Ajax failed');
 		},success: function(data) {	 
@@ -287,6 +287,100 @@
 		
 	}	
 
+	function Call_retrieve_c3_chartE_ajax(){
+	$.ajax({
+		url: 'ajax/chart.php',
+		cache: false,
+		dataType:'html',
+		type:'GET',
+	 	data: {chartID:'chartE'},
+		error: function(xhr) {
+			alert('Ajax failed');
+		},success: function(data) {	 
+			var mArray=[];
+			//var passArray=[80];
+			var passArray=[];
+			$(data).find("OSEnvID").each(function(){
+				// console.log($(this).text());
+				 var name=$(this).children("name").text();
+				 var count=$(this).children("count").text();
+				 //console.log(name);
+				 //console.log(count);
+				 mArray.push([name,count]);
+
+			});
+			$(data).find("gcb_pass").each(function(){
+				 var total_count=$(this).children("total_count").text();
+				 var pass_count=$(this).children("pass_count").text();
+				 //passArray.push(Math.round((pass_count / total_count*10000) / 100));
+				 passArray.push(pass_count / total_count * 100);
+			});
+			passArray.unshift('通過率');
+			//the setting of pie chart
+			var cht_width = '500px';	//default width
+			var arr = $('.post_title');
+			for(i = 0; i < arr.length; i++){
+				if((width = $(arr[i]).css('width')) !== '0px'){
+					cht_width = width.replace(/px/,'');
+					break;	
+				}
+			}
+			var cht_height = cht_width * 0.4205;
+	
+			c3.generate({
+				bindto: '#chartE',
+				data: {
+				columns:
+					mArray,
+				type : 'pie'
+				},
+  				pie:{
+					label: {
+	              		format: function (value, ratio, id) {
+					          return d3.format()(value);
+						}
+					}
+				},
+				size:{
+					width: cht_width,
+					height: cht_height
+				},
+				onresize: function(){
+			
+				}
+			});
+
+			var chart = c3.generate({
+				bindto: '#chartF',
+				data: {
+					columns: [
+						passArray
+					],
+					type: 'gauge',
+					onclick: function (d, i) { console.log("onclick", d, i); },
+					onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+					onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+				},
+				gauge: {
+				},
+				color: {
+					pattern: ['#FF0000', '#F97600', '#F6C600', '#60B044'], // the three color levels for the percentage values.
+					threshold: {
+						values: [30, 60, 90, 100]
+					}
+				},
+				size: {
+					height: 180
+				}
+			});
+
+
+		}
+	});
+		return 0;
+		
+	}	
+
 
 $(document).ready(function(){
 
@@ -327,6 +421,8 @@ $(document).ready(function(){
 	Call_retrieve_c3_chartC_ajax();
 	//chartD
 	Call_retrieve_c3_chartD_ajax();
+	//chartE
+	Call_retrieve_c3_chartE_ajax();
 
 	/*
 	//student

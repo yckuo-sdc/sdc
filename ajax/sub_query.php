@@ -2,10 +2,6 @@
 	
 	header('Content-type: text/html; charset=utf-8');
 	include("../login/function.php");
-	//alert message
-	//function phpAlert($msg) {
-	//	echo '<script type="text/javascript">alert("' . $msg . '")</script>';
-	//}
 
 	if(!empty($_GET['key']) && !empty($_GET['keyword_type']) && !empty($_GET['type']) ){
 		//過濾特殊字元(')
@@ -42,6 +38,12 @@
 				$table = "(select * from security_contact union select * from security_contact_extra)a";
 			    $order = "order by oid asc,person_type asc";	
 				break;
+			case ($type == 'gcb_client_list' and $keyword_type != 'all'):
+				$table = "(SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a,gcb_os as b,gcb_ie as c WHERE a.OSEnvID = b.id AND a.IEEnvID = c.id)A";
+				if($keyword_type == 'ExternalIP' or $keyword_type == 'InternalIP') $key = ip2long($key);
+				$condition = $keyword_type." LIKE '%".$key."%'";
+			    $order = "ORDER by ID ASC";	
+				break;
 			case ($type == 'security_event' and $keyword_type == 'all'):
 				$table = "security_event";
 				//fulltext seach
@@ -61,6 +63,12 @@
 				// select security_contact from NCERT and Internal_Primary Unit from self-creation
 				$table = "(SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra)A";
 				$order = "ORDER by OID asc,person_type asc";
+				break;
+			case ($type == 'gcb_client_list' and $keyword_type == 'all'):
+				$table = "(SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a,gcb_os as b,gcb_ie as c WHERE a.OSEnvID = b.id AND a.IEEnvID = c.id)A";
+				//fulltext seach
+				$condition = getfulltextsearchsql($conn,$table,$key);
+			    $order = "order by ID asc";	
 				break;
 		}
 		$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
@@ -253,6 +261,79 @@
 						echo "</div>";
 						echo "</div>";
 					}
+				echo "</div>";
+				break;
+				case "gcb_client_list":
+					echo "<div class='ui relaxed divided list'>";
+						echo "<div class='item'>";
+							echo "<div class='content'>";
+								echo "<a class='header'>";
+								//echo "序號&nbsp";
+								echo "電腦名稱&nbsp&nbsp";
+								echo "單位名稱&nbsp&nbsp";
+								echo "使用者帳號&nbsp&nbsp";
+								echo "內網IP&nbsp&nbsp";
+								echo "作業系統&nbsp&nbsp";
+								echo "<a>";
+							echo "</div>";
+						echo "</div>";
+
+				while($row = mysqli_fetch_assoc($result)) {
+					echo "<div class='item'>";
+					echo "<div class='content'>";
+						echo "<a>";
+						if($row['IsOnline'] == "1")		echo "<i class='circle icon' style='color:green'></i>";
+						else							echo "<i class='circle outline icon'></i>";
+						switch($row['GsStat']){
+							case '0':
+								$GsStat_str = "未套用";
+								break;
+							case '1':
+								$GsStat_str = "已套用";
+								break;
+							case '-1':
+								$GsStat_str = "套用失敗";
+								break;
+							case '2':
+								$GsStat_str = "還原成功";
+								break;
+							case '-2':
+								$GsStat_str = "未套用";
+								break;
+						}
+						
+						echo $row['Name']."&nbsp&nbsp";
+						echo "<span style='background:#fde087'>".$row['OrgName']."</span>&nbsp&nbsp";
+						echo $row['UserName']."&nbsp&nbsp";
+						echo long2ip($row['InternalIP'])."&nbsp&nbsp";
+						echo $row['os_name']."&nbsp&nbsp";
+						echo "<i class='angle double down icon'></i>";
+						echo "</a>";
+						echo "<div class='description'>";
+							echo "<ol>";
+							echo "<li>序號:".$row['ID']."</li>";
+							echo "<li>外部IP:".long2ip($row['ExternalIP'])."</li>";
+							echo "<li>內部IP:".long2ip($row['InternalIP'])."</li>";
+							echo "<li>電腦名稱:".$row['Name']."</li>";
+							echo "<li>單位名稱:".$row['OrgName']."</li>";
+							echo "<li>使用者帳號:".$row['UserName']."</li>";
+							echo "<li>OS:".$row['os_name']."</li>";
+							echo "<li>IE:".$row['ie_name']."</li>";
+							echo "<li>是否上線:".$row['IsOnline']."</li>";
+							echo "<li>Gcb總通過數[未包含例外]:".$row['GsAll_0']."</li>";
+							echo "<li>Gcb總通過數[包含例外]:".$row['GsAll_1']."</li>";
+							echo "<li>Gcb總通過數[總數]:".$row['GsAll_2']."</li>";
+							echo "<li>Gcb例外數量:".$row['GsExcTot']."</li>";
+							echo "<li>Gcb掃描編號:".$row['GsID']."</li>";
+							echo "<li>Gcb派送編號:".$row['GsSetDeployID']."</li>";
+							echo "<li>Gcb狀態:".$GsStat_str."</li>";
+							echo "<li>Gcb回報時間:".$row['GsUpdatedAt']."</li>";
+							echo "</ol>";
+						echo "</div>";
+						echo "</div>";
+					echo "</div>";
+				}
+				
 				echo "</div>";
 				break;
 			}

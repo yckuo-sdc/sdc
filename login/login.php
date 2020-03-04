@@ -22,7 +22,8 @@
 <!-- semantic ui -->
 <link rel="stylesheet" type="text/css" href="../node_modules/semantic/semantic.css">
 <script src="../node_modules/semantic/semantic.js"></script>
-
+<!-- add my JS-->
+<script src="js/login.js"></script>
 
 <!--[if IE 6]>
 <link href="default_ie6.css" rel="stylesheet" type="text/css" />
@@ -57,7 +58,6 @@
 	}
  </style>
 
-
 </head>
 <body>
 	<div class="ui middle aligned center aligned grid">
@@ -69,10 +69,25 @@
 		</h2>
 		<form class="ui large form" method="post" action="actionlogin.php">
 		  <div class="ui stacked segment">
+			<div class="inline fields">
+    			<label for="verification">Type</label>
+				<div class="field">
+				  <div class="ui radio checkbox">
+					<input type="radio" name="verification" value="ad" checked="" tabindex="0" class="hidden">
+					<label>AD</label>
+				  </div>
+				</div>
+				<div class="field">
+				  <div class="ui radio checkbox">
+					<input type="radio" name="verification" value="mail" tabindex="0" class="hidden">
+					<label>Mail</label>
+				  </div>
+				</div>
+			</div>		
 			<div class="field">
 			  <div class="ui left icon input">
 				<i class="user icon"></i>
-				<input type="text" name="account" placeholder="AD acoount" required>
+				<input type="text" name="account" placeholder="Account" required>
 			  </div>
 			</div>
 			<div class="field">

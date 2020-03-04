@@ -76,6 +76,23 @@ function Call_retrieve_tainangov_security_incident_gs_ajax(){
 	return 0;
 }
 
+function Call_retrieve_gcb_ajax(){
+	$.ajax({
+		 url: 'ajax/retrieve_gcb.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {key:1,keyword_type:2},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(response) {
+			 $('.retrieve_info').html("");
+			 $('.retrieve_info').html(response);
+		 }
+	});
+	return 0;
+}
+
 function Call_retrieve_vs_ajax(){
 	$('.ui.inline.loader').addClass('active');
 	$.ajax({
@@ -318,8 +335,8 @@ $(document).ready(function(){
 	change_page();
 
 	//auto retrieve GS
-	Call_retrieve_gs_ajax();
-	Call_retrieve_tainangov_security_incident_gs_ajax();
+	//Call_retrieve_gs_ajax();
+	//Call_retrieve_tainangov_security_incident_gs_ajax();
 	
 	//load ou_vs_content
 	Call_retrieve_ou_vs_ajax();
@@ -363,7 +380,7 @@ $(document).ready(function(){
 		Call_sub_vs_query_pagination_ajax(page,key,keyword_type,type,unfinished,finished);
 	});
 	/*query.php's component action*/
-	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
+	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content, .post.gcb_client_list .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
 		page				 = $(this).attr('page');
 		key 				 = $(this).attr('key');
 		keyword_type 		 = $(this).attr('keyword_type');
@@ -430,6 +447,12 @@ $(document).ready(function(){
 			Call_sub_query_ajax('security_contact'); 
 		}
 	 });
+	 $('.post.gcb_client_list #key').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			console.log('keyup');     
+			Call_sub_query_ajax('gcb_client_list'); 
+		}
+	 });
 	 $('.post.ip_and_url_scanResult #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
 			console.log('keyup');     
@@ -480,6 +503,12 @@ $(document).ready(function(){
 		console.log('security_contact serach_btn done');
 	});
 	
+	$('.post.gcb_client_list #search_btn').click(function (){
+		console.log('gcb_client_list serach_btn');     
+		Call_sub_query_ajax('gcb_client_list');
+		console.log('gcb_client_list serach_btn done');
+	});
+	
 	$('.post.ip_and_url_scanResult #search_btn').click(function (){
 		console.log('ip_and_url_scanResult serach_btn');     
 		Call_sub_vs_query_ajax('ip_and_url_scanResult');
@@ -505,6 +534,10 @@ $(document).ready(function(){
 	//retrieve from Google Sheets of Ncert security incidents
 	$('#gs_ncert_incident_btn').click(function(){
 		Call_retrieve_tainangov_security_incident_gs_ajax();
+	});
+	//retrieve from GCB API
+	$('#gcb_api_btn').click(function(){
+		Call_retrieve_gcb_ajax();	
 	});
 	//retrieve from Vulnerability Scans
 	$('#vs_btn').click(function(){

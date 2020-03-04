@@ -161,8 +161,19 @@ if (isset($rows['values'])) {
 
 	date_default_timezone_set("Asia/Taipei");
 
-
-	echo "update ".$count." records on ".date("Y-m-d H:i:s")."<br>";
+	$nowTime= date("Y-m-d H:i:s");
+	$status = 200;	
+	$url 	="https://docs.google.com/spreadsheets/d/1bb9zyNHfuwQanSdutcyh2fj1JsddsXmG9JCUC5NwPNE/edit#gid=451325607";
+	echo "update ".$count." records on ".$nowTime."<br>";
+	$sql = "SELECT * FROM api_list WHERE class LIKE '資安事件' and name LIKE '本府資安事件' ";
+	$result = mysqli_query($conn,$sql);
+	$row = mysqli_fetch_assoc($result);
+	$sql = "INSERT INTO api_status(api_id,url,status,data_number,last_update) VALUES(".$row['id'].",'".$url."',".$status.",".$count.",'".$nowTime."')";
+	if ($conn->query($sql) == TRUE){
+	}else {
+		echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
+	}
+	
 }
 	$conn->close();	
 	//print_r($data);

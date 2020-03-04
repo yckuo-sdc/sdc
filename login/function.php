@@ -45,6 +45,20 @@
 			return false;	
 		}	
 	}
+	function checkAccountByPOP3($user, $pass){
+		// Import PHPMailer classes into the global namespace
+		// These must be at the top of your script, not inside a function
+
+/*		$local_path = "/var/www/html/utility/PHPMailer-master/";
+		use PHPMailer\PHPMailer\PHPMailer;
+		use PHPMailer\PHPMailer\Exception;
+		use PHPMailer\PHPMailer\POP3;
+		use PHPMailer\PHPMailer\SMTP;
+		//Load composer's autoloader
+		require $local_path.'vendor/autoload.php';
+		$pop = POP3::popBeforeSmtp('pop3.example.com', 110, 30, $user,$pass, 1);
+		echo $pop;*/
+	}
 	//LDAP recursive search and print
 	function myRecursiveFunction($ldapconn,$base_dn,$ou_name,$ou_des) {
 		$filter ="(objectClass=*)";

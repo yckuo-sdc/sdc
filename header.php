@@ -65,21 +65,27 @@
 	
 	<div id="menu">
 		<ul class="drop-down-menu">
-			<li><a class="1" accesskey="1" title="" href="#">最新消息</a></li>
+			<li><a class="1" accesskey="1" title="" href="index.php?mainpage=dashboard">最新消息</a>
+				<ul>
+					<li><a href="index.php?mainpage=dashboard&subpage=1">Dashboard</a></li>
+				</ul>
+			</li>
 			<li><a class="2" accesskey="2" title="" href="index.php?mainpage=info">視覺化資訊</a>
 				<ul>
 					<li><a href="index.php?mainpage=info&subpage=1">Enews Report</a></li>
 					<li><a href="index.php?mainpage=info&subpage=2">Comparison</a></li>
 					<li><a href="index.php?mainpage=info&subpage=3">Ranking Data</a></li>
 					<li><a href="index.php?mainpage=info&subpage=4">VUL Bar Chart</a></li>
+					<li><a href="index.php?mainpage=info&subpage=5">GCB Data</a></li>
 				</ul>
 			</li>
-			<li><a class="3" accesskey="3" title="" href="index.php?mainpage=query">ISMS資安查詢</a>
+			<li><a class="3" accesskey="3" title="" href="index.php?mainpage=query">資安查詢</a>
 				<ul>
 					<li><a href="index.php?mainpage=query&subpage=1">府內資安事件查詢</a></li>
 					<li><a href="index.php?mainpage=query&subpage=2">NCERT資安通報查詢</a></li>
 					<li><a href="index.php?mainpage=query&subpage=3">NCERT資安聯絡人</a></li>
-					<li><a href="index.php?mainpage=query&subpage=4">Retrieve GS & Ncert</a></li>
+					<li><a href="index.php?mainpage=query&subpage=4">GCB用戶端清單</a></li>
+					<li><a href="index.php?mainpage=query&subpage=5">Retrieve GS & Ncert</a></li>
 				</ul>
 			</li>
 			<li><a class="4" accesskey="4" title="" href="index.php?mainpage=vulnerability">弱點掃描</a>
@@ -106,6 +112,7 @@
 					<li><a href="https://10.7.102.4/tndev/" target="_blank">MIS網管系統(芳彬)</a></li>
 					<li><a href="https://sdc-mrbs.tainan.gov.tw/" target="_blank">SDC會議室預約系統</a></li>
 					<li><a href="https://sdc-mrbs.tainan.gov.tw/callcenter/login.php" target="_blank">Call Center預約</a></li>
+					<li><a href="http://webad2019.tainan.gov.tw/" target="_blank">WebAD</a></li>
 					<li><a href="https://sdc-iss.tainan.gov.tw:4000/" target="_blank">OpenVas(開源漏洞掃描工具)</a></li>
 				</ul>
 			</li>		

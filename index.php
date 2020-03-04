@@ -13,6 +13,9 @@
 
 	include('header.php'); // 載入共用的頁首
 	switch($page){  // 依照 GET 參數載入共用的內容
+		case "dashboard":
+		  include('dashboard.php');
+		break;
 		case "info":
 		  include('info.php');
 		break;

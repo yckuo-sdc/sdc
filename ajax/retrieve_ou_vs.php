@@ -3,14 +3,16 @@
 	require("../mysql_connect.inc.php");
 	//create view
 	/* CREATE VIEW V_VUL_tableau AS 
-	SELECT oid,ou,system_name,sum(total_VUL) as total_VUL ,sum(fixed_VUL) as fixed_VUL FROM(
-	SELECT oid,REPLACE(ou, '/臺南市政府/', '') as ou,system_name,'0' as total_VUL,'0' as fixed_VUL FROM scanTarget
-	UNION ALL
-	SELECT OID as oid,REPLACE(ou, '/臺南市政府/', '') as ou,system_name, count(system_name) as total_VUL, sum(CASE WHEN status IN ('已修補','豁免','誤判') THEN 1 ELSE 0 END) as fixed_VUL
-		  FROM (
-				SELECT OID,ou,system_name,status FROM ipscanResult UNION ALL SELECT OID,ou,system_name,status FROM urlscanResult
-				)A GROUP BY OID, ou, system_name
-	) v1 GROUP BY oid, ou, system_name order by oid,system_name		
+
+     SELECT oid,ou,system_name,sum(total_VUL) as total_VUL ,sum(fixed_VUL) as fixed_VUL,sum(total_high_VUL) as total_high_VUL,sum(fixed_high_VUL) as fixed_high_VUL 
+     FROM(
+       SELECT oid,REPLACE(ou, '/臺南市政府/', '') as ou,system_name,'0' as total_VUL,'0' as fixed_VUL,'0' as total_high_VUL,'0' as fixed_high_VUL FROM scanTarget
+       UNION ALL
+       SELECT OID as oid,REPLACE(ou, '/臺南市政府/', '') as ou,system_name, count(system_name) as total_VUL, sum(CASE WHEN status IN ('已修補','豁免','誤判') THEN 1 ELSE 0 END) as fixed_VUL, sum(CASE WHEN severity IN ('High','Critical') THEN 1 ELSE 0 END) as total_high_VUL, sum(CASE WHEN severity IN ('High','Critical') AND status IN ('已修補','豁免','誤判') THEN 1 ELSE 0 END) as fixed_high_VUL
+            FROM (
+                  SELECT OID,ou,system_name,status,severity FROM ipscanResult UNION ALL SELECT OID,ou,system_name,status,severity FROM urlscanResult
+                  )A GROUP BY OID, ou, system_name
+      ) v1 GROUP BY oid, ou, system_name order by oid,system_name
 	*/
 	//select row_number,and other field value
 	$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL FROM V_VUL_tableau GROUP BY ou ORDER BY ou desc";
@@ -19,7 +21,7 @@
 	$sql_scan = "SELECT ou,system_name FROM V_VUL_tableau";
 	$result_scan = mysqli_query($conn,$sql_scan);
 	$rowcount_scan = mysqli_num_rows($result_scan);
-	echo "共有".$rowcount."筆資料,".$rowcount_scan."筆掃描設備！";
+	echo "共有".$rowcount."個單位,".$rowcount_scan."筆掃描設備(含歷史紀錄)！<br>";
 	echo "<div class='flex-container'>";                    
 	while($row = mysqli_fetch_assoc($result)) {
 		//Query of system name,count(total_VUL),count(fixed_VUL) 

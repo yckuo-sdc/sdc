@@ -169,7 +169,7 @@
 						<div class="post_table">
 						<?php //select row_number,and other field value
                     	require("mysql_connect.inc.php");
-						$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as completion FROM V_VUL_tableau GROUP BY ou ORDER BY completion desc";
+						$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL FROM V_VUL_tableau GROUP BY ou ORDER BY completion desc";
 						$result 	= mysqli_query($conn,$sql);
 						$rowcount	= mysqli_num_rows($result);
 						?>
@@ -179,6 +179,8 @@
 									<th>OU</th>
 									<th>Total-VUL</th>
 									<th>Fixed-VUL</th>
+									<th>Total-high-VUL</th>
+									<th>Fixed-high-VUL</th>
 									<th>Completion</th>
 								</tr>
 							</thead>
@@ -191,10 +193,12 @@
 									echo "<td data-label='OU'>".$row['ou']."</td>";
 									echo "<td data-label='Total-VUL'>".$row['total_VUL']."</td>";
 									echo "<td data-label='Fixed-VUL'>".$row['fixed_VUL']."</td>";
+									echo "<td data-label='Total-high-VUL'>".$row['total_high_VUL']."</td>";
+									echo "<td data-label='Fixed-high-VUL'>".$row['fixed_high_VUL']."</td>";
 									echo "<td data-label='Completion'>".round($row['completion'],2)."%</td>";
 								echo "</tr>";
 							}
-							$sql = "SELECT sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as completion FROM V_VUL_tableau";
+							$sql = "SELECT sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL FROM V_VUL_tableau";
 							$result 	= mysqli_query($conn,$sql);
 							$rowcount	= mysqli_num_rows($result);
 							while($row = mysqli_fetch_assoc($result)) {
@@ -202,6 +206,8 @@
 									echo "<td data-label='OU'>total</td>";
 									echo "<td data-label='Total-VUL'>".$row['total_VUL']."</td>";
 									echo "<td data-label='Fixed-VUL'>".$row['fixed_VUL']."</td>";
+									echo "<td data-label='Total-high-VUL'>".$row['total_high_VUL']."</td>";
+									echo "<td data-label='Fixed-high-VUL'>".$row['fixed_high_VUL']."</td>";
 									echo "<td data-label='Completion'>".round($row['completion'],2)."%</td>";
 								echo "</tr>";
 							}
@@ -211,6 +217,59 @@
 						</table>	
 						</div>
 					</div>
+			</div>
+		</div>
+		<div class="sub-content">
+			<div class="post">
+				<div class="post_title">GCB Overview</div>
+					<div class="post_cell">
+					<div class="post_table">
+               		 <?php //select data form database
+                    	require("mysql_connect.inc.php");
+                   		 //select row_number,and other field value
+                    	$sql = "SELECT COUNT(ID) as total_count,SUM(CASE WHEN GsAll_2 = GsAll_1 THEN 1 ELSE 0 END) as pass_count FROM gcb_client_list";
+                    	$result = mysqli_query($conn,$sql);
+						$row = @mysqli_fetch_assoc($result);
+                    	$total_count = $row['total_count'];
+                    	$pass_count = $row['pass_count'];
+					?>
+
+					<table>
+						<colgroup>
+							<col width='50%' />
+							<col width='50%' />
+						</colgroup>
+					<tr>
+						<th>項目</th>
+						<th>數值</th>
+					</tr>
+					<tr>
+						<td>用戶端總數</td>
+						<td><?php echo $total_count ?></td>
+					</tr>
+					<tr>
+						<td>用戶端通過數</td>
+						<td><?php echo $pass_count ?></td>
+					</tr>
+					</table>
+					<?php
+                    $conn->close();
+
+					?>
+					</div>
+				</div>
+			</div>
+			<div class="post">
+				<div class="post_title">GCB作業系統統計圖</div>
+				<div class="post_cell">
+					<div id="chartE" class="chart"></div>	
+			    </div>		
+			</div>
+			<div class="post">
+				<div class="post_title">GCB用戶端通過率</div>
+				<div class="post_cell">
+					<div id="chartF" class="chart"></div>	
+			    </div>		
 			</div>
 		</div>
 		<div style="clear: both;">&nbsp;</div>
