@@ -143,4 +143,32 @@
 
 		return array($result_sql, $prev_page, $next_page, $lower_bound, $upper_bound, $Totalpages);
 	}
+
+	function pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,$mainpage,$subpage,$tab,$pages) {
+		$result ="";
+		$href = ($tab==0)?"?mainpage=".$mainpage."&subpage=".$subpage."&page=":"?mainpage=".$mainpage."&subpage=".$subpage."&tab=".$tab."&page=";
+		//The href-link of bottom pages
+		$result .="<div class='ui pagination menu'>";	
+		$result .="<a class='item test' href='".$href."1'>首頁</a>";
+		$result .="<a class='item test' href='".$href.$prev_page."'> ← </a>";
+		for ($j = $lower_bound; $j <= $upper_bound ;$j++){
+			if($j == $pages){
+				$result .="<a class='active item bold' href='".$href.$j."'>".$j."</a>";
+			}else{
+				$result .="<a class='item test' href='".$href.$j."'>".$j."</a>";
+			}
+		}
+		$result .="<a class='item test' href='".$href.$next_page."'> → </a>";		
+		//last page
+		$result .="<a class='item test' href='".$href.$Totalpages."'>末頁 </a>";		
+		$result .="</div>";
+	   
+		//The mobile href-link of bottom pages
+		$result .="<div class='ui pagination menu mobile'>";	
+			$result .="<a class='item test' href='".$href.$prev_page."'> ← </a>";
+			$result .="<a class='active item bold' href='".$href.$pages."'>(".$pages."/".$Totalpages.")</a>";
+			$result .="<a class='item test' href='".$href.$next_page."'> → </a>";		
+		$result .="</div>";
+		return $result;
+	}
 ?>

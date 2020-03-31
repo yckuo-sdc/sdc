@@ -33,12 +33,12 @@
 		<div id="sidebar" class="info_sidebar">
 			<ul>
 				<li>
-					<h2>ISMS資安查詢</h2>
+					<h2>資安查詢</h2>
 					<ul>
 						<li class="active title"><a>府內資安事件查詢</a></li>
-						<li class="title"><a>NCERT資安通報查詢</a></li>
-						<li class="title"><a>NCERT資安聯絡人</a></li>
-						<li class="title"><a>GCB用戶端清單</a></li>
+						<li class="title"><a>資安通報查詢</a></li>
+						<li class="title"><a>資安聯絡人</a></li>
+						<li class="title"><a>端點資安用戶端清單</a></li>
 						<li class="title"><a>Retrieve GS & Ncert</a></li>
 					</ul>
 				</li>
@@ -55,12 +55,9 @@
 					<ul>
 						<li class="active title"><a>OverView</a></li>
 						<li class="title"><a>弱點查詢(All)</a></li>
-						<!--<li class="title"><a>弱點查詢(Host)</a></li>
-						<li class="title"><a>弱點查詢(Web)</a></li>-->
 						<li class="title"><a>Retrieve VS</a></li>
 					</ul>
 				</li>
-		
 			</ul>
 		</div>
 		<?php

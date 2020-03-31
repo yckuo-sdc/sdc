@@ -271,13 +271,12 @@ th
 
 /*???批捆*/
 
-
-#content > div
+#content > div,.ui.attached.segment > .tabular-content
 {
 	display:none;
 }
 
-#content > .show
+#content > .show,.ui.attached.segment > .tabular-content.show
 {
 	display:block;
 }
@@ -362,99 +361,6 @@ th
 	display: inline-block;
 }
 
-
-.logo_2
-{
-	background-image: url("images/lab/lab-2.png");
-}
-
-.logo_3
-{
-	background-image: url("images/lab/lab-3.png");
-}
-
-.logo_6
-{
-	background-image: url("images/lab/lab-5.png");
-}
-
-
-.admission_content table tr th{
-	text-align: center;
-	font-size: 14px;
-	/*line-height: 24px;
-	border-bottom:1px solid #dddddd;
-	*/
-}
-
-.admission_content .admission_table1 tr td{
-	text-align: left;
-	font-size: 14px;
-	/*line-height: 24px;
-	border-bottom:1px solid #dddddd;
-	*/
-}
-
-.admission_content .admission_table1 tr td:first-child{
-	text-align: center;
-	font-size: 14px;
-	background-color:#E6BBDE;
-	/*line-height: 24px;
-	border-bottom:1px solid #dddddd;
-	*/
-}
-
-.admission_content .admission_table1 tr td:last-child{
-	background-color:#ffe8fc;
-}
-
-
-
-
-.admission_content .admission_table2 tr{
-	height: 30px
-}
-
-.admission_content .admission_table2 tr td{
-	text-align: center;
-	font-size: 14px;
-	/*line-height: 24px;
-	border-bottom:1px solid #dddddd;
-	*/
-}
-
-.admission_content .admission_table2 tr td:first-child{
-	background-color:#FFD0A6;
-}
-
-.admission_content .admission_table2 tr th:nth-child(n+2){
-	background-color: #FFD0A6;
-
-}
-
-.admission_content .admission_table2 tr td:nth-child(n+2){
-	background-color: #FFE8D3;
-}
-
-
-.admission_content .admission_table3 tr {
-	height: 30px
-}
-
-.admission_content .admission_table3 tr th{
-	background-color:#EDF9D9;
-}
-
-.admission_content .admission_table3 tr td{
-	text-align: center;
-	font-size: 14px;
-	background-color:#FBFDF1;
-	
-}
-
-
-
-
 .out{
    border-top:40px #D6D3D6 solid; /*上邊框寬度等於表格第一行行高*/
    width:0px; /*讓容器寬度為0*/
@@ -472,6 +378,9 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 }
 .ui.list > .item{
 	font-size: 2vmin;
+}
+.ui.list > .item div.header,.ui.list > .item div.header a{
+	color: #4183C4 !important;
 }
 .ui.list > .item .content{
 	line-height: normal;

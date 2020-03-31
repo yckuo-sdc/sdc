@@ -169,18 +169,23 @@
 						<div class="post_table">
 						<?php //select row_number,and other field value
                     	require("mysql_connect.inc.php");
-						$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL FROM V_VUL_tableau GROUP BY ou ORDER BY completion desc";
+						$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL,sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion FROM V_VUL_tableau GROUP BY ou ORDER BY total_completion desc";
 						$result 	= mysqli_query($conn,$sql);
 						$rowcount	= mysqli_num_rows($result);
 						?>
 						<table>
 							<thead>
 								<tr>
-									<th>OU</th>
+									<th rowspan="2">OU</th>
+									<th colspan="3">Total Risks</th>
+									<th colspan="3">High Risks</th>
+								</tr>
+								<tr>
 									<th>Total-VUL</th>
 									<th>Fixed-VUL</th>
-									<th>Total-high-VUL</th>
-									<th>Fixed-high-VUL</th>
+									<th>Completion</th>
+									<th>Total-VUL</th>
+									<th>Fixed-VUL</th>
 									<th>Completion</th>
 								</tr>
 							</thead>
@@ -193,12 +198,13 @@
 									echo "<td data-label='OU'>".$row['ou']."</td>";
 									echo "<td data-label='Total-VUL'>".$row['total_VUL']."</td>";
 									echo "<td data-label='Fixed-VUL'>".$row['fixed_VUL']."</td>";
+									echo "<td data-label='Completion'>".round($row['total_completion'],2)."%</td>";
 									echo "<td data-label='Total-high-VUL'>".$row['total_high_VUL']."</td>";
 									echo "<td data-label='Fixed-high-VUL'>".$row['fixed_high_VUL']."</td>";
-									echo "<td data-label='Completion'>".round($row['completion'],2)."%</td>";
+									echo "<td data-label='Completion'>".round($row['high_completion'],2)."%</td>";
 								echo "</tr>";
 							}
-							$sql = "SELECT sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL FROM V_VUL_tableau";
+							$sql = "SELECT sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL, sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion FROM V_VUL_tableau";
 							$result 	= mysqli_query($conn,$sql);
 							$rowcount	= mysqli_num_rows($result);
 							while($row = mysqli_fetch_assoc($result)) {
@@ -206,9 +212,10 @@
 									echo "<td data-label='OU'>total</td>";
 									echo "<td data-label='Total-VUL'>".$row['total_VUL']."</td>";
 									echo "<td data-label='Fixed-VUL'>".$row['fixed_VUL']."</td>";
+									echo "<td data-label='Completion'>".round($row['total_completion'],2)."%</td>";
 									echo "<td data-label='Total-high-VUL'>".$row['total_high_VUL']."</td>";
 									echo "<td data-label='Fixed-high-VUL'>".$row['fixed_high_VUL']."</td>";
-									echo "<td data-label='Completion'>".round($row['completion'],2)."%</td>";
+									echo "<td data-label='Completion'>".round($row['high_completion'],2)."%</td>";
 								echo "</tr>";
 							}
 							$conn->close();

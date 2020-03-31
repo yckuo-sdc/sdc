@@ -113,7 +113,10 @@ function Call_retrieve_vs_ajax(){
 }
 
 function Call_sub_query_ajax(type){
+
 	 var selector = ".post."+type+" ";
+	 if(type == 'gcb_client_list') selector = ".post.is_client_list .tab-content."+type+" ";
+	 else if(type == 'wsus_client_list') selector =".post.is_client_list .tab-content."+type+" ";
 	 $.ajax({
 		 url: 'ajax/sub_query.php',
 		 cache: false,
@@ -136,6 +139,8 @@ function Call_sub_query_ajax(type){
 
 function Call_sub_query_pagination_ajax(page,key,keyword_type,type){
 	 var selector = ".post."+type+" ";
+	 if(type == 'gcb_client_list') selector = ".post.is_client_list .tab-content."+type+" ";
+	 else if(type == 'wsus_client_list') selector =".post.is_client_list .tab-content."+type+" ";
 	 $.ajax({
 		 url: 'ajax/sub_query.php',
 		 cache: false,
@@ -312,12 +317,16 @@ function change_page()
 {
 	var url=location.href;
 	console.log(url);
-	
+	/*
 	if(getParameterByName('subpage',url)!= null){
 		var subpage = getParameterByName('subpage',url);
 	}else{
 		var subpage = 1;
 	}
+	*/
+	var subpage = (getParameterByName('subpage',url)!= null)?getParameterByName('subpage',url):1;	
+	var tab = (getParameterByName('tab',url)!= null)?getParameterByName('tab',url):1;	
+	
 	//console.log(subpage);	
 	var num = subpage-1;
 	//console.log(num);
@@ -326,6 +335,15 @@ function change_page()
 	$('#sidebar li .title').removeClass('active');
 	$(title).addClass('active');
 	$('#content .sub-content').removeClass('show').hide();
+	$(content).addClass('show').show();
+	
+
+	var num = tab-1;
+	var title   = $('.tabular.menu').find('.item')[num];
+	var content = $('.ui.attached.segment').find('.tab-content')[num];
+	$('.tabular.menu .item').removeClass("active");
+	$(title).addClass('active');
+	$('.ui.attached.segment .tab-content').removeClass('show').hide();
 	$(content).addClass('show').show();
 
 }
@@ -340,6 +358,7 @@ $(document).ready(function(){
 	
 	//load ou_vs_content
 	Call_retrieve_ou_vs_ajax();
+	
 	$('#sidebar a').css('text-decoration','none');
 
 	//load ldap's tree
@@ -367,6 +386,24 @@ $(document).ready(function(){
 
 	});
 	
+	//tabular tab 內容切換
+	$('.tabular.menu .item').click(function(){
+		var num = $(this).index();
+		console.log(num);
+		var content = $('.ui.attached.segment').find('.tab-content')[num];
+		$('.tabular.menu .item').removeClass("active");
+		$(this).addClass('active');
+		$('.ui.attached.segment .tab-content').removeClass('show').hide();
+		$(content).addClass('show').show();
+		// push state for changing browser history
+		var url=location.href;
+		var mainpage = (getParameterByName('mainpage',url)!= null)?getParameterByName('mainpage',url):1;	
+		var subpage = (getParameterByName('subpage',url)!= null)?getParameterByName('subpage',url):1;	
+		var tab = num + 1;
+		history.pushState({"mainpage": mainpage,"subpage": subpage,"tab": tab},"", "index.php?mainpage="+mainpage+"&subpage="+subpage+"&tab="+tab);
+
+	});
+
 	/*自己頁面的submenu內容切換*/
 
 	/*vs_query.php's component action*/
@@ -380,7 +417,7 @@ $(document).ready(function(){
 		Call_sub_vs_query_pagination_ajax(page,key,keyword_type,type,unfinished,finished);
 	});
 	/*query.php's component action*/
-	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content, .post.gcb_client_list .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
+	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content, .post.is_client_list .tab-content.gcb_client_list .record_content, .post.is_client_list .tab-content.wsus_client_list .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
 		page				 = $(this).attr('page');
 		key 				 = $(this).attr('key');
 		keyword_type 		 = $(this).attr('keyword_type');
@@ -447,10 +484,16 @@ $(document).ready(function(){
 			Call_sub_query_ajax('security_contact'); 
 		}
 	 });
-	 $('.post.gcb_client_list #key').keyup(function(event) {
+	 $('.post.is_client_list .tab-content.gcb_client_list #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
 			console.log('keyup');     
 			Call_sub_query_ajax('gcb_client_list'); 
+		}
+	 });
+	 $('.post.is_client_list .tab-content.wsus_client #key').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			console.log('keyup');     
+			Call_sub_query_ajax('wsus_client_list'); 
 		}
 	 });
 	 $('.post.ip_and_url_scanResult #key').keyup(function(event) {
@@ -503,10 +546,16 @@ $(document).ready(function(){
 		console.log('security_contact serach_btn done');
 	});
 	
-	$('.post.gcb_client_list #search_btn').click(function (){
+	$('.post.is_client_list .tab-content.gcb_client_list #search_btn').click(function (){
 		console.log('gcb_client_list serach_btn');     
 		Call_sub_query_ajax('gcb_client_list');
 		console.log('gcb_client_list serach_btn done');
+	});
+	
+	$('.post.is_client_list .tab-content.wsus_client_list #search_btn').click(function (){
+		console.log('wsus_client_list serach_btn');     
+		Call_sub_query_ajax('wsus_client_list');
+		console.log('wsus_client_list serach_btn done');
 	});
 	
 	$('.post.ip_and_url_scanResult #search_btn').click(function (){

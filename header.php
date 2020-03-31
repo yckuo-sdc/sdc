@@ -36,7 +36,7 @@
 <script src='js/show_chart.js'></script>
 
 <!-- add php function-->
-<?php //include("login/function.php"); ?>
+<?php require_once("login/function.php");?>
 <!--[if IE 6]>
 <link href="default_ie6.css" rel="stylesheet" type="text/css" />
 <![endif]-->
@@ -82,9 +82,9 @@
 			<li><a class="3" accesskey="3" title="" href="index.php?mainpage=query">資安查詢</a>
 				<ul>
 					<li><a href="index.php?mainpage=query&subpage=1">府內資安事件查詢</a></li>
-					<li><a href="index.php?mainpage=query&subpage=2">NCERT資安通報查詢</a></li>
-					<li><a href="index.php?mainpage=query&subpage=3">NCERT資安聯絡人</a></li>
-					<li><a href="index.php?mainpage=query&subpage=4">GCB用戶端清單</a></li>
+					<li><a href="index.php?mainpage=query&subpage=2">資安通報查詢</a></li>
+					<li><a href="index.php?mainpage=query&subpage=3">資安聯絡人</a></li>
+					<li><a href="index.php?mainpage=query&subpage=4">端點資安用戶端清單</a></li>
 					<li><a href="index.php?mainpage=query&subpage=5">Retrieve GS & Ncert</a></li>
 				</ul>
 			</li>
@@ -92,8 +92,6 @@
 				<ul>		
 					<li><a href="index.php?mainpage=vulnerability&subpage=1">OverView</a></li>
 					<li><a href="index.php?mainpage=vulnerability&subpage=2">弱點查詢(All)</a></li>
-					<!--<li><a href="index.php?mainpage=vulnerability&subpage=3">弱點查詢(Host)</a></li>
-					<li><a href="index.php?mainpage=vulnerability&subpage=4">弱點查詢(Web)</a></li>-->
 					<li><a href="index.php?mainpage=vulnerability&subpage=3">Retrieve VS</a></li>
 				</ul>
 

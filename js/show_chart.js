@@ -55,11 +55,14 @@
 								countArray,
 								countArray_done
 							],
-							type:  'area'
+							type:  'area-spline'
 						},axis: {
 				   			x: {
 								type: 'category',
-								categories: nameArray
+								categories: nameArray,
+								tick: {
+									count: 3
+								}
 							}
 						}
 				});
@@ -197,8 +200,7 @@
 				type : 'pie'
 				},
 				size:{
-					width: cht_width,
-					height: cht_height
+					height: 360
 				},
 				onresize: function(){
 			
@@ -342,8 +344,7 @@
 					}
 				},
 				size:{
-					width: cht_width,
-					height: cht_height
+					height: 360
 				},
 				onresize: function(){
 			

@@ -44,16 +44,21 @@
 				$condition = $keyword_type." LIKE '%".$key."%'";
 			    $order = "ORDER by ID ASC";	
 				break;
+			case ($type == 'wsus_client_list' and $keyword_type != 'all'):
+				$table = "wsus_computer_status";
+				$condition = $keyword_type." LIKE '%".$key."%'";
+			    $order = "ORDER by TargetID ASC";	
+				break;
 			case ($type == 'security_event' and $keyword_type == 'all'):
 				$table = "security_event";
-				//fulltext seach
-				$condition = getfulltextsearchsql($conn,$table,$key);
+				//Fulltext seach
+				$condition = getFullTextSearchSQL($conn,$table,$key);
 			    $order = "order by eventid desc,occurrencetime desc";	
 				break;
 			case ($type == 'tainangov_security_Incident' and $keyword_type == 'all'):
 				$table = "tainangov_security_Incident";
-				//fulltext seach
-				$condition = getfulltextsearchsql($conn,$table,$key);
+				//Fulltext seach
+				$condition = getFullTextSearchSQL($conn,$table,$key);
 			    $order = "order by IncidentID desc,occurrencetime desc";	
 				break;
 			case ($type == 'security_contact' and $keyword_type == 'all'):
@@ -65,10 +70,17 @@
 				$order = "ORDER by OID asc,person_type asc";
 				break;
 			case ($type == 'gcb_client_list' and $keyword_type == 'all'):
+				$table = "gcb_client_list";
+				//Fulltext seach
+				$condition = getFullTextSearchSQL($conn,$table,$key);
 				$table = "(SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a,gcb_os as b,gcb_ie as c WHERE a.OSEnvID = b.id AND a.IEEnvID = c.id)A";
-				//fulltext seach
-				$condition = getfulltextsearchsql($conn,$table,$key);
-			    $order = "order by ID asc";	
+				$order = "ORDER by ID ASC";	
+				break;
+			case ($type == 'wsus_client_list' and $keyword_type == 'all'):
+				$table = "wsus_client_list";
+				//Fulltext seach
+				$condition = getFullTextSearchSQL($conn,$table,$key);
+				$order = "ORDER by TargetID ASC";	
 				break;
 		}
 		$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
@@ -305,7 +317,8 @@
 						echo $row['Name']."&nbsp&nbsp";
 						echo "<span style='background:#fde087'>".$row['OrgName']."</span>&nbsp&nbsp";
 						echo $row['UserName']."&nbsp&nbsp";
-						echo long2ip($row['InternalIP'])."&nbsp&nbsp";
+						echo $row['Owner']."&nbsp&nbsp";
+						echo "<span style='background:#DDDDDD'>".long2ip($row['InternalIP'])."</span>&nbsp&nbsp";
 						echo $row['os_name']."&nbsp&nbsp";
 						echo "<i class='angle double down icon'></i>";
 						echo "</a>";
@@ -317,6 +330,7 @@
 							echo "<li>電腦名稱:".$row['Name']."</li>";
 							echo "<li>單位名稱:".$row['OrgName']."</li>";
 							echo "<li>使用者帳號:".$row['UserName']."</li>";
+							echo "<li>使用者名稱:".$row['Owner']."</li>";
 							echo "<li>OS:".$row['os_name']."</li>";
 							echo "<li>IE:".$row['ie_name']."</li>";
 							echo "<li>是否上線:".$row['IsOnline']."</li>";
@@ -334,6 +348,68 @@
 					echo "</div>";
 				}
 				
+				echo "</div>";
+				break;
+				case "wsus_client_list":
+					echo "<div class='ui relaxed divided list'>";
+						echo "<div class='item'>";
+							echo "<div class='content'>";
+								echo "<a class='header'>";
+								//echo "序號&nbsp";
+								echo "電腦名稱&nbsp&nbsp";
+								echo "內網IP&nbsp&nbsp";
+								echo "未安裝更新&nbsp&nbsp";
+								echo "安裝失敗更新&nbsp&nbsp";
+								echo "上次回報日期&nbsp&nbsp";
+								echo "<a>";
+							echo "</div>";
+						echo "</div>";
+
+				while($row = mysqli_fetch_assoc($result)) {
+					echo "<div class='item'>";
+					echo "<div class='content'>";
+						echo "<a>";
+						echo strtoupper(str_replace(".tainan.gov.tw","",$row['FullDomainName']))."&nbsp&nbsp";
+						echo "<span style='background:#fde087'>".$row['IPAddress']."</span>&nbsp&nbsp";
+						echo "<span style='background:#DDDDDD'>".$row['NotInstalled']."</span>&nbsp&nbsp";
+						echo "<span style='background:#fbc5c5'>".$row['Failed']."</span>&nbsp&nbsp";
+						if($row['LastReportedStatusTime']!='NULL') echo date_format(date_create($row['LastReportedStatusTime']),'Y-m-d H:i:s');
+						echo "<i class='angle double down icon'></i>";
+						echo "</a>";
+						echo "<div class='description'>";
+							echo "<ol>";
+							echo "<li>序號:".$row['TargetID']."</li>";
+							echo "<li>電腦名稱:".strtoupper(str_replace(".tainan.gov.tw","",$row['FullDomainName']))."</li>";
+							echo "<li>內網IP:".$row['IPAddress']."</li>";
+							echo "<li>未知更新數量:".$row['Unknown']."</li>";
+							echo "<li>未安裝更新數量:".$row['NotInstalled']."</li>";
+							$sql = "SELECT KBArticleID FROM wsus_computer_updatestatus_kbid WHERE TargetID = ".$row['TargetID']." AND UpdateState = 'NotInstalled' ORDER by ID asc";
+							$result_NotInstalled = mysqli_query($conn,$sql);
+							while($row_NotInstalled = mysqli_fetch_assoc($result_NotInstalled)) {
+								echo "<strong>KB".$row_NotInstalled['KBArticleID']."</strong> ";	
+							}	
+							echo "<li>已下載更新數量:".$row['Downloaded']."</li>";
+							echo "<li>已安裝更新數量:".$row['Installed']."</li>";
+							echo "<li>安裝失敗更新數量:".$row['Failed']."</li>";
+							$sql = "SELECT KBArticleID FROM wsus_computer_updatestatus_kbid WHERE TargetID = ".$row['TargetID']." AND UpdateState = 'Failed' ORDER by ID asc";
+							$result_Failed = mysqli_query($conn,$sql);
+							while($row_Failed = mysqli_fetch_assoc($result_Failed)) {
+								echo "<strong>KB".$row_Failed['KBArticleID']."</strong> ";	
+							}	
+							echo "<li>已安裝待重開機更新數量:".$row['InstalledPendingReboot']."</li>";
+							echo "<li>上次狀態回報日期:".date_format(date_create($row['LastReportedStatusTime']),'Y-m-d H:i:s')."</li>";
+							echo "<li>上次更新重開機日期:";
+							if($row['LastReportedRebootTime']!='NULL') echo date_format(date_create($row['LastReportedRebootTime']),'Y-m-d H:i:s');
+							echo "</li>";
+							echo "<li>上次可用更新日期:".date_format(date_create($row['EffectiveLastDetectionTime']),'Y-m-d H:i:s')."</li>";
+							echo "<li>上次同步日期:".date_format(date_create($row['LastSyncTime']),'Y-m-d H:i:s')."</li>";
+							echo "<li>上次修改日期:".date_format(date_create($row['LastChangeTime']),'Y-m-d H:i:s')."</li>";
+							echo "<li>上次同步結果:".$row['LastSyncResult']."</li>";
+							echo "</ol>";
+						echo "</div>";
+						echo "</div>";
+					echo "</div>";
+				}
 				echo "</div>";
 				break;
 			}

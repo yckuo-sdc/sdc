@@ -38,34 +38,7 @@
                 <?php //select data form database
                     require("mysql_connect.inc.php");
                     //------------pagination----------//
-					/*$table = "security_event";
-					$condition = "1";
-					$order = "ORDER by EventID desc,OccurrenceTime desc"; 
-				
-					$loop_header =  "<div class='ui relaxed divided list'>";
-					$loop_header = $loop_header."<div class='item'>";
-					$loop_header = $loop_header."<div class='content'>";
-					$loop_header = $loop_header."<a class='header'>";
-				   	$loop_header = $loop_header."發現日期&nbsp&nbsp";
-					$loop_header = $loop_header."結案狀態&nbsp&nbsp";
-					$loop_header = $loop_header."資安事件類型&nbsp&nbsp";
-                   	$loop_header = $loop_header."位置&nbsp&nbsp";
-					$loop_header = $loop_header."設備IP&nbsp&nbsp";
-					$loop_header = $loop_header."姓名&nbsp&nbsp";
-					$loop_header = $loop_header."分機&nbsp&nbsp";
-					$loop_header = $loop_header."</a>";
-					$loop_header = $loop_header."</div>";
-					$loop_header = $loop_header."</div>";
-
-					include("pagination.php");
-					 */
-
-					$pages=" ";
-                    if (!isset($_GET['page'])){ 
-                        $pages = 1; 
-                    }else{
-                        $pages = $_GET['page']; 
-                    }
+					$pages = isset($_GET['page'])?$_GET['page']:1;	
                     
                     //select row_number,and other field value
                     $sql = "SELECT * FROM security_event ORDER by EventID desc,OccurrenceTime desc";
@@ -145,34 +118,9 @@
                     }
 					
 					echo "</div>";
-                                            
-                    //The href-link of bottom pages
-                    echo "<div class='ui pagination menu'>";	
-                    echo "<a class='item test' href='?mainpage=query&page=1'>首頁</a>";
-                    echo "<a class='item test' href='?mainpage=query&page=".$prev_page."'> ← </a>";
-                    for ($j = $lower_bound; $j <= $upper_bound ;$j++){
-                        if($j == $pages){
-                            echo"<a class='active item bold' href='?mainpage=query&page=".$j."'>".$j."</a>";
-                        }else{
-                            echo"<a class='item test' href='?mainpage=query&page=".$j."'>".$j."</a>";
-                        }
-                    }
-                    echo"<a class='item test' href='?mainpage=query&page=".$next_page."'> → </a>";		
-                    //last page
-                    echo"<a class='item test' href='?mainpage=query&page=".$Totalpages."'>末頁</a>";
-                    echo "</div>";
-				   
-                    //The mobile href-link of bottom pages
-                    echo "<div class='ui pagination menu mobile'>";	
-                    echo "<a class='item test' href='?mainpage=query&page=".$prev_page."'> ← </a>";
-                    echo"<a class='active item bold' href='?mainpage=query&page=".$pages."'>(".$pages."/".$Totalpages.")</a>";
-                    echo"<a class='item test' href='?mainpage=query&page=".$next_page."'> → </a>";		
-                    echo "</div>";
-				
-				
+					/* Create Pagination Element*/ 
+					echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",1,0,$pages);
 					}
-
-					
                     $conn->close();
                         
                 ?>
@@ -183,7 +131,7 @@
 		</div>
 		<div class="sub-content">
 			<div class="post tainangov_security_Incident">
-				<div class="post_title">NCERT資安通報查詢</div>
+				<div class="post_title">資安通報查詢</div>
 				<div class="post_cell">
 					<form class="ui form" action="javascript:void(0)">
 
@@ -218,12 +166,7 @@
 					<?php //select data form database
 						require("mysql_connect.inc.php");
 						//------------pagination----------//
-						$pages=" ";
-						if (!isset($_GET['page'])){ 
-							$pages = 1; 
-						}else{
-							$pages = $_GET['page']; 
-						}
+						$pages = isset($_GET['page'])?$_GET['page']:1;	
 						
 						//select row_number,and other field value
 						//$sql = "SELECT * FROM security_contact ORDER by OID asc,person_type asc";
@@ -321,29 +264,8 @@
 						}
 						
 						echo "</div>";
-												
-						//The href-link of bottom pages
-						echo "<div class='ui pagination menu'>";	
-						echo "<a class='item test' href='?mainpage=query&subpage=2&page=1'>首頁</a>";
-						echo "<a class='item test' href='?mainpage=query&subpage=2&page=".$prev_page."'> ← </a>";
-						for ($j = $lower_bound; $j <= $upper_bound ;$j++){
-							if($j == $pages){
-								echo"<a class='active item bold' href='?mainpage=query&subpage=2&page=".$j."'>".$j."</a>";
-							}else{
-								echo"<a class='item test' href='?mainpage=query&subpage=2&page=".$j."'>".$j."</a>";
-							}
-						}
-						echo"<a class='item test' href='?mainpage=query&subpage=2&page=".$next_page."'> → </a>";		
-						//last page
-						echo"<a class='item test' href='?mainpage=query&subpage=2&page=".$Totalpages."'>末頁</a>";
-						echo "</div>";
-					   
-						//The mobile href-link of bottom pages
-						echo "<div class='ui pagination menu mobile'>";	
-						echo "<a class='item test' href='?mainpage=query&subpage=2&page=".$prev_page."'> ← </a>";
-						echo"<a class='active item bold' href='?mainpage=query&subpage=2&page=".$pages."'>(".$pages."/".$Totalpages.")</a>";
-						echo"<a class='item test' href='?mainpage=query&subpage=2&page=".$next_page."'> → </a>";		
-						echo "</div>";
+						/* Create Pagination Element*/ 
+						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",2,0,$pages);
 						}
 						$conn->close();
 					?>
@@ -353,7 +275,7 @@
 		</div><!--End of sub-content-->
 		<div class="sub-content">
 			<div class="post security_contact">
-				<div class="post_title">NCERT資安聯絡人</div>
+				<div class="post_title">資安聯絡人</div>
 				<div class="post_cell">
 					<form class="ui form" action="javascript:void(0)">
 
@@ -386,13 +308,7 @@
 					<div class="record_content">
 					<?php //select data form database
 						require("mysql_connect.inc.php");
-						//------------pagination----------//
-						$pages=" ";
-						if (!isset($_GET['page'])){ 
-							$pages = 1; 
-						}else{
-							$pages = $_GET['page']; 
-						}
+						$pages = isset($_GET['page'])?$_GET['page']:1;	
 						
 						//select row_number,and other field value
 						//$sql = "SELECT * FROM security_contact ORDER by OID asc,person_type asc";
@@ -471,28 +387,8 @@
 						
 						echo "</div>";
 												
-						//The href-link of bottom pages
-						echo "<div class='ui pagination menu'>";	
-						echo "<a class='item test' href='?mainpage=query&subpage=3&page=1'>首頁</a>";
-						echo "<a class='item test' href='?mainpage=query&subpage=3&page=".$prev_page."'> ← </a>";
-						for ($j = $lower_bound; $j <= $upper_bound ;$j++){
-							if($j == $pages){
-								echo"<a class='active item bold' href='?mainpage=query&subpage=3&page=".$j."'>".$j."</a>";
-							}else{
-								echo"<a class='item test' href='?mainpage=query&subpage=3&page=".$j."'>".$j."</a>";
-							}
-						}
-						echo"<a class='item test' href='?mainpage=query&subpage=3&page=".$next_page."'> → </a>";		
-						//last page
-						echo"<a class='item test' href='?mainpage=query&subpage=3&page=".$Totalpages."'>末頁</a>";
-						echo "</div>";
-					   
-						//The mobile href-link of bottom pages
-						echo "<div class='ui pagination menu mobile'>";	
-						echo "<a class='item test' href='?mainpage=query&subpage=3&page=".$prev_page."'> ← </a>";
-						echo"<a class='active item bold' href='?mainpage=query&subpage=3&page=".$pages."'>(".$pages."/".$Totalpages.")</a>";
-						echo"<a class='item test' href='?mainpage=query&subpage=3&page=".$next_page."'> → </a>";		
-						echo "</div>";
+						/* Create Pagination Element*/ 
+						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",3,0,$pages);
 						}
 						$conn->close();
 					?>
@@ -501,174 +397,294 @@
 			</div><!--End of post-->
 		</div><!--End of sub-content-->
 		<div class="sub-content">
-			<div class="post gcb_client_list">
-				<div class="post_title">GCB用戶端清單</div>
+			<div class="post is_client_list">
+				<div class="post_title">端點資安用戶端清單</div>
 				<div class="post_cell">
-					<form class="ui form" action="javascript:void(0)">
+					<div class="ui top attached tabular menu">
+						<a class="active item">GCB</a>
+						<a class="item">WSUS</a>
+						<a class="item">AntiVirus</a>
+					</div>
+					<div class="ui bottom attached segment">
+						<div class="tab-content gcb_client_list show">
+						<form class="ui form" action="javascript:void(0)">
 
-					<div class="fields">
-						<div class="field">
-							<label>種類</label>
-							<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
-							<option value="Name" class="keyword_paper active" selected>電腦名稱</option>
-							<option value="InternalIP" class="keyword_paper active">內部IP</option>
-							<option value="UserName" class="keyword_paper active">使用者帳號</option>
-							<option value="OrgName" class="keyword_paper active">單位名稱</option>
-							<option value="all" class="keyword_paper active">全部</option>
-							</select>
-						</div>
-						<div class="field">
-							<label>關鍵字</label>
-							<div class="ui input">
-								<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
+						<div class="fields">
+							<div class="field">
+								<label>種類</label>
+								<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
+								<option value="Name" class="keyword_paper active" selected>電腦名稱</option>
+								<option value="InternalIP" class="keyword_paper active">內部IP</option>
+								<option value="UserName" class="keyword_paper active">使用者帳號</option>
+								<option value="OrgName" class="keyword_paper active">單位名稱</option>
+								<option value="all" class="keyword_paper active">全部</option>
+								</select>
+							</div>
+							<div class="field">
+								<label>關鍵字</label>
+								<div class="ui input">
+									<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
+								</div>
+							</div>
+							<div class="field">
+								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+							</div>
+							 <div class="field">
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4'">顯示全部</button>
 							</div>
 						</div>
-						<div class="field">
-							<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
-						</div>
-						 <div class="field">
-							<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4'">顯示全部</button>
-						</div>
-					</div>
-					</form>
-					<div class="record_content">
-					<?php //select data form database
-						require("mysql_connect.inc.php");
-						//------------pagination----------//
-						$pages=" ";
-						if (!isset($_GET['page'])){ 
-							$pages = 1; 
-						}else{
-							$pages = $_GET['page']; 
-						}
-						
-						//select row_number,and other field value
-						//$sql = "SELECT * FROM security_contact ORDER by OID asc,person_type asc";
-						// select security_contact from NCERT and Internal_Primary Unit from self-creation
-						$sql = "SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a,gcb_os as b,gcb_ie as c WHERE a.OSEnvID = b.id AND a.IEEnvID = c.id ORDER by a.ID asc,a.InternalIP asc";
-						$result = mysqli_query($conn,$sql);
-						$rowcount = mysqli_num_rows($result);
-									
-						$per = 10; 		
-						$max_pages = 10;
-						$Totalpages = ceil($rowcount / $per); 
-						$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
-						$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
-						$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
-						if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
-						elseif($pages == $Totalpages)	$offset = $rowcount - $start;
-						else							$offset = $per;
-									
-						$prev_page = ($pages > 1) ? $pages -1 : 1;
-						$next_page = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
-						$sql_subpage = $sql." limit ".$start.",".$offset;
-									
-						$result = mysqli_query($conn,$sql_subpage);
-											
-						if($rowcount==0){
-							echo "查無此筆紀錄";
-						}else{
-							echo "共有".$rowcount."筆資料！";
+						</form>
+						<div class="record_content">
+							
+
+						<?php //select data form database
+					
+
+							require("mysql_connect.inc.php");
+							//------------pagination----------//
+							$pages = isset($_GET['page'])?$_GET['page']:1;	
+							
+							//select row_number,and other field value
+							//$sql = "SELECT * FROM security_contact ORDER by OID asc,person_type asc";
+							// select security_contact from NCERT and Internal_Primary Unit from self-creation
+							$sql = "SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a,gcb_os as b,gcb_ie as c WHERE a.OSEnvID = b.id AND a.IEEnvID = c.id ORDER by a.ID asc,a.InternalIP asc";
+							$result = mysqli_query($conn,$sql);
+							$rowcount = mysqli_num_rows($result);
+										
+							$per = 10; 		
+							$max_pages = 10;
+							$Totalpages = ceil($rowcount / $per); 
+							$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
+							$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
+							$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
+							if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
+							elseif($pages == $Totalpages)	$offset = $rowcount - $start;
+							else							$offset = $per;
+										
+							$prev_page = ($pages > 1) ? $pages -1 : 1;
+							$next_page = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
+							$sql_subpage = $sql." limit ".$start.",".$offset;
+										
+							$result = mysqli_query($conn,$sql_subpage);
+												
+							if($rowcount==0){
+								echo "查無此筆紀錄";
+							}else{
+								echo "共有".$rowcount."筆資料！";
 
 
-							echo "<div class='ui relaxed divided list'>";
+								echo "<div class='ui relaxed divided list'>";
+									echo "<div class='item'>";
+										echo "<div class='content'>";
+											echo "<a class='header'>";
+											//echo "序號&nbsp";
+											echo "電腦名稱&nbsp&nbsp";
+											echo "單位名稱&nbsp&nbsp";
+											echo "使用者帳號&nbsp&nbsp";
+											echo "使用者名稱&nbsp&nbsp";
+											echo "內網IP&nbsp&nbsp";
+											echo "作業系統&nbsp&nbsp";
+											echo "<a>";
+										echo "</div>";
+									echo "</div>";
+
+							while($row = mysqli_fetch_assoc($result)) {
 								echo "<div class='item'>";
-									echo "<div class='content'>";
-										echo "<a class='header'>";
-										//echo "序號&nbsp";
-										echo "電腦名稱&nbsp&nbsp";
-										echo "單位名稱&nbsp&nbsp";
-										echo "使用者帳號&nbsp&nbsp";
-										echo "內網IP&nbsp&nbsp";
-										echo "作業系統&nbsp&nbsp";
-										echo "<a>";
+								echo "<div class='content'>";
+									echo "<a>";
+									if($row['IsOnline'] == "1")		echo "<i class='circle icon' style='color:green'></i>";
+									else							echo "<i class='circle outline icon'></i>";
+									switch($row['GsStat']){
+										case '0':
+											$GsStat_str = "未套用";
+											break;
+										case '1':
+											$GsStat_str = "已套用";
+											break;
+										case '-1':
+											$GsStat_str = "套用失敗";
+											break;
+										case '2':
+											$GsStat_str = "還原成功";
+											break;
+										case '-2':
+											$GsStat_str = "未套用";
+											break;
+									}
+									
+									echo $row['Name']."&nbsp&nbsp";
+									echo "<span style='background:#fde087'>".$row['OrgName']."</span>&nbsp&nbsp";
+									echo $row['UserName']."&nbsp&nbsp";
+									echo $row['Owner']."&nbsp&nbsp";
+									echo "<span style='background:#DDDDDD'>".long2ip($row['InternalIP'])."</span>&nbsp&nbsp";
+									echo $row['os_name']."&nbsp&nbsp";
+									echo "<i class='angle double down icon'></i>";
+									echo "</a>";
+									echo "<div class='description'>";
+										echo "<ol>";
+										echo "<li>序號:".$row['ID']."</li>";
+										echo "<li>外部IP:".long2ip($row['ExternalIP'])."</li>";
+										echo "<li>內部IP:".long2ip($row['InternalIP'])."</li>";
+										echo "<li>電腦名稱:".$row['Name']."</li>";
+										echo "<li>單位名稱:".$row['OrgName']."</li>";
+										echo "<li>使用者帳號:".$row['UserName']."</li>";
+										echo "<li>使用者名稱:".$row['Owner']."</li>";
+										echo "<li>OS:".$row['os_name']."</li>";
+										echo "<li>IE:".$row['ie_name']."</li>";
+										echo "<li>是否上線:".$row['IsOnline']."</li>";
+										echo "<li>Gcb總通過數[未包含例外]:".$row['GsAll_0']."</li>";
+										echo "<li>Gcb總通過數[包含例外]:".$row['GsAll_1']."</li>";
+										echo "<li>Gcb總通過數[總數]:".$row['GsAll_2']."</li>";
+										echo "<li>Gcb例外數量:".$row['GsExcTot']."</li>";
+										echo "<li>Gcb掃描編號:".$row['GsID']."</li>";
+										echo "<li>Gcb派送編號:".$row['GsSetDeployID']."</li>";
+										echo "<li>Gcb狀態:".$GsStat_str."</li>";
+										echo "<li>Gcb回報時間:".$row['GsUpdatedAt']."</li>";
+										echo "</ol>";
+									echo "</div>";
 									echo "</div>";
 								echo "</div>";
-
-						while($row = mysqli_fetch_assoc($result)) {
-							echo "<div class='item'>";
-							echo "<div class='content'>";
-								echo "<a>";
-								if($row['IsOnline'] == "1")		echo "<i class='circle icon' style='color:green'></i>";
-								else							echo "<i class='circle outline icon'></i>";
-								switch($row['GsStat']){
-									case '0':
-										$GsStat_str = "未套用";
-										break;
-									case '1':
-										$GsStat_str = "已套用";
-										break;
-									case '-1':
-										$GsStat_str = "套用失敗";
-										break;
-									case '2':
-										$GsStat_str = "還原成功";
-										break;
-									case '-2':
-										$GsStat_str = "未套用";
-										break;
-								}
-								
-								echo $row['Name']."&nbsp&nbsp";
-								echo "<span style='background:#fde087'>".$row['OrgName']."</span>&nbsp&nbsp";
-								echo $row['UserName']."&nbsp&nbsp";
-								echo long2ip($row['InternalIP'])."&nbsp&nbsp";
-								echo $row['os_name']."&nbsp&nbsp";
-								echo "<i class='angle double down icon'></i>";
-								echo "</a>";
-								echo "<div class='description'>";
-									echo "<ol>";
-									echo "<li>序號:".$row['ID']."</li>";
-									echo "<li>外部IP:".long2ip($row['ExternalIP'])."</li>";
-									echo "<li>內部IP:".long2ip($row['InternalIP'])."</li>";
-									echo "<li>電腦名稱:".$row['Name']."</li>";
-									echo "<li>單位名稱:".$row['OrgName']."</li>";
-									echo "<li>使用者帳號:".$row['UserName']."</li>";
-									echo "<li>OS:".$row['os_name']."</li>";
-									echo "<li>IE:".$row['ie_name']."</li>";
-									echo "<li>是否上線:".$row['IsOnline']."</li>";
-									echo "<li>Gcb總通過數[未包含例外]:".$row['GsAll_0']."</li>";
-									echo "<li>Gcb總通過數[包含例外]:".$row['GsAll_1']."</li>";
-									echo "<li>Gcb總通過數[總數]:".$row['GsAll_2']."</li>";
-									echo "<li>Gcb例外數量:".$row['GsExcTot']."</li>";
-									echo "<li>Gcb掃描編號:".$row['GsID']."</li>";
-									echo "<li>Gcb派送編號:".$row['GsSetDeployID']."</li>";
-									echo "<li>Gcb狀態:".$GsStat_str."</li>";
-									echo "<li>Gcb回報時間:".$row['GsUpdatedAt']."</li>";
-								 	echo "</ol>";
-								echo "</div>";
-								echo "</div>";
-							echo "</div>";
-						}
-						
-						echo "</div>";
-												
-						//The href-link of bottom pages
-						echo "<div class='ui pagination menu'>";	
-						echo "<a class='item test' href='?mainpage=query&subpage=4&page=1'>首頁</a>";
-						echo "<a class='item test' href='?mainpage=query&subpage=4&page=".$prev_page."'> ← </a>";
-						for ($j = $lower_bound; $j <= $upper_bound ;$j++){
-							if($j == $pages){
-								echo"<a class='active item bold' href='?mainpage=query&subpage=4&page=".$j."'>".$j."</a>";
-							}else{
-								echo"<a class='item test' href='?mainpage=query&subpage=4&page=".$j."'>".$j."</a>";
 							}
-						}
-						echo"<a class='item test' href='?mainpage=query&subpage=4&page=".$next_page."'> → </a>";		
-						//last page
-						echo"<a class='item test' href='?mainpage=query&subpage=4&page=".$Totalpages."'>末頁</a>";
-						echo "</div>";
-					   
-						//The mobile href-link of bottom pages
-						echo "<div class='ui pagination menu mobile'>";	
-						echo "<a class='item test' href='?mainpage=query&subpage=4&page=".$prev_page."'> ← </a>";
-						echo"<a class='active item bold' href='?mainpage=query&subpage=4&page=".$pages."'>(".$pages."/".$Totalpages.")</a>";
-						echo"<a class='item test' href='?mainpage=query&subpage=4&page=".$next_page."'> → </a>";		
-						echo "</div>";
-						}
-						$conn->close();
-					?>
-					</div> <!--End of record_content-->	
+							
+							echo "</div>";
+						    /* Create Pagination Element*/ 
+							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,1,$pages);
+							}
+							$conn->close();
+						?>
+						</div> <!--End of record_content-->	
+					</div> <!--End of tabular_content-->	
+					<div class="tab-content wsus_client_list">
+						<form class="ui form" action="javascript:void(0)">
+
+						<div class="fields">
+							<div class="field">
+								<label>種類</label>
+								<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
+								<option value="FullDomainName" class="keyword_paper active" selected>電腦名稱</option>
+								<option value="IPAddress" class="keyword_paper active">內部IP</option>
+								<option value="all" class="keyword_paper active">全部</option>
+								</select>
+							</div>
+							<div class="field">
+								<label>關鍵字</label>
+								<div class="ui input">
+									<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
+								</div>
+							</div>
+							<div class="field">
+								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+							</div>
+							 <div class="field">
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=5'">顯示全部</button>
+							</div>
+						</div>
+						</form>
+						<div class="record_content">
+						<?php //select data form database
+							require("mysql_connect.inc.php");
+							//------------pagination----------//
+							$pages = isset($_GET['page'])?$_GET['page']:1;	
+							$sort = isset($_GET['sort'])?$_GET['sort']:'TargetID';	
+							
+							//select row_number,and other field value
+							$sql = "SELECT * FROM wsus_computer_status ORDER by $sort asc";
+							$result = mysqli_query($conn,$sql);
+							$rowcount = mysqli_num_rows($result);
+										
+							$per = 10; 		
+							$max_pages = 10;
+							$Totalpages = ceil($rowcount / $per); 
+							$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
+							$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
+							$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
+							if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
+							elseif($pages == $Totalpages)	$offset = $rowcount - $start;
+							else							$offset = $per;
+										
+							$prev_page = ($pages > 1) ? $pages -1 : 1;
+							$next_page = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
+							$sql_subpage = $sql." limit ".$start.",".$offset;
+										
+							$result = mysqli_query($conn,$sql_subpage);
+												
+							if($rowcount==0){
+								echo "查無此筆紀錄";
+							}else{
+								echo "共有".$rowcount."筆資料！";
+
+
+								echo "<div class='ui relaxed divided list'>";
+									echo "<div class='item'>";
+										echo "<div class='content'>";
+											echo "<div class='header'>";
+											echo "<a href='?mainpage=query&subpage=4&tab=2&sort=FullDomainName'>電腦名稱</a>&nbsp&nbsp";
+											echo "<a href='?mainpage=query&subpage=4&tab=2&sort=IPAddress'>內網IP</a>&nbsp&nbsp";
+											echo "<a href='?mainpage=query&subpage=4&tab=2&sort=NotInstalled'>未安裝更新</a>&nbsp&nbsp";
+											echo "<a href='?mainpage=query&subpage=4&tab=2&sort=Failed'>安裝失敗更新</a>&nbsp&nbsp";
+											echo "<a href='?mainpage=query&subpage=4&tab=2&sort=LastReportedStatusTime'>上次回報日期</a>&nbsp&nbsp";
+											echo "</div>";
+										echo "</div>";
+									echo "</div>";
+
+							while($row = mysqli_fetch_assoc($result)) {
+								echo "<div class='item'>";
+								echo "<div class='content'>";
+									echo "<a>";
+									echo strtoupper(str_replace(".tainan.gov.tw","",$row['FullDomainName']))."&nbsp&nbsp";
+									echo "<span style='background:#fde087'>".$row['IPAddress']."</span>&nbsp&nbsp";
+									echo "<span style='background:#DDDDDD'>".$row['NotInstalled']."</span>&nbsp&nbsp";
+									echo "<span style='background:#fbc5c5'>".$row['Failed']."</span>&nbsp&nbsp";
+									if($row['LastReportedStatusTime']!='NULL') echo date_format(date_create($row['LastReportedStatusTime']),'Y-m-d H:i:s');
+									echo "<i class='angle double down icon'></i>";
+									echo "</a>";
+									echo "<div class='description'>";
+										echo "<ol>";
+										echo "<li>序號:".$row['TargetID']."</li>";
+										echo "<li>電腦名稱:".strtoupper(str_replace(".tainan.gov.tw","",$row['FullDomainName']))."</li>";
+										echo "<li>內網IP:".$row['IPAddress']."</li>";
+										echo "<li>未知更新數量:".$row['Unknown']."</li>";
+										echo "<li>未安裝更新數量:".$row['NotInstalled']."</li>";
+										$sql = "SELECT KBArticleID FROM wsus_computer_updatestatus_kbid WHERE TargetID = ".$row['TargetID']." AND UpdateState = 'NotInstalled' ORDER by ID asc";
+										$result_NotInstalled = mysqli_query($conn,$sql);
+										while($row_NotInstalled = mysqli_fetch_assoc($result_NotInstalled)) {
+											echo "<strong>KB".$row_NotInstalled['KBArticleID']."</strong> ";	
+										}	
+										echo "<li>已下載更新數量:".$row['Downloaded']."</li>";
+										echo "<li>已安裝更新數量:".$row['Installed']."</li>";
+										echo "<li>安裝失敗更新數量:".$row['Failed']."</li>";
+										$sql = "SELECT KBArticleID FROM wsus_computer_updatestatus_kbid WHERE TargetID = ".$row['TargetID']." AND UpdateState = 'Failed' ORDER by ID asc";
+										$result_Failed = mysqli_query($conn,$sql);
+										while($row_Failed = mysqli_fetch_assoc($result_Failed)) {
+											echo "<strong>KB".$row_Failed['KBArticleID']."</strong> ";	
+										}	
+										echo "<li>已安裝待重開機更新數量:".$row['InstalledPendingReboot']."</li>";
+										echo "<li>上次狀態回報日期:".date_format(date_create($row['LastReportedStatusTime']),'Y-m-d H:i:s')."</li>";
+										echo "<li>上次更新重開機日期:";
+										if($row['LastReportedRebootTime']!='NULL') echo date_format(date_create($row['LastReportedRebootTime']),'Y-m-d H:i:s');
+										echo "</li>";
+										echo "<li>上次可用更新日期:".date_format(date_create($row['EffectiveLastDetectionTime']),'Y-m-d H:i:s')."</li>";
+										echo "<li>上次同步日期:".date_format(date_create($row['LastSyncTime']),'Y-m-d H:i:s')."</li>";
+										echo "<li>上次修改日期:".date_format(date_create($row['LastChangeTime']),'Y-m-d H:i:s')."</li>";
+										echo "<li>上次同步結果:".$row['LastSyncResult']."</li>";
+										echo "</ol>";
+									echo "</div>";
+									echo "</div>";
+								echo "</div>";
+							}
+							
+							echo "</div>";
+						    /* Create Pagination Element*/ 
+							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,2,$pages);
+							}
+							$conn->close();
+						?>
+						</div> <!--End of record_content-->	
+					</div> <!--End of tabular_content-->	
+					<div class="tab-content antivirus_client_list show">
+					AntiVirus
+					</div> <!--End of tabular_content-->	
+					</div> <!--End of attached_menu-->	
 				</div><!--End of post_cell-->
 			</div><!--End of post-->
 		</div><!--End of sub-content-->
@@ -709,6 +725,6 @@
 		<div style="clear: both;">&nbsp;</div>
 	</div>
 	
-		<!-- end #content -->
+	<!-- end #content -->
 
 

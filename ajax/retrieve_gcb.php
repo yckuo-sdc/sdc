@@ -40,7 +40,7 @@ function get_client_list($url,$token,$limit){
 	  CURLOPT_FOLLOWLOCATION => true,
 	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 	  CURLOPT_CUSTOMREQUEST => "POST",
-	  CURLOPT_POSTFIELDS =>"{\r\n\"kind\": \"list&count\",\r\n\"page\": 1,\r\n\"limit\": ".$limit.",\r\n\"incl_exc\": true,\r\n\"sorts\": [\r\n{\r\n\"field\": \"ID\",\r\n\"type\": \"ASC\"\r\n}\r\n],\r\n\"select\": [\r\n\"ID\",\r\n\"Name\",\r\n\"UserName\",\r\n\"Owner\",\r\n\"OrgName\",\r\n\"OSEnvID\",\r\n\"IEEnvID\",\r\n\"InternalIP\",\r\n\"ExternalIP\",\r\n\"IsOnline\",\r\n\"GsID\",\r\n\"GsSetDeployID\",\r\n\"GsStat\",\r\n\"GsExcTot\",\r\n\"GsAll\",\r\n\"GsUpdatedAt\"\r\n],\r\n\"filter\": [\r\n]\r\n}",
+	  CURLOPT_POSTFIELDS =>"{\r\n\"kind\": \"list&count\",\r\n\"page\": 1,\r\n\"limit\": ".$limit.",\r\n\"incl_exc\": true,\r\n\"sorts\": [\r\n{\r\n\"field\": \"ID\",\r\n\"type\": \"ASC\"\r\n}\r\n],\r\n\"select\": [\r\n\"ID\",\r\n\"Name\",\r\n\"UserName\",\r\n\"AssocOwner\",\r\n\"OrgName\",\r\n\"OSEnvID\",\r\n\"IEEnvID\",\r\n\"InternalIP\",\r\n\"ExternalIP\",\r\n\"IsOnline\",\r\n\"GsID\",\r\n\"GsSetDeployID\",\r\n\"GsStat\",\r\n\"GsExcTot\",\r\n\"GsAll\",\r\n\"GsUpdatedAt\"\r\n],\r\n\"filter\": [\r\n]\r\n}",
 	  CURLOPT_HTTPHEADER => array(
 		"Content-Type: application/json",
 		"Authorization: Bearer ".$token
@@ -72,7 +72,7 @@ function get_client_list($url,$token,$limit){
 					$gcb_client_list['Name']= mysqli_real_escape_string($conn,$value2['Name']);
 					$gcb_client_list['OSEnvID']= mysqli_real_escape_string($conn,$value2['OSEnvID']);
 					$gcb_client_list['OrgName']= mysqli_real_escape_string($conn,$value2['OrgName']);
-					$gcb_client_list['Owner']= mysqli_real_escape_string($conn,$value2['Owner']);
+					$gcb_client_list['Owner']= mysqli_real_escape_string($conn,$value2['AssocOwner']);
 					$gcb_client_list['UserName']= mysqli_real_escape_string($conn,$value2['UserName']);
 
 					//echo long2ip($gcb_client_list['ExternalIP'])."\n\r";	
@@ -102,7 +102,7 @@ function get_client_list($url,$token,$limit){
 	$sql = "SELECT * FROM api_list WHERE class LIKE 'GCB' and name LIKE '用戶端清單' ";
 	$result = mysqli_query($conn,$sql);
 	$row = mysqli_fetch_assoc($result);
-	$sql = "INSERT INTO api_status(api_id,url,status,data_number,last_update) VALUES(".$row['id'].",'".$url."',".$status.",".$count.",'".$nowTime."')";
+	$sql = "INSERT INTO api_status(api_id,url,status,data_number,last_update) VALUES(".$row['id'].",'',".$status.",".$count.",'".$nowTime."')";
 	if ($conn->query($sql) == TRUE){
 	}else {
 		echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
