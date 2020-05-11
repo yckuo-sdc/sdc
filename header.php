@@ -76,7 +76,7 @@
 					<li><a href="index.php?mainpage=info&subpage=2">Comparison</a></li>
 					<li><a href="index.php?mainpage=info&subpage=3">Ranking Data</a></li>
 					<li><a href="index.php?mainpage=info&subpage=4">VUL Bar Chart</a></li>
-					<li><a href="index.php?mainpage=info&subpage=5">GCB Data</a></li>
+					<li><a href="index.php?mainpage=info&subpage=5">Client List</a></li>
 				</ul>
 			</li>
 			<li><a class="3" accesskey="3" title="" href="index.php?mainpage=query">資安查詢</a>
@@ -93,8 +93,8 @@
 					<li><a href="index.php?mainpage=vulnerability&subpage=1">OverView</a></li>
 					<li><a href="index.php?mainpage=vulnerability&subpage=2">弱點查詢(All)</a></li>
 					<li><a href="index.php?mainpage=vulnerability&subpage=3">Retrieve VS</a></li>
+					<li><a href="index.php?mainpage=vulnerability&subpage=4">Scan Target</a></li>
 				</ul>
-
 			</li>
 			<li><a class="5" accesskey="5" title="" href="index.php?mainpage=nmap">Tool</a>
 				<ul>	

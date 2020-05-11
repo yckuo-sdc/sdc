@@ -35,8 +35,10 @@
 				break;
 			case "chartB":
 				//select row_number,and other field value
-				$sql2018 = "SELECT MONTH(OccurrenceTime) as month,COUNT(*) as count FROM security_event WHERE YEAR(OccurrenceTime) LIKE '2018' GROUP BY MONTH(OccurrenceTime)";
-				$sql2019 = "SELECT MONTH(OccurrenceTime) as month,COUNT(*) as count FROM security_event WHERE YEAR(OccurrenceTime) LIKE '2019' GROUP BY MONTH(OccurrenceTime)";
+				$NowYear = date("Y");
+				$LastYear = $NowYear-1;
+				$sql2018 = "SELECT MONTH(OccurrenceTime) as month,COUNT(*) as count FROM security_event WHERE YEAR(OccurrenceTime) LIKE '".$LastYear."' GROUP BY MONTH(OccurrenceTime)";
+				$sql2019 = "SELECT MONTH(OccurrenceTime) as month,COUNT(*) as count FROM security_event WHERE YEAR(OccurrenceTime) LIKE '".$NowYear."' GROUP BY MONTH(OccurrenceTime)";
 				$result2018 	= mysqli_query($conn,$sql2018);
 				$result2019 	= mysqli_query($conn,$sql2019);
 				$rowcount2018	= mysqli_num_rows($result2018);
@@ -104,7 +106,8 @@
 				break;
 			case "chartE":
 				//select row_number,and other field value
-				$sql = "SELECT b.name,COUNT(b.name) as count FROM gcb_client_list as a,gcb_os as b WHERE a.OSEnvID = b.id GROUP BY b.name ORDER by count desc";
+				//$sql = "SELECT b.name,COUNT(b.name) as count FROM gcb_client_list as a,gcb_os as b WHERE a.OSEnvID = b.id GROUP BY b.name ORDER by count desc";
+				$sql = "SELECT b.name,COUNT(b.name) as count FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id GROUP BY b.name ORDER by count desc";
 				$result 	= mysqli_query($conn,$sql);
 				$rowcount	= mysqli_num_rows($result);
 				echo "<h3></h3>"; 

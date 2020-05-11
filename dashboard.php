@@ -5,7 +5,7 @@
 			<div class="post">
 				<div class="post_title">API Status</div>
 					<div class="post_cell">
-						<div class="post_table">
+						<table class="ui celled table">
 						 <?php //select data form database
 							require("mysql_connect.inc.php");
 							 //select row_number,and other field value
@@ -13,16 +13,7 @@
 							$result = mysqli_query($conn,$sql);
 							$num_total_entry = mysqli_num_rows($result);
 							
-							echo "<table>";
-							echo "<colgroup>";
-								echo "<col width='15%'/>";
-								echo "<col width='15%'/>";
-								echo "<col width='15%'/>";
-								echo "<col width='15%'/>";
-								echo "<col width='15%'/>";
-								echo "<col width='35%'/>";
-							echo "</colgroup>";
-							echo "<tbody>";	
+							echo "<thead>";	
 							echo "<tr>";
 								echo "<th>種類</th>";
 								echo "<th>名稱</th>";
@@ -31,6 +22,8 @@
 								echo "<th>更新時間</th>";
 								echo "<th>網址</th>";
 							echo "</tr>";
+							echo "</thead>";	
+							echo "<tbody>";	
                    			 while($row = mysqli_fetch_assoc($result)) {
 								echo "<tr>";
 									echo "<td>".$row['class']."</td>";
@@ -46,8 +39,6 @@
 
 							$conn->close();
 						?>
-
-					</div>
 				</div>
 			</div>
 		</div>

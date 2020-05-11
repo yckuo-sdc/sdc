@@ -1,7 +1,8 @@
 <!--index.php-->
 <?php session_start(); 
 	require_once("login/function.php");
-	verifyBySession("account");
+	//verifyBySession("account");
+	verifyBySession_Cookie("account");
 ?>
 
 <?php

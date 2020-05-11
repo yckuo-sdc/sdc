@@ -28,7 +28,6 @@
 			<div class="post">
 				<div class="post_title">Application System</div>
 					<div class="post_cell">
-						<div class="post_table">
 						 <?php //select data form database
 							require("mysql_connect.inc.php");
 							 //select row_number,and other field value
@@ -36,20 +35,16 @@
 							$result = mysqli_query($conn,$sql);
 							$num_total_entry = mysqli_num_rows($result);
 							
-							echo "<table>";
-							echo "<colgroup>";
-								echo "<col width='10%'/>";
-								echo "<col width='15%'/>";
-								echo "<col width='25%'/>";
-								echo "<col width='50%'/>";
-							echo "</colgroup>";
-							echo "<tbody>";	
+							echo "<table class='ui celled table'>";
+							echo "<thead>";	
 							echo "<tr>";
 								echo "<th>系統名稱</th>";
 								echo "<th>IP</th>";
 								echo "<th>網址</th>";
 								echo "<th>Scan Result</th>";
 							echo "</tr>";
+							echo "</thead>";	
+							echo "<tbody>";	
                    			 while($row = mysqli_fetch_assoc($result)) {
 								echo "<tr>";
 									echo "<td>".$row['Name']."</td>";
@@ -63,8 +58,6 @@
 
 							$conn->close();
 						?>
-
-					</div>
 				</div>
 			</div>
 		</div>

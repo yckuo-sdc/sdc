@@ -23,7 +23,7 @@
 						<li class="title"><a>Comparison</a></li>
 						<li class="title"><a>Ranking Data</a></li>
 						<li class="title"><a>VUL Bar Chart</a></li>
-						<li class="title"><a>GCB Data</a></li>
+						<li class="title"><a>Client List</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -56,6 +56,7 @@
 						<li class="active title"><a>OverView</a></li>
 						<li class="title"><a>弱點查詢(All)</a></li>
 						<li class="title"><a>Retrieve VS</a></li>
+						<li class="title"><a>Scan Target</a></li>
 					</ul>
 				</li>
 			</ul>

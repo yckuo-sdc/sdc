@@ -78,7 +78,6 @@
 
 					?>
 					</div>
-					<!--<div id="record_content" class ="post_table"></div>-->
 					<div style="clear:both"></div>
 					<p></p>
 <!--					<ol class="post_cell">
@@ -128,38 +127,6 @@
 			    </div>		
 			</div>
 		</div>
-<!--
-		<div class="4">
-			<div class="post">
-				<div class="post_title">ChartD</div>
-				<div id="chartD" class="chart"></div>	
-				<li>資安事件處理列表回報(TainanGov)</li>
-			</div>
-		</div>
-		<div class="5">
-			<div class="post">
-				<div class="post_title">ChartE</div>
-					<div class="post_cell">
-						
-						本所現有專任教授 25 名(教授16名*(包含兩位特聘教授)、副教授6名、助理教授3名)。
-						</br>(2016.2 製表，圖表內容為2013~2015)
-					</div>
-				
-					<div id='cht_teacher' class='chart'></div>
-			</div>
-		</div>
-		<div class="6">
-			<div class="post">
-				<div class="post_title">ChartF</div>
-					<div class="post_cell">
-						本所現有學生人數(碩士班+博士班)一共 299 名: 男261名(87.3%)、女38名(12.7%)，師生比為11.96。
-						</br>(2016.2 製表，圖表內容為2013~2015)
-					</div>
-				
-					<div id='cht_student' class='chart'></div>
-			</div>
-		</div>
-		-->
 		<div class="sub-content">
 			<div class="post">
 				<div class="post_title">VUL Bar Chart</div>
@@ -228,7 +195,67 @@
 		</div>
 		<div class="sub-content">
 			<div class="post">
-				<div class="post_title">GCB Overview</div>
+				<div class="post_title">端點資安總表</div>
+					<div class="post_cell">
+					<div class="post_table">
+					<?php //select data form database
+
+                    	require("mysql_connect.inc.php");
+                   		 //select row_number,and other field value
+						$sql = "SELECT COUNT(*) AS total_num,SUM(gcb) AS gcb_num,SUM(wsus) AS wsus_num,SUM(antivirus) AS antivirus_num FROM drip_client_list";
+						$result = mysqli_query($conn,$sql);
+						$row = @mysqli_fetch_assoc($result);
+						$total_num = $row['total_num'];
+						$gcb_num = $row['gcb_num'];
+						$wsus_num = $row['wsus_num'];
+						$antivirus_num = $row['antivirus_num'];
+						$total_rate = round($total_num/$total_num*100,2)."%"; 
+						$gcb_rate = round($gcb_num/$total_num*100,2)."%"; 
+						$wsus_rate = round($wsus_num/$total_num*100,2)."%"; 
+						$antivirus_rate = round($antivirus_num/$total_num*100,2)."%"; 
+					?>
+
+					<table>
+						<colgroup>
+							<col width='33%' />
+							<col width='33%' />
+							<col width='33%' />
+						</colgroup>
+					<tr>
+						<th>項目</th>
+						<th>數值</th>
+						<th>佈署率</th>
+					</tr>
+					<tr>
+						<td>用戶端總數</td>
+						<td><?php echo $total_num ?></td>
+						<td><?php echo $total_rate ?></td>
+					</tr>
+					<tr>
+						<td>gcb安裝數</td>
+						<td><?php echo $gcb_num ?></td>
+						<td><?php echo $gcb_rate ?></td>
+					</tr>
+					<tr>
+						<td>wsus安裝數</td>
+						<td><?php echo $wsus_num ?></td>
+						<td><?php echo $wsus_rate ?></td>
+					</tr>
+					<tr>
+						<td>antivirus安裝數</td>
+						<td><?php echo $antivirus_num ?></td>
+						<td><?php echo $antivirus_rate ?></td>
+					</tr>
+					</table>
+					<?php
+                    $conn->close();
+
+					?>
+					</div>
+				</div>
+			</div>
+			<div class="post">
+				<div class="post_title">GCB總通過率</div>
 					<div class="post_cell">
 					<div class="post_table">
                		 <?php //select data form database
@@ -264,6 +291,7 @@
 
 					?>
 					</div>
+					<div id="chartF" class="chart"></div>	
 				</div>
 			</div>
 			<div class="post">
@@ -273,10 +301,59 @@
 			    </div>		
 			</div>
 			<div class="post">
-				<div class="post_title">GCB用戶端通過率</div>
-				<div class="post_cell">
-					<div id="chartF" class="chart"></div>	
-			    </div>		
+				<div class="post_title">WSUS總通過率</div>
+					<div class="post_cell">
+					<div class="post_table">
+               		 <?php //select data form database
+                    	require("mysql_connect.inc.php");
+                   		 //select row_number,and other field value
+                    	$sql = "SELECT COUNT(TargetID) as total_count,SUM(CASE WHEN Failed LIKE '0' THEN 1 ELSE 0 END) as pass_count FROM wsus_computer_status";
+                    	$result = mysqli_query($conn,$sql);
+						$row = @mysqli_fetch_assoc($result);
+                    	$total_num = $row['total_count'];
+                    	$pass_num = $row['pass_count'];
+						$sql = "SELECT * FROM wsus_computer_status WHERE LastSyncTime > ADDDATE(NOW(), INTERVAL -1 WEEK)";
+                    	$result = mysqli_query($conn,$sql);
+						//用戶端1周內同步成功數	
+						$sync_num = mysqli_num_rows($result);
+						$total_rate = round($total_num/$total_num*100,2)."%"; 
+						$pass_rate = round($pass_num/$total_num*100,2)."%"; 
+						$sync_rate = round($sync_num/$total_num*100,2)."%"; 
+					?>
+
+					<table>
+						<colgroup>
+							<col width='33%' />
+							<col width='33%' />
+							<col width='33%' />
+						</colgroup>
+					<tr>
+						<th>項目</th>
+						<th>數值</th>
+						<th>完成率</th>
+					</tr>
+					<tr>
+						<td>用戶端總數</td>
+						<td><?php echo $total_num ?></td>
+						<td><?php echo $total_rate ?></td>
+					</tr>
+					<tr>
+						<td>用戶端安裝成功數</td>
+						<td><?php echo $pass_num ?></td>
+						<td><?php echo $pass_rate ?></td>
+					</tr>
+					<tr>
+						<td>用戶端1周內同步成功數</td>
+						<td><?php echo $sync_num ?></td>
+						<td><?php echo $sync_rate ?></td>
+					</tr>
+					</table>
+					<?php
+                    $conn->close();
+
+					?>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div style="clear: both;">&nbsp;</div>

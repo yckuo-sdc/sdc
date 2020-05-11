@@ -55,6 +55,8 @@ function get_client_list($url,$token,$limit){
 			//echo $key1."\n";
 			if(is_array($value1)){
 				$count = 0;
+				$sql = "TRUNCATE TABLE gcb_client_list";
+				$conn->query($sql); 
 				foreach ($value1 as $key2 => $value2) {
 					$gcb_client_list['ExternalIP']= mysqli_real_escape_string($conn,$value2['ExternalIP']);
 					$gcb_client_list['GsAll_0']= mysqli_real_escape_string($conn,$value2['GsAll'][0]);

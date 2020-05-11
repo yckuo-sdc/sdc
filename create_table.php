@@ -8,12 +8,22 @@ if ($conn->connect_error) {
  }
 
 $conn->query('NAMES UTF8');
-$sql = "CREATE TABLE wsus_computer_updatestatus_kbid
+$sql = "CREATE TABLE drip_client_list
 		(
-		TargetID 	int(11),
-        KBArticleID	int(11),
-		UpdateState	varchar(30),
-		PRIMARY KEY (TargetID)
+		DetectorName		varchar(30),	
+		DetectorIP			varchar(30),		
+		DetectorGroup		varchar(30),
+        IP					varchar(30),		
+        MAC					varchar(30),		
+        GroupName			varchar(30),
+        ClientName			varchar(30),
+        SwitchIP			varchar(30),
+        SwitchName			varchar(30),
+        PortName			varchar(30),
+        NICProductor		varchar(30),
+        LastOnlineTime		varchar(30),
+        LastOfflineTime		varchar(30),
+		PRIMARY KEY (IP,MAC)
 		)";
 if($result = mysqli_query($conn,$sql)){
 }else{

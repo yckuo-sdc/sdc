@@ -49,6 +49,11 @@
 				$condition = $keyword_type." LIKE '%".$key."%'";
 			    $order = "ORDER by TargetID ASC";	
 				break;
+			case ($type == 'antivirus_client_list' and $keyword_type != 'all'):
+				$table = "antivirus_client_list";
+				$condition = $keyword_type." LIKE '%".$key."%'";
+			    $order = "ORDER by GUID ASC";	
+				break;
 			case ($type == 'security_event' and $keyword_type == 'all'):
 				$table = "security_event";
 				//Fulltext seach
@@ -77,10 +82,16 @@
 				$order = "ORDER by ID ASC";	
 				break;
 			case ($type == 'wsus_client_list' and $keyword_type == 'all'):
-				$table = "wsus_client_list";
+				$table = "wsus_computer_status";
 				//Fulltext seach
 				$condition = getFullTextSearchSQL($conn,$table,$key);
 				$order = "ORDER by TargetID ASC";	
+				break;
+			case ($type == 'antivirus_client_list' and $keyword_type == 'all'):
+				$table = "antivirus_client_list";
+				//Fulltext seach
+				$condition = getFullTextSearchSQL($conn,$table,$key);
+				$order = "ORDER by GUID ASC";	
 				break;
 		}
 		$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
@@ -410,6 +421,44 @@
 						echo "</div>";
 					echo "</div>";
 				}
+				echo "</div>";
+				break;
+				case "antivirus_client_list":
+				echo "<div class='ui relaxed divided list'>";
+				while($row = mysqli_fetch_assoc($result)) {
+					echo "<div class='item'>";
+					echo "<div class='content'>";
+						echo "<a>";
+						echo $row['ClientName']."&nbsp&nbsp";
+						echo "<span style='background:#fde087'>".$row['IP']."</span>&nbsp&nbsp";
+						echo "<span style='background:#DDDDDD'>".$row['ConnectionState']."</span>&nbsp&nbsp";
+						echo "<span style='background:#fbc5c5'>".$row['OS']."</span>&nbsp&nbsp";
+						echo $row['VirusNum']."&nbsp&nbsp";
+						echo $row['SpywareNum']."&nbsp&nbsp";
+						echo $row['VirusPatternVersion']."&nbsp&nbsp";
+						echo "<i class='angle double down icon'></i>";
+						echo "</a>";
+					echo "<div class='description'>";
+						echo "<ol>";
+						echo "<li>設備名稱:".$row['ClientName']."</li>";
+						echo "<li>內網IP:".$row['IP']."</li>";
+						echo "<li>網域階層:".$row['DomainLevel']."</li>";
+						echo "<li>連線狀態:".$row['ConnectionState']."</li>";
+						echo "<li>GUID:".$row['GUID']."</li>";
+						echo "<li>掃描方式:".$row['ScanMethod']."</li>";
+						echo "<li>DLP狀態:".$row['DLPState']."</li>";
+						echo "<li>病毒數量:".$row['VirusNum']."</li>";
+						echo "<li>間諜程式數量:".$row['SpywareNum']."</li>";
+						echo "<li>作業系統:".$row['OS']."</li>";
+						echo "<li>位元版本:".$row['BitVersion']."</li>";
+						echo "<li>MAC位址:".$row['MAC']."</li>";
+						echo "<li>設備版本:".$row['ClientVersion']."</li>";
+						echo "<li>病毒碼版本:".$row['VirusPatternVersion']."</li>";
+						echo "</ol>";
+					echo "</div>";
+					echo "</div>";
+					echo "</div>";
+				}		
 				echo "</div>";
 				break;
 			}

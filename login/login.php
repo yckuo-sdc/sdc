@@ -42,6 +42,10 @@
 		max-width: 450px;
 	}
 
+	.field.left{
+		text-align:left;
+	}	
+
 	.ui.sdc-blue.header {
 		color: #4798b3;
 	}
@@ -70,17 +74,17 @@
 		<form class="ui large form" method="post" action="actionlogin.php">
 		  <div class="ui stacked segment">
 			<div class="inline fields">
-    			<label for="verification">Type</label>
+    			<label for="verification">type</label>
 				<div class="field">
 				  <div class="ui radio checkbox">
 					<input type="radio" name="verification" value="ad" checked="" tabindex="0" class="hidden">
-					<label>AD</label>
+					<label>ad</label>
 				  </div>
 				</div>
 				<div class="field">
 				  <div class="ui radio checkbox">
 					<input type="radio" name="verification" value="mail" tabindex="0" class="hidden">
-					<label>Mail</label>
+					<label>mail</label>
 				  </div>
 				</div>
 			</div>		
@@ -93,7 +97,13 @@
 			<div class="field">
 			  <div class="ui left icon input">
 				<i class="lock icon"></i>
-				<input type="password" name="password" placeholder="Password" required>
+				<input type="password" name="password" placeholder="Password"  required>
+			  </div>
+			</div>
+			<div class="left field">
+			  <div class="ui left checkbox">
+				<input type="checkbox" name="remember" value="remember" >
+				<label>Keep Me Logged In</label>
 			  </div>
 			</div>
 			<!--<div class="ui fluid large teal submit button">-->

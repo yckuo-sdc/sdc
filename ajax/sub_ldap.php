@@ -1,14 +1,11 @@
 <?php
 	header('Content-type: text/html; charset=utf-8');
-	//alert message
-	function phpAlert($msg) {
-		echo '<script type="text/javascript">alert("' . $msg . '")</script>';
-	}
 
 	if(!empty($_GET['target'])){
 		$target = $_GET['target'];
 		// connect to AD server
-		require("../ldap_admin_config.inc.php");
+		require_once("../ldap_admin_config.inc.php");
+		require_once("../login/function.php");
 		$ldapconn = ldap_connect($host_ip) or die("Could not connect to LDAP server.");
 		$set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	    
@@ -95,6 +92,8 @@
 									echo "<li>".$data[$i][$j].": ".$data[$i][$data[$i][$j]][0]." | ";
 									$output = shell_exec("/usr/bin/dig +short ".$data[$i][$data[$i][$j]][0]);
 									echo "IP: ".$output."</li>";
+								}elseif($data[$i][$j] == "pwdlastset" || $data[$i][$j] == "lastlogon" || $data[$i][$j] == "badpasswordtime"){
+									echo "<li>".$data[$i][$j].": ".WindowsTime2DateTime($data[$i][$data[$i][$j]][0])."</li>";
 								}else{
 									echo "<li>".$data[$i][$j].": ".$data[$i][$data[$i][$j]][0]."</li>";
 								}

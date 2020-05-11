@@ -103,8 +103,10 @@
 					 countArray19.push($(this).text());
 				});
 				//var countArray2 = countArray.slice();
-				countArray18.unshift('2018資安事件(數量)');
-				countArray19.unshift('2019資安事件(數量)');
+				var d = new Date();
+				var n = d.getFullYear();
+				countArray18.unshift((n-1)+'資安事件(數量)');
+				countArray19.unshift(n+'資安事件(數量)');
 				//countArray2.unshift('data2');
 				var chart = c3.generate({
 						bindto: '#chartB',
@@ -338,14 +340,23 @@
 				},
   				pie:{
 					label: {
-	              		format: function (value, ratio, id) {
+	              		/*format: function (value, ratio, id) {
 					          return d3.format()(value);
-						}
+						}*/
 					}
 				},
 				size:{
 					height: 360
 				},
+				tooltip:{ 
+					format: { 
+						value: function (value, ratio, id) {
+							return Math.round(ratio * 1000)/10+'% | '+value;
+						} 
+					} 
+				}
+
+                ,
 				onresize: function(){
 			
 				}

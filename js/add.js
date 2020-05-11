@@ -115,8 +115,8 @@ function Call_retrieve_vs_ajax(){
 function Call_sub_query_ajax(type){
 
 	 var selector = ".post."+type+" ";
-	 if(type == 'gcb_client_list') selector = ".post.is_client_list .tab-content."+type+" ";
-	 else if(type == 'wsus_client_list') selector =".post.is_client_list .tab-content."+type+" ";
+	 if(type == 'gcb_client_list' || type == 'wsus_client_list' || type == 'antivirus_client_list')  selector = ".post.is_client_list .tab-content."+type+" ";
+		 
 	 $.ajax({
 		 url: 'ajax/sub_query.php',
 		 cache: false,
@@ -129,8 +129,6 @@ function Call_sub_query_ajax(type){
 			 //console.log("success");
 			 $(selector+'.record_content').html("");
 			 $(selector+'.record_content').html(data);
-			 //$(selector+'.record_content').text("");
-			 //$(selector+'.record_content').text(data);
 			 //console.log("done");
 		 }
 	});
@@ -139,8 +137,7 @@ function Call_sub_query_ajax(type){
 
 function Call_sub_query_pagination_ajax(page,key,keyword_type,type){
 	 var selector = ".post."+type+" ";
-	 if(type == 'gcb_client_list') selector = ".post.is_client_list .tab-content."+type+" ";
-	 else if(type == 'wsus_client_list') selector =".post.is_client_list .tab-content."+type+" ";
+	 if(type == 'gcb_client_list' || type == 'wsus_client_list' || type == 'antivirus_client_list')  selector = ".post.is_client_list .tab-content."+type+" ";
 	 $.ajax({
 		 url: 'ajax/sub_query.php',
 		 cache: false,
@@ -153,8 +150,6 @@ function Call_sub_query_pagination_ajax(page,key,keyword_type,type){
 			 //console.log("success");
 			 $(selector+'.record_content').html("");
 			 $(selector+'.record_content').html(data);
-			 //$(selector+'.record_content').text("");
-			 //$(selector+'.record_content').text(data);
 			 //console.log("done");
 		 }
 	});
@@ -417,7 +412,7 @@ $(document).ready(function(){
 		Call_sub_vs_query_pagination_ajax(page,key,keyword_type,type,unfinished,finished);
 	});
 	/*query.php's component action*/
-	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content, .post.is_client_list .tab-content.gcb_client_list .record_content, .post.is_client_list .tab-content.wsus_client_list .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
+	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content, .post.is_client_list .tab-content.gcb_client_list .record_content, .post.is_client_list .tab-content.wsus_client_list .record_content, .post.is_client_list .tab-content.antivirus_client_list .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
 		page				 = $(this).attr('page');
 		key 				 = $(this).attr('key');
 		keyword_type 		 = $(this).attr('keyword_type');
@@ -496,6 +491,12 @@ $(document).ready(function(){
 			Call_sub_query_ajax('wsus_client_list'); 
 		}
 	 });
+	 $('.post.is_client_list .tab-content.antivirus_client #key').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			console.log('keyup');     
+			Call_sub_query_ajax('antivirus_client_list'); 
+		}
+	 });
 	 $('.post.ip_and_url_scanResult #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
 			console.log('keyup');     
@@ -556,6 +557,12 @@ $(document).ready(function(){
 		console.log('wsus_client_list serach_btn');     
 		Call_sub_query_ajax('wsus_client_list');
 		console.log('wsus_client_list serach_btn done');
+	});
+	
+	$('.post.is_client_list .tab-content.antivirus_client_list #search_btn').click(function (){
+		console.log('antivirus_client_list serach_btn');     
+		Call_sub_query_ajax('antivirus_client_list');
+		console.log('antivirus_client_list serach_btn done');
 	});
 	
 	$('.post.ip_and_url_scanResult #search_btn').click(function (){

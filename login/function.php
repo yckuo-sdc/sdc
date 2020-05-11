@@ -1,4 +1,45 @@
 <?php
+	function GenerateRandomToken(){
+		return md5(uniqid(rand(), true));
+	}
+
+	function verifyBySession_Cookie($var){
+		//檢查session是不是為空 
+		if(!isset($_SESSION[$var])){ 
+			//使用者選擇了記住登入狀態
+			//echo isset($_COOKIE['account']);
+			//echo isset($_COOKIE['password']);
+			//echo isset($_COOKIE['UserName']);
+			
+			if(isset($_COOKIE['rememberme'])){
+			//if(isset($_COOKIE['account']) && isset($_COOKIE['UserName'])){
+				$SECRET_KEY = "security";
+				list ($user, $token, $mac, $UserName) = explode(':', $_COOKIE['rememberme']);
+				//$account = $_COOKIE['account'];	
+				//$UserName = $_COOKIE['UserName'];
+				if (hash_equals(hash_hmac('sha256', $user . ':' . $token, $SECRET_KEY), $mac)) {
+				//if(!empty($account)  && !empty($UserName)){			
+					//使用者名稱和密碼對了，把使用者的個人資料放到session裡面 
+					$_SESSION['account'] = $user;   
+					$_SESSION['UserName'] = $UserName;
+				    //echo "a";	
+					return true;	
+				}else{
+				    //echo "b";	
+					echo 'You Do Not Have Permission To Access!';
+					header("Location:login/login.php"); 
+				}
+			}else{  //如果session為空，並且使用者沒有選擇記錄登入狀 
+				//echo "c";	
+				echo 'You Do Not Have Permission To Access!';
+				header("Location:login/login.php"); 
+			} 
+		}else{
+			//echo "d";	
+			return true;
+		}	
+	}	
+
 	function verifyBySession($var){
 		if(isset($_SESSION[$var])){
 			return true;
@@ -6,7 +47,6 @@
 		else{
 			echo 'You Do Not Have Permission To Access!';
 			header("Location:login/login.php"); 
-			return false;
 		}
 	}	
 
@@ -144,9 +184,11 @@
 		return array($result_sql, $prev_page, $next_page, $lower_bound, $upper_bound, $Totalpages);
 	}
 
-	function pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,$mainpage,$subpage,$tab,$pages) {
+	function pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,$mainpage,$subpage,$tab,$pages,$sort) {
 		$result ="";
-		$href = ($tab==0)?"?mainpage=".$mainpage."&subpage=".$subpage."&page=":"?mainpage=".$mainpage."&subpage=".$subpage."&tab=".$tab."&page=";
+		$href = ($tab==0)?"mainpage=".$mainpage."&subpage=".$subpage."&page=":"mainpage=".$mainpage."&subpage=".$subpage."&tab=".$tab."&page=";
+		$href = ($sort=="")?"?".$href:"?sort=".$sort."&".$href;
+
 		//The href-link of bottom pages
 		$result .="<div class='ui pagination menu'>";	
 		$result .="<a class='item test' href='".$href."1'>首頁</a>";
@@ -170,5 +212,16 @@
 			$result .="<a class='item test' href='".$href.$next_page."'> → </a>";		
 		$result .="</div>";
 		return $result;
+	}
+
+	// For Windows NT Time convert to UnixTimestamp
+	function WindowsTime2UnixTime($WindowsTime){
+		$UnixTime = $WindowsTime/10000000-11644473600;
+		return $UnxiTime; 
+	}
+	// For Windows NT Time convert to UnixTimestamp
+	function WindowsTime2DateTime($WindowsTime){
+		$UnixTime = $WindowsTime/10000000-11644473600;
+		return date('Y-m-d H:i:s',$UnixTime); 
 	}
 ?>
