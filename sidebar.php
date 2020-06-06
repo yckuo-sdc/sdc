@@ -7,7 +7,7 @@
 				<li>
 					<h2>儀表板</h2>
 					<ul>
-						<li class="active title"><a>Dashboard</a></li>
+						<li class="active title"><a>Data status</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -54,7 +54,7 @@
 					<h2>漏洞修補</h2>
 					<ul>
 						<li class="active title"><a>OverView</a></li>
-						<li class="title"><a>弱點查詢(All)</a></li>
+						<li class="title"><a>弱點查詢</a></li>
 						<li class="title"><a>Retrieve VS</a></li>
 						<li class="title"><a>Scan Target</a></li>
 					</ul>
@@ -67,7 +67,7 @@
 		<div id="sidebar" class="info_sidebar">
 			<ul>
 				<li>
-					<h2>Tool</h2>
+					<h2>工具</h2>
 					<ul>
 						<li class="active title"><a>Nmap</a></li>
 						<li class="title"><a>AP</a></li>

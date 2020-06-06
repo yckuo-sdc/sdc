@@ -3,7 +3,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">API Status</div>
+				<div class="post_title">Data-Stream Status</div>
 					<div class="post_cell">
 						<table class="ui celled table">
 						 <?php //select data form database

@@ -67,7 +67,7 @@
 		<ul class="drop-down-menu">
 			<li><a class="1" accesskey="1" title="" href="index.php?mainpage=dashboard">最新消息</a>
 				<ul>
-					<li><a href="index.php?mainpage=dashboard&subpage=1">Dashboard</a></li>
+					<li><a href="index.php?mainpage=dashboard&subpage=1">Data Status</a></li>
 				</ul>
 			</li>
 			<li><a class="2" accesskey="2" title="" href="index.php?mainpage=info">視覺化資訊</a>
@@ -91,12 +91,12 @@
 			<li><a class="4" accesskey="4" title="" href="index.php?mainpage=vulnerability">弱點掃描</a>
 				<ul>		
 					<li><a href="index.php?mainpage=vulnerability&subpage=1">OverView</a></li>
-					<li><a href="index.php?mainpage=vulnerability&subpage=2">弱點查詢(All)</a></li>
+					<li><a href="index.php?mainpage=vulnerability&subpage=2">弱點查詢</a></li>
 					<li><a href="index.php?mainpage=vulnerability&subpage=3">Retrieve VS</a></li>
 					<li><a href="index.php?mainpage=vulnerability&subpage=4">Scan Target</a></li>
 				</ul>
 			</li>
-			<li><a class="5" accesskey="5" title="" href="index.php?mainpage=nmap">Tool</a>
+			<li><a class="5" accesskey="5" title="" href="index.php?mainpage=nmap">工具</a>
 				<ul>	
 					<li><a href="index.php?mainpage=nmap&subpage=1">Nmap</a></li>
 					<li><a href="index.php?mainpage=nmap&subpage=2">AP</a></li>

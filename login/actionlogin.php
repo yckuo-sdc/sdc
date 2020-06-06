@@ -30,6 +30,8 @@ switch($verification){
 			session_start();
 			$_SESSION['account']	= $account;
 			$_SESSION['UserName']   = $row['UserName'];
+			$_SESSION['Level'] 		= $row['Level'];
+			storeUserLogs($conn,'login',$_SERVER['REMOTE_ADDR'],$account,$_SERVER['REQUEST_URI'],date('Y-m-d h:i:s'));
 			if(!empty($remember)){
 				$SECRET_KEY = "security";
 				$token = GenerateRandomToken(); // generate a token, should be 128 - 256 bit
@@ -37,19 +39,12 @@ switch($verification){
 				$mac = hash_hmac('sha256', $cookie, $SECRET_KEY);
 				$cookie .= ':' . $mac;
 				$cookie .= ':' . $row['UserName'];
+				$cookie .= ':' . $row['Level'];
 				setcookie('rememberme', $cookie,time() + $duration,'/');
-				//setcookie("account", $account, time() + $duration,'/');
-				//setcookie("UserName", $row['UserName'], time() + $duration,'/');
 			}else{
 				setcookie('rememberme', "",time() - $duration,'/');
-				//setcookie("account", "", time() - $duration,'/');
-				//setcookie("UserName","", time() - $duration,'/');
 			}
-			//echo $row['Level']; 
-			if($row['Level'] == 2){
-				$_SESSION['Level'] = $row['Level'];
-			}
-			header("refresh:0;url=../"); 
+			header("refresh:0;url=../index.php"); 
 		}else{
 			session_start();
 			$_SESSION["error"] = "invalid account or password";
@@ -61,18 +56,22 @@ switch($verification){
 		if($pop && $row['SSOID'] == $account){
 			session_start();
 			$_SESSION['account']	= $account;
+			$_SESSION['UserName']   = $row['UserName'];
+			$_SESSION['Level'] 		= $row['Level'];
+			storeUserLogs($conn,'login',$_SERVER['REMOTE_ADDR'],$account,$_SERVER['REQUEST_URI'],date('Y-m-d h:i:s'));
 			if(!empty($remember)){
-				setcookie("account", $account, time() + $duration,'/');
-				setcookie("UserName", $row['UserName'], time() + $duration,'/');
+				$SECRET_KEY = "security";
+				$token = GenerateRandomToken(); // generate a token, should be 128 - 256 bit
+				$cookie = $account . ':' . $token;
+				$mac = hash_hmac('sha256', $cookie, $SECRET_KEY);
+				$cookie .= ':' . $mac;
+				$cookie .= ':' . $row['UserName'];
+				$cookie .= ':' . $row['Level'];
+				setcookie('rememberme', $cookie,time() + $duration,'/');
 			}else{
-				setcookie("account", "", time() - $duration,'/');
-				setcookie("UserName","", time() - $duration,'/');
+				setcookie('rememberme', "",time() - $duration,'/');
 			}
-			//echo $row['Level']; 
-			if($row['Level'] == 2){
-				$_SESSION['Level'] = $row['Level'];
-			}
-			header("refresh:0;url=../"); 
+			header("refresh:0;url=../index.php"); 
 		}else{
 			session_start();
 			$_SESSION["error"] = "invalid account or password";

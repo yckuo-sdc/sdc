@@ -14,7 +14,7 @@
 			if(isset($_COOKIE['rememberme'])){
 			//if(isset($_COOKIE['account']) && isset($_COOKIE['UserName'])){
 				$SECRET_KEY = "security";
-				list ($user, $token, $mac, $UserName) = explode(':', $_COOKIE['rememberme']);
+				list ($user, $token, $mac, $UserName, $Level) = explode(':', $_COOKIE['rememberme']);
 				//$account = $_COOKIE['account'];	
 				//$UserName = $_COOKIE['UserName'];
 				if (hash_equals(hash_hmac('sha256', $user . ':' . $token, $SECRET_KEY), $mac)) {
@@ -22,17 +22,18 @@
 					//使用者名稱和密碼對了，把使用者的個人資料放到session裡面 
 					$_SESSION['account'] = $user;   
 					$_SESSION['UserName'] = $UserName;
+					$_SESSION['Level'] = $Level;
 				    //echo "a";	
 					return true;	
 				}else{
-				    //echo "b";	
+				    echo "b";	
 					echo 'You Do Not Have Permission To Access!';
-					header("Location:login/login.php"); 
+					header("Location: https://sdc-iss.tainan.gov.tw/login/login.php"); 
 				}
 			}else{  //如果session為空，並且使用者沒有選擇記錄登入狀 
-				//echo "c";	
+				echo "c";	
 				echo 'You Do Not Have Permission To Access!';
-				header("Location:login/login.php"); 
+				header("Location: https://sdc-iss.tainan.gov.tw/login/login.php"); 
 			} 
 		}else{
 			//echo "d";	
@@ -85,20 +86,18 @@
 			return false;	
 		}	
 	}
-	function checkAccountByPOP3($user, $pass){
-		// Import PHPMailer classes into the global namespace
-		// These must be at the top of your script, not inside a function
-
-/*		$local_path = "/var/www/html/utility/PHPMailer-master/";
-		use PHPMailer\PHPMailer\PHPMailer;
-		use PHPMailer\PHPMailer\Exception;
-		use PHPMailer\PHPMailer\POP3;
-		use PHPMailer\PHPMailer\SMTP;
-		//Load composer's autoloader
-		require $local_path.'vendor/autoload.php';
-		$pop = POP3::popBeforeSmtp('pop3.example.com', 110, 30, $user,$pass, 1);
-		echo $pop;*/
-	}
+	
+	//store user's action to DB's log table	
+	function storeUserLogs($conn,$type,$ip,$user,$msg,$time){
+		//特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
+		$type= mysqli_real_escape_string($conn,$type);
+		$ip= mysqli_real_escape_string($conn,$ip);
+		$user= mysqli_real_escape_string($conn,$user);
+		$msg= mysqli_real_escape_string($conn,$msg);
+		$time= mysqli_real_escape_string($conn,$time);
+		$sql = "INSERT INTO logs(type,ip,user,msg,time) VALUES('".$type."','".$ip."','".$user."','".$msg."','".$time."')";
+		mysqli_query($conn,$sql);
+	}	
 	//LDAP recursive search and print
 	function myRecursiveFunction($ldapconn,$base_dn,$ou_name,$ou_des) {
 		$filter ="(objectClass=*)";
@@ -223,5 +222,42 @@
 	function WindowsTime2DateTime($WindowsTime){
 		$UnixTime = $WindowsTime/10000000-11644473600;
 		return date('Y-m-d H:i:s',$UnixTime); 
+	}
+	
+	//處理 Nmap 掃描原始結果，將使用的Port、State、Service取出紀錄
+	function NmapParser($input){
+		$rows = explode("\n", $input);
+		$rows = array_slice($rows, 6);
+		$stack = array();
+		foreach($rows as $key => $data){
+			//get row data
+			$row_data = explode(" ", preg_replace('/\s+/', ' ', $data));
+			if($row_data[0]){
+				$port_data = explode("/", $row_data[0]);
+				$portNum = $port_data[0];
+				$TcpOrUdp = $port_data[1];
+				$portStatus = strtoupper(trim($row_data[1]));
+				$portDesc = $row_data[2];
+				if($portStatus == 'OPEN'){
+					array_push($stack, array($portNum,$TcpOrUdp,$portStatus,$portDesc));
+				}
+			}	
+		}
+		return $stack;
+	} 
+	// convert array to csv file ant download automatically
+	function array_to_csv_download($array, $filename, $delimiter) {
+		header('Content-Encoding: UTF-8');
+		header('Content-type: text/csv; charset=UTF-8');
+		header('Content-Disposition: attachment; filename="'.$filename.'";');
+		//Clean the output buffer
+		ob_clean();
+		// open the "output" stream
+		$f = fopen('php://output', 'w');
+		fputs($f, "\xEF\xBB\xBF" ); // UTF-8 BOM !!!!!
+		foreach ($array as $line) {
+			fputcsv($f, $line);
+		}
+		fclose($f);
 	}
 ?>

@@ -401,12 +401,150 @@
 				<div class="post_title">端點資安用戶端清單</div>
 				<div class="post_cell">
 					<div class="ui top attached tabular menu">
-						<a class="active item">GCB</a>
+						<a class="active item">DrIP</a>
+						<a class="item">GCB</a>
 						<a class="item">WSUS</a>
 						<a class="item">AntiVirus</a>
-						<a class="item">Total</a>
 					</div>
 					<div class="ui bottom attached segment">
+					<div class="tab-content drip_client_list show">
+						<form class="ui form" action="javascript:void(0)">
+						<div class="fields">
+							<div class="field">
+								<label>種類</label>
+								<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
+								<option value="ClientName" class="keyword_paper active" selected>電腦名稱</option>
+								<option value="IP" class="keyword_paper active">內部IP</option>
+								<option value="UserName" class="keyword_paper active">使用者帳號</option>
+								<option value="OrgName" class="keyword_paper active">單位名稱</option>
+								<option value="ad" class="keyword_paper active">ad</option>
+								<option value="gcb" class="keyword_paper active">gcb</option>
+								<option value="wsus" class="keyword_paper active">wsus</option>
+								<option value="antivirus" class="keyword_paper active">antivirus</option>
+								<option value="all" class="keyword_paper active">全部</option>
+								</select>
+							</div>
+							<div class="field">
+								<label>關鍵字</label>
+								<div class="ui input">
+									<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
+								</div>
+							</div>
+							<div class="field">
+								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+							</div>
+							 <div class="field">
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4&tab=1'">顯示全部</button>
+							</div>
+							 <div class="field">
+								<button id="export2csv_btn" class="ui button">匯出</button>
+							</div>
+						</div>
+						</form>
+							<i class='circle yellow icon'></i>ad
+							<i class='circle green icon'></i>gcb
+							<i class='circle red icon'></i>wsus
+							<i class='circle blue icon'></i>antivirus
+							<p></p>
+						<div class="record_content">
+						<?php //select data form database
+							require("mysql_connect.inc.php");
+							//------------pagination----------//
+							$pages = isset($_GET['page'])?$_GET['page']:1;	
+							
+							//select row_number,and other field value
+							$sql = "SELECT * FROM drip_client_list ORDER by DetectorName ASC,IP ASC";
+							$result = mysqli_query($conn,$sql);
+							$rowcount = mysqli_num_rows($result);
+										
+							$per = 10; 		
+							$max_pages = 10;
+							$Totalpages = ceil($rowcount / $per); 
+							$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
+							$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
+							$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
+							if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
+							elseif($pages == $Totalpages)	$offset = $rowcount - $start;
+							else							$offset = $per;
+										
+							$prev_page = ($pages > 1) ? $pages -1 : 1;
+							$next_page = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
+							$sql_subpage = $sql." limit ".$start.",".$offset;
+										
+							$result = mysqli_query($conn,$sql_subpage);
+												
+							if($rowcount==0){
+								echo "查無此筆紀錄";
+							}else{
+								echo "共有".$rowcount."筆資料！";
+								echo "<div class='ui relaxed divided list'>";
+								while($row = mysqli_fetch_assoc($result)) {
+									echo "<div class='item'>";
+									echo "<div class='content'>";
+										echo "<a>";
+										if($row['ad']==1) echo "<i class='circle yellow icon'></i>";
+										else echo "<i class='circle outline icon'></i>";
+										if($row['gcb']==1) echo "<i class='circle green icon'></i>";
+										else echo "<i class='circle outline icon'></i>";
+										if($row['wsus']==1) echo "<i class='circle red icon'></i>";
+										else echo "<i class='circle outline icon'></i>";
+										if($row['antivirus']==1) echo "<i class='circle blue icon'></i>";
+										else echo "<i class='circle outline icon'></i>";
+										echo $row['DetectorName']."&nbsp&nbsp";
+										echo "<span style='background:#fde087'>".$row['IP']."</span>&nbsp&nbsp";
+										//echo "<span style='background:#DDDDDD'>".$row['MAC']."</span>&nbsp&nbsp";
+										echo $row['ClientName']."&nbsp&nbsp";
+										echo "<span style='background:#fbc5c5'>".$row['OrgName']."</span>&nbsp&nbsp";
+										echo $row['Owner']."&nbsp&nbsp";
+										echo $row['UserName']."&nbsp&nbsp";
+										echo "<i class='angle double down icon'></i>";
+										echo "</a>";
+									echo "<div class='description'>";
+
+										
+										echo "<ol>";
+										echo "<li>內網IP:".$row['IP']."</li>";
+										echo "<li>MAC位址:".$row['MAC']."</li>";
+										echo "<li>設備名稱:".$row['ClientName']."</li>";
+										echo "<li>群組名稱:".$row['GroupName']."</li>";
+										echo "<li>網卡製造商:".$row['NICProductor']."</li>";
+										echo "<li>偵測器名稱:".$row['DetectorName']."</li>";
+										echo "<li>偵測器IP:".$row['DetectorIP']."</li>";
+										echo "<li>偵測器群組:".$row['DetectorGroup']."</li>";
+										echo "<li>交換器名稱:".$row['SwitchName']."</li>";
+										echo "<li>連接埠名稱:".$row['PortName']."</li>";
+										echo "<li>最後上線時間:".$row['LastOnlineTime']."</li>";
+										echo "<li>最後下線時間:".$row['LastOfflineTime']."</li>";
+										echo "<li>IP封鎖原因:".$row['IP_BlockReason']."</li>";
+										echo "<li>MAC封鎖原因:".$row['MAC_BlockReason']."</li>";
+										echo "<li>備註ByIP:".$row['MemoByIP']."</li>";
+										echo "<li>備註ByMac:".$row['MemoByMAC']."</li>";
+										echo "<li>ad安裝:".$row['ad']."</li>";
+										echo "<li>gcb安裝:".$row['gcb']."</li>";
+										echo "<li>wsus安裝:".$row['wsus']."</li>";
+										echo "<li>antivirus安裝:".$row['antivirus']."</li>";
+										echo "<li>OrgName:".$row['OrgName']."</li>";
+										echo "<li>Owner:".$row['Owner']."</li>";
+										echo "<li>UserName:".$row['UserName']."</li>";
+										echo "</ol>";
+										if(issetBySession("Level") && $_SESSION['Level'] == 2){
+											echo "<button data-ip='".$row['IP']."' id='block-btn' class='ui button'>Block IP</button>";
+											echo "<button data-ip='".$row['IP']."' id='unblock-btn' class='ui button'>UnBlock IP</button>";
+											echo "<div class='ui centered inline loader'></div>";
+											echo "<div class='block_IP_response'></div>";
+										}
+									echo "</div>";
+									echo "</div>";
+									echo "</div>";
+								}		
+								echo "</div>";
+								/* Create Pagination Element*/ 
+								echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,1,$pages,"");
+							}
+							$conn->close();
+						?>
+						</div> <!--End of record_content-->	
+					</div> <!--End of tabular_content-->	
 						<div class="tab-content gcb_client_list show">
 						<form class="ui form" action="javascript:void(0)">
 
@@ -431,7 +569,7 @@
 								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 							</div>
 							 <div class="field">
-								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4'">顯示全部</button>
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4&tab=2'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -475,26 +613,12 @@
 								echo "共有".$rowcount."筆資料！";
 
 
-								echo "<div class='ui relaxed divided list'>";
-								/*	echo "<div class='item'>";
-										echo "<div class='content'>";
-											echo "<a class='header'>";
-											//echo "序號&nbsp";
-											echo "電腦名稱&nbsp&nbsp";
-											echo "單位名稱&nbsp&nbsp";
-											echo "使用者帳號&nbsp&nbsp";
-											echo "使用者名稱&nbsp&nbsp";
-											echo "內網IP&nbsp&nbsp";
-											echo "作業系統&nbsp&nbsp";
-											echo "<a>";
-										echo "</div>";
-									echo "</div>";
-								*/
+							echo "<div class='ui relaxed divided list'>";
 							while($row = mysqli_fetch_assoc($result)) {
 								echo "<div class='item'>";
 								echo "<div class='content'>";
 									echo "<a>";
-									if($row['IsOnline'] == "1")		echo "<i class='circle icon' style='color:green'></i>";
+									if($row['IsOnline'] == "1")		echo "<i class='circle green icon'></i>";
 									else							echo "<i class='circle outline icon'></i>";
 									switch($row['GsStat']){
 										case '0':
@@ -527,7 +651,7 @@
 									echo "</a>";
 									echo "<div class='description'>";
 										echo "<ol>";
-										echo "<li>序號:".$row['ID']."</li>";
+										echo "<li><a href='ajax/gcb_detail.php?action=detail&id=".$row['ID']."' target='_blank'>序號:".$row['ID']."(用戶端資訊)&nbsp<i class='external alternate icon'></i></a></li>";
 										echo "<li>外部IP:".long2ip($row['ExternalIP'])."</li>";
 										echo "<li>內部IP:".long2ip($row['InternalIP'])."</li>";
 										echo "<li>電腦名稱:".$row['Name']."</li>";
@@ -541,7 +665,7 @@
 										echo "<li>Gcb總通過數[包含例外]:".$row['GsAll_1']."</li>";
 										echo "<li>Gcb總通過數[總數]:".$row['GsAll_2']."</li>";
 										echo "<li>Gcb例外數量:".$row['GsExcTot']."</li>";
-										echo "<li>Gcb掃描編號:".$row['GsID']."</li>";
+										echo "<li><a href='ajax/gcb_detail.php?action=gscan&id=".$row['GsID']."' target='_blank'>Gcb掃描編號:".$row['GsID']."(掃描結果資訊)&nbsp<i class='external alternate icon'></i></a></li>";
 										echo "<li>Gcb派送編號:".$row['GsSetDeployID']."</li>";
 										echo "<li>Gcb狀態:".$GsStat_str."</li>";
 										echo "<li>Gcb回報時間:".$row['GsUpdatedAt']."</li>";
@@ -553,7 +677,7 @@
 							
 							echo "</div>";
 						    /* Create Pagination Element*/ 
-							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,1,$pages,"");
+							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,2,$pages,"");
 							}
 							$conn->close();
 						?>
@@ -581,7 +705,7 @@
 								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 							</div>
 							 <div class="field">
-								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4&tab=2'">顯示全部</button>
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4&tab=3'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -681,7 +805,7 @@
 							
 							echo "</div>";
 						    /* Create Pagination Element*/ 
-							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,2,$pages,$sort);
+							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,3,$pages,$sort);
 							}
 							$conn->close();
 						?>
@@ -709,7 +833,7 @@
 								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 							</div>
 							 <div class="field">
-								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4&tab=3'">顯示全部</button>
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4&tab=4'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -749,9 +873,11 @@
 									echo "<div class='item'>";
 									echo "<div class='content'>";
 										echo "<a>";
+										if($row['ConnectionState'] == "線上")	echo "<i class='circle green icon'></i>";
+										else									echo "<i class='circle outline icon'></i>";
 										echo $row['ClientName']."&nbsp&nbsp";
 										echo "<span style='background:#fde087'>".$row['IP']."</span>&nbsp&nbsp";
-										echo "<span style='background:#DDDDDD'>".$row['ConnectionState']."</span>&nbsp&nbsp";
+										//echo "<span style='background:#DDDDDD'>".$row['ConnectionState']."</span>&nbsp&nbsp";
 										echo "<span style='background:#fbc5c5'>".$row['OS']."</span>&nbsp&nbsp";
 										echo $row['VirusNum']."&nbsp&nbsp";
 										echo $row['SpywareNum']."&nbsp&nbsp";
@@ -781,26 +907,11 @@
 								}		
 								echo "</div>";
 								/* Create Pagination Element*/ 
-								echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,3,$pages,"");
+								echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,4,$pages,"");
 							}
 							$conn->close();
 						?>
 						</div> <!--End of record_content-->	
-					</div> <!--End of tabular_content-->	
-					<div class="tab-content all_client_list show">
-					Total Client List
-					<?php
-					require("mysql_connect.inc.php");
-					 //select row_number,and other field value
-					$sql = "SELECT ClientName FROM drip_client_list"; 
-					$result = mysqli_query($conn,$sql);
-					$rowcount = mysqli_num_rows($result);
-					if($rowcount==0){
-						echo "<p>查無此筆紀錄</p>";
-					}else{
-						echo "<p>共有".$rowcount."筆資料！</p>";
-					}
-					?>
 					</div> <!--End of tabular_content-->	
 					</div> <!--End of attached_menu-->	
 				</div><!--End of post_cell-->
@@ -818,7 +929,7 @@
 			</div>
 			<?php 
 				// admin is given permission to edit this block	
-				if(issetBySession("Level")){
+				if(issetBySession("Level") && $_SESSION['Level'] == 2){
 					//echo $_SESSION['Level'];
 			?>
 			<div class="post">

@@ -1,6 +1,6 @@
 <?php
 //PHP File Upload
-$target_dir = "upload/";
+$target_dir = "../upload/contact/";
 //if(isset($_POST["submit"])) {
 	if(is_array($_FILES)) {
 		if(is_uploaded_file($_FILES["fileToUpload"]["tmp_name"])) {

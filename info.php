@@ -143,17 +143,9 @@
 						<table>
 							<thead>
 								<tr>
-									<th rowspan="2">OU</th>
-									<th colspan="3">Total Risks</th>
-									<th colspan="3">High Risks</th>
-								</tr>
-								<tr>
-									<th>Total-VUL</th>
-									<th>Fixed-VUL</th>
-									<th>Completion</th>
-									<th>Total-VUL</th>
-									<th>Fixed-VUL</th>
-									<th>Completion</th>
+									<th>OU</th>
+									<th>Total Risks(Completion | Total | Fixed)</th>
+									<th>High Risks(Completion | Total | Fixed)</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -163,12 +155,18 @@
 								if(strchr($row['ou'],"區公所") == "區公所") echo "<tr style='color:#BBBBBB'>";
 								else echo "<tr>";
 									echo "<td data-label='OU'>".$row['ou']."</td>";
-									echo "<td data-label='Total-VUL'>".$row['total_VUL']."</td>";
-									echo "<td data-label='Fixed-VUL'>".$row['fixed_VUL']."</td>";
-									echo "<td data-label='Completion'>".round($row['total_completion'],2)."%</td>";
-									echo "<td data-label='Total-high-VUL'>".$row['total_high_VUL']."</td>";
-									echo "<td data-label='Fixed-high-VUL'>".$row['fixed_high_VUL']."</td>";
-									echo "<td data-label='Completion'>".round($row['high_completion'],2)."%</td>";
+									echo "<td data-label='Total-Risks'>";
+									echo "<div class='ui teal progress yckuo' data-percent='".round($row['total_completion'],0)."' data-total='100' id='example1'>";
+						 			echo "<div class='bar'><div class='progress'></div></div>";
+						  			echo "<div class='label'>".$row['total_VUL']."/".$row['fixed_VUL']."</div>";
+									echo "</div>";
+									echo "</td>";
+									echo "<td data-label='High-Risks'>";
+									echo "<div class='ui teal progress yckuo' data-percent='".round($row['high_completion'],0)."' data-total='100' id='example1'>";
+						 			echo "<div class='bar'><div class='progress'></div></div>";
+						  			echo "<div class='label'>".$row['total_high_VUL']."/".$row['fixed_high_VUL']."</div>";
+									echo "</div>";
+									echo "</td>";
 								echo "</tr>";
 							}
 							$sql = "SELECT sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL, sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion FROM V_VUL_tableau";
@@ -176,14 +174,21 @@
 							$rowcount	= mysqli_num_rows($result);
 							while($row = mysqli_fetch_assoc($result)) {
 								 echo "<tr style='color:#FF0000'>";
-									echo "<td data-label='OU'>total</td>";
-									echo "<td data-label='Total-VUL'>".$row['total_VUL']."</td>";
-									echo "<td data-label='Fixed-VUL'>".$row['fixed_VUL']."</td>";
-									echo "<td data-label='Completion'>".round($row['total_completion'],2)."%</td>";
-									echo "<td data-label='Total-high-VUL'>".$row['total_high_VUL']."</td>";
-									echo "<td data-label='Fixed-high-VUL'>".$row['fixed_high_VUL']."</td>";
-									echo "<td data-label='Completion'>".round($row['high_completion'],2)."%</td>";
-								echo "</tr>";
+									echo "<td data-label='OU'>Total</td>";
+
+									echo "<td data-label='Total-Risks'>";
+									echo "<div class='ui teal progress yckuo' data-percent='".round($row['total_completion'],0)."' data-total='100' id='example1'>";
+						 			echo "<div class='bar'><div class='progress'></div></div>";
+						  			echo "<div class='label'>".$row['total_VUL']."/".$row['fixed_VUL']."</div>";
+									echo "</div>";
+									echo "</td>";
+									echo "<td data-label='High-Risks'>";
+									echo "<div class='ui teal progress yckuo' data-percent='".round($row['high_completion'],0)."' data-total='100' id='example1'>";
+						 			echo "<div class='bar'><div class='progress'></div></div>";
+						  			echo "<div class='label'>".$row['total_high_VUL']."/".$row['fixed_high_VUL']."</div>";
+									echo "</div>";
+									echo "</td>";
+								 	echo "</tr>";
 							}
 							$conn->close();
 							?>
@@ -202,14 +207,16 @@
 
                     	require("mysql_connect.inc.php");
                    		 //select row_number,and other field value
-						$sql = "SELECT COUNT(*) AS total_num,SUM(gcb) AS gcb_num,SUM(wsus) AS wsus_num,SUM(antivirus) AS antivirus_num FROM drip_client_list";
+						$sql = "SELECT COUNT(*) AS total_num,SUM(ad) AS ad_num,SUM(gcb) AS gcb_num,SUM(wsus) AS wsus_num,SUM(antivirus) AS antivirus_num FROM drip_client_list";
 						$result = mysqli_query($conn,$sql);
 						$row = @mysqli_fetch_assoc($result);
 						$total_num = $row['total_num'];
+						$ad_num = $row['ad_num'];
 						$gcb_num = $row['gcb_num'];
 						$wsus_num = $row['wsus_num'];
 						$antivirus_num = $row['antivirus_num'];
 						$total_rate = round($total_num/$total_num*100,2)."%"; 
+						$ad_rate = round($ad_num/$total_num*100,2)."%"; 
 						$gcb_rate = round($gcb_num/$total_num*100,2)."%"; 
 						$wsus_rate = round($wsus_num/$total_num*100,2)."%"; 
 						$antivirus_rate = round($antivirus_num/$total_num*100,2)."%"; 
@@ -217,34 +224,57 @@
 
 					<table>
 						<colgroup>
-							<col width='33%' />
-							<col width='33%' />
-							<col width='33%' />
+							<col width='50%' />
+							<col width='50%' />
 						</colgroup>
 					<tr>
 						<th>項目</th>
-						<th>數值</th>
-						<th>佈署率</th>
+						<th>佈署率 | 數量</th>
 					</tr>
 					<tr>
 						<td>用戶端總數</td>
-						<td><?php echo $total_num ?></td>
-						<td><?php echo $total_rate ?></td>
+						<td>
+						<div class="ui teal progress yckuo" data-percent="<?php echo $total_rate?>" data-total="100" id="example1">
+						  <div class="bar"><div class="progress"></div></div>
+						  <div class="label"><?php echo $total_num ?></div>
+						</div>
+						</td>
+					</tr>
+					<tr>
+						<td>ad安裝數</td>
+						<td>
+						<div class="ui teal progress yckuo" data-percent="<?php echo $ad_rate?>" data-total="100" id="example1">
+						  <div class="bar"><div class="progress"></div></div>
+						  <div class="label"><?php echo $ad_num ?></div>
+						</div>
+						</td>
 					</tr>
 					<tr>
 						<td>gcb安裝數</td>
-						<td><?php echo $gcb_num ?></td>
-						<td><?php echo $gcb_rate ?></td>
+						<td>
+						<div class="ui teal progress yckuo" data-percent="<?php echo $gcb_rate?>" data-total="100" id="example1">
+						  <div class="bar"><div class="progress"></div></div>
+						  <div class="label"><?php echo $gcb_num ?></div>
+						</div>
+						</td>
 					</tr>
 					<tr>
 						<td>wsus安裝數</td>
-						<td><?php echo $wsus_num ?></td>
-						<td><?php echo $wsus_rate ?></td>
+						<td>
+						<div class="ui teal progress yckuo" data-percent="<?php echo $wsus_rate?>" data-total="100" id="example1">
+						  <div class="bar"><div class="progress"></div></div>
+						  <div class="label"><?php echo $wsus_num ?></div>
+						</div>
+						</td>
 					</tr>
 					<tr>
 						<td>antivirus安裝數</td>
-						<td><?php echo $antivirus_num ?></td>
-						<td><?php echo $antivirus_rate ?></td>
+						<td>
+						<div class="ui teal progress yckuo" data-percent="<?php echo $antivirus_rate?>" data-total="100" id="example1">
+						  <div class="bar"><div class="progress"></div></div>
+						  <div class="label"><?php echo $antivirus_num ?></div>
+						</div>
+						</td>
 					</tr>
 					</table>
 					<?php

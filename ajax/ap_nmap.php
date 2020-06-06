@@ -1,11 +1,8 @@
 <?php
 	header('Content-type: text/html; charset=utf-8');
-	//alert message
-	function phpAlert($msg) {
-		echo '<script type="text/javascript">alert("' . $msg . '")</script>';
-	}
 	//mysql
 	require("../mysql_connect.inc.php");
+	include("../login/function.php");
 	 //select row_number,and other field value
 	$sql = "SELECT * FROM application_system";
 	$result = mysqli_query($conn,$sql);
@@ -13,7 +10,9 @@
 	
 	while($row = mysqli_fetch_assoc($result)) {
 		echo $row['IP'];
-		$output = shell_exec("/usr/bin/nmap ".$row['IP']);
+		$output = shell_exec("/usr/bin/nmap -Pn ".$row['IP']);
+		$res = NmapParser($output);
+		print_r($res);
 		echo $output;
 		$sql = "UPDATE application_system SET Scan_Result='".$output."' WHERE SID =".$row['SID'];
 		if ($conn->query($sql) == TRUE){
