@@ -164,7 +164,33 @@
 			//add the label of bar chart
 			countArray.unshift('機關資安事件數量');
 		
-			c3.generate({
+			//the setting of pie chart
+			var cht_width = '500px';	//default width
+			var arr = $('.post_title');
+			for(i = 0; i < arr.length; i++){
+				if((width = $(arr[i]).css('width')) !== '0px'){
+					cht_width = width.replace(/px/,'');
+					break;	
+				}
+			}
+			var cht_height = cht_width * 0.4205;
+	
+			var chart = c3.generate({
+				bindto: '#chartC-2',
+				data: {
+				columns:
+					mArray,
+				type : 'pie'
+				},
+				size:{
+					height: 360
+				},
+				onresize: function(){
+			
+				}
+			});
+			
+			var chart = c3.generate({
 				bindto: '#chartC',
 	    		data:{ 
 					columns: [countArray],
@@ -180,34 +206,13 @@
 					width: {
 						ratio: 0.5 // this makes bar width 50% of length between ticks	
 					}
-				}
-			});
-
-			//the setting of pie chart
-			var cht_width = '500px';	//default width
-			var arr = $('.post_title');
-			for(i = 0; i < arr.length; i++){
-				if((width = $(arr[i]).css('width')) !== '0px'){
-					cht_width = width.replace(/px/,'');
-					break;	
-				}
-			}
-			var cht_height = cht_width * 0.4205;
-	
-			c3.generate({
-				bindto: '#chartC-2',
-				data: {
-				columns:
-					mArray,
-				type : 'pie'
 				},
 				size:{
 					height: 360
-				},
-				onresize: function(){
-			
 				}
+
 			});
+
 		}
 	});
 		return 0;

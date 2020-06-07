@@ -1,9 +1,23 @@
 <!--info.php-->
+<?php 
+	if(isset($_GET['subpage'])) $subpage  = $_GET['subpage'];
+	else						$subpage =1;
+	switch($subpage){
+		case 1:	load_info_enews(); break;
+		case 2:	load_info_comparison(); break;
+		case 3:	load_info_ranking(); break;
+		case 4:	load_info_vul(); break;
+		case 5:	load_info_client(); break;
+	}
+?>
+<?php
+function load_info_enews(){
+?>
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">Enews Report</div>
+				<div class="post_title">Enews</div>
 					<div class="post_cell">
 					<div class="post_table">
                		 <?php //select data form database
@@ -100,7 +114,15 @@
 				</div>
 			</div>
 		</div>
-		<div class="sub-content">
+		<div style="clear: both;">&nbsp;</div>
+	</div><!-- end #content -->
+</div> <!--end #page-->
+<?php } 
+function load_info_comparison(){
+?>	
+<div id="page" class="container">
+	<div id="content">
+		<div class="sub-content show">
 			<div class="post">
 				<!--div class="post_block"-->
 					<div class="post_title">Compared with last year</div>
@@ -113,7 +135,15 @@
 				
 			</div>
 		</div>
-		<div class="sub-content">
+		<div style="clear: both;">&nbsp;</div>
+	</div><!-- end #content -->
+</div> <!--end #page-->
+<?php } 
+function load_info_ranking(){
+?>	
+<div id="page" class="container">
+	<div id="content">
+		<div class="sub-content show">
 			<div class="post">
 				<div class="post_title">資安類型統計圖</div>
 				<div class="post_cell">
@@ -127,9 +157,16 @@
 			    </div>		
 			</div>
 		</div>
-		<div class="sub-content">
+		<div style="clear: both;">&nbsp;</div>
+	</div><!-- end #content -->
+<?php } 
+function load_info_vul(){
+?>	
+<div id="page" class="container">
+	<div id="content">
+		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">VUL Bar Chart</div>
+				<div class="post_title">VUL Bar</div>
 					<div class="post_cell">
 						臺南市政府弱掃平台各單位漏洞數量<br>
 						<!-- <div id="chartD" class="chart"></div> -->
@@ -198,7 +235,15 @@
 					</div>
 			</div>
 		</div>
-		<div class="sub-content">
+		<div style="clear: both;">&nbsp;</div>
+	</div><!-- end #content -->
+</div> <!--end #page-->
+<?php } 
+function load_info_client(){
+?>	
+<div id="page" class="container">
+	<div id="content">
+		<div class="sub-content show">
 			<div class="post">
 				<div class="post_title">端點資安總表</div>
 					<div class="post_cell">
@@ -387,7 +432,10 @@
 			</div>
 		</div>
 		<div style="clear: both;">&nbsp;</div>
-	</div>
-	
-		<!-- end #content -->
+	</div><!-- end #content -->
+</div> <!--end #page-->
+ 
+<?php } 
+?>	
+		
 		

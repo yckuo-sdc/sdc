@@ -1,4 +1,13 @@
-<!--nmap.php-->
+<!--about.php-->
+<?php 
+	$subpage  = $_GET['subpage'];
+	switch($subpage){
+		case 1:	load_about_data(); break;
+	}
+?>
+<?php
+function load_about_data(){
+?>
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
@@ -44,6 +53,7 @@
 		</div>
 		<div style="clear: both;">&nbsp;</div>
 	</div>
-	
+</div> <!--end #page-->
+<?php } ?>	
 	<!-- end #content -->
 

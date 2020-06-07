@@ -390,27 +390,10 @@ function change_page()
 {
 	var url=location.href;
 	console.log(url);
-	/*
-	if(getParameterByName('subpage',url)!= null){
-		var subpage = getParameterByName('subpage',url);
-	}else{
-		var subpage = 1;
-	}
-	*/
 	var subpage = (getParameterByName('subpage',url)!= null)?getParameterByName('subpage',url):1;	
 	var tab = (getParameterByName('tab',url)!= null)?getParameterByName('tab',url):1;	
 	
 	//console.log(subpage);	
-	var num = subpage-1;
-	//console.log(num);
-	var title = $('#sidebar li').find('.title')[num]; 
-	var content = $('#content').find('.sub-content')[num];
-	$('#sidebar li .title').removeClass('active');
-	$(title).addClass('active');
-	$('#content .sub-content').removeClass('show').hide();
-	$(content).addClass('show').show();
-	
-
 	var num = tab-1;
 	var title   = $('.tabular.menu').find('.item')[num];
 	var content = $('.ui.attached.segment').find('.tab-content')[num];
@@ -425,10 +408,6 @@ $(document).ready(function(){
 
 	change_page();
 
-	//auto retrieve GS
-	//Call_retrieve_gs_ajax();
-	//Call_retrieve_tainangov_security_incident_gs_ajax();
-	
 	//load ou_vs_content
 	Call_retrieve_ou_vs_ajax();
 	
@@ -755,17 +734,16 @@ $(document).ready(function(){
 			}               
 		});
     }));	
-	//mobile menu icon
-	$('.ui.container a').click(function(){
-		console.log("a");
-		var menu = $('#menu');
-		//$('#menu').toggleClass('show');
-		if(menu.hasClass('show')){
-			menu.removeClass('show').animate({"display":"none"},"slow");
-		}else{
-			menu.addClass('show').animate({"display":"block"},"slow");
-		}
-		
-	});
+
+	// mobile launch button
+	$('#example .fixed.main.menu .item.launch').click(function(){
+		console.log("launch");
+		$('#toc.ui.left.sidebar').toggleClass('overlay visible');			
+ 	});
+	// push sidebar to left
+	$('.pusher').click(function(){
+		console.log("launch");
+		$('#toc.ui.left.sidebar').removeClass('overlay visible');			
+ 	});
 
 });

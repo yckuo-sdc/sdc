@@ -1,4 +1,18 @@
-<!--nmap.php-->
+<!--tool.php-->
+<?php 
+	if(isset($_GET['subpage'])) $subpage  = $_GET['subpage'];
+	else						$subpage =1;
+	$subpage  = $_GET['subpage'];
+	switch($subpage){
+		case 1:	load_tool_nmap(); 		break;
+		case 2:	load_tool_portscan(); 	break;
+		case 3:	load_tool_ldap(); 		break;
+		case 4:	load_tool_hydra(); 		break;
+	}
+?>
+<?php
+function load_tool_nmap(){
+?>
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
@@ -24,7 +38,14 @@
 			<div class="record_content"></div>
 			</div>
 		</div>
-		<div class="sub-content">
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+<?php }
+function load_tool_portscan(){
+?>
+<div id="page" class="container">
+	<div id="content">
+		<div class="sub-content show">
 			<div class="post">
 				<div class="post_title">Application System</div>
 					<div class="post_cell">
@@ -61,6 +82,13 @@
 				</div>
 			</div>
 		</div>
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+<?php }							
+function load_tool_ldap(){
+?>
+<div id="page" class="container">
+	<div id="content">
 		<div class="sub-content show">
 			<div class="post ldap">
 				<div class="post_title">LDAP-Search</div>
@@ -97,6 +125,13 @@
 				</div>
 			</div>
 		</div>
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+<?php }	
+function load_tool_hydra(){
+?>
+<div id="page" class="container">
+	<div id="content">
 		<div class="sub-content show">
 			<div class="post hydra">
 				<div class="post_title">Hydra Passowrd Cracker</div>
@@ -159,6 +194,9 @@
 		</div>
 		<div style="clear: both;">&nbsp;</div>
 	</div>
+<?php } 
+?>	
 	
 	<!-- end #content -->
 
+</div> <!--end #page-->

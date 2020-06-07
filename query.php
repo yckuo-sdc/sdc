@@ -1,4 +1,19 @@
 <!--query.php-->
+<?php 
+	if(isset($_GET['subpage'])) $subpage  = $_GET['subpage'];
+	else						$subpage =1;
+	$subpage  = $_GET['subpage'];
+	switch($subpage){
+		case 1:	load_query_event(); break;
+		case 2:	load_query_ncert(); break;
+		case 3:	load_query_contact(); break;
+		case 4:	load_query_client(); break;
+		case 5:	load_query_retrieve(); break;
+	}
+?>
+<?php
+function load_query_event(){
+?>
 <div id="page" class="container">
 <div id="content">
 		<div class="sub-content show">
@@ -129,7 +144,14 @@
 						
 			</div>
 		</div>
-		<div class="sub-content">
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+<?php } 
+function load_query_ncert(){
+?>	
+<div id="page" class="container">
+<div id="content">
+		<div class="sub-content show">
 			<div class="post tainangov_security_Incident">
 				<div class="post_title">資安通報查詢</div>
 				<div class="post_cell">
@@ -273,7 +295,14 @@
 				</div><!--End of post_cell-->
 			</div><!--End of post-->
 		</div><!--End of sub-content-->
-		<div class="sub-content">
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+<?php } 
+function load_query_contact(){
+?>	
+<div id="page" class="container">
+<div id="content">
+		<div class="sub-content show">
 			<div class="post security_contact">
 				<div class="post_title">資安聯絡人</div>
 				<div class="post_cell">
@@ -396,7 +425,14 @@
 				</div><!--End of post_cell-->
 			</div><!--End of post-->
 		</div><!--End of sub-content-->
-		<div class="sub-content">
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+<?php } 
+function load_query_client(){
+?>	
+<div id="page" class="container">
+<div id="content">
+		<div class="sub-content show">
 			<div class="post is_client_list">
 				<div class="post_title">端點資安用戶端清單</div>
 				<div class="post_cell">
@@ -917,7 +953,14 @@
 				</div><!--End of post_cell-->
 			</div><!--End of post-->
 		</div><!--End of sub-content-->
-		<div class="sub-content">
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+<?php } 
+function load_query_retrieve(){
+?>	
+<div id="page" class="container">
+<div id="content">
+		<div class="sub-content show">
 			<div class="post">
 				<div class="post_title">Retrieve from Google Sheets and GCB</div>
 				<div class="post_cell">
@@ -953,7 +996,10 @@
 		</div>
 		<div style="clear: both;">&nbsp;</div>
 	</div>
+<?php } 
+?>	
 	
 	<!-- end #content -->
+</div> <!--end #page-->
 
 
