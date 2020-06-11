@@ -224,6 +224,15 @@
 		return date('Y-m-d H:i:s',$UnixTime); 
 	}
 	
+	// check the disabled ad account
+	function dateConvert($str){
+		if($str=='NULL' || $str ==''){
+			return $str;
+		}else{
+			return date_format(date_create($str),'Y-m-d H:i:s');
+		}
+	}
+	
 	//處理 Nmap 掃描原始結果，將使用的Port、State、Service取出紀錄
 	function NmapParser($input){
 		$rows = explode("\n", $input);
@@ -234,11 +243,11 @@
 			$row_data = explode(" ", preg_replace('/\s+/', ' ', $data));
 			if($row_data[0]){
 				$port_data = explode("/", $row_data[0]);
-				$portNum = $port_data[0];
-				$TcpOrUdp = $port_data[1];
-				$portStatus = strtoupper(trim($row_data[1]));
+				$portStatus = strtolower(trim($row_data[1]));
 				$portDesc = $row_data[2];
-				if($portStatus == 'OPEN'){
+				if($portStatus == 'open' || $portStatus == 'filtered' || $portStatus == 'closed'){
+					$portNum = $port_data[0];
+					$TcpOrUdp = $port_data[1];
 					array_push($stack, array($portNum,$TcpOrUdp,$portStatus,$portDesc));
 				}
 			}	
@@ -260,4 +269,18 @@
 		}
 		fclose($f);
 	}
+
+	// check the disabled ad account
+	function isAccountDisable($useraccountcontrol){
+		$hexValue = dechex($useraccountcontrol);
+		$len = strlen($hexValue);
+		$accountdisable = $hexValue[$len-1];
+
+		if($accountdisable == 2){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 ?>

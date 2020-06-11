@@ -801,7 +801,7 @@ function load_query_client(){
 									echo "<span style='background:#fde087'>".$row['IPAddress']."</span>&nbsp&nbsp";
 									echo "<span style='background:#DDDDDD'>".$row['NotInstalled']."</span>&nbsp&nbsp";
 									echo "<span style='background:#fbc5c5'>".$row['Failed']."</span>&nbsp&nbsp";
-									if($row['LastReportedStatusTime']!='NULL') echo date_format(date_create($row['LastReportedStatusTime']),'Y-m-d H:i:s');
+									echo dateConvert($row['LastReportedStatusTime']);
 									echo "<i class='angle double down icon'></i>";
 									echo "</a>";
 									echo "<div class='description'>";
@@ -825,13 +825,11 @@ function load_query_client(){
 											echo "<strong>KB".$row_Failed['KBArticleID']."</strong> ";	
 										}	
 										echo "<li>已安裝待重開機更新數量:".$row['InstalledPendingReboot']."</li>";
-										echo "<li>上次狀態回報日期:".date_format(date_create($row['LastReportedStatusTime']),'Y-m-d H:i:s')."</li>";
-										echo "<li>上次更新重開機日期:";
-										if($row['LastReportedRebootTime']!='NULL') echo date_format(date_create($row['LastReportedRebootTime']),'Y-m-d H:i:s');
-										echo "</li>";
-										echo "<li>上次可用更新日期:".date_format(date_create($row['EffectiveLastDetectionTime']),'Y-m-d H:i:s')."</li>";
-										echo "<li>上次同步日期:".date_format(date_create($row['LastSyncTime']),'Y-m-d H:i:s')."</li>";
-										echo "<li>上次修改日期:".date_format(date_create($row['LastChangeTime']),'Y-m-d H:i:s')."</li>";
+										echo "<li>上次狀態回報日期:".dateConvert($row['LastReportedStatusTime'])."</li>";
+										echo "<li>上次更新重開機日期:".dateConvert($row['LastReportedRebootTime'])."</li>";
+										echo "<li>上次可用更新日期:".dateConvert($row['EffectiveLastDetectionTime'])."</li>";
+										echo "<li>上次同步日期:".dateConvert($row['LastSyncTime'])."</li>";
+										echo "<li>上次修改日期:".dateConvert($row['LastChangeTime'])."</li>";
 										echo "<li>上次同步結果:".$row['LastSyncResult']."</li>";
 										echo "</ol>";
 									echo "</div>";

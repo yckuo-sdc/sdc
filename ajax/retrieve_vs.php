@@ -131,13 +131,14 @@
 						$scanTarget['oid']= mysqli_real_escape_string($conn,$scanTarget['oid']);
 						$scanTarget['ou']= mysqli_real_escape_string($conn,$scanTarget['ou']);
 						$scanTarget['system_name']= mysqli_real_escape_string($conn,$scanTarget['system_name']);
+						$scanTarget['hostname']= mysqli_real_escape_string($conn,$scanTarget['hostname']);
 						$scanTarget['ip']= mysqli_real_escape_string($conn,$scanTarget['ip']);
 						$scanTarget['domain']= mysqli_real_escape_string($conn,$scanTarget['domain']);
 						$scanTarget['manager']= mysqli_real_escape_string($conn,$scanTarget['manager']);
 						$scanTarget['email']= mysqli_real_escape_string($conn,$scanTarget['email']);
 						// INSERT to table ON DUPLICATE KEY UPDATE data
-						$sql = "insert into scanTarget(oid,ou,ip,system_name,domain,manager,email) values('".$scanTarget['oid']."','".$scanTarget['ou']."','".$scanTarget['ip']."','".$scanTarget['system_name']."','".$scanTarget['domain']."','".$scanTarget['manager']."','".$scanTarget['email']."')
-						ON DUPLICATE KEY UPDATE oid = '".$scanTarget['oid']."',ou = '".$scanTarget['ou']."',ip = '".$scanTarget['ip']."',system_name = '".$scanTarget['system_name']."',domain = '".$scanTarget['domain']."',manager = '".$scanTarget['manager']."',email = '".$scanTarget['email']."' ";
+						$sql = "insert into scanTarget(oid,ou,ip,system_name,hostname,domain,manager,email) values('".$scanTarget['oid']."','".$scanTarget['ou']."','".$scanTarget['ip']."','".$scanTarget['system_name']."','".$scanTarget['hostname']."','".$scanTarget['domain']."','".$scanTarget['manager']."','".$scanTarget['email']."')
+						ON DUPLICATE KEY UPDATE oid = '".$scanTarget['oid']."',ou = '".$scanTarget['ou']."',ip = '".$scanTarget['ip']."',system_name = '".$scanTarget['system_name']."',hostname = '".$scanTarget['hostname']."',domain = '".$scanTarget['domain']."',manager = '".$scanTarget['manager']."',email = '".$scanTarget['email']."' ";
 						if ($conn->query($sql) == TRUE) {
 							//echo "此筆資料已被上傳成功\n\r";									
 							//echo $sql."<br>";

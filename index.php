@@ -1,5 +1,6 @@
 <!--index.php-->
-<?php session_start(); 
+<?php 
+	session_start(); 
 	require_once("login/function.php");
 	verifyBySession_Cookie("account");
 	if(isset($_GET['mainpage']) AND !empty($_GET['mainpage']))$page = $_GET['mainpage'];

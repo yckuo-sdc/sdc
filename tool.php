@@ -47,7 +47,7 @@ function load_tool_portscan(){
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">Application System</div>
+				<div class="post_title">Portscan Result</div>
 					<div class="post_cell">
 						 <?php //select data form database
 							require("mysql_connect.inc.php");
@@ -61,22 +61,63 @@ function load_tool_portscan(){
 							echo "<tr>";
 								echo "<th>系統名稱</th>";
 								echo "<th>IP</th>";
-								echo "<th>網址</th>";
-								echo "<th>Scan Result</th>";
+								echo "<th>協定</th>";
+								echo "<th>Port</th>";
+								echo "<th>服務</th>";
+								echo "<th>狀態</th>";
+								echo "<th>Nmap結果</th>";
 							echo "</tr>";
 							echo "</thead>";	
 							echo "<tbody>";	
-                   			 while($row = mysqli_fetch_assoc($result)) {
-								echo "<tr>";
-									echo "<td>".$row['Name']."</td>";
-									echo "<td>".$row['IP']."</td>";
-									echo "<td><a href='".$row['URL']."' target='_blank'>".$row['URL']."</a></td>";
-									echo "<td>".nl2br($row['Scan_Result'])."</td>";
-								echo "</tr>";
-							 }
+							while($row = mysqli_fetch_assoc($result)) {
+								$SID 			= $row['SID'];
+								$Name 			= $row['Name'];
+								$IP 			= $row['IP'];
+								$URL 			= $row['URL'];
+								$Scan_Result 	= $row['Scan_Result'];
+								$sql 	= "SELECT DISTINCT PortNumber,Protocol,Status,Service FROM portscanResult WHERE SID=".$SID;
+								$res 	= mysqli_query($conn,$sql);
+								$size 	= mysqli_num_rows($res);
+								if($size == 0 ){
+									echo "<tr>";
+										echo "<td><a href='".$URL."' target='_blank'>".$Name."</a></td>";
+										echo "<td>".$IP."</td>";
+										echo "<td></td>";
+										echo "<td></td>";
+										echo "<td></td>";
+										echo "<td></td>";
+										echo "<td>".$Scan_Result."</td>";
+									echo "</tr>";
+								}else{
+									echo "<tr>";
+										echo "<td rowspan=".$size."><a href='".$URL."' target='_blank'>".$Name."</a></td>";
+										echo "<td rowspan=".$size.">".$IP."</td>";
+										echo "<td rowspan=".$size.">tcp</td>";
+									$ports = array();
+									while($port = mysqli_fetch_assoc($res)) {
+										$ports[] = $port;
+									}
+									foreach ($ports as $key=>$port){
+										if($key == 0){
+												//echo "<td>".$port['Protocol']."</td>";
+												echo "<td>".$port['PortNumber']."</td>";
+												echo "<td>".$port['Service']."</td>";
+												echo "<td>".$port['Status']."</td>";
+												echo "<td rowspan=".$size.">".$Scan_Result."</td>";
+											echo "</tr>";
+										}else{
+											echo "<tr>";
+												//echo "<td>".$port['Protocol']."</td>";
+												echo "<td>".$port['PortNumber']."</td>";
+												echo "<td>".$port['Service']."</td>";
+												echo "<td>".$port['Status']."</td>";
+											echo "</tr>";
+										}	
+									}
+								}
+							}
 							echo "</tbody>";
 							echo "</table>";
-
 							$conn->close();
 						?>
 				</div>

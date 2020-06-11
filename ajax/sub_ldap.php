@@ -31,7 +31,24 @@ if(!empty($_GET['target']) && !empty($_GET['type'])){
 							echo "<h4 class='ui dividing header'>Entry Information</h4>";
 							echo "<div class='inline fields'>";
 								echo "<div class='twelve wide field'>";
-								echo "Setting(".$data[$i]['cn'][0].")";
+							if($k==0){ //user
+								if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
+								   	echo "<i class='user icon'></i>";
+									echo "Setting(".$data[$i]['cn'][0]."_已停用)";
+								}else{
+									echo "<i class='user blue icon'></i>";
+									echo "Setting(".$data[$i]['cn'][0].")";
+								}
+							}elseif($k==1){	//computer
+								if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
+								   	echo "<i class='desktop icon'></i>";
+									echo "Setting(".$data[$i]['cn'][0]."_已停用)";
+								}else{
+									echo "<i class='desktop blue icon'></i>";
+									echo "Setting(".$data[$i]['cn'][0].")";
+								}
+							}
+
 								echo "<input type='hidden' name='type' value='search' >";
 								echo "</div>";
 								echo "<div class='two wide field'>";

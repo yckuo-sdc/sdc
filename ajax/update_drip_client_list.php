@@ -7,7 +7,7 @@ $sql = "INSERT INTO drip_client_list(DetectorName,DetectorIP,DetectorGroup,IP,MA
 SELECT DetectorName,DetectorIP,DetectorGroup,IP,MAC,GroupName,ClientName,SwitchIP,SwitchName,PortName,NICProductor,LastOnlineTime,LastOfflineTime,IP_BlockReason,MAC_BlockReason,MemoByMAC,MemoByIP 
 FROM drip_ip_mac_used_list
 WHERE
-(ClientName LIKE '%PC%' OR ClientName LIKE '%DESKTOP%' OR GroupName LIKE 'TAINAN') AND IP_Grant LIKE '已授權IP' AND MAC_Grant LIKE '已授權MAC' ";
+(ClientName LIKE '%PC%' OR ClientName LIKE '%DESKTOP%' OR ClientName LIKE '%LAPTOP%' OR ClientName REGEXP '[^ -~]' OR GroupName LIKE 'TAINAN') AND IP_Grant LIKE '已授權IP' AND MAC_Grant LIKE '已授權MAC' ";
 if ($conn->query($sql) == TRUE) {
 } else {
 	echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
