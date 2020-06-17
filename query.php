@@ -434,7 +434,7 @@ function load_query_client(){
 <div id="content">
 		<div class="sub-content show">
 			<div class="post is_client_list">
-				<div class="post_title">端點資安用戶端清單</div>
+				<div class="post_title">用戶端資安清單</div>
 				<div class="post_cell">
 					<div class="ui top attached tabular menu">
 						<a class="active item">DrIP</a>
@@ -915,7 +915,8 @@ function load_query_client(){
 										echo "<span style='background:#fbc5c5'>".$row['OS']."</span>&nbsp&nbsp";
 										echo $row['VirusNum']."&nbsp&nbsp";
 										echo $row['SpywareNum']."&nbsp&nbsp";
-										echo $row['VirusPatternVersion']."&nbsp&nbsp";
+										echo "<span style='background:#DDDDDD'>".$row['VirusPatternVersion']."</span>&nbsp&nbsp";
+										echo $row['LogonUser']."&nbsp&nbsp";
 										echo "<i class='angle double down icon'></i>";
 										echo "</a>";
 									echo "<div class='description'>";
@@ -934,6 +935,7 @@ function load_query_client(){
 										echo "<li>MAC位址:".$row['MAC']."</li>";
 										echo "<li>設備版本:".$row['ClientVersion']."</li>";
 										echo "<li>病毒碼版本:".$row['VirusPatternVersion']."</li>";
+										echo "<li>登入使用者:".$row['LogonUser']."</li>";
 										echo "</ol>";
 									echo "</div>";
 									echo "</div>";

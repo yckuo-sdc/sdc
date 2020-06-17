@@ -6,7 +6,6 @@
 	session_start(); 
 	verifyBySession_Cookie("account");
 	header('Content-type: text/html; charset=utf-8');
-
 	echo "<table><tbody>";
 	foreach ($_GET as $key => $value) {
 		//過濾特殊字元(')
@@ -19,9 +18,10 @@
 		}	
 	}
 	echo "</tbody></table>";
-
+	//check if active is exist 
+	if($isActive !== "undefined") $type ="changestate";
 	switch($type){
-		case "search":
+		case "edituser":
 			if($new_password==$confirm_password){
 				$res = ad\edit_user($cn,$new_password,$confirm_password,$displayname,$title,$telephonenumber,$physicaldeliveryofficename,$mail);
 				echo "執行結果：".$res;
@@ -41,6 +41,11 @@
 				echo "failed:兩次輸入密碼不同!<br>";
 			}
 			break;
+		case "changestate":
+			$res = ad\change_user_state($cn,'false',$isActive,'false');
+			echo "執行結果：".$res;
+			storeUserLogs($conn,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_state(account='.$cn.')res='.$res,date('Y-m-d h:i:s'));
+	 		break;
 	}
 	$conn->close();
 

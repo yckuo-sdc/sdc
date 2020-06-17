@@ -28,15 +28,12 @@
 			}else {
 				echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
 			}
-			$sql = "UPDATE application_system SET Scan_Result='".$output."' WHERE SID =".$SID;
-			if ($conn->query($sql) == TRUE){
-			}else {
-				echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
-			}
+		}
+		$sql = "UPDATE application_system SET Scan_Result='".$output."' WHERE SID =".$SID;
+		if ($conn->query($sql) == TRUE){
+		}else {
+			echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
 		}
 	}
-	
 	$conn->close();	
-	
-
 ?>

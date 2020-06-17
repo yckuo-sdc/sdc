@@ -29,27 +29,35 @@ if(!empty($_GET['target']) && !empty($_GET['type'])){
 						for($i=0; $i<$data["count"];$i++){
 							echo "<form id='form-ldap' class='ui form' action='javascript:void(0)'>";
 							echo "<h4 class='ui dividing header'>Entry Information</h4>";
-							echo "<div class='inline fields'>";
-								echo "<div class='twelve wide field'>";
+							echo "<div class='fields'>";
+								echo "<div class='two wide field'>";
 							if($k==0){ //user
 								if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
 								   	echo "<i class='user icon'></i>";
-									echo "Setting(".$data[$i]['cn'][0]."_已停用)";
+									echo $data[$i]['cn'][0]."_已停用";
 								}else{
 									echo "<i class='user blue icon'></i>";
-									echo "Setting(".$data[$i]['cn'][0].")";
+									echo $data[$i]['cn'][0];
 								}
 							}elseif($k==1){	//computer
 								if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
 								   	echo "<i class='desktop icon'></i>";
-									echo "Setting(".$data[$i]['cn'][0]."_已停用)";
+									echo $data[$i]['cn'][0]."_已停用";
 								}else{
 									echo "<i class='desktop blue icon'></i>";
-									echo "Setting(".$data[$i]['cn'][0].")";
+									echo $data[$i]['cn'][0];
 								}
 							}
-
-								echo "<input type='hidden' name='type' value='search' >";
+								echo "<input type='hidden' name='type' value='edituser' >";
+								echo "</div>";
+								echo "<div class='ten wide field'>";
+								if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
+									$isActive = "true";
+									echo "<button class='ui blue button' onclick='ldap_edit(".$isActive.")'>Enable</button>";
+								}else{
+									$isActive = "false";
+									echo "<button class='ui red button' onclick='ldap_edit(".$isActive.")'>Disable</button>";
+								}
 								echo "</div>";
 								echo "<div class='two wide field'>";
 									echo "<button class='ui button' onclick='ldap_clear()'>Cancel</button>";

@@ -14,8 +14,8 @@ function check(ElementID) {
 		document.getElementById("self_password").disabled	 = false;
 	}
 }
-function ldap_edit() {
-	console.log('ldap edit');
+function ldap_edit(isActive) {
+	console.log('ldap edit'+isActive);
 	var type = $('#form-ldap input[name=type]').val();
 	if(type == 'search'){
 		var displayname = $('#form-ldap input[name=displayname]').val();
@@ -45,7 +45,7 @@ function ldap_edit() {
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data:$('#form-ldap').serialize(),
+		 data:$('#form-ldap').serialize()+'&isActive='+isActive,
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -62,6 +62,7 @@ function ldap_clear() {
 	$(selector+'.record_content').html("");
 	return 0;
 }
+
 
 function Call_drip_block_IP_ajax(type,ip,response){
 	$('.ui.inline.loader').addClass('active');
@@ -742,7 +743,6 @@ $(document).ready(function(){
  	});
 	// push sidebar to left
 	$('.pusher').click(function(){
-		console.log("launch");
 		$('#toc.ui.left.sidebar').removeClass('overlay visible');			
  	});
 

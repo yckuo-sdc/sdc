@@ -69,13 +69,18 @@
 							echo "<count>".$row['count']."</count>";
 						echo "</EventType>";
 					}
-				$sql = "SELECT AgencyName,COUNT(AgencyName) as count FROM security_event WHERE NOT AgencyName LIKE '' GROUP BY AgencyName ORDER by count desc LIMIT 10";
+				$sql = "SELECT AgencyName,COUNT(AgencyName) as count FROM security_event WHERE NOT AgencyName LIKE '' GROUP BY AgencyName ORDER by count desc";
 				$result 	= mysqli_query($conn,$sql);
 				$rowcount	= mysqli_num_rows($result);
 					while($row = mysqli_fetch_assoc($result)) {
+						$sql = "SELECT distinct IP FROM security_event WHERE AgencyName ='".$row['AgencyName']."'";
+						$res 	= mysqli_query($conn,$sql);
+						$IP_count	= mysqli_num_rows($res);
+						$name = explode("_", $row['AgencyName']);
 						echo "<AgencyName>";
-						echo "<name>".$row['AgencyName']."</name>";
+						echo "<name>".$name[1]."</name>";
 						echo "<count>".$row['count']."</count>";
+						echo "<IP_count>".$IP_count."</IP_count>";
 						echo "</AgencyName>";
 					}
 				$sql = "SELECT UnitName,COUNT(UnitName) as count FROM security_event WHERE NOT UnitName LIKE '' GROUP BY UnitName ORDER by count desc LIMIT 10";
@@ -125,9 +130,18 @@
 				$rowcount	= mysqli_num_rows($result);
 					while($row = mysqli_fetch_assoc($result)) {
 						echo "<gcb_pass>";
-						echo "<total_count>".$row['total_count']."</total_count>";
-						echo "<pass_count>".$row['pass_count']."</pass_count>";
+							echo "<total_count>".$row['total_count']."</total_count>";
+							echo "<pass_count>".$row['pass_count']."</pass_count>";
 						echo "</gcb_pass>";
+					}
+				$sql = "SELECT DetectorName as name,COUNT(DetectorName) as count FROM drip_client_list GROUP BY DetectorName ORDER by count desc";
+				$result 	= mysqli_query($conn,$sql);
+				$rowcount	= mysqli_num_rows($result);
+					while($row = mysqli_fetch_assoc($result)) {
+						echo "<drip_vlan>";
+							echo "<name>".$row['name']."</name>";
+							echo "<count>".$row['count']."</count>";
+						echo "</drip_vlan>";
 					}
 				echo "</data>";
 				break;

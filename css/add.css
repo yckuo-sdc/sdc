@@ -203,8 +203,8 @@
 }
 
 .post .ou_block{
-	flex: 0 0 48%;
-	max-width: 48%;
+	flex: 0 0 100%;	
+	max-width: 100%;
 	/*float: left;
     width: 48%;
 	height: 200px;
@@ -599,6 +599,23 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 
 }
 
+
+
+
+@media (min-width: 756px){
+
+	.post .ou_block{
+		flex: 0 0 48%;
+		max-width: 48%;
+	}
+}
+
+@media (min-width: 1100px){
+	.post .ou_block{
+		flex: 0 0 30%;
+		max-width: 30%;
+	}
+}
 
 
 .pusher{	

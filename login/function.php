@@ -23,6 +23,9 @@
 					$_SESSION['account'] = $user;   
 					$_SESSION['UserName'] = $UserName;
 					$_SESSION['Level'] = $Level;
+					require("mysql_connect.inc.php");
+					storeUserLogs($conn,'rememberLogin',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],$_SERVER['REQUEST_URI'],date('Y-m-d h:i:s'));
+					$conn->close();
 				    //echo "a";	
 					return true;	
 				}else{

@@ -51,10 +51,6 @@ function load_info_enews(){
 					?>
 
 					<table>
-						<colgroup>
-							<col width='50%' />
-							<col width='50%' />
-						</colgroup>
 					<tr>
 						<th>項目</th>
 						<th>數值</th>
@@ -151,7 +147,7 @@ function load_info_ranking(){
 			    </div>		
 			</div>
 			<div class="post">
-				<div class="post_title">機關排序TOP10</div>
+				<div class="post_title">機關資安事件排序</div>
 				<div class="post_cell">
 					<div id="chartC" class="chart"></div>	
 			    </div>		
@@ -245,7 +241,7 @@ function load_info_client(){
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">端點資安總表</div>
+				<div class="post_title">用戶端資安總表</div>
 					<div class="post_cell">
 					<div class="post_table">
 					<?php //select data form database
@@ -268,10 +264,6 @@ function load_info_client(){
 					?>
 
 					<table>
-						<colgroup>
-							<col width='50%' />
-							<col width='50%' />
-						</colgroup>
 					<tr>
 						<th>項目</th>
 						<th>佈署率 | 數量</th>
@@ -328,7 +320,11 @@ function load_info_client(){
 					?>
 					</div>
 				</div>
-			</div>
+				<div class="post_title">網段使用IP統計圖</div>
+					<div class="post_cell">
+						<div id="chartG" class="chart"></div>	
+					</div>
+			</div> <!--end #post-->
 			<div class="post">
 				<div class="post_title">GCB總通過率</div>
 					<div class="post_cell">
@@ -341,24 +337,25 @@ function load_info_client(){
 						$row = @mysqli_fetch_assoc($result);
                     	$total_count = $row['total_count'];
                     	$pass_count = $row['pass_count'];
+						$total_rate = round($total_count/$total_count*100,2)."%"; 
+						$pass_rate = round($pass_count/$total_count*100,2)."%"; 
 					?>
 
 					<table>
-						<colgroup>
-							<col width='50%' />
-							<col width='50%' />
-						</colgroup>
 					<tr>
 						<th>項目</th>
 						<th>數值</th>
+						<th>百分比</th>
 					</tr>
 					<tr>
 						<td>用戶端總數</td>
 						<td><?php echo $total_count ?></td>
+						<td><?php echo $total_rate ?></td>
 					</tr>
 					<tr>
 						<td>用戶端通過數</td>
 						<td><?php echo $pass_count ?></td>
+						<td><?php echo $pass_rate ?></td>
 					</tr>
 					</table>
 					<?php
@@ -397,15 +394,10 @@ function load_info_client(){
 					?>
 
 					<table>
-						<colgroup>
-							<col width='33%' />
-							<col width='33%' />
-							<col width='33%' />
-						</colgroup>
 					<tr>
 						<th>項目</th>
 						<th>數值</th>
-						<th>完成率</th>
+						<th>百分比</th>
 					</tr>
 					<tr>
 						<td>用戶端總數</td>
@@ -413,14 +405,71 @@ function load_info_client(){
 						<td><?php echo $total_rate ?></td>
 					</tr>
 					<tr>
-						<td>用戶端安裝成功數</td>
+						<td>安裝成功數</td>
 						<td><?php echo $pass_num ?></td>
 						<td><?php echo $pass_rate ?></td>
 					</tr>
 					<tr>
-						<td>用戶端1周內同步成功數</td>
+						<td>1周內同步成功數</td>
 						<td><?php echo $sync_num ?></td>
 						<td><?php echo $sync_rate ?></td>
+					</tr>
+					</table>
+					<?php
+                    $conn->close();
+
+					?>
+					</div>
+				</div>
+			</div>
+			<div class="post">
+				<div class="post_title">AntiVirus總通過率</div>
+					<div class="post_cell">
+					<div class="post_table">
+               		 <?php //select data form database
+                    	require("mysql_connect.inc.php");
+                   		 //select row_number,and other field value
+                    	$sql = "SELECT COUNT(GUID) AS total_count FROM antivirus_client_list";
+                    	$result = mysqli_query($conn,$sql);
+						$row = @mysqli_fetch_assoc($result);
+                    	$total_num = $row['total_count'];
+						$sql = "SELECT COUNT(*) AS dlp_count FROM antivirus_client_list WHERE DLPState IN ('已停止','需要重新啟動','執行') ";
+                    	$result = mysqli_query($conn,$sql);
+						$row = @mysqli_fetch_assoc($result);
+						//用戶端DLP安裝成功數	
+                    	$dlp_num = $row['dlp_count'];
+						$total_rate = round($total_num/$total_num*100,2)."%"; 
+						$dlp_rate = round($dlp_num/$total_num*100,2)."%"; 
+						$client_av_num = $antivirus_num;
+						$server_av_num = $total_num - $client_av_num;
+						$client_av_rate = round($client_av_num/$total_num*100,2)."%"; 
+						$server_av_rate = round($server_av_num/$total_num*100,2)."%"; 
+					?>
+					<table>
+					<tr>
+						<th>項目</th>
+						<th>數值</th>
+						<th>百分比</th>
+					</tr>
+					<tr>
+						<td>用戶端總數</td>
+						<td><?php echo $total_num ?></td>
+						<td><?php echo $total_rate ?></td>
+					</tr>
+					<tr>
+						<td>DLP安裝成功數</td>
+						<td><?php echo $dlp_num ?></td>
+						<td><?php echo $dlp_rate ?></td>
+					</tr>
+					<tr>
+						<td>Client安裝數</td>
+						<td><?php echo $client_av_num ?></td>
+						<td><?php echo $client_av_rate ?></td>
+					</tr>
+					<tr>
+						<td>Server安裝數</td>
+						<td><?php echo $server_av_num ?></td>
+						<td><?php echo $server_av_rate ?></td>
 					</tr>
 					</table>
 					<?php

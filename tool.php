@@ -75,7 +75,7 @@ function load_tool_portscan(){
 								$IP 			= $row['IP'];
 								$URL 			= $row['URL'];
 								$Scan_Result 	= $row['Scan_Result'];
-								$sql 	= "SELECT DISTINCT PortNumber,Protocol,Status,Service FROM portscanResult WHERE SID=".$SID;
+								$sql 	= "SELECT * FROM portscanResult WHERE ScanTime = (SELECT MAX(ScanTime) FROM portscanResult WHERE SID =".$SID.") AND SID =".$SID;
 								$res 	= mysqli_query($conn,$sql);
 								$size 	= mysqli_num_rows($res);
 								if($size == 0 ){
@@ -89,16 +89,16 @@ function load_tool_portscan(){
 										echo "<td>".$Scan_Result."</td>";
 									echo "</tr>";
 								}else{
-									echo "<tr>";
-										echo "<td rowspan=".$size."><a href='".$URL."' target='_blank'>".$Name."</a></td>";
-										echo "<td rowspan=".$size.">".$IP."</td>";
-										echo "<td rowspan=".$size.">tcp</td>";
 									$ports = array();
 									while($port = mysqli_fetch_assoc($res)) {
 										$ports[] = $port;
 									}
 									foreach ($ports as $key=>$port){
 										if($key == 0){
+											echo "<tr>";
+												echo "<td rowspan=".$size."><a href='".$URL."' target='_blank'>".$Name."</a></td>";
+												echo "<td rowspan=".$size.">".$IP."</td>";
+												echo "<td rowspan=".$size.">tcp</td>";
 												//echo "<td>".$port['Protocol']."</td>";
 												echo "<td>".$port['PortNumber']."</td>";
 												echo "<td>".$port['Service']."</td>";

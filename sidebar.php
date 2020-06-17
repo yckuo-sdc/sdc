@@ -26,14 +26,14 @@
 		<a class="item" href="index.php?mainpage=query&subpage=1">府內資安事件查詢</a> 
 		<a class="item" href="index.php?mainpage=query&subpage=2">資安通報查詢</a> 
 		<a class="item" href="index.php?mainpage=query&subpage=3">資安聯絡人</a> 
-		<a class="item" href="index.php?mainpage=query&subpage=4">端點資安用戶端清單</a> 
+		<a class="item" href="index.php?mainpage=query&subpage=4">用戶端資安清單</a> 
 		<a class="item" href="index.php?mainpage=query&subpage=5">Retrieve GS & Ncert</a> 
   </div>
 </div>
 <div class="item">
   <div class=" header">弱點掃描</div>
   <div class="menu">
-      <a class="item" href="index.php?mainpage=vulnerability&subpage=1">OverView</a>
+      <a class="item" href="index.php?mainpage=vulnerability&subpage=1">整體數據</a>
       <a class="item" href="index.php?mainpage=vulnerability&subpage=2">弱點查詢</a>
       <a class="item" href="index.php?mainpage=vulnerability&subpage=3">Scan Target</a>
       <a class="item" href="index.php?mainpage=vulnerability&subpage=4">Retrieve VS</a>
@@ -56,7 +56,7 @@
 	<a class="item" href="https://sdc-mrbs.tainan.gov.tw/" target="_blank">SDC會議室預約系統</a>
 	<a class="item" href="https://sdc-mrbs.tainan.gov.tw/callcenter/login.php" target="_blank">Call Center預約</a>
 	<a class="item" href="http://webad2019.tainan.gov.tw/" target="_blank">WebAD</a>
-	<a class="item" href="http://10.7.100.91/UOF/" target="_blank">E-ISMS</a>
+	<a class="item" href="http://eisms.tainan.gov.tw/UOF/" target="_blank">E-ISMS</a>
 	<a class="item" href="https://sdc-iss.tainan.gov.tw:4000/" target="_blank">OpenVas(開源漏洞掃描工具)</a>	
     
   </div>

@@ -445,7 +445,8 @@
 							echo "<span style='background:#fbc5c5'>".$row['OS']."</span>&nbsp&nbsp";
 							echo $row['VirusNum']."&nbsp&nbsp";
 							echo $row['SpywareNum']."&nbsp&nbsp";
-							echo $row['VirusPatternVersion']."&nbsp&nbsp";
+							echo "<span style='background:#DDDDDD'>".$row['VirusPatternVersion']."</span>&nbsp&nbsp";
+							echo $row['LogonUser']."&nbsp&nbsp";
 							echo "<i class='angle double down icon'></i>";
 							echo "</a>";
 						echo "<div class='description'>";
@@ -464,6 +465,7 @@
 							echo "<li>MAC位址:".$row['MAC']."</li>";
 							echo "<li>設備版本:".$row['ClientVersion']."</li>";
 							echo "<li>病毒碼版本:".$row['VirusPatternVersion']."</li>";
+							echo "<li>登入使用者:".$row['LogonUser']."</li>";
 							echo "</ol>";
 						echo "</div>";
 						echo "</div>";
