@@ -71,6 +71,4 @@ function change_user_state($cn,$PasswordChangeNextTime,$isActive,$isLocked){
 	return $response;
 }
 
-$res=change_user_state('pc8280','false','true','false');
-echo $res;
 ?>

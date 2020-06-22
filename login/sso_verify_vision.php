@@ -19,7 +19,7 @@
 				//echo $srcToken;
 				//echo $mainpage."<br>";
 				//echo $subpage."<br>";
-
+				echo "a";
 				$encryToken = hash_hmac('sha256', $srcToken, $apcode);
 				$url = "http://vision.tainan.gov.tw/common/sso_verify.php";
 				$ch = curl_init();
@@ -29,6 +29,7 @@
 				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("token"=>$encryToken))); 
 				$account = trim(curl_exec($ch)); 
 				curl_close($ch);
+				echo "b";
 				
 				require_once("../mysql_connect.inc.php");	
 				 //特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
@@ -36,7 +37,7 @@
 				$sql = "SELECT * FROM users where SSOID = '$account'";
 				$result = mysqli_query($conn,$sql);
 				$row = @mysqli_fetch_assoc($result);
-				//echo $account;
+				echo $account."<br>";
 					
 				if($row['SSOID'] == $account){
 					session_start();
@@ -49,8 +50,14 @@
 						'mainpage' => $mainpage,
 						'subpage' => $subpage
 					);
-					if( !empty($mainpage) && !empty($subpage) ) header("refresh:0;url=../index.php?".http_build_query($args)); 
-					else										header("refresh:0;url=../index.php"); 
+					if( !empty($mainpage) && !empty($subpage) ){
+						echo "d";
+						header("Location: https://sdc-iss.tainan.gov.tw/index.php?".http_build_query($args)); 
+					}else{	
+						echo "e";
+						header("Location: ../index.php"); 
+						exit();
+					}	
 				}else{
 					$conn->close();
 					header("refresh:0;url=error.html"); 

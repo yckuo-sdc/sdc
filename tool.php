@@ -5,9 +5,8 @@
 	$subpage  = $_GET['subpage'];
 	switch($subpage){
 		case 1:	load_tool_nmap(); 		break;
-		case 2:	load_tool_portscan(); 	break;
-		case 3:	load_tool_ldap(); 		break;
-		case 4:	load_tool_hydra(); 		break;
+		case 2:	load_tool_ldap(); 		break;
+		case 3:	load_tool_hydra(); 		break;
 	}
 ?>
 <?php
@@ -18,37 +17,30 @@ function load_tool_nmap(){
 		<div class="sub-content show">
 			<div class="post nmap">
 				<div class="post_title">Nmap</div>
-				<form class="ui form" action="javascript:void(0)">
- 				<!--<div class="fields">-->
-			    	<div class="field">
-						<label>Target(IP or Domain name)</label>
-						<div class="ui input">
-							<?php $target = "localhost vision.tainan.gov.tw 10.7.102.4";?>
-							<input type="text" class="target" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
-						</div>
+				<div class="post_cell">
+					<div class="ui top attached tabular menu">
+						<a class="active item">Nmap</a>
+						<a class="item">Portscan Result</a>
 					</div>
-					<div class="field">
-						<label>Nmap</label>
-						<button id="nmap_btn" class="ui button">Scan</button>
-						<div class="ui centered inline loader"></div>
-					</div>
-				<!--</div>-->	
-				</form>
-
-			<div class="record_content"></div>
-			</div>
-		</div>
-		<div style="clear: both;">&nbsp;</div>
-	</div>
-<?php }
-function load_tool_portscan(){
-?>
-<div id="page" class="container">
-	<div id="content">
-		<div class="sub-content show">
-			<div class="post">
-				<div class="post_title">Portscan Result</div>
-					<div class="post_cell">
+					<div class="ui bottom attached segment">
+						<div class="tab-content nmap show">
+							<form class="ui form" action="javascript:void(0)">
+								<div class="field">
+									<label>Target(IP or Domain name)</label>
+									<div class="ui input">
+										<?php $target = "localhost vision.tainan.gov.tw 10.7.102.4";?>
+										<input type="text" class="target" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
+									</div>
+								</div>
+								<div class="field">
+									<label>Nmap</label>
+									<button id="nmap_btn" class="ui button">Scan</button>
+									<div class="ui centered inline loader"></div>
+								</div>
+							</form>
+							<div class="record_content"></div>
+						</div> <!-- end of .tabular-->
+						<div class="tab-content portscan">
 						 <?php //select data form database
 							require("mysql_connect.inc.php");
 							 //select row_number,and other field value
@@ -120,9 +112,11 @@ function load_tool_portscan(){
 							echo "</table>";
 							$conn->close();
 						?>
-				</div>
-			</div>
-		</div>
+						</div> <!-- end of .tabular-->
+					</div> <!-- end of .attached.segment-->
+				</div> <!-- end of .post_cell-->
+			</div> <!-- end of .post-->
+		</div> <!-- end of .sub-content-->
 		<div style="clear: both;">&nbsp;</div>
 	</div>
 <?php }							

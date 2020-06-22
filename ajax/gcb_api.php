@@ -216,5 +216,7 @@ function get_gscan_result($token,$gs_id){
 	curl_close($curl);
 	return $response;
 }
-
+$api_key = "u3mOZuf8lvZYps210BD5vA";
+$res = get_access_token($api_key);
+#echo $res;
 ?>

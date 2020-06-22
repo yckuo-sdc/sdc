@@ -190,7 +190,6 @@ function Call_sub_query_ajax(type,ap){
 	//ap='csv'
 	if(ap=='csv'){
 		if (typeof key != 'undefined' && key !='' && keyword_type !=''  && type !='') {
-			//window.open("https://sdc-iss.tainan.gov.tw/ajax/sub_query.php?key="+encodeURI(key)+"&keyword_type="+encodeURI(keyword_type)+"&type="+type+"&ap="+ap, "_blank");
 			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_query.php?key="+encodeURI(key)+"&keyword_type="+encodeURI(keyword_type)+"&type="+type+"&ap="+ap);
 		}else{
 			alert("沒有輸入");
@@ -235,26 +234,36 @@ function Call_sub_query_pagination_ajax(page,key,keyword_type,type){
 	return 0;
  }
 
-function Call_sub_vs_query_ajax(type){
-	 var selector = ".post."+type+" ";
-	 var obj = $(selector+"input[name='status[]']");
-	 var unfinished = obj[0].checked;
-	 var finished   = obj[1].checked;
-	 $.ajax({
-		 url: 'ajax/sub_vs_query.php',
-		 cache: false,
-		 dataType:'html',
-		 type:'GET',
-		 data: {key:$(selector+'#key').val(),keyword_type:$(selector+'#keyword_type').val(),type:type,unfinished:unfinished,finished:finished},
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-			 //console.log("success");
-			 $(selector+'.record_content').html("");
-			 $(selector+'.record_content').html(data);
-			 //console.log("done");
-		 }
-	});
+function Call_sub_vs_query_ajax(type,ap){
+	var selector = ".post."+type+" ";
+	var obj = $(selector+"input[name='status[]']");
+	var unfinished = obj[0].checked;
+	var finished   = obj[1].checked;
+	var key = $(selector+'#key').val();
+	var keyword_type = $(selector+'#keyword_type').val();
+	//ap='csv'
+	if(ap=='csv'){
+		if (typeof key != 'undefined' && key !='' && keyword_type !=''  && type !='') {
+			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_vs_query.php?key="+encodeURI(key)+"&keyword_type="+encodeURI(keyword_type)+"&type="+type+"&unfinished="+unfinished+"&finished="+finished+"&ap="+ap);
+		}else{
+			alert("沒有輸入");
+		}
+	}else{
+	//ap='html'
+		$.ajax({
+			 url: 'ajax/sub_vs_query.php',
+			 cache: false,
+			 dataType:'html',
+			 type:'GET',
+			 data: {key:key,keyword_type:keyword_type,type:type,unfinished:unfinished,finished:finished,ap:ap},
+			 error: function(xhr) {
+				 alert('Ajax failed');
+			 },success: function(data) {
+				 $(selector+'.record_content').html("");
+				 $(selector+'.record_content').html(data);
+			 }
+		});
+	}
 	return 0;
 }
 
@@ -647,6 +656,12 @@ $(document).ready(function(){
 		console.log('ip_and_url_scanResult serach_btn done');
 	});
 
+	$('.post.ip_and_url_scanResult #export2csv_btn').click(function (){
+		console.log('ip_and_url_scanResult exp_btn');     
+		Call_sub_vs_query_ajax('ip_and_url_scanResult','csv');
+		console.log('ip_and_url_scanResult exp_btn done');
+	});
+	
 	$('.post.ipscanResult #search_btn').click(function (){
 		console.log('ipscanResult serach_btn');     
 		Call_sub_vs_query_ajax('ipscanResult');

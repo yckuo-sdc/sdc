@@ -13,7 +13,22 @@
                   SELECT OID,ou,system_name,status,severity FROM ipscanResult UNION ALL SELECT OID,ou,system_name,status,severity FROM urlscanResult
                   )A GROUP BY OID, ou, system_name
       ) v1 GROUP BY oid, ou, system_name order by oid,system_name
+ 	 */
+
+	//Alter view (insert overdue_high_VUL,overdue_medium_VUL)
+	/*
+	ALTER VIEW V_VUL_tableau AS
+	SELECT oid,ou,system_name,sum(total_VUL) as total_VUL ,sum(fixed_VUL) as fixed_VUL,sum(total_high_VUL) as total_high_VUL,sum(fixed_high_VUL) as fixed_high_VUL,sum(overdue_high_VUL) as overdue_high_VUL,sum(overdue_medium_VUL) as overdue_medium_VUL
+	FROM(
+		SELECT oid,REPLACE(ou, '/臺南市政府/', '') as ou,system_name,'0' as total_VUL,'0' as fixed_VUL,'0' as total_high_VUL,'0' as fixed_high_VUL,'0' as overdue_high_VUL,'0' as overdue_medium_VUL FROM scanTarget
+		UNION ALL
+		SELECT OID as oid,REPLACE(ou, '/臺南市政府/', '') as ou,system_name, count(system_name) as total_VUL, sum(CASE WHEN status IN ('已修補','豁免','誤判') THEN 1 ELSE 0 END) as fixed_VUL, sum(CASE WHEN severity IN ('High','Critical') THEN 1 ELSE 0 END) as total_high_VUL, sum(CASE WHEN severity IN ('High','Critical') AND status IN ('已修補','豁免','誤判') THEN 1 ELSE 0 END) as fixed_high_VUL,sum(CASE WHEN severity IN ('High','Critical') AND status NOT IN ('已修補','豁免','誤判') AND scan_date < DATE_SUB(NOW(), INTERVAL 1 MONTH) THEN 1 ELSE 0 END) as overdue_high_VUL, sum(CASE WHEN severity IN ('Medium') AND status NOT IN ('已修補','豁免','誤判') AND scan_date < DATE_SUB(NOW(), INTERVAL 2 MONTH) THEN 1 ELSE 0 END) as overdue_medium_VUL_VUL
+		FROM (																	  
+		   	SELECT OID,ou,system_name,status,severity,scan_date FROM ipscanResult UNION ALL SELECT OID,ou,system_name,status,severity,scan_date FROM urlscanResult
+		)A GROUP BY OID, ou, system_name
+	) v1 GROUP BY oid, ou, system_name order by oid,system_name
 	*/
+
 	//select row_number,and other field value
 	$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL FROM V_VUL_tableau GROUP BY ou ORDER BY ou desc";
 	$result = mysqli_query($conn,$sql);

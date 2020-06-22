@@ -43,9 +43,8 @@
   <div class=" header">工具</div>
   <div class="menu">
       <a class="item" href="index.php?mainpage=tool&subpage=1">Nmap</a>
-      <a class="item" href="index.php?mainpage=tool&subpage=2">Portsacn Result</a>
-      <a class="item" href="index.php?mainpage=tool&subpage=3">LDAP</a>
-      <a class="item" href="index.php?mainpage=tool&subpage=4">Hydra</a>
+      <a class="item" href="index.php?mainpage=tool&subpage=2">LDAP</a>
+      <a class="item" href="index.php?mainpage=tool&subpage=3">Hydra</a>
   </div>
 </div>
 <div class="item">

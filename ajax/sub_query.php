@@ -553,8 +553,7 @@
 				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'> → </a>";		
 				echo "</div>";
 			}
-		}
-		elseif($ap='csv'){
+		}elseif($ap='csv'){
 			$arrs=array();
 			switch($type){
 				case 'security_event': 

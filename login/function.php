@@ -32,11 +32,13 @@
 				    echo "b";	
 					echo 'You Do Not Have Permission To Access!';
 					header("Location: https://sdc-iss.tainan.gov.tw/login/login.php"); 
+					return false;
 				}
 			}else{  //如果session為空，並且使用者沒有選擇記錄登入狀 
 				echo "c";	
 				echo 'You Do Not Have Permission To Access!';
 				header("Location: https://sdc-iss.tainan.gov.tw/login/login.php"); 
+				return false;
 			} 
 		}else{
 			//echo "d";	
@@ -112,6 +114,7 @@
 		}else{
 			echo "<li><i class='minus square outline icon'></i><i class='folder open icon'></i>".$ou_name."(".$ou_des.")";	
 			// list all computers of base_dn
+			$filter ="(&(objectClass=computer)(cn=*PC*))";
 			$filter ="(objectClass=computer)";
 			$result = @ldap_list($ldapconn,$base_dn,$filter) or die ("Error in query");
 			$data 	= @ldap_get_entries($ldapconn,$result);
@@ -119,7 +122,11 @@
 			if($num!=0){
 				echo "<ol>";
 				for($i=0; $i<$num;$i++){
-					echo "<li><i class='desktop icon'></i>".$data[$i]['cn'][0]."</li>";
+					if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
+						echo "<li><i class='desktop icon'></i>".$data[$i]['cn'][0]."_已停用</li>";
+					}else{
+						echo "<li><i class='desktop blue icon'></i>".$data[$i]['cn'][0]."</li>";
+					}
 				}
 				echo "</ol>";
 			}
