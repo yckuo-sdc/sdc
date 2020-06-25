@@ -1,9 +1,9 @@
 <!--index.php-->
 <?php 
-	//echo "a";
-	session_start(); 
-	//echo $_SESSION['account'];
 	require_once("login/function.php");
+	# fetch and update Session ID with sso_verify_vision.php
+	if(isset($_GET['sid']))	session_id($_GET['sid']);	
+	session_start(); 
 	if(verifyBySession_Cookie("account")){
 		if(isset($_GET['mainpage']) AND !empty($_GET['mainpage']))$page = $_GET['mainpage'];
 		else													  $page = "info";

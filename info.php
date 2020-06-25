@@ -88,13 +88,6 @@ function load_info_enews(){
 
 					?>
 					</div>
-					<div style="clear:both"></div>
-					<p></p>
-<!--					<ol class="post_cell">
-					<center>
-						<img class="graduate_img_center" src="images/arch.png"> 						
-					</center>	
-					</ol>-->
 					</div>
 			</div>
 			<div class="post">
@@ -106,7 +99,7 @@ function load_info_enews(){
 			<div class="post">
 				<div class="post_title">資安事件SOP</div>
 				<div class="cell">
-					<a href="images/sop.png" target="_blank"><img class="image" src="images/sop.png"></a>
+					<img class="image" src="images/sop.png">
 				</div>
 			</div>
 		</div>
@@ -186,7 +179,7 @@ $sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fi
 							<?php
 							while($row = mysqli_fetch_assoc($result)) {
 							    //hide the 區公所 ou
-								if(strchr($row['ou'],"區公所") == "區公所") echo "<tr style='color:#BBBBBB'>";
+								if(strchr($row['ou'],"區公所") == "區公所") echo "<tr style='opacity:0.5'>";
 								else echo "<tr>";
 									echo "<td data-label='OU'>".$row['ou']."</td>";
 									echo "<td data-label='Total-Risks'>";
@@ -333,10 +326,12 @@ function load_info_client(){
 					?>
 					</div>
 				</div>
+			</div> <!--end #post-->
+			<div class="post">
 				<div class="post_title">網段使用IP統計圖</div>
-					<div class="post_cell">
-						<div id="chartG" class="chart"></div>	
-					</div>
+				<div class="post_cell">
+					<div id="chartG" class="chart"></div>	
+				</div>
 			</div> <!--end #post-->
 			<div class="post">
 				<div class="post_title">GCB總通過率</div>
@@ -350,10 +345,9 @@ function load_info_client(){
 						$row = @mysqli_fetch_assoc($result);
                     	$total_count = $row['total_count'];
                     	$pass_count = $row['pass_count'];
-						$total_rate = round($total_count/$total_count*100,2)."%"; 
-						$pass_rate = round($pass_count/$total_count*100,2)."%"; 
+						$total_rate = ($total_count != 0) ? round($total_count/$total_count*100,2)."%" : 0; 
+						$pass_rate = ($total_count != 0) ? round($pass_count/$total_count*100,2)."%" : 0; 
 					?>
-
 					<table>
 					<tr>
 						<th>項目</th>

@@ -2,6 +2,7 @@
 namespace ad\api;
 require("../mysql_connect.inc.php");
 require("../ldap_config.inc.php");
+require("../login/function.php");
 date_default_timezone_set("Asia/Taipei");
 
 function array2csv($list){
@@ -16,32 +17,6 @@ function array2csv($list){
 	fclose($fp);
 	return true;
 }
-function get_ou_desc($dn,$ldapconn){
-	$desc ="";
-	$str_sec = explode(",",$dn);
-	for($i=0;$i<2;$i++){
-		if(substr_compare($str_sec[$i],"OU",0,2)==0){
-			$result_ou = @ldap_search($ldapconn,"ou=TainanComputer,dc=tainan,dc=gov,dc=tw","(".$str_sec[$i].")");
-			$data_ou = @ldap_get_entries($ldapconn,$result_ou);
-			if(isset($data_ou[0]['description'][0]))	$desc = $desc.$data_ou[0]['description'][0];
-		}
-	}
-	return $desc;
-}
-function get_ou_desc_recursive($dn,$ldapconn){
-	$desc ="";
-	$str_sec = explode(",",$dn);
-	for($i=0;$i<count($str_sec);$i++){
-		if(substr_compare($str_sec[$i],"OU",0,2)==0){
-			$result_ou = @ldap_search($ldapconn,"ou=TainanComputer,dc=tainan,dc=gov,dc=tw","(".$str_sec[$i].")");
-			$data_ou = @ldap_get_entries($ldapconn,$result_ou);
-			if(isset($data_ou[0]['description'][0]))	$desc = $desc.$data_ou[0]['description'][0]."/";
-		}
-	}
-	return $desc;
-}
-
-
 $host_ip = "172.16.10.101";
 $ldapconn = ldap_connect("ldap://".$host_ip) or die("Could not connect to LDAP server.");
 $set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);

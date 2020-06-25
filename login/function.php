@@ -7,9 +7,6 @@
 		//檢查session是不是為空 
 		if(!isset($_SESSION[$var])){ 
 			//使用者選擇了記住登入狀態
-			//echo isset($_COOKIE['account']);
-			//echo isset($_COOKIE['password']);
-			//echo isset($_COOKIE['UserName']);
 			
 			if(isset($_COOKIE['rememberme'])){
 			//if(isset($_COOKIE['account']) && isset($_COOKIE['UserName'])){
@@ -18,7 +15,6 @@
 				//$account = $_COOKIE['account'];	
 				//$UserName = $_COOKIE['UserName'];
 				if (hash_equals(hash_hmac('sha256', $user . ':' . $token, $SECRET_KEY), $mac)) {
-				//if(!empty($account)  && !empty($UserName)){			
 					//使用者名稱和密碼對了，把使用者的個人資料放到session裡面 
 					$_SESSION['account'] = $user;   
 					$_SESSION['UserName'] = $UserName;
@@ -292,5 +288,32 @@
 			return false;
 		}
 	}
+
+	function get_ou_desc($dn,$ldapconn){
+		$desc ="";
+		$str_sec = explode(",",$dn);
+		for($i=0;$i<2;$i++){
+			if(substr_compare($str_sec[$i],"OU",0,2)==0){
+				$result_ou = @ldap_search($ldapconn,"ou=TainanComputer,dc=tainan,dc=gov,dc=tw","(".$str_sec[$i].")");
+				$data_ou = @ldap_get_entries($ldapconn,$result_ou);
+				if(isset($data_ou[0]['description'][0]))	$desc = $desc.$data_ou[0]['description'][0];
+			}
+		}
+		return $desc;
+	}
+
+	function get_ou_desc_recursive($dn,$ldapconn){
+		$desc ="";
+		$str_sec = explode(",",$dn);
+		for($i=0;$i<count($str_sec);$i++){
+			if(substr_compare($str_sec[$i],"OU",0,2)==0){
+				$result_ou = @ldap_search($ldapconn,"ou=TainanComputer,dc=tainan,dc=gov,dc=tw","(".$str_sec[$i].")");
+				$data_ou = @ldap_get_entries($ldapconn,$result_ou);
+				if(isset($data_ou[0]['description'][0]))	$desc = $desc.$data_ou[0]['description'][0]."/";
+			}
+		}
+		return $desc;
+	}
+
 
 ?>

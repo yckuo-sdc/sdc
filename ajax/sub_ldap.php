@@ -39,6 +39,7 @@ if(!empty($_GET['target']) && !empty($_GET['type'])){
 									echo "<i class='user blue icon'></i>";
 									echo $data[$i]['cn'][0];
 								}
+								echo "<input type='hidden' name='type' value='edituser' >";
 							}elseif($k==1){	//computer
 								if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
 								   	echo "<i class='desktop icon'></i>";
@@ -47,8 +48,8 @@ if(!empty($_GET['target']) && !empty($_GET['type'])){
 									echo "<i class='desktop blue icon'></i>";
 									echo $data[$i]['cn'][0];
 								}
+								echo "<input type='hidden' name='type' value='changecomputer' >";
 							}
-								echo "<input type='hidden' name='type' value='edituser' >";
 								echo "</div>";
 								echo "<div class='ten wide field'>";
 								if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
@@ -67,21 +68,6 @@ if(!empty($_GET['target']) && !empty($_GET['type'])){
 								echo "</div>";
 							echo "</div>";
 							echo "<div class='description'>";
-								echo "<div class='inline fields'>";
-									echo "<label for='fruit'>Change password:</label>";
-									echo "<div class='field'>";
-										echo "<div class='ui radio checkbox'>";
-										echo  "<input type='radio' name='pwd_changed' value='no' onchange='uncheck('new_password')' tabindex='0' checked>";
-										echo  "<label>No</label>";
-										echo  "</div>";
-									echo  "</div>";
-									echo "<div class='field'>";
-										echo "<div class='ui radio checkbox'>";
-										echo  "<input type='radio' name='pwd_changed' value='yes' onchange='check('new_password')' tabindex='0'>";
-										echo  "<label>Yes</label>";
-										echo  "</div>";
-									echo  "</div>";
-								echo "</div>";	
 								if($k==0){
 									$labelArr = ['新密碼','確認密碼','姓名','職稱','mail','電話','分機'];
 									$nameArr = ['new_password','confirm_password','displayname','title','mail','telephonenumber','physicaldeliveryofficename'];
@@ -100,6 +86,27 @@ if(!empty($_GET['target']) && !empty($_GET['type'])){
 											}
 										echo "</div>";
 									}
+								}elseif($k==1){
+									//select all OUs in TainanComputer
+									$keyword_ou = "(objectClass=organizationalUnit)";
+									$result_ou = ldap_search($ldapconn,"OU=TainanComputer,dc=tainan,dc=gov,dc=tw",$keyword_ou) or die ("Error in query");
+									$data_ou = ldap_get_entries($ldapconn,$result_ou);
+									echo "<div class='field'>";
+										echo "<label>移動單位</label>";
+									
+										echo "<input list='brow' name='organizationalUnit' placeholder='請選擇ou' >";
+										echo "<datalist id='brow' name='organizationalUnit'>";
+											if($data_ou["count"]!=0){
+												for($l=0; $l<$data_ou["count"];$l++) {
+													if(isset($data_ou[$l]['description'][0])) {
+														echo "<option value='".$data_ou[$l]['name'][0]."(".$data_ou[$l]['description'][0].")'>";
+													}else{
+														echo "<option value='".$data_ou[$l]['name'][0]."'>";
+													}	
+												}
+											}
+										echo "</datalist>";
+									echo "</div>";
 								}
 							echo "<ol>";
 							for ($j=0;$j<$data[$i]["count"];$j++){

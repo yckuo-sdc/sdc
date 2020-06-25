@@ -187,28 +187,28 @@ function Call_sub_query_ajax(type,ap){
 	 }
 	var key = $(selector+'#key').val();
 	var keyword_type = $(selector+'#keyword_type').val();
-	//ap='csv'
-	if(ap=='csv'){
-		if (typeof key != 'undefined' && key !='' && keyword_type !=''  && type !='') {
-			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_query.php?key="+encodeURI(key)+"&keyword_type="+encodeURI(keyword_type)+"&type="+type+"&ap="+ap);
+	if (typeof key != 'undefined' && key !='' && keyword_type !=''  && type !='') {
+		//ap='csv'
+		if(ap=='csv'){
+				window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_query.php?key="+encodeURI(key)+"&keyword_type="+encodeURI(keyword_type)+"&type="+type+"&ap="+ap);
 		}else{
-			alert("沒有輸入");
+			//ap='html'
+			$.ajax({
+				 url: 'ajax/sub_query.php',
+				 cache: false,
+				 dataType:'html',
+				 type:'GET',
+				 data: {key:key,keyword_type:keyword_type,type:type,ap:ap},
+				 error: function(xhr) {
+					 alert('Ajax failed');
+				 },success: function(data) {
+					 $(selector+'.record_content').html("");
+					 $(selector+'.record_content').html(data);
+				 }
+			});
 		}
 	}else{
-		//ap='html'
-		$.ajax({
-			 url: 'ajax/sub_query.php',
-			 cache: false,
-			 dataType:'html',
-			 type:'GET',
-			 data: {key:key,keyword_type:keyword_type,type:type,ap:ap},
-			 error: function(xhr) {
-				 alert('Ajax failed');
-			 },success: function(data) {
-				 $(selector+'.record_content').html("");
-				 $(selector+'.record_content').html(data);
-			 }
-		});
+		alert("沒有輸入");
 	}
 	return 0;
  }
@@ -235,53 +235,73 @@ function Call_sub_query_pagination_ajax(page,key,keyword_type,type){
  }
 
 function Call_sub_vs_query_ajax(type,ap){
+	var jsonObj = [];
+	$('.post.ip_and_url_scanResult span.query_label').each(function () {
+		var id = $(this).attr("title");
+		var email = $(this).val();
+		item = {}
+		item ["keyword_type"] = $(this).attr("keyword_type");
+		item ["key"] = $(this).attr("key");
+		jsonObj.push(item);
+	});
+	jsonObj = JSON.stringify(jsonObj);
+	//console.log(jsonObj);     
 	var selector = ".post."+type+" ";
 	var obj = $(selector+"input[name='status[]']");
 	var unfinished = obj[0].checked;
 	var finished   = obj[1].checked;
 	var key = $(selector+'#key').val();
 	var keyword_type = $(selector+'#keyword_type').val();
-	//ap='csv'
-	if(ap=='csv'){
-		if (typeof key != 'undefined' && key !='' && keyword_type !=''  && type !='') {
-			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_vs_query.php?key="+encodeURI(key)+"&keyword_type="+encodeURI(keyword_type)+"&type="+type+"&unfinished="+unfinished+"&finished="+finished+"&ap="+ap);
+	if ( (typeof key != 'undefined' && key !='' && keyword_type !=''  && type !='') || jsonObj !='[]') {
+		//ap='csv'
+		if(ap=='csv'){
+			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_vs_query.php?key="+encodeURI(key)+"&keyword_type="+encodeURI(keyword_type)+"&type="+type+"&unfinished="+unfinished+"&finished="+finished+"&ap="+ap+"&jsonObj="+encodeURIComponent(jsonObj));
 		}else{
-			alert("沒有輸入");
+		//ap='html'
+			$.ajax({
+				 url: 'ajax/sub_vs_query.php',
+				 cache: false,
+				 dataType:'html',
+				 type:'GET',
+				 data: {key:key,keyword_type:keyword_type,type:type,unfinished:unfinished,finished:finished,ap:ap,jsonObj:jsonObj},
+				 error: function(xhr) {
+					 alert('Ajax failed');
+				 },success: function(data) {
+					 $(selector+'.record_content').html("");
+					 $(selector+'.record_content').html(data);
+				 }
+			});
 		}
 	}else{
-	//ap='html'
-		$.ajax({
-			 url: 'ajax/sub_vs_query.php',
-			 cache: false,
-			 dataType:'html',
-			 type:'GET',
-			 data: {key:key,keyword_type:keyword_type,type:type,unfinished:unfinished,finished:finished,ap:ap},
-			 error: function(xhr) {
-				 alert('Ajax failed');
-			 },success: function(data) {
-				 $(selector+'.record_content').html("");
-				 $(selector+'.record_content').html(data);
-			 }
-		});
+			alert("沒有輸入");
 	}
 	return 0;
 }
 
 function Call_sub_vs_query_pagination_ajax(page,key,keyword_type,type,unfinished,finished){
+	 var jsonObj = [];
+	 $('.post.ip_and_url_scanResult span.query_label').each(function () {
+		var id = $(this).attr("title");
+		var email = $(this).val();
+		item = {}
+		item ["keyword_type"] = $(this).attr("keyword_type");
+		item ["key"] = $(this).attr("key");
+		jsonObj.push(item);
+	 });
+	 jsonObj = JSON.stringify(jsonObj);
+	 //console.log(jsonObj);     
 	 var selector = ".post."+type+" ";
 	 $.ajax({
 		 url: 'ajax/sub_vs_query.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {page:page,key:key,keyword_type:keyword_type,type:type,unfinished:unfinished,finished:finished},
+		 data: {page:page,key:key,keyword_type:keyword_type,type:type,unfinished:unfinished,finished:finished,jsonObj:jsonObj},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 //console.log("success");
 			 $(selector+'.record_content').html("");
 			 $(selector+'.record_content').html(data);
-			 //console.log("done");
 		 }
 	});
 	return 0;
@@ -350,7 +370,7 @@ function Call_retrieve_ldap_ajax(type){
 function Call_retrieve_ldap_tree_ajax(){
 	var selector = ".post ";
 	$.ajax({
-		 url: 'ajax/sub_ldap_tree.php',
+		 url: 'ajax/ldap_computer_tree.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -526,6 +546,25 @@ $(document).ready(function(){
 			icon2.removeClass('open');
 		}
 	});
+	/*vulnerability.php's component action*/
+	$('.post.ip_and_url_scanResult i.square.icon').click(function() {
+		var selector = ".post.ip_and_url_scanResult ";
+		var key = $(selector+'#key').val();
+		var keyword_type = $(selector+'#keyword_type').val();
+		if (typeof key != 'undefined' && key !='' && keyword_type !='') {
+			var query_content = $(selector+'.query_content');
+			var query_label ="<span class='query_label' keyword_type='"+keyword_type+"' key='"+key+"'>"+keyword_type+"："+key+"<button type='button' class='close' style='opacity:0.2'><i class='close icon'></i></button></span>";
+			query_content.append(query_label);
+		}else{
+			alert("沒有輸入");
+		}
+	});
+	/*vulnerability.php's component action*/
+	$('.post.ip_and_url_scanResult .query_content').delegate('button.close', 'click', function() {
+		var span = $(this).parent('span');
+		var query_content = $('.post.ip_and_url_scanResult .query_content');
+		span.remove();
+	});
 
 	//bind keypress
 	 $('.post.security_event #key').keyup(function(event) {
@@ -573,19 +612,7 @@ $(document).ready(function(){
 	 $('.post.ip_and_url_scanResult #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
 			console.log('keyup');     
-			Call_sub_vs_query_ajax('ip_and_url_scanResult'); 
-		}
-	 });
-	 $('.post.ipscanResult #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			console.log('keyup');     
-			Call_sub_vs_query_ajax('ipscanResult'); 
-		}
-	 });
-	 $('.post.urlscanResult #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			console.log('keyup');     
-			Call_sub_vs_query_ajax('urlscanResult'); 
+			Call_sub_vs_query_ajax('ip_and_url_scanResult','html'); 
 		}
 	 });
 	 $('.post.nmap #target').keyup(function(event) {
@@ -652,28 +679,16 @@ $(document).ready(function(){
 
 	$('.post.ip_and_url_scanResult #search_btn').click(function (){
 		console.log('ip_and_url_scanResult serach_btn');     
-		Call_sub_vs_query_ajax('ip_and_url_scanResult');
+		Call_sub_vs_query_ajax('ip_and_url_scanResult','html');
 		console.log('ip_and_url_scanResult serach_btn done');
 	});
 
 	$('.post.ip_and_url_scanResult #export2csv_btn').click(function (){
-		console.log('ip_and_url_scanResult exp_btn');     
+		
 		Call_sub_vs_query_ajax('ip_and_url_scanResult','csv');
 		console.log('ip_and_url_scanResult exp_btn done');
 	});
 	
-	$('.post.ipscanResult #search_btn').click(function (){
-		console.log('ipscanResult serach_btn');     
-		Call_sub_vs_query_ajax('ipscanResult');
-		console.log('ipscanResult serach_btn done');
-	});
-
-	$('.post.urlscanResult #search_btn').click(function (){
-		console.log('urlscanResult serach_btn');     
-		Call_sub_vs_query_ajax('urlscanResult');
-		console.log('urlscanResult serach_btn done');
-	});
-
 	//retrieve from Google Sheets of security events
 	$('#gs_event_btn').click(function(){
 		Call_retrieve_gs_ajax();	

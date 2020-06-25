@@ -46,6 +46,13 @@
 				echo "執行結果：".$res;
 				storeUserLogs($conn,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_state(account='.$cn.')res='.$res,date('Y-m-d h:i:s'));
 				break;
+			case "changecomputer":
+				$ou = explode("(", $organizationalUnit);
+				$ou = $ou[0];	
+				$res = ad\change_computer_ou($cn,$ou);
+				echo "執行結果：".$res;
+				storeUserLogs($conn,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_computer_ou(account='.$cn.')res='.$res,date('Y-m-d h:i:s'));
+				break;
 		}
 		$conn->close();
 

@@ -3,27 +3,27 @@
 	header('Content-type: text/html; charset=utf-8');
 	include("../login/function.php");
 
-	if(!empty($_GET['key']) && !empty($_GET['keyword_type'])){
+	if( (!empty($_GET['key']) && !empty($_GET['keyword_type']) && !empty($_GET['keyword_type']) ) || count(json_decode($_GET['jsonObj'],true)) !=0  ){
 		//過濾特殊字元(')
 		$key  		   = $_GET['key'];
 		$keyword_type  = $_GET['keyword_type'];
 		$type 		   = $_GET['type'];
 		$unfinished    = $_GET['unfinished'];
 		$finished 	   = $_GET['finished'];
-		if (!isset($_GET['page']))	$pages = 1; 
-		else						$pages = $_GET['page']; 
-		if (!isset($_GET['ap']))	$ap = 'html'; 
-		else						$ap = $_GET['ap']; 
+		$jsonObj 	   = $_GET['jsonObj']; 
+		if (!isset($_GET['page']))		$pages = 1; 
+		else							$pages = $_GET['page']; 
+		if (!isset($_GET['ap']))		$ap = 'html'; 
+		else							$ap = $_GET['ap']; 
+
+		$jsonObj = json_decode($jsonObj,true);
 
 		//connect database
         require("../mysql_connect.inc.php");
 		 //特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
-		$key			 = mysqli_real_escape_string($conn,$key);
-		$keyword_type	 = mysqli_real_escape_string($conn,$keyword_type);
 		$type			 = mysqli_real_escape_string($conn,$type);
 		$unfinished 	 = mysqli_real_escape_string($conn,$unfinished);
 		$finished 		 = mysqli_real_escape_string($conn,$finished);
-
 		//ipscanResult or urlscanResult
 		switch($type){
 			case "ip_and_url_scanResult":
@@ -39,28 +39,47 @@
 		//unfinished + finished
 	    switch(true){
 			case ($unfinished == 'true' and $finished == 'true'):
-				 $condition =  "";
+				 $status_condition =  "";
 				 break;
 			case ($unfinished == 'true' and $finished == 'false'):
-				 $condition =  "AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)')";
+				 $status_condition =  "AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)')";
 				 break;
 			case ($unfinished == 'false' and $finished == 'true'):
-				 $condition =  "AND status IN ('已修補','豁免','誤判')";
+				 $status_condition =  "AND status IN ('已修補','豁免','誤判')";
 				 break;
 			case ($unfinished == 'false' and $finished == 'false'):
-				 $condition =  "AND status IN ('')";
+				 $status_condition =  "AND status IN ('')";
 				 break;
 		}
-	
-		if($keyword_type == "all"){
-			//FullText Seach
-			$condition = "(".getFullTextSearchSQL($conn,$table,$key).") ".$condition; 
+		
+		if( count($jsonObj) !=0 ){
+			$condition = "";
+			foreach($jsonObj as $val){
+				$val['key']			 = mysqli_real_escape_string($conn,$val['key']);
+				$val['keyword_type'] = mysqli_real_escape_string($conn,$val['keyword_type']);
+				if($val['keyword_type'] == "all"){
+					$one_condition = "(".getFullTextSearchSQL($conn,$table,$val['key']).") "; 
+				}else{
+					$one_condition = $val['keyword_type']." LIKE '%".$val['key']."%' ";
+				}
+				$condition = $condition." AND ".$one_condition;
+			}
+			$condition = substr($condition,4).$status_condition;
 		}else{
-			$condition = $keyword_type." LIKE '%".$key."%' ".$condition;
+			//特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
+			$key			 = mysqli_real_escape_string($conn,$key);
+			$keyword_type	 = mysqli_real_escape_string($conn,$keyword_type);
+			if($keyword_type == "all"){
+				//FullText Seach
+				$condition = "(".getFullTextSearchSQL($conn,$table,$key).") ".$status_condition; 
+			}else{
+				$condition = $keyword_type." LIKE '%".$key."%' ".$status_condition;
+			}
+
 		}
+		//echo $condition."<br>";
 		$order = "ORDER by scan_no DESC,system_name DESC,status DESC";
 		$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
-		//echo $sql."<br>";
 		$result = mysqli_query($conn,$sql);
 		if(!$result){
 			echo"Error:".mysqli_error($conn);
@@ -78,36 +97,7 @@
 				$max_pages = 10;
 				list($sql_subpage,$prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages) = getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages);
 				$result = mysqli_query($conn,$sql_subpage);
-				if($table=="V_ip_and_url_scanResult"){
-					/*$condition_host = "type LIKE '主機弱點' AND ".$condition;
-					$condition_url 	= "type LIKE '網站弱點' AND ".$condition;
-					$sql_host 		= "SELECT * FROM ".$table." WHERE ".$condition_host." ".$order;
-					$sql_url 		= "SELECT * FROM ".$table." WHERE ".$condition_url." ".$order;
-					$result_host 	= mysqli_query($conn,$sql_host);
-					$result_url 	= mysqli_query($conn,$sql_url);
-					$rowcount_host  = mysqli_num_rows($result_host);
-					$rowcount_url  = mysqli_num_rows($result_url);
-					echo "該分類共搜尋到".$rowcount_host."筆資料！";
-					echo "該分類共搜尋到".$rowcount_url."筆資料！";
-				 */}
-					echo "<div class='ui relaxed divided list'>";
-						echo "<div class='item'>";
-							echo "<div class='content'>";
-								echo "<a class='header'>";
-								//echo "序號&nbsp";
-								if($table=="V_ip_and_url_scanResult"){
-									echo "弱點類別&nbsp&nbsp";
-								}
-								echo "流水號&nbsp&nbsp";
-								echo "單位&nbsp&nbsp";
-								echo "系統名稱&nbsp&nbsp";
-								echo "處理狀態&nbsp&nbsp";
-								echo "弱點名稱&nbsp&nbsp";
-								echo "掃描期別&nbsp&nbsp";
-								echo "<a>";
-							echo "</div>";
-						echo "</div>";
-
+				echo "<div class='ui relaxed divided list'>";
 				while($row = mysqli_fetch_assoc($result)) {
 					echo "<div class='item'>";
 					echo "<div class='content'>";
@@ -194,7 +184,7 @@
 		$conn->close();
 		
 	}else{
-		phpAlert("沒有輸入");
+		echo "沒有輸入";
 	}
 	
 ?> 

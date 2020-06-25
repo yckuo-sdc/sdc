@@ -127,32 +127,68 @@ function load_tool_ldap(){
 		<div class="sub-content show">
 			<div class="post ldap">
 				<div class="post_title">LDAP-Search</div>
-				<form class="ui form" action="javascript:void(0)">
- 				<!--<div class="fields">-->
-			    	<div class="field">
-						<label>CN(=Login account or PC name)</label>
-						<div class="ui input">
-							<?php $target = "yckuo";?>
-							<input type="text" class="target" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
-						</div>
-					</div>
-					<div class="field">
-						<label>LDAP</label>
-						<div class="two fields">
-							<div class="field">
-								<button id="ldap_search_btn" class="ui button">Search</button>
-							</div>
-							<div class="field">
-								<button id="ldap_newuser_btn" class="ui button">New User</button>
+				<div class="post_cell">
+					<form class="ui form" action="javascript:void(0)">
+					<!--<div class="fields">-->
+						<div class="field">
+							<label>CN(=Login account or PC name)</label>
+							<div class="ui input">
+								<?php $target = "yckuo";?>
+								<input type="text" class="target" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
 							</div>
 						</div>
-						<div class="ui centered inline loader"></div>
-					</div>
-				<!--</div>-->	
-				</form>
+						<div class="field">
+							<label>LDAP</label>
+							<div class="two fields">
+								<div class="field">
+									<button id="ldap_search_btn" class="ui button">Search</button>
+								</div>
+								<div class="field">
+									<button id="ldap_newuser_btn" class="ui button">New User</button>
+								</div>
+							</div>
+							<div class="ui centered inline loader"></div>
+						</div>
+					<!--</div>-->	
+					</form>
 
-			<div class="record_content"></div>
+				<div class="record_content"></div>
+			</div> <!-- end of .post_cell-->
 			</div>
+			<!--<div class="post">
+				<div class="post_title">OU不同</div>
+				<div class="post_cell">
+					 <?php //select data form database
+						/*require("mysql_connect.inc.php");
+						 //select row_number,and other field value
+						$sql = "SELECT * FROM gcb_client_list WHERE Owner NOT IN('-') AND OrgName NOT IN('-')";
+						$result = mysqli_query($conn,$sql);
+						$num_total_entry = mysqli_num_rows($result);
+						
+						echo "<table class='ui celled table'>";
+						echo "<thead>";	
+						echo "<tr>";
+							echo "<th>Name</th>";
+							echo "<th>OrgName</th>";
+							echo "<th>UserName</th>";
+							echo "<th>Owner</th>";
+						echo "</tr>";
+						echo "</thead>";	
+						echo "<tbody>";	
+						while($row = mysqli_fetch_assoc($result)) {
+							echo "<tr>";
+								echo "<td>".$row['Name']."</td>";
+								echo "<td>".$row['OrgName']."</td>";
+								echo "<td>".$row['UserName']."</td>";
+								echo "<td>".$row['Owner']."</td>";
+							echo "</tr>";
+						}
+						echo "</tbody>";
+						echo "</table>";
+						$conn->close();*/
+					?>
+				</div>
+			</div>-->
 			<div class="post">
 				<div class="post_title">AD-Computer tree</div>
 				<div class="post_cell">

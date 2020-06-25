@@ -19,6 +19,7 @@ function load_query_event(){
 		<div class="sub-content show">
 			<div class="post security_event">
 				<div class="post_title">府內資安事件查詢</div>
+				<div class="post_cell">
 				<form class="ui form" action="javascript:void(0)">
 
  				<div class="fields">
@@ -140,8 +141,7 @@ function load_query_event(){
                         
                 ?>
 				</div>
-
-						
+			</div>
 			</div>
 		</div>
 		<div style="clear: both;">&nbsp;</div>
