@@ -38,13 +38,13 @@ function load_vul_search(){
 					<div class="fields">
 						<div class="field">
 							<label>種類</label>
-							<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
-							<option value="ou" class="keyword_paper active" selected>單位</option>
-							<option value="ip" class="keyword_paper active">IP</option>
-							<option value="system_name" class="keyword_paper active">系統名稱</option>
-							<option value="scan_no" class="keyword_paper active">掃描期別</option>
-							<option value="severity" class="keyword_paper active">風險程度</option>
-							<option value="all" class="keyword_paper active">全部</option>
+							<select name="keyword" id="keyword" class="ui fluid dropdown" required>
+							<option value="ou" selected>單位</option>
+							<option value="ip">IP</option>
+							<option value="system_name">系統名稱</option>
+							<option value="scan_no">掃描期別</option>
+							<option value="severity">風險程度</option>
+							<option value="all">全部</option>
 							</select>
 						</div>
 						<div class="field">
@@ -72,7 +72,7 @@ function load_vul_search(){
 							<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 						</div>
 						 <div class="field">
-							<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=vulnerability&subpage=2'">顯示全部</button>
+							<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=vul&subpage=2'">顯示全部</button>
 						</div>
 						 <div class="field">
 							<button id="export2csv_btn" class="ui button" >匯出</button>
@@ -93,7 +93,7 @@ function load_vul_search(){
 							$pages = $_GET['page']; 
 						}
 						
-						//create view
+						#Create View
 						/*CREATE VIEW V_ip_and_url_scanResult AS
 						//SELECT '主機弱點' as type,vitem_id,OID,ou,status,ip,system_name,flow_id,scan_no,'null' as affect_url,manager,email,vitem_name,url,category,severity,scan_date,is_duplicated FROM ipscanResult UNION ALL SELECT '網站弱點' as type,vitem_id,OID,ou,status,ip,system_name,flow_id,scan_no,affect_url,manager,email,vitem_name,url,category,severity,scan_date,is_duplicated FROM urlscanResult ORDER BY scan_no desc,ou desc,system_name desc,status desc */
 						//select row_number,and other field value

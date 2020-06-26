@@ -3,10 +3,10 @@
 	header('Content-type: text/html; charset=utf-8');
 	include("../login/function.php");
 
-	if( (!empty($_GET['key']) && !empty($_GET['keyword_type']) && !empty($_GET['keyword_type']) ) || count(json_decode($_GET['jsonObj'],true)) !=0  ){
+	if( (!empty($_GET['key']) && !empty($_GET['keyword']) && !empty($_GET['type']) ) || count(json_decode($_GET['jsonObj'],true)) !=0  ){
 		//過濾特殊字元(')
 		$key  		   = $_GET['key'];
-		$keyword_type  = $_GET['keyword_type'];
+		$keyword	   = $_GET['keyword'];
 		$type 		   = $_GET['type'];
 		$unfinished    = $_GET['unfinished'];
 		$finished 	   = $_GET['finished'];
@@ -55,12 +55,12 @@
 		if( count($jsonObj) !=0 ){
 			$condition = "";
 			foreach($jsonObj as $val){
-				$val['key']			 = mysqli_real_escape_string($conn,$val['key']);
-				$val['keyword_type'] = mysqli_real_escape_string($conn,$val['keyword_type']);
-				if($val['keyword_type'] == "all"){
+				$val['key']		= mysqli_real_escape_string($conn,$val['key']);
+				$val['keyword'] = mysqli_real_escape_string($conn,$val['keyword']);
+				if($val['keyword'] == "all"){
 					$one_condition = "(".getFullTextSearchSQL($conn,$table,$val['key']).") "; 
 				}else{
-					$one_condition = $val['keyword_type']." LIKE '%".$val['key']."%' ";
+					$one_condition = $val['keyword']." LIKE '%".$val['key']."%' ";
 				}
 				$condition = $condition." AND ".$one_condition;
 			}
@@ -68,12 +68,12 @@
 		}else{
 			//特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
 			$key			 = mysqli_real_escape_string($conn,$key);
-			$keyword_type	 = mysqli_real_escape_string($conn,$keyword_type);
-			if($keyword_type == "all"){
+			$keyword	 = mysqli_real_escape_string($conn,$keyword);
+			if($keyword == "all"){
 				//FullText Seach
 				$condition = "(".getFullTextSearchSQL($conn,$table,$key).") ".$status_condition; 
 			}else{
-				$condition = $keyword_type." LIKE '%".$key."%' ".$status_condition;
+				$condition = $keyword." LIKE '%".$key."%' ".$status_condition;
 			}
 
 		}
@@ -148,25 +148,25 @@
 				echo "</div>";
 				//The href-link of bottom pages
 				echo "<div class='ui pagination menu'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' >首頁</a>";
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' > ← </a>";
+				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' >首頁</a>";
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' > ← </a>";
 				for ($j = $lower_bound; $j <= $upper_bound ;$j++){
 					if($j == $pages){
-						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>".$j."</a>";
+						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>".$j."</a>";
 					}else{
-						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>".$j."</a>";
+						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>".$j."</a>";
 					}
 				}
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' > → </a>";		
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' > → </a>";		
 				//last page
-				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>末頁</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>末頁</a>";
 				echo "</div>";
 
 				//The mobile href-link of bottom pages
 				echo "<div class='ui pagination menu mobile'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'> ← </a>";
-				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>(".$pages."/".$Totalpages.")</a>";
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'> → </a>";		
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'> ← </a>";
+				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>(".$pages."/".$Totalpages.")</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'> → </a>";		
 				echo "</div>";
 			}
 		}elseif($ap='csv'){

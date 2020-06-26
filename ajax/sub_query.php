@@ -1,10 +1,10 @@
 <?php
 	//header('Content-type: text/html; charset=utf-8');
 	include("../login/function.php");
-	if(isset($_GET['key']) && $_GET['key']!='' && !empty($_GET['keyword_type']) && !empty($_GET['type'])){
+	if(isset($_GET['key']) && $_GET['key']!='' && !empty($_GET['keyword']) && !empty($_GET['type'])){
 		//過濾特殊字元(')
 		$key  		   = $_GET['key'];
-		$keyword_type  = $_GET['keyword_type'];
+		$keyword  = $_GET['keyword'];
 		$type  		   = $_GET['type'];
 		if (!isset($_GET['page']))	$pages = 1; 
 		else						$pages = $_GET['page']; 
@@ -14,62 +14,62 @@
         require("../mysql_connect.inc.php");
 		 //特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
 		$key			 = mysqli_real_escape_string($conn,$key);
-		$keyword_type	 = mysqli_real_escape_string($conn,$keyword_type);
+		$keyword	 = mysqli_real_escape_string($conn,$keyword);
 		$type	 		 = mysqli_real_escape_string($conn,$type);
 		
 		//event or contact & fulltext or single search
 		switch(true){
-			case ($type == 'security_event' and $keyword_type != 'all'):
+			case ($type == 'security_event' and $keyword != 'all'):
 				$table = "security_event";
-				$condition = $keyword_type." LIKE '%".$key."%'";
+				$condition = $keyword." LIKE '%".$key."%'";
 			    $order = "ORDER by EventID DESC,OccurrenceTime DESC";	
 				break;
-			case ($type == 'tainangov_security_Incident' and $keyword_type != 'all'):
+			case ($type == 'tainangov_security_Incident' and $keyword != 'all'):
 				$table = "tainangov_security_Incident";
-				$condition = $keyword_type." LIKE '%".$key."%'";
+				$condition = $keyword." LIKE '%".$key."%'";
 			    $order = "ORDER by IncidentID DESC,OccurrenceTime DESC";	
 				break;
-			case ($type == 'security_contact' and $keyword_type != 'all'):
+			case ($type == 'security_contact' and $keyword != 'all'):
 				$table = "security_contact";
-				$condition = $keyword_type." like '%".$key."%'";
+				$condition = $keyword." like '%".$key."%'";
 				// select security_contact from ncert and internal_primary unit from self-creation
 				$table = "(select * from security_contact union select * from security_contact_extra)a";
 			    $order = "order by oid asc,person_type asc";	
 				break;
-			case ($type == 'gcb_client_list' and $keyword_type != 'all'):
+			case ($type == 'gcb_client_list' and $keyword != 'all'):
 				$table = "(SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a,gcb_os as b,gcb_ie as c WHERE a.OSEnvID = b.id AND a.IEEnvID = c.id)A";
-				if($keyword_type == 'ExternalIP' or $keyword_type == 'InternalIP') $key = ip2long($key);
-				$condition = $keyword_type." LIKE '%".$key."%'";
+				if($keyword == 'ExternalIP' or $keyword == 'InternalIP') $key = ip2long($key);
+				$condition = $keyword." LIKE '%".$key."%'";
 			    $order = "ORDER by ID ASC";	
 				break;
-			case ($type == 'wsus_client_list' and $keyword_type != 'all'):
+			case ($type == 'wsus_client_list' and $keyword != 'all'):
 				$table = "wsus_computer_status";
-				$condition = $keyword_type." LIKE '%".$key."%'";
+				$condition = $keyword." LIKE '%".$key."%'";
 			    $order = "ORDER by TargetID ASC";	
 				break;
-			case ($type == 'antivirus_client_list' and $keyword_type != 'all'):
+			case ($type == 'antivirus_client_list' and $keyword != 'all'):
 				$table = "antivirus_client_list";
-				$condition = $keyword_type." LIKE '%".$key."%'";
+				$condition = $keyword." LIKE '%".$key."%'";
 			    $order = "ORDER by GUID ASC";	
 				break;
-			case ($type == 'drip_client_list' and $keyword_type != 'all'):
+			case ($type == 'drip_client_list' and $keyword != 'all'):
 				$table = "drip_client_list";
-				$condition = $keyword_type." LIKE '%".$key."%'";
+				$condition = $keyword." LIKE '%".$key."%'";
 			    $order = "ORDER by DetectorName ASC,IP ASC";	
 				break;
-			case ($type == 'security_event' and $keyword_type == 'all'):
+			case ($type == 'security_event' and $keyword == 'all'):
 				$table = "security_event";
 				//Fulltext seach
 				$condition = getFullTextSearchSQL($conn,$table,$key);
 			    $order = "order by eventid desc,occurrencetime desc";	
 				break;
-			case ($type == 'tainangov_security_Incident' and $keyword_type == 'all'):
+			case ($type == 'tainangov_security_Incident' and $keyword == 'all'):
 				$table = "tainangov_security_Incident";
 				//Fulltext seach
 				$condition = getFullTextSearchSQL($conn,$table,$key);
 			    $order = "order by IncidentID desc,occurrencetime desc";	
 				break;
-			case ($type == 'security_contact' and $keyword_type == 'all'):
+			case ($type == 'security_contact' and $keyword == 'all'):
 				$table = "security_contact";
 				//FullText Seach
 				$condition = getFullTextSearchSQL($conn,$table,$key);
@@ -77,26 +77,26 @@
 				$table = "(SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra)A";
 				$order = "ORDER by OID asc,person_type asc";
 				break;
-			case ($type == 'gcb_client_list' and $keyword_type == 'all'):
+			case ($type == 'gcb_client_list' and $keyword == 'all'):
 				$table = "gcb_client_list";
 				//Fulltext seach
 				$condition = getFullTextSearchSQL($conn,$table,$key);
 				$table = "(SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a,gcb_os as b,gcb_ie as c WHERE a.OSEnvID = b.id AND a.IEEnvID = c.id)A";
 				$order = "ORDER by ID ASC";	
 				break;
-			case ($type == 'wsus_client_list' and $keyword_type == 'all'):
+			case ($type == 'wsus_client_list' and $keyword == 'all'):
 				$table = "wsus_computer_status";
 				//Fulltext seach
 				$condition = getFullTextSearchSQL($conn,$table,$key);
 				$order = "ORDER by TargetID ASC";	
 				break;
-			case ($type == 'antivirus_client_list' and $keyword_type == 'all'):
+			case ($type == 'antivirus_client_list' and $keyword == 'all'):
 				$table = "antivirus_client_list";
 				//Fulltext seach
 				$condition = getFullTextSearchSQL($conn,$table,$key);
 				$order = "ORDER by GUID ASC";	
 				break;
-			case ($type == 'drip_client_list' and $keyword_type == 'all'):
+			case ($type == 'drip_client_list' and $keyword == 'all'):
 				$table = "drip_client_list";
 				//Fulltext seach
 				$condition = getFullTextSearchSQL($conn,$table,$key);
@@ -532,25 +532,25 @@
 						
 				//The href-link of bottom pages
 				echo "<div class='ui pagination menu'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' >首頁</a>";
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' > ← </a>";
+				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword ='".$keyword."' type='".$type."' >首頁</a>";
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' > ← </a>";
 				for ($j = $lower_bound; $j <= $upper_bound ;$j++){
 					if($j == $pages){
-						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'>".$j."</a>";
+						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."'>".$j."</a>";
 					}else{
-						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'>".$j."</a>";
+						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."'>".$j."</a>";
 					}
 				}
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."' > → </a>";		
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' > → </a>";		
 				//last page
-				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'>末頁</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword ='".$keyword."' type='".$type."'>末頁</a>";
 				echo "</div>";
 
 				//The mobile href-link of bottom pages
 				echo "<div class='ui pagination menu mobile'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'> ← </a>";
-				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'>(".$pages."/".$Totalpages.")</a>";
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword_type ='".$keyword_type."' type='".$type."'> → </a>";		
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."'> ← </a>";
+				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword ='".$keyword."' type='".$type."'>(".$pages."/".$Totalpages.")</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."'> → </a>";		
 				echo "</div>";
 			}
 		}elseif($ap='csv'){

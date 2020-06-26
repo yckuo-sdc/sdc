@@ -23,8 +23,8 @@
 <div class="item">
   <div class=" header">資安查詢</div>
   <div class="menu">
-		<a class="item" href="index.php?mainpage=query&subpage=1">府內資安事件查詢</a> 
-		<a class="item" href="index.php?mainpage=query&subpage=2">資安通報查詢</a> 
+		<a class="item" href="index.php?mainpage=query&subpage=1">本府資安事件查詢</a> 
+		<a class="item" href="index.php?mainpage=query&subpage=2">技服資安通報查詢</a> 
 		<a class="item" href="index.php?mainpage=query&subpage=3">資安聯絡人</a> 
 		<a class="item" href="index.php?mainpage=query&subpage=4">用戶端資安清單</a> 
 		<a class="item" href="index.php?mainpage=query&subpage=5">Retrieve GS & Ncert</a> 
@@ -33,10 +33,10 @@
 <div class="item">
   <div class=" header">弱點掃描</div>
   <div class="menu">
-      <a class="item" href="index.php?mainpage=vulnerability&subpage=1">整體數據</a>
-      <a class="item" href="index.php?mainpage=vulnerability&subpage=2">弱點查詢</a>
-      <a class="item" href="index.php?mainpage=vulnerability&subpage=3">Scan Target</a>
-      <a class="item" href="index.php?mainpage=vulnerability&subpage=4">Retrieve VS</a>
+      <a class="item" href="index.php?mainpage=vul&subpage=1">整體數據</a>
+      <a class="item" href="index.php?mainpage=vul&subpage=2">弱點查詢</a>
+      <a class="item" href="index.php?mainpage=vul&subpage=3">Scan Target</a>
+      <a class="item" href="index.php?mainpage=vul&subpage=4">Retrieve VS</a>
   </div>
 </div>
 <div class="item">

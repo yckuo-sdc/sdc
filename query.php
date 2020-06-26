@@ -18,14 +18,14 @@ function load_query_event(){
 <div id="content">
 		<div class="sub-content show">
 			<div class="post security_event">
-				<div class="post_title">府內資安事件查詢</div>
+				<div class="post_title">本府資安事件查詢</div>
 				<div class="post_cell">
 				<form class="ui form" action="javascript:void(0)">
 
  				<div class="fields">
 			    	<div class="field">
 					    <label>種類</label>
-						<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
+						<select name="keyword" id="keyword" class="ui fluid dropdown" required>
                    		 <!--<option value="" class="keyword_paper active" selected>關鍵字種類</option>-->
 						<option value="IP" class="keyword_paper active" selected>設備IP</option>
 						<option value="Status" class="keyword_paper active">結案狀態</option>
@@ -153,14 +153,14 @@ function load_query_ncert(){
 <div id="content">
 		<div class="sub-content show">
 			<div class="post tainangov_security_Incident">
-				<div class="post_title">資安通報查詢</div>
+				<div class="post_title">技服資安通報查詢</div>
 				<div class="post_cell">
 					<form class="ui form" action="javascript:void(0)">
 
 					<div class="fields">
 						<div class="field">
 							<label>種類</label>
-							<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
+							<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 							<option value="PublicIP" class="keyword_paper active" selected>對外IP(網址)</option>
 							<option value="Status" class="keyword_paper active">結案狀態</option>
 							<option value="Classification" class="keyword_paper active">事故類型</option>
@@ -311,7 +311,7 @@ function load_query_contact(){
 					<div class="fields">
 						<div class="field">
 							<label>種類</label>
-							<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
+							<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 							 <!--<option value="" class="keyword_paper active" selected>關鍵字種類</option>-->
 							<option value="organization" class="keyword_paper active" selected>機關名稱</option>
 							<option value="OID" class="keyword_paper active">機關OID</option>
@@ -448,7 +448,7 @@ function load_query_client(){
 						<div class="fields">
 							<div class="field">
 								<label>種類</label>
-								<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
+								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 								<option value="ClientName" class="keyword_paper active" selected>電腦名稱</option>
 								<option value="IP" class="keyword_paper active">內部IP</option>
 								<option value="UserName" class="keyword_paper active">使用者帳號</option>
@@ -587,7 +587,7 @@ function load_query_client(){
 						<div class="fields">
 							<div class="field">
 								<label>種類</label>
-								<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
+								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 								<option value="Name" class="keyword_paper active" selected>電腦名稱</option>
 								<option value="InternalIP" class="keyword_paper active">內部IP</option>
 								<option value="UserName" class="keyword_paper active">使用者帳號</option>
@@ -725,7 +725,7 @@ function load_query_client(){
 						<div class="fields">
 							<div class="field">
 								<label>種類</label>
-								<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
+								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 								<option value="FullDomainName" class="keyword_paper active" selected>電腦名稱</option>
 								<option value="IPAddress" class="keyword_paper active">內部IP</option>
 								<option value="all" class="keyword_paper active">全部</option>
@@ -851,7 +851,7 @@ function load_query_client(){
 						<div class="fields">
 							<div class="field">
 								<label>種類</label>
-								<select name="keyword_type" id="keyword_type" class="ui fluid dropdown" required>
+								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 								<option value="ClientName" class="keyword_paper active" selected>電腦名稱</option>
 								<option value="IP" class="keyword_paper active">內部IP</option>
 								<option value="all" class="keyword_paper active">全部</option>

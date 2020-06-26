@@ -86,7 +86,7 @@ function Call_drip_block_IP_ajax(type,ip,response){
 	return 0;
  }
 
-function Call_sub_query_pagination_ajax(page,key,keyword_type,type){
+function Call_sub_query_pagination_ajax(page,key,keyword,type){
 	 var selector = ".post."+type+" ";
 	 if(type == 'gcb_client_list' || type == 'wsus_client_list' || type == 'antivirus_client_list' || type == 'drip_client_list')  selector = ".post.is_client_list .tab-content."+type+" ";
 	 $.ajax({
@@ -94,7 +94,7 @@ function Call_sub_query_pagination_ajax(page,key,keyword_type,type){
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {page:page,key:key,keyword_type:keyword_type,type:type},
+		 data: {page:page,key:key,keyword:keyword,type:type},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -116,7 +116,7 @@ function Call_retrieve_gs_ajax(){
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:1,keyword_type:2},
+		 data: {key:1,keyword:2},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(response) {
@@ -133,7 +133,7 @@ function Call_retrieve_tainangov_security_incident_gs_ajax(){
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:1,keyword_type:2},
+		 data: {key:1,keyword:2},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(response) {
@@ -150,7 +150,7 @@ function Call_retrieve_gcb_ajax(){
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:1,keyword_type:2},
+		 data: {key:1,keyword:2},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(response) {
@@ -168,7 +168,7 @@ function Call_retrieve_vs_ajax(){
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:1,keyword_type:2},
+		 data: {key:1,keyword:2},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(response) {
@@ -186,11 +186,11 @@ function Call_sub_query_ajax(type,ap){
 		 selector = ".post.is_client_list .tab-content."+type+" ";
 	 }
 	var key = $(selector+'#key').val();
-	var keyword_type = $(selector+'#keyword_type').val();
-	if (typeof key != 'undefined' && key !='' && keyword_type !=''  && type !='') {
+	var keyword = $(selector+'#keyword').val();
+	if (typeof key != 'undefined' && key !='' && keyword !=''  && type !='') {
 		//ap='csv'
 		if(ap=='csv'){
-				window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_query.php?key="+encodeURI(key)+"&keyword_type="+encodeURI(keyword_type)+"&type="+type+"&ap="+ap);
+				window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_query.php?key="+encodeURI(key)+"&keyword="+encodeURI(keyword)+"&type="+type+"&ap="+ap);
 		}else{
 			//ap='html'
 			$.ajax({
@@ -198,7 +198,7 @@ function Call_sub_query_ajax(type,ap){
 				 cache: false,
 				 dataType:'html',
 				 type:'GET',
-				 data: {key:key,keyword_type:keyword_type,type:type,ap:ap},
+				 data: {key:key,keyword:keyword,type:type,ap:ap},
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
@@ -213,7 +213,7 @@ function Call_sub_query_ajax(type,ap){
 	return 0;
  }
 
-function Call_sub_query_pagination_ajax(page,key,keyword_type,type){
+function Call_sub_query_pagination_ajax(page,key,keyword,type){
 	 var selector = ".post."+type+" ";
 	 if(type == 'gcb_client_list' || type == 'wsus_client_list' || type == 'antivirus_client_list' || type == 'drip_client_list')  selector = ".post.is_client_list .tab-content."+type+" ";
 	 $.ajax({
@@ -221,7 +221,7 @@ function Call_sub_query_pagination_ajax(page,key,keyword_type,type){
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {page:page,key:key,keyword_type:keyword_type,type:type},
+		 data: {page:page,key:key,keyword:keyword,type:type},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -240,8 +240,8 @@ function Call_sub_vs_query_ajax(type,ap){
 		var id = $(this).attr("title");
 		var email = $(this).val();
 		item = {}
-		item ["keyword_type"] = $(this).attr("keyword_type");
-		item ["key"] = $(this).attr("key");
+		item ["keyword"] = $(this).attr("keyword");
+		item ["key"] 	 = $(this).attr("key");
 		jsonObj.push(item);
 	});
 	jsonObj = JSON.stringify(jsonObj);
@@ -250,12 +250,12 @@ function Call_sub_vs_query_ajax(type,ap){
 	var obj = $(selector+"input[name='status[]']");
 	var unfinished = obj[0].checked;
 	var finished   = obj[1].checked;
-	var key = $(selector+'#key').val();
-	var keyword_type = $(selector+'#keyword_type').val();
-	if ( (typeof key != 'undefined' && key !='' && keyword_type !=''  && type !='') || jsonObj !='[]') {
+	var key 	= $(selector+'#key').val();
+	var keyword = $(selector+'#keyword').val();
+	if ( (typeof key != 'undefined' && key !='' && keyword !=''  && type !='') || jsonObj !='[]') {
 		//ap='csv'
 		if(ap=='csv'){
-			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_vs_query.php?key="+encodeURI(key)+"&keyword_type="+encodeURI(keyword_type)+"&type="+type+"&unfinished="+unfinished+"&finished="+finished+"&ap="+ap+"&jsonObj="+encodeURIComponent(jsonObj));
+			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_vs_query.php?key="+encodeURI(key)+"&keyword="+encodeURI(keyword)+"&type="+type+"&unfinished="+unfinished+"&finished="+finished+"&ap="+ap+"&jsonObj="+encodeURIComponent(jsonObj));
 		}else{
 		//ap='html'
 			$.ajax({
@@ -263,7 +263,7 @@ function Call_sub_vs_query_ajax(type,ap){
 				 cache: false,
 				 dataType:'html',
 				 type:'GET',
-				 data: {key:key,keyword_type:keyword_type,type:type,unfinished:unfinished,finished:finished,ap:ap,jsonObj:jsonObj},
+				 data: {key:key,keyword:keyword,type:type,unfinished:unfinished,finished:finished,ap:ap,jsonObj:jsonObj},
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
@@ -278,14 +278,14 @@ function Call_sub_vs_query_ajax(type,ap){
 	return 0;
 }
 
-function Call_sub_vs_query_pagination_ajax(page,key,keyword_type,type,unfinished,finished){
+function Call_sub_vs_query_pagination_ajax(page,key,keyword,type,unfinished,finished){
 	 var jsonObj = [];
 	 $('.post.ip_and_url_scanResult span.query_label').each(function () {
 		var id = $(this).attr("title");
 		var email = $(this).val();
 		item = {}
-		item ["keyword_type"] = $(this).attr("keyword_type");
-		item ["key"] = $(this).attr("key");
+		item ["keyword"] = $(this).attr("keyword");
+		item ["key"] 	 = $(this).attr("key");
 		jsonObj.push(item);
 	 });
 	 jsonObj = JSON.stringify(jsonObj);
@@ -296,7 +296,7 @@ function Call_sub_vs_query_pagination_ajax(page,key,keyword_type,type,unfinished
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {page:page,key:key,keyword_type:keyword_type,type:type,unfinished:unfinished,finished:finished,jsonObj:jsonObj},
+		 data: {page:page,key:key,keyword:keyword,type:type,unfinished:unfinished,finished:finished,jsonObj:jsonObj},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -313,7 +313,7 @@ function Call_retrieve_ou_vs_ajax(){
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:1,keyword_type:2},
+		 data: {key:1,keyword:2},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -492,19 +492,19 @@ $(document).ready(function(){
 	$('.post.ip_and_url_scanResult .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
 		page				= $(this).attr('page');
 		key 				= $(this).attr('key');
-		keyword_type 		= $(this).attr('keyword_type');
+		keyword	 			= $(this).attr('keyword');
 		type 				= $(this).attr('type');
 		unfinished 			= $(this).attr('unfinished');
 		finished 			= $(this).attr('finished');
-		Call_sub_vs_query_pagination_ajax(page,key,keyword_type,type,unfinished,finished);
+		Call_sub_vs_query_pagination_ajax(page,key,keyword,type,unfinished,finished);
 	});
 	/*query.php's component action*/
 	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content, .post.is_client_list .tab-content.gcb_client_list .record_content, .post.is_client_list .tab-content.wsus_client_list .record_content, .post.is_client_list .tab-content.antivirus_client_list .record_content, .post.is_client_list .tab-content.drip_client_list .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
 		page				 = $(this).attr('page');
 		key 				 = $(this).attr('key');
-		keyword_type 		 = $(this).attr('keyword_type');
+		keyword 		 	 = $(this).attr('keyword');
 		type 				 = $(this).attr('type');
-		Call_sub_query_pagination_ajax(page,key,keyword_type,type);
+		Call_sub_query_pagination_ajax(page,key,keyword,type);
 	});
 	/*query.php & vs_query's component action*/
 	$('.record_content').delegate('.ui.list > .item a', 'click', function() {
@@ -546,20 +546,20 @@ $(document).ready(function(){
 			icon2.removeClass('open');
 		}
 	});
-	/*vulnerability.php's component action*/
+	/*vul.php's component action*/
 	$('.post.ip_and_url_scanResult i.square.icon').click(function() {
 		var selector = ".post.ip_and_url_scanResult ";
-		var key = $(selector+'#key').val();
-		var keyword_type = $(selector+'#keyword_type').val();
-		if (typeof key != 'undefined' && key !='' && keyword_type !='') {
+		var key 	= $(selector+'#key').val();
+		var keyword = $(selector+'#keyword').val();
+		if (typeof key != 'undefined' && key !='' && keyword !='') {
 			var query_content = $(selector+'.query_content');
-			var query_label ="<span class='query_label' keyword_type='"+keyword_type+"' key='"+key+"'>"+keyword_type+"："+key+"<button type='button' class='close' style='opacity:0.2'><i class='close icon'></i></button></span>";
+			var query_label ="<span class='query_label' keyword='"+keyword+"' key='"+key+"'>"+keyword+"："+key+"<button type='button' class='close' style='opacity:0.2'><i class='close icon'></i></button></span>";
 			query_content.append(query_label);
 		}else{
 			alert("沒有輸入");
 		}
 	});
-	/*vulnerability.php's component action*/
+	/*vul.php's component action*/
 	$('.post.ip_and_url_scanResult .query_content').delegate('button.close', 'click', function() {
 		var span = $(this).parent('span');
 		var query_content = $('.post.ip_and_url_scanResult .query_content');
