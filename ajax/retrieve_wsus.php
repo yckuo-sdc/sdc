@@ -9,6 +9,8 @@ $row = 1;
 $count = 0;
 $status = array();
 if (($handle = fopen($file_path, "r")) !== FALSE) {
+	$sql = "TRUNCATE TABLE wsus_computer_status";	
+	$conn->query($sql); 
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 		$num = count($data);
 		if($num > 1){
@@ -19,7 +21,7 @@ if (($handle = fopen($file_path, "r")) !== FALSE) {
 			$status['LastReportedStatusTime']= mysqli_real_escape_string($conn,trim($data[2]));
 			$status['LastReportedRebootTime']= mysqli_real_escape_string($conn,trim($data[3]));
 			$status['IPAddress']= mysqli_real_escape_string($conn,trim($data[4]));
-			$status['FullDomainName']= mysqli_real_escape_string($conn,trim($data[5]));
+			$status['FullDomainName']= mysqli_real_escape_string($conn,trim(mb_convert_encoding($data[5],"utf-8","big5")));
 			$status['EffectiveLastDetectionTime']= mysqli_real_escape_string($conn,trim($data[6]));
 			$status['LastSyncResult']= mysqli_real_escape_string($conn,trim($data[7]));
 			$status['Unknown']= mysqli_real_escape_string($conn,trim($data[8]));

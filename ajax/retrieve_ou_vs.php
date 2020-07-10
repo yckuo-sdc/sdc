@@ -39,13 +39,6 @@
 	echo "共有".$rowcount."個單位,".$rowcount_scan."筆掃描設備(含歷史紀錄)！<br>";
 	echo "<div class='flex-container'>";                    
 	while($row = mysqli_fetch_assoc($result)) {
-		//Query of system name,count(total_VUL),count(fixed_VUL) 
-		//$sql_s = "SELECT * FROM V_VUL_tableau WHERE ou LIKE '".$row['ou']."' ORDER BY system_name ";
-
-		/*$sql_s = "SELECT system_name,count(system_name) as total_VUL,sum(CASE WHEN status IN ('已修補','豁免','誤判') THEN 1 ELSE 0 END) fixed_VUL 
-			FROM (
-				SELECT system_name,status FROM ipscanResult WHERE ou LIKE '/臺南市政府/".$row['ou']."' UNION ALL SELECT system_name,status FROM urlscanResult WHERE ou LIKE '/臺南市政府/".$row['ou']."'
-			)A GROUP BY system_name	ORDER BY system_name";*/
 		$sql_s = "SELECT system_name,sum(total_VUL) as total_VUL ,sum(fixed_VUL) as fixed_VUL FROM(
 		 SELECT system_name,'0' as total_VUL,'0' as fixed_VUL FROM scanTarget WHERE ou LIKE '/臺南市政府/".$row['ou']."' UNION ALL
 		SELECT system_name,count(system_name) as total_VUL,sum(CASE WHEN status IN ('已修補','豁免','誤判') THEN 1 ELSE 0 END) fixed_VUL FROM (
@@ -54,10 +47,6 @@
 )v1 GROUP BY system_name ORDER BY system_name";
 
 		$result_s = mysqli_query($conn,$sql_s);
-		//Query of unFixed vulnerabilities
-		/*$sql_d = "SELECT * FROM(
-					SELECT vitem_name,system_name,ip,scan_date,scan_no,CONCAT('http://',ip) as url FROM ipscanResult WHERE ou LIKE '/臺南市政府/".$row['ou']."' AND status IN ('待處理','待處理(經複查仍有弱點','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') UNION ALL SELECT vitem_name,system_name,ip,scan_date,scan_no,affect_url as url FROM urlscanResult WHERE ou LIKE '/臺南市政府/".$row['ou']."' AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)')
-				)A ORDER BY scan_date desc LIMIT 10";*/
 		$sql_d = "SELECT * FROM scanTarget WHERE ou LIKE '/臺南市政府/".$row['ou']."'";
 		$result_d = mysqli_query($conn,$sql_d);
 		echo "<div class='ou_block'>";

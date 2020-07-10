@@ -1,8 +1,7 @@
 <!--query.php-->
 <?php 
-	if(isset($_GET['subpage'])) $subpage  = $_GET['subpage'];
-	else						$subpage =1;
-	$subpage  = $_GET['subpage'];
+	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
+	else						$subpage = 1;
 	switch($subpage){
 		case 1:	load_query_event(); break;
 		case 2:	load_query_ncert(); break;
@@ -74,29 +73,11 @@ function load_query_event(){
                         echo "查無此筆紀錄";
                     }else{
                         echo "共有".$rowcount."筆資料！";
-
-
 						echo "<div class='ui relaxed divided list'>";
-						/*	echo "<div class='item'>";
-								echo "<div class='content'>";
-									echo "<a class='header'>";
-									//echo "序號&nbsp";
-                        			echo "發現日期&nbsp&nbsp";
-                        			echo "結案狀態&nbsp&nbsp";
-                        			echo "資安事件類型&nbsp&nbsp";
-                       				echo "位置&nbsp&nbsp";
-									echo "設備IP&nbsp&nbsp";
-									echo "姓名&nbsp&nbsp";
-									echo "分機&nbsp&nbsp";
-									echo "</a>";
-								echo "</div>";
-							echo "</div>";
-						*/
                     while($row = mysqli_fetch_assoc($result)) {
 						echo "<div class='item'>";
 						echo "<div class='content'>";
 							echo "<a>";
-							//echo $row['EventID']."&nbsp&nbsp"";
 							if($row['Status']=="已結案")echo "<i class='check circle icon' style='color:green'></i>";
 							else echo "<i class='exclamation circle icon'></i>";
                         	echo date_format(new DateTime($row['OccurrenceTime']),'Y-m-d')."&nbsp&nbsp";
@@ -138,7 +119,6 @@ function load_query_event(){
 					echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",1,0,$pages,"");
 					}
                     $conn->close();
-                        
                 ?>
 				</div>
 			</div>
@@ -370,19 +350,6 @@ function load_query_contact(){
 
 
 							echo "<div class='ui relaxed divided list'>";
-								/*echo "<div class='item'>";
-									echo "<div class='content'>";
-										echo "<a class='header'>";
-										//echo "序號&nbsp";
-										echo "機關名稱&nbsp&nbsp";
-										echo "姓名&nbsp&nbsp";
-										echo "聯絡人類別&nbsp&nbsp";
-										echo "信箱&nbsp&nbsp";
-										echo "電話&nbsp&nbsp";
-										echo "<a>";
-									echo "</div>";
-								echo "</div>";
-								*/
 						while($row = mysqli_fetch_assoc($result)) {
 							echo "<div class='item'>";
 							echo "<div class='content'>";
@@ -445,6 +412,7 @@ function load_query_client(){
 					<div class="ui bottom attached segment">
 					<div class="tab-content drip_client_list show">
 						<form class="ui form" action="javascript:void(0)">
+						<div class="query_content"></div>
 						<div class="fields">
 							<div class="field">
 								<label>種類</label>
@@ -465,6 +433,10 @@ function load_query_client(){
 								<div class="ui input">
 									<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
 								</div>
+							</div>
+							<div class="field">
+								<label>新增條件</label>
+								<i class="large square icon plus"></i>
 							</div>
 							<div class="field">
 								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
@@ -965,7 +937,7 @@ function load_query_retrieve(){
 				<div class="post_title">Retrieve from Google Sheets and GCB</div>
 				<div class="post_cell">
 					<button id="gs_event_btn" class="ui button self-btn">Retrieve Event GS</button>
-					<button id="gs_ncert_incident_btn" class="ui button self-btn">Retrieve Ncert-Incident_GS</button>
+					<button id="gs_ncert_event_btn" class="ui button self-btn">Retrieve Ncert-Event_GS</button>
 					<button id="gcb_api_btn" class="ui button self-btn">Retrieve GCB</button>
 					<div class="retrieve_info"></div>
 				</div>

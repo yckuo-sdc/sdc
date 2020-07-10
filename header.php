@@ -22,11 +22,14 @@
 <script src="node_modules/d3js/d3.min.js" charset="utf-8"></script>
 <link href="node_modules/c3js/c3.css" rel="stylesheet" type="text/css">
 <script src="node_modules/c3js/c3.min.js"></script>
+
 <!-- semantic ui -->
 <link rel="stylesheet" type="text/css" href="node_modules/semantic/semantic.css">
 <script src="node_modules/semantic/semantic.js"></script>
+
 <!-- template css-->
 <link href="css/default.css" rel="stylesheet" type="text/css" media="all" />
+
 <!-- add my CSS-->
 <link href="css/add.css" rel="stylesheet"/>
 <link href="css/subpage.css" rel="stylesheet"/>
@@ -42,5 +45,4 @@
 <![endif]-->
 </head>
 <body id="example">
-
 

@@ -1,5 +1,4 @@
 <!--siderbar.php-->
-<!--<div class="ui vertical inverted sidebar menu left overlay visible" id="toc" style="">-->
 <div class="item">
   <a class="ui logo icon image" href="./"><img src="/images/logo.png"></a>
   <a href="./"><b>SDC ISS</b></a>
@@ -61,8 +60,4 @@
   </div>
 </div>
 	<a class="item" href="login/logout.php"><b>登出<?php echo "(".$_SESSION['UserName'].")";?></b></a>
-
-
-
-<!--</div>-->
 

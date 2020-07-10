@@ -1,15 +1,11 @@
 <?php
 	if(!empty($_GET['chartID'])){
-		//過濾特殊字元(')
 		$chartID = $_GET['chartID'];
-	   
 		require("../mysql_connect.inc.php");
-		
 		switch($chartID){
 			case "chartA":
 				$date_today = date('Y-m-d',strtotime('now'));
 				$date_3month_ago = date('Y-m-d',strtotime('-3 month'));
-
 				$sql =" SELECT OccurrenceTime,COUNT(OccurrenceTime) as count 
 						FROM security_event 
 						WHERE OccurrenceTime BETWEEN '".$date_3month_ago."' AND '".$date_today."' 

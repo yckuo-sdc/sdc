@@ -1,126 +1,143 @@
-	function Call_retrieve_c3_chartA_ajax(){
-		 $.ajax({
-			 url: 'ajax/chart.php',
-			 cache: false,
-			 dataType:'html',
-			 type:'GET',
-			 data: {chartID:'chartA'},
-			 error: function(xhr) {
-				 alert('Ajax failed');
-			 },success: function(data) {
-			 	 //console.log("data");
-				 
-				 var countArray=[],nameArray=[];
-				 var countArray_done=[],nameArray_done=[];
-				$(data).find("OccurrenceTime").each(function(){
-					// console.log($(this).text());
-					 nameArray.push($(this).text());
-				});
-				$(data).find("count").each(function(){
-					// console.log($(this).text());
-					 countArray.push($(this).text());
-				});
-				$(data).find("OccurrenceTime_done").each(function(){
-					// console.log($(this).text());
-					 nameArray_done.push($(this).text());
-				});
-				$(data).find("count_done").each(function(){
-					// console.log($(this).text());
-					 countArray_done.push($(this).text());
-				});
-				countArray.unshift('資安事件數量');
-				countArray_done.unshift('資安事件已結案數量');
-				var chart = c3.generate({
-						bindto: '#chartA',
-	    				data: {
-							columns: [
-								countArray,
-								countArray_done
-							],
-							type:  'area-step'
-						},axis: {
-				   			x: {
-								type: 'category',
-								categories: nameArray,
-								tick: {
-									count: 3
-								}
-							}
-						}
-				});
-				 
-			 }
-		});
-		return 0;
-	 }
-	function Call_retrieve_c3_chartB_ajax(){
-		 $.ajax({
-			 url: 'ajax/chart.php',
-			 cache: false,
-			 dataType:'html',
-			 type:'GET',
-			 data: {chartID:'chartB'},
-			 error: function(xhr) {
-				 alert('Ajax failed');
-			 },success: function(data) {
-			 	 //console.log("data");
-				 
-				 var countArray18=[],countArray19=[];
-				 var nameArray18=[],nameArray19=[];
-				 //console.log($(data).find("month").length);
-				$(data).find("month2018").each(function(){
-					// console.log($(this).text());
-					 nameArray18.push($(this).text());
-				});
-				$(data).find("count2018").each(function(){
-					 //console.log($(this).text());
-					 countArray18.push($(this).text());
-				});
-				$(data).find("month2019").each(function(){
-					 //console.log($(this).text());
-					 nameArray19.push($(this).text());
-				});
-				$(data).find("count2019").each(function(){
-					// console.log($(this).text());
-					 countArray19.push($(this).text());
-				});
-				//var countArray2 = countArray.slice();
-				var d = new Date();
-				var n = d.getFullYear();
-				countArray18.unshift((n-1)+'資安事件(數量)');
-				countArray19.unshift(n+'資安事件(數量)');
-				//countArray2.unshift('data2');
-				var chart = c3.generate({
-						bindto: '#chartB',
-	    				data: {
-							columns: [
-								countArray18,countArray19
-							],
-							type: 'bar'
-						},axis: {
-				   			x: {
-								type: 'category',
-								categories: nameArray18
-							}
-						},bar: {
-							width: {
-								ratio: 0.5 // this makes bar width 50% of length between ticks	
-							}
-						}
-				});
-				 
-			 }
-		});
-		return 0;
-	 }
+/*****Main****/
+$(document).ready(function(){
+	var url;
+	if (location.protocol == 'https:') url='https://sdc-iss.tainan.gov.tw/';
+	else							   url='http://sdc-iss.tainan.gov.tw/';
 
-	function Call_retrieve_c3_chartC_ajax(){
+	//bind show_chart_btn
+	$('#show_chart_btn').click(function (){
+		Call_retrieve_c3_chartB_ajax(url);
+	});
+	
+	Call_retrieve_c3_chartA_ajax(url);
+	Call_retrieve_c3_chartB_ajax(url);
+	Call_retrieve_c3_chartC_ajax(url);
+	//Call_retrieve_c3_chartD_ajax(url);
+	Call_retrieve_c3_chartE_ajax(url);
+});
+
+function Call_retrieve_c3_chartA_ajax(url){
 	$.ajax({
-		url: 'ajax/chart.php',
+		 url: url+'ajax/chart.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {chartID:'chartA'},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 var countArray=[],nameArray=[];
+			 var countArray_done=[],nameArray_done=[];
+			$(data).find("OccurrenceTime").each(function(){
+				// console.log($(this).text());
+				 nameArray.push($(this).text());
+			});
+			$(data).find("count").each(function(){
+				// console.log($(this).text());
+				 countArray.push(+$(this).text());
+			});
+			$(data).find("OccurrenceTime_done").each(function(){
+				// console.log($(this).text());
+				 nameArray_done.push($(this).text());
+			});
+			$(data).find("count_done").each(function(){
+				// console.log($(this).text());
+				 countArray_done.push(+$(this).text());
+			});
+			countArray.unshift('資安事件數量');
+			countArray_done.unshift('資安事件已結案數量');
+			var chart = c3.generate({
+					bindto: '#chartA',
+					data: {
+						columns: [
+							countArray,
+							countArray_done
+						],
+						type:  'area-step'
+					},axis: {
+						x: {
+							type: 'category',
+							categories: nameArray,
+							tick: {
+								count: 3
+							}
+						}
+					}
+			});
+			 
+		 }
+	});
+	return 0;
+ }
+
+function Call_retrieve_c3_chartB_ajax(url){
+	$.ajax({
+		 url: url+'ajax/chart.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {chartID:'chartB'},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 //console.log("data");
+			 
+			 var countArray18=[],countArray19=[];
+			 var nameArray18=[],nameArray19=[];
+			 //console.log($(data).find("month").length);
+			$(data).find("month2018").each(function(){
+				// console.log($(this).text());
+				 nameArray18.push($(this).text());
+			});
+			$(data).find("count2018").each(function(){
+				 //console.log($(this).text());
+				 countArray18.push(+$(this).text());
+			});
+			$(data).find("month2019").each(function(){
+				 //console.log($(this).text());
+				 nameArray19.push($(this).text());
+			});
+			$(data).find("count2019").each(function(){
+				// console.log($(this).text());
+				 countArray19.push(+$(this).text());
+			});
+			//var countArray2 = countArray.slice();
+			var d = new Date();
+			var n = d.getFullYear();
+			countArray18.unshift((n-1)+'資安事件(數量)');
+			countArray19.unshift(n+'資安事件(數量)');
+			//countArray2.unshift('data2');
+			var chart = c3.generate({
+					bindto: '#chartB',
+					data: {
+						columns: [
+							countArray18,countArray19
+						],
+						type: 'bar'
+					},axis: {
+						x: {
+							type: 'category',
+							categories: nameArray18
+						}
+					},bar: {
+						width: {
+							ratio: 0.5 // this makes bar width 50% of length between ticks	
+						}
+					}
+			});
+			 
+		 }
+	});
+	return 0;
+ }
+
+function Call_retrieve_c3_chartC_ajax(url){
+	$.ajax({
+		url: url+'ajax/chart.php',
 		cache: false,
 		dataType:'html',
 		type:'GET',
-	 	data: {chartID:'chartC'},
+		data: {chartID:'chartC'},
 		error: function(xhr) {
 			alert('Ajax failed');
 		},success: function(data) {	 
@@ -160,7 +177,7 @@
 				}
 			}
 			var cht_height = cht_width * 0.4205;
-	
+
 			var chart = c3.generate({
 				bindto: '#chartC-2',
 				data: {
@@ -178,12 +195,12 @@
 			
 			var chart = c3.generate({
 				bindto: '#chartC',
-	    		data:{ 
+				data:{ 
 					columns: [countArray,countIP],
 					type: 'bar'
 				},axis: {
 					rotated: true,
-				   	x: {
+					x: {
 						type: 'category',
 						categories: nameArray,
 						rotated: true
@@ -201,17 +218,17 @@
 
 		}
 	});
-		return 0;
-		
-	}	
+	return 0;
+	
+}	
 
-	function Call_retrieve_c3_chartD_ajax(){
+function Call_retrieve_c3_chartD_ajax(url){
 	$.ajax({
-		url: 'ajax/chart.php',
+		url: url+'ajax/chart.php',
 		cache: false,
 		dataType:'html',
 		type:'GET',
-	 	data: {chartID:'chartD'},
+		data: {chartID:'chartD'},
 		error: function(xhr) {
 			alert('Ajax failed');
 		},success: function(data) {	 
@@ -241,7 +258,7 @@
 			var chart = c3.generate({
 				bindto: '#chartD',
 				size: {
-				    //height: 800,
+					//height: 800,
 					//width: 600
 				},
 				data:{ 
@@ -264,7 +281,7 @@
 					}
 				},axis: {
 					rotated: true,
-				   	x: {
+					x: {
 							type: 'category',
 							categories: ouArray
 					}
@@ -275,20 +292,19 @@
 					}
 				},
 			});
-	
+
 		}
 	});
-		return 0;
-		
-	}	
+	return 0;
+}	
 
-	function Call_retrieve_c3_chartE_ajax(){
+function Call_retrieve_c3_chartE_ajax(url){
 	$.ajax({
-		url: 'ajax/chart.php',
+		url: url+'ajax/chart.php',
 		cache: false,
 		dataType:'html',
 		type:'GET',
-	 	data: {chartID:'chartE'},
+		data: {chartID:'chartE'},
 		error: function(xhr) {
 			alert('Ajax failed');
 		},success: function(data) {	 
@@ -331,7 +347,7 @@
 				}
 			}
 			var cht_height = cht_width * 0.4205;
-	
+
 			var chart = c3.generate({
 				bindto: '#chartE',
 				data: {
@@ -339,10 +355,10 @@
 					mArray,
 				type : 'pie'
 				},
-  				pie:{
+				pie:{
 					label: {
-	              		/*format: function (value, ratio, id) {
-					          return d3.format()(value);
+						/*format: function (value, ratio, id) {
+							  return d3.format()(value);
 						}*/
 					}
 				},
@@ -357,7 +373,7 @@
 					} 
 				}
 
-                ,
+				,
 				onresize: function(){
 			
 				}
@@ -370,11 +386,11 @@
 					nArray,
 				type : 'donut'
 				},
-  				donut:{
+				donut:{
 					title: "IP總數:"+total_ip,
 					label: {
-	              		/*format: function (value, ratio, id) {
-					          return d3.format()(value);
+						/*format: function (value, ratio, id) {
+							  return d3.format()(value);
 						}*/
 					}
 				},
@@ -389,7 +405,7 @@
 					} 
 				}
 
-                ,
+				,
 				onresize: function(){
 			
 				}
@@ -418,30 +434,10 @@
 					height: 180
 				}
 			});
-
-
 		}
 	});
-		return 0;
-		
-	}	
+	return 0;
+}	
 
 
-$(document).ready(function(){
-	//bind show_chart_btn
-	$('#show_chart_btn').click(function (){
-		Call_retrieve_c3_chartB_ajax();
-	});
-	
-	//chartA
-	Call_retrieve_c3_chartA_ajax();
-	//chartB
-	Call_retrieve_c3_chartB_ajax();
-	//chartC
-	Call_retrieve_c3_chartC_ajax();
-	//chartD
-	Call_retrieve_c3_chartD_ajax();
-	//chartE
-	Call_retrieve_c3_chartE_ajax();
-});
 

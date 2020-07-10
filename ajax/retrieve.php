@@ -125,39 +125,8 @@ if (isset($rows['values'])) {
 			}
 		}
 	}	
-	/*
-	//這邊是設定寫入試算表的範例，在Sheet8 填入日期資料
-	$updateRange = 'Sheet8!I'.$currentRow;
-	$updateBody = new \Google_Service_Sheets_ValueRange([	'range' => $updateRange,
-		'majorDimension' => 'ROWS',
-		'values' => ['values' => date('c')],
-		]);
-	$sheets->spreadsheets_values->update(
-	$spreadsheetId,
-	$updateRange,
-	$updateBody,
-	['valueInputOption' => 'USER_ENTERED']
-	);
-	$currentRow++;*/
-	/*
-	foreach($lookup_table as $key => $value) {
-	    echo "Key=" . $key . ", Value=" . $value;
-		    echo "<br>";
-	}
-	*/
-
 	$num_done_entry =$num_total_entry-$num_undone_entry  ;
 	$percent_done_entry = round($num_done_entry/$num_total_entry,4)*100;
-
-	/*
-	echo "已列管=".$num_total_entry."件<br>";
-	echo "未完成=".$num_undone_entry."件<br>";
-	echo "已完成=".$num_done_entry."件<br>";
-	echo "完成率=".$percent_done_entry."<br>";
-	echo "無法完成=".$num_exception_entry."件<br>";
-	echo "本周已發生=".$num_thisWeek_entry."件<br>";
-	echo "本月已發生=".$num_thisMonth_entry."件<br>";
-	*/
 
 	date_default_timezone_set("Asia/Taipei");
 
@@ -176,6 +145,5 @@ if (isset($rows['values'])) {
 	
 }
 	$conn->close();	
-	//print_r($data);
 ?>
 	

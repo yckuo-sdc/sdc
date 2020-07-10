@@ -1,108 +1,93 @@
 <?php
 	//header('Content-type: text/html; charset=utf-8');
 	include("../login/function.php");
-	if(isset($_GET['key']) && $_GET['key']!='' && !empty($_GET['keyword']) && !empty($_GET['type'])){
+	if( (!empty($_GET['key']) && !empty($_GET['keyword']) && !empty($_GET['type']) ) || count(json_decode($_GET['jsonObj'],true)) !=0  ){
 		//過濾特殊字元(')
 		$key  		   = $_GET['key'];
-		$keyword  = $_GET['keyword'];
-		$type  		   = $_GET['type'];
+		$keyword	   = $_GET['keyword'];
+		$type 		   = $_GET['type'];
+		$jsonObj 	   = $_GET['jsonObj']; 
 		if (!isset($_GET['page']))	$pages = 1; 
 		else						$pages = $_GET['page']; 
 		if (!isset($_GET['ap']))	$ap = 'html'; 
 		else						$ap = $_GET['ap']; 
+		
+		$jsonObj = json_decode($jsonObj,true);
+		
 		//connect database
         require("../mysql_connect.inc.php");
 		 //特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
 		$key			 = mysqli_real_escape_string($conn,$key);
-		$keyword	 = mysqli_real_escape_string($conn,$keyword);
+		$keyword	 	 = mysqli_real_escape_string($conn,$keyword);
 		$type	 		 = mysqli_real_escape_string($conn,$type);
 		
-		//event or contact & fulltext or single search
+		//table switch
 		switch(true){
-			case ($type == 'security_event' and $keyword != 'all'):
+			case ($type == 'security_event'):
+				$condition_table = "security_event";
 				$table = "security_event";
-				$condition = $keyword." LIKE '%".$key."%'";
 			    $order = "ORDER by EventID DESC,OccurrenceTime DESC";	
 				break;
-			case ($type == 'tainangov_security_Incident' and $keyword != 'all'):
+			case ($type == 'tainangov_security_Incident'):
+				$condition_table = "tainangov_security_Incident";
 				$table = "tainangov_security_Incident";
-				$condition = $keyword." LIKE '%".$key."%'";
 			    $order = "ORDER by IncidentID DESC,OccurrenceTime DESC";	
 				break;
-			case ($type == 'security_contact' and $keyword != 'all'):
-				$table = "security_contact";
-				$condition = $keyword." like '%".$key."%'";
-				// select security_contact from ncert and internal_primary unit from self-creation
+			case ($type == 'security_contact'):
+				$condition_table = "security_contact";
 				$table = "(select * from security_contact union select * from security_contact_extra)a";
 			    $order = "order by oid asc,person_type asc";	
 				break;
-			case ($type == 'gcb_client_list' and $keyword != 'all'):
+			case ($type == 'gcb_client_list'):
+				$condition_table = "gcb_client_list";
 				$table = "(SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a,gcb_os as b,gcb_ie as c WHERE a.OSEnvID = b.id AND a.IEEnvID = c.id)A";
 				if($keyword == 'ExternalIP' or $keyword == 'InternalIP') $key = ip2long($key);
-				$condition = $keyword." LIKE '%".$key."%'";
 			    $order = "ORDER by ID ASC";	
 				break;
-			case ($type == 'wsus_client_list' and $keyword != 'all'):
+			case ($type == 'wsus_client_list'):
+				$condition_table = "wsus_computer_status";
 				$table = "wsus_computer_status";
-				$condition = $keyword." LIKE '%".$key."%'";
 			    $order = "ORDER by TargetID ASC";	
 				break;
-			case ($type == 'antivirus_client_list' and $keyword != 'all'):
+			case ($type == 'antivirus_client_list'):
+				$condition_table = "antivirus_client_list";
 				$table = "antivirus_client_list";
-				$condition = $keyword." LIKE '%".$key."%'";
 			    $order = "ORDER by GUID ASC";	
 				break;
-			case ($type == 'drip_client_list' and $keyword != 'all'):
+			case ($type == 'drip_client_list'):
+				$condition_table = "drip_client_list";
 				$table = "drip_client_list";
-				$condition = $keyword." LIKE '%".$key."%'";
-			    $order = "ORDER by DetectorName ASC,IP ASC";	
-				break;
-			case ($type == 'security_event' and $keyword == 'all'):
-				$table = "security_event";
-				//Fulltext seach
-				$condition = getFullTextSearchSQL($conn,$table,$key);
-			    $order = "order by eventid desc,occurrencetime desc";	
-				break;
-			case ($type == 'tainangov_security_Incident' and $keyword == 'all'):
-				$table = "tainangov_security_Incident";
-				//Fulltext seach
-				$condition = getFullTextSearchSQL($conn,$table,$key);
-			    $order = "order by IncidentID desc,occurrencetime desc";	
-				break;
-			case ($type == 'security_contact' and $keyword == 'all'):
-				$table = "security_contact";
-				//FullText Seach
-				$condition = getFullTextSearchSQL($conn,$table,$key);
-				// select security_contact from NCERT and Internal_Primary Unit from self-creation
-				$table = "(SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra)A";
-				$order = "ORDER by OID asc,person_type asc";
-				break;
-			case ($type == 'gcb_client_list' and $keyword == 'all'):
-				$table = "gcb_client_list";
-				//Fulltext seach
-				$condition = getFullTextSearchSQL($conn,$table,$key);
-				$table = "(SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a,gcb_os as b,gcb_ie as c WHERE a.OSEnvID = b.id AND a.IEEnvID = c.id)A";
-				$order = "ORDER by ID ASC";	
-				break;
-			case ($type == 'wsus_client_list' and $keyword == 'all'):
-				$table = "wsus_computer_status";
-				//Fulltext seach
-				$condition = getFullTextSearchSQL($conn,$table,$key);
-				$order = "ORDER by TargetID ASC";	
-				break;
-			case ($type == 'antivirus_client_list' and $keyword == 'all'):
-				$table = "antivirus_client_list";
-				//Fulltext seach
-				$condition = getFullTextSearchSQL($conn,$table,$key);
-				$order = "ORDER by GUID ASC";	
-				break;
-			case ($type == 'drip_client_list' and $keyword == 'all'):
-				$table = "drip_client_list";
-				//Fulltext seach
-				$condition = getFullTextSearchSQL($conn,$table,$key);
 			    $order = "ORDER by DetectorName ASC,IP ASC";	
 				break;
 		}
+
+		//condition retrieve
+		if( count($jsonObj) !=0 ){
+			$condition = "";
+			foreach($jsonObj as $val){
+				$val['key']		= mysqli_real_escape_string($conn,$val['key']);
+				$val['keyword'] = mysqli_real_escape_string($conn,$val['keyword']);
+				if($val['keyword'] == "all"){
+					$one_condition = "(".getFullTextSearchSQL($conn,$condition_table,$val['key']).") "; 
+				}else{
+					$one_condition = $val['keyword']." LIKE '%".$val['key']."%' ";
+				}
+				$condition = $condition." AND ".$one_condition;
+			}
+			$condition = substr($condition,4);
+		}else{
+			//特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
+			$key			 = mysqli_real_escape_string($conn,$key);
+			$keyword	 = mysqli_real_escape_string($conn,$keyword);
+			if($keyword == "all"){
+				//FullText Seach
+				$condition = "(".getFullTextSearchSQL($conn,$condition_table,$key).") "; 
+			}else{
+				$condition = $keyword." LIKE '%".$key."%' ";
+			}
+
+		}
+		//echo $condition."<br>";
 		$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
 		//echo $sql."<br>";
 		$result = mysqli_query($conn,$sql);

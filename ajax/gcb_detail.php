@@ -11,12 +11,10 @@ if(verifyBySession_Cookie("account")){
 		//判斷aciton
 		switch($action){
 			case 'gscan':
-				//$url = "https://gcb.tainan.gov.tw/api/v1/gscan/result/".$id;
 				$res = gcb\get_gscan_result($token,$id);
 				echo "<pre>".json_encode(json_decode($res),JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."</pre>";
 				break;
 			case 'detail':
-				//$url = "https://gcb.tainan.gov.tw/api/v1/client/detail/".$id;
 				$res = gcb\get_client_detail($token,$id);
 				echo "<pre>".json_encode(json_decode($res),JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."</pre>";
 				break;

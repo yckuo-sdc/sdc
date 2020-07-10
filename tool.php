@@ -1,8 +1,7 @@
 <!--tool.php-->
 <?php 
-	if(isset($_GET['subpage'])) $subpage  = $_GET['subpage'];
-	else						$subpage =1;
-	$subpage  = $_GET['subpage'];
+	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
+	else						$subpage = 1;
 	switch($subpage){
 		case 1:	load_tool_nmap(); 		break;
 		case 2:	load_tool_ldap(); 		break;
@@ -189,9 +188,10 @@ function load_tool_ldap(){
 					?>
 				</div>
 			</div>-->
-			<div class="post">
+			<div class="post ldap_computer_tree">
 				<div class="post_title">AD-Computer tree</div>
 				<div class="post_cell">
+					<div class="ui centered inline loader"></div>
 					<div class="ldap_tree_content"></div>
 				</div>
 			</div>

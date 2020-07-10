@@ -1,5 +1,4 @@
-﻿
-*
+﻿*
 {
 	-webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
@@ -211,6 +210,7 @@
 	*/
 	padding: 1% 2% 1% 2%;
 	margin: 1%;
+	border-radius: .28571429rem;
 	border-left: 1px solid rgba(107, 107, 107, 0.31);
 	border-right: 1px solid rgba(107, 107, 107, 0.31);
 	border-bottom: 1px solid rgba(107, 107, 107, 0.31);

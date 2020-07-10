@@ -9,10 +9,6 @@
 		  </div>
 		<div class="right menu">
 		  <div class="vertically fitted borderless item">
-			<!--<a class="item" href="login/logout.php">
-			<b><?php //echo $_SESSION['UserName']?></b>
-			&nbsp&nbsp<i class="sign-out icon"></i>
-			</a>-->
 		  </div>
 		</div>
 	  </div>

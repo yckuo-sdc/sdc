@@ -1,7 +1,7 @@
 <!--info.php-->
 <?php 
-	if(isset($_GET['subpage'])) $subpage  = $_GET['subpage'];
-	else						$subpage =1;
+	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
+	else						$subpage = 1;
 	switch($subpage){
 		case 1:	load_info_enews(); break;
 		case 2:	load_info_comparison(); break;
@@ -162,7 +162,7 @@ function load_info_vul(){
 						<div class="post_table">
 						<?php //select row_number,and other field value
                     	require("mysql_connect.inc.php");
-$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL,sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion,sum(total_VUL-fixed_VUL) as unfixed_VUL,sum(total_VUL - fixed_VUL - overdue_high_VUL - overdue_medium_VUL) as non_overdue_VUL, sum(total_VUL - fixed_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / NULLIF(SUM(total_VUL - fixed_VUL), 0) as non_overdue_completion	FROM V_VUL_tableau GROUP BY ou ORDER BY total_completion desc";
+$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL,sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion,sum(total_VUL - overdue_high_VUL - overdue_medium_VUL) as non_overdue_VUL, sum(total_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as non_overdue_completion	FROM V_VUL_tableau GROUP BY ou ORDER BY total_completion desc";
 						$result 	= mysqli_query($conn,$sql);
 						$rowcount	= mysqli_num_rows($result);
 						?>
@@ -172,7 +172,7 @@ $sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fi
 									<th>OU</th>
 									<th>全風險(修補率 | 已修補數 | 總數)</th>
 									<th>高風險(修補率 | 已修補數 | 總數)</th>
-									<th>未修補弱點(未逾期率 | 未逾期數 | 總數)</th>
+									<th>全風險(未逾期率 | 未逾期+已修補數 | 總數)</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -197,12 +197,12 @@ $sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fi
 									echo "<td data-label='Non-Overdue-Risks'>";
 									echo "<div class='ui teal progress yckuo' data-percent='".round($row['non_overdue_completion'],0)."' data-total='100' id='example1'>";
 						 			echo "<div class='bar'><div class='progress'></div></div>";
-						  			echo "<div class='label'>".$row['non_overdue_VUL']."/".$row['unfixed_VUL']."</div>";
+						  			echo "<div class='label'>".$row['non_overdue_VUL']."/".$row['total_VUL']."</div>";
 									echo "</div>";
 									echo "</td>";
 								echo "</tr>";
 							}
-						$sql = "SELECT sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL, sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion , sum(total_VUL-fixed_VUL) as unfixed_VUL,sum(total_VUL - fixed_VUL - overdue_high_VUL - overdue_medium_VUL) as non_overdue_VUL, sum(total_VUL - fixed_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / NULLIF(SUM(total_VUL - fixed_VUL), 0) as non_overdue_completion	FROM V_VUL_tableau";
+						$sql = "SELECT sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL, sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion ,sum(total_VUL - overdue_high_VUL - overdue_medium_VUL) as non_overdue_VUL, sum(total_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as non_overdue_completion	FROM V_VUL_tableau";
 							$result 	= mysqli_query($conn,$sql);
 							$rowcount	= mysqli_num_rows($result);
 							while($row = mysqli_fetch_assoc($result)) {
@@ -224,7 +224,7 @@ $sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fi
 									echo "<td data-label='Non-Overdue-Risks'>";
 									echo "<div class='ui teal progress yckuo' data-percent='".round($row['non_overdue_completion'],0)."' data-total='100' id='example1'>";
 						 			echo "<div class='bar'><div class='progress'></div></div>";
-						  			echo "<div class='label'>".$row['non_overdue_VUL']."/".$row['unfixed_VUL']."</div>";
+						  			echo "<div class='label'>".$row['non_overdue_VUL']."/".$row['total_VUL']."</div>";
 									echo "</div>";
 									echo "</td>";
 								 	echo "</tr>";

@@ -1,8 +1,7 @@
 <!--vulnerability.php-->
 <?php 
-	if(isset($_GET['subpage'])) $subpage  = $_GET['subpage'];
-	else						$subpage =1;
-	$subpage  = $_GET['subpage'];
+	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
+	else						$subpage = 1;
 	switch($subpage){
 		case 1:	load_vul_overview(); break;
 		case 2:	load_vul_search(); break;
@@ -16,8 +15,9 @@ function load_vul_overview(){
 <div id="page" class="container">
 <div id="content">
 		<div class="sub-content show">
-			<div class="post">
+			<div class="post vul_overview">
 				<div class="post_title">整體數據</div>
+				<div class="ui centered inline loader"></div>
 				<div class="ou_vs_content"></div>
 			</div>
 		</div>
@@ -168,7 +168,7 @@ function load_vul_search(){
 						
 						echo "</div>";
 						/* Create Pagination Element*/ 
-						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"vulnerability",2,0,$pages,"");
+						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"vul",2,0,$pages,"");
 						}
 						$conn->close();
 					?>

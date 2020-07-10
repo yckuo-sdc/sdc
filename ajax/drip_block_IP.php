@@ -9,8 +9,6 @@
 		if($type=="block"){
 			$command = escapeshellcmd("/usr/bin/python3 /home/yckuo/python/selenium/dr_ip_block_host.py ".$ip);
 			$output = exec($command);
-			//$output = shell_exec("/usr/bin/python3 /home/yckuo/python/selenium/dr_ip_block_host.py ".$ip);
-			//$output = shell_exec("/usr/bin/python3 -V");
 		}elseif($type=="unblock"){
 			$command = escapeshellcmd("/usr/bin/python3 /home/yckuo/python/selenium/dr_ip_unblock_host.py ".$ip);
 			$output = exec($command);

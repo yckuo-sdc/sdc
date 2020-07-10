@@ -7,14 +7,11 @@
 		//檢查session是不是為空 
 		if(!isset($_SESSION[$var])){ 
 			//使用者選擇了記住登入狀態
-			
 			if(isset($_COOKIE['rememberme'])){
-			//if(isset($_COOKIE['account']) && isset($_COOKIE['UserName'])){
 				$SECRET_KEY = "security";
-				list ($user, $token, $mac, $UserName, $Level) = explode(':', $_COOKIE['rememberme']);
-				//$account = $_COOKIE['account'];	
-				//$UserName = $_COOKIE['UserName'];
-				if (hash_equals(hash_hmac('sha256', $user . ':' . $token, $SECRET_KEY), $mac)) {
+				#list ($user, $token, $mac, $UserName, $Level) = explode(':', $_COOKIE['rememberme']);
+				list ($user, $token, $UserName, $Level, $mac) = explode(':', $_COOKIE['rememberme']);
+				if (hash_equals(hash_hmac('sha256', $user . ':' . $token .':'. $UserName . ':' . $Level, $SECRET_KEY), $mac)) {
 					//使用者名稱和密碼對了，把使用者的個人資料放到session裡面 
 					$_SESSION['account'] = $user;   
 					$_SESSION['UserName'] = $UserName;
@@ -25,15 +22,15 @@
 				    //echo "a";	
 					return true;	
 				}else{
-				    echo "b";	
+				    //echo "b";	
 					echo 'You Do Not Have Permission To Access!';
-					header("Location: https://sdc-iss.tainan.gov.tw/login/login.php"); 
+					header("Location: /login/login.php"); 
 					return false;
 				}
 			}else{  //如果session為空，並且使用者沒有選擇記錄登入狀 
-				echo "c";	
+				//echo "c";	
 				echo 'You Do Not Have Permission To Access!';
-				header("Location: https://sdc-iss.tainan.gov.tw/login/login.php"); 
+				header("Location: /login/login.php"); 
 				return false;
 			} 
 		}else{
@@ -64,13 +61,10 @@
 	function checkAccountByLDAP($user, $ldappass){
 		$ldaphost = "tainan.gov.tw";
 		$ldapconn = ldap_connect($ldaphost);
-		//$ldapconn = ldap_connect("10.6.2.1");
 		$ldaprdn = $user . "@" . $ldaphost;
 		ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
 		if ($ldapconn){
-			//binding to ldap server
-			//'@' removes the warning
 			@$ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
 			// verify binding
 			if ($ldapbind) {
@@ -99,6 +93,7 @@
 		$sql = "INSERT INTO logs(type,ip,user,msg,time) VALUES('".$type."','".$ip."','".$user."','".$msg."','".$time."')";
 		mysqli_query($conn,$sql);
 	}	
+	
 	//LDAP recursive search and print
 	function myRecursiveFunction($ldapconn,$base_dn,$ou_name,$ou_des) {
 		$filter ="(objectClass=*)";
@@ -121,7 +116,7 @@
 					if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
 						echo "<li><i class='desktop icon'></i>".$data[$i]['cn'][0]."_已停用</li>";
 					}else{
-						echo "<li><i class='desktop blue icon'></i>".$data[$i]['cn'][0]."</li>";
+						echo "<li><i class='desktop icon'></i>".$data[$i]['cn'][0]."</li>";
 					}
 				}
 				echo "</ol>";
@@ -148,7 +143,6 @@
 
 	}
 	
-	
 	//Alert message
 	function phpAlert($msg) {
 		echo '<script type="text/javascript">alert("' . $msg . '")</script>';
@@ -160,7 +154,6 @@
 		$rowcount = mysqli_num_rows($result);
 		$result_sql = "";
 		$count = 0;
-
 		while($row = mysqli_fetch_assoc($result)){
 			if (++$count == $rowcount) {
 				//last row
@@ -260,7 +253,42 @@
 		}
 		return $stack;
 	} 
-	// convert array to csv file ant download automatically
+	// convert json to csv file
+	function jsonToCSV($json, $cfilename){
+		//if (($json = file_get_contents($jfilename)) == false)
+		//    die('Error reading json file...');
+		$data = json_decode($json, true);
+		$fp = fopen($cfilename, 'w');
+		$header = false;
+		foreach ($data as $row)
+		{
+			if (empty($header))
+			{
+				$header = array_keys($row);
+				fputcsv($fp, $header);
+				$header = array_flip($header);
+			}
+			fputcsv($fp, array_merge($header, $row));
+		}
+		fclose($fp);
+		return 0;
+	}
+
+	// convert array to csv file
+	function array2csv($list){
+		if (count($list) == 0) {
+			   return null;
+		}
+		$fp = fopen('file.csv', 'w');
+		fwrite($fp,"\xEF\xBB\xBF");
+		foreach ($list as $fields) {
+			fputcsv($fp, $fields);
+		}
+		fclose($fp);
+		return true;
+	}
+
+	// convert array to csv file and download automatically
 	function array_to_csv_download($array, $filename, $delimiter) {
 		header('Content-Encoding: UTF-8');
 		header('Content-type: text/csv; charset=UTF-8');
@@ -288,7 +316,8 @@
 			return false;
 		}
 	}
-
+	
+	//get ou'description of AD
 	function get_ou_desc($dn,$ldapconn){
 		$desc ="";
 		$str_sec = explode(",",$dn);
@@ -302,6 +331,7 @@
 		return $desc;
 	}
 
+	//get recursive ou'descriptions of AD
 	function get_ou_desc_recursive($dn,$ldapconn){
 		$desc ="";
 		$str_sec = explode(",",$dn);
@@ -314,6 +344,5 @@
 		}
 		return $desc;
 	}
-
 
 ?>

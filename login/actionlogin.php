@@ -35,20 +35,19 @@ switch($verification){
 			if(!empty($remember)){
 				$SECRET_KEY = "security";
 				$token = GenerateRandomToken(); // generate a token, should be 128 - 256 bit
-				$cookie = $account . ':' . $token;
+				#$cookie = $account . ':' . $token;
+				$cookie = $account . ':' . $token. ':' .$row['UserName']. ':' .$row['Level'];
 				$mac = hash_hmac('sha256', $cookie, $SECRET_KEY);
 				$cookie .= ':' . $mac;
-				$cookie .= ':' . $row['UserName'];
-				$cookie .= ':' . $row['Level'];
 				setcookie('rememberme', $cookie,time() + $duration,'/');
 			}else{
 				setcookie('rememberme', "",time() - $duration,'/');
 			}
-			header("refresh:0;url=../index.php"); 
+			header("Location: /index.php"); 
 		}else{
 			session_start();
 			$_SESSION["error"] = "invalid account or password";
-			header("refresh:0;url=login.php"); 
+			header("Location: /login/login.php"); 
 		}
 		break;
 	case "mail":
@@ -71,11 +70,11 @@ switch($verification){
 			}else{
 				setcookie('rememberme', "",time() - $duration,'/');
 			}
-			header("refresh:0;url=../index.php"); 
+			header("Location: /index.php"); 
 		}else{
 			session_start();
 			$_SESSION["error"] = "invalid account or password";
-			header("refresh:0;url=login.php"); 
+			header("Location: /login/login.php"); 
 		}
 		break;
 }
