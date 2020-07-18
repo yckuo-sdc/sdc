@@ -143,6 +143,7 @@ function Call_retrieve_c3_chartC_ajax(url){
 		},success: function(data) {	 
 			var countArray=[],Unitcount=[];
 			var nameArray=[],UnitName=[];
+			var destipArray=[],destipName=[];
 			var countIP=[];
 			var mArray=[];
 			$(data).find("EventType").each(function(){
@@ -163,9 +164,17 @@ function Call_retrieve_c3_chartC_ajax(url){
 				 countArray.push(count);
 				 countIP.push(IP_count);
 			});
+			$(data).find("DestinationIP").each(function(){
+				//console.log($(this).text());
+				 var name=$(this).children("name").text();
+				 var count=$(this).children("count").text();
+				 destipName.push(name);
+				 destipArray.push(count);
+			});
 			//add the label of bar chart
 			countArray.unshift('機關資安事件數量');
 			countIP.unshift('機關資安事件IP數量');
+			destipArray.unshift('攻擊目標IP數量');
 		
 			//the setting of pie chart
 			var cht_width = '500px';	//default width
@@ -179,14 +188,14 @@ function Call_retrieve_c3_chartC_ajax(url){
 			var cht_height = cht_width * 0.4205;
 
 			var chart = c3.generate({
-				bindto: '#chartC-2',
+				bindto: '#chartC',
 				data: {
 				columns:
 					mArray,
 				type : 'pie'
 				},
 				size:{
-					height: 360
+					height: '100%'
 				},
 				onresize: function(){
 			
@@ -194,10 +203,13 @@ function Call_retrieve_c3_chartC_ajax(url){
 			});
 			
 			var chart = c3.generate({
-				bindto: '#chartC',
+				bindto: '#chartC-2',
 				data:{ 
 					columns: [countArray,countIP],
-					type: 'bar'
+					type: 'bar',
+					groups: [
+						['機關資安事件數量', '機關資安事件IP數量']
+					]
 				},axis: {
 					rotated: true,
 					x: {
@@ -209,12 +221,46 @@ function Call_retrieve_c3_chartC_ajax(url){
 					width: {
 						ratio: 0.5 // this makes bar width 50% of length between ticks	
 					}
-				},
-				size:{
-					height: 720
+				},size:{
+					height: '100%'
+				},grid: {
+					x: {
+						show: true
+					},
+					y: {
+						show: true
+					}
 				}
-
 			});
+			
+			var chart = c3.generate({
+				bindto: '#chartC-3',
+				data:{ 
+					columns: [destipArray],
+					type: 'bar'
+				},axis: {
+					rotated: true,
+					x: {
+						type: 'category',
+						categories: destipName,
+						rotated: true
+					}
+				},bar: {
+					width: {
+						ratio: 0.5 // this makes bar width 50% of length between ticks	
+					}
+				},size:{
+					height: '100%'
+				},grid: {
+					x: {
+						show: true
+					},
+					y: {
+						show: true
+					}
+				}
+			});
+
 
 		}
 	});
@@ -363,7 +409,7 @@ function Call_retrieve_c3_chartE_ajax(url){
 					}
 				},
 				size:{
-					height: 360
+					height: '100%'
 				},
 				tooltip:{ 
 					format: { 
@@ -395,7 +441,7 @@ function Call_retrieve_c3_chartE_ajax(url){
 					}
 				},
 				size:{
-					height: 360
+					height: '100%'
 				},
 				tooltip:{ 
 					format: { 

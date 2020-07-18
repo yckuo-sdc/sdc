@@ -60,14 +60,17 @@ function load_vul_search(){
 						<div class="field">
 							<div class="ui checkbox">
 							  <input type="checkbox" name="status[]" tabindex="0" checked>
-							  <label>待處理</label>
+							  <label>逾期待處理</label>
+							</div>
+							<div class="ui checkbox">
+							  <input type="checkbox" name="status[]" tabindex="0" checked>
+							  <label>未逾期待處理</label>
 							</div>
 							<div class="ui checkbox">
 							  <input type="checkbox" name="status[]" tabindex="0" checked>
 							  <label>已修補</label>
 							</div>
 						</div>
-
 						<div class="field">
 							<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 						</div>

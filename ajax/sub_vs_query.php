@@ -1,56 +1,78 @@
 <?php
-	
-	header('Content-type: text/html; charset=utf-8');
-	include("../login/function.php");
-
+	require("../login/function.php");
 	if( (!empty($_GET['key']) && !empty($_GET['keyword']) && !empty($_GET['type']) ) || count(json_decode($_GET['jsonObj'],true)) !=0  ){
 		//過濾特殊字元(')
-		$key  		   = $_GET['key'];
-		$keyword	   = $_GET['keyword'];
-		$type 		   = $_GET['type'];
-		$unfinished    = $_GET['unfinished'];
-		$finished 	   = $_GET['finished'];
-		$jsonObj 	   = $_GET['jsonObj']; 
-		if (!isset($_GET['page']))		$pages = 1; 
-		else							$pages = $_GET['page']; 
-		if (!isset($_GET['ap']))		$ap = 'html'; 
-		else							$ap = $_GET['ap']; 
+		$key = $_GET['key'];
+		$keyword = $_GET['keyword'];
+		$type = $_GET['type'];
+		$overdue_and_unfinish = $_GET['overdue_and_unfinish'];
+		$non_overdue_and_unfinish = $_GET['non_overdue_and_unfinish'];
+		$finish = $_GET['finish'];
+		$jsonObj = $_GET['jsonObj']; 
+		if (!isset($_GET['page']))	$pages = 1; 
+		else						$pages = $_GET['page']; 
+		if (!isset($_GET['ap']))	$ap = 'html'; 
+		else						$ap = $_GET['ap']; 
 
 		$jsonObj = json_decode($jsonObj,true);
 
 		//connect database
         require("../mysql_connect.inc.php");
 		 //特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
-		$type			 = mysqli_real_escape_string($conn,$type);
-		$unfinished 	 = mysqli_real_escape_string($conn,$unfinished);
-		$finished 		 = mysqli_real_escape_string($conn,$finished);
-		//ipscanResult or urlscanResult
-		switch($type){
-			case "ip_and_url_scanResult":
-				$table = "V_ip_and_url_scanResult";
-				break;
-			case "ipscanResult":
-				$table = "ipscanResult";
-				break;
-			case "urlscanResult":
-				$table = "urlscanResult";
-				break;
-		}
-		//unfinished + finished
-	    switch(true){
-			case ($unfinished == 'true' and $finished == 'true'):
-				 $status_condition =  "";
-				 break;
-			case ($unfinished == 'true' and $finished == 'false'):
-				 $status_condition =  "AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)')";
-				 break;
-			case ($unfinished == 'false' and $finished == 'true'):
-				 $status_condition =  "AND status IN ('已修補','豁免','誤判')";
-				 break;
-			case ($unfinished == 'false' and $finished == 'false'):
-				 $status_condition =  "AND status IN ('')";
-				 break;
-		}
+		$type = mysqli_real_escape_string($conn,$type);
+		$overdue_and_unfinish = mysqli_real_escape_string($conn,$overdue_and_unfinish);
+		$non_overdue_and_unfinish = mysqli_real_escape_string($conn,$non_overdue_and_unfinish);
+		$finish = mysqli_real_escape_string($conn,$finish);
+		
+		$table_map = [
+			'ip_and_url_scanResult' => 'V_ip_and_url_scanResult',
+			'ipscanResult' => 'ipscanResult',
+			'urlscanResult' => 'urlscanResult'
+		];
+		$table = $table_map[$type];
+		
+		$status_map = [	//overdue_and_unfinish + non_overdue_and_unfinish + finish
+			"true" => [
+				"true" =>  [ 
+					"true" => "" , //done 
+					"false" => "AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)')" //done
+				],
+				"false" => [ 
+					"true" => "AND (
+						( severity IN ('High','Critical') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date < DATE_SUB(NOW(), INTERVAL 1 MONTH) )
+						OR 
+						( severity IN ('Medium') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date < DATE_SUB(NOW(), INTERVAL 2 MONTH) )
+						OR status IN ('已修補','豁免','誤判')
+					)"  ,  //done
+					"false" => "AND (
+						( severity IN ('High','Critical') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date < DATE_SUB(NOW(), INTERVAL 1 MONTH) )
+						OR 
+						( severity IN ('Medium') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date < DATE_SUB(NOW(), INTERVAL 2 MONTH) )
+					)"  //done
+				]
+			],
+			"false" => [	
+				"true" => [
+					"true" => "AND (
+						( severity IN ('High','Critical') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date >= DATE_SUB(NOW(), INTERVAL 1 MONTH) )
+						OR 
+						( severity IN ('Medium') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date >= DATE_SUB(NOW(), INTERVAL 2 MONTH) )
+						OR status IN ('已修補','豁免','誤判')
+					)"  ,  //done
+					"false" => "AND (
+						( severity IN ('High','Critical') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date >= DATE_SUB(NOW(), INTERVAL 1 MONTH) )
+						OR 
+						( severity IN ('Medium') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date >= DATE_SUB(NOW(), INTERVAL 2 MONTH) )
+					)" //done
+				],
+				"false" => [ 
+					"true" => "AND status IN ('已修補','豁免','誤判')", //done
+					'false' => "AND status IN ('')"  //done 
+				]
+			]	
+		];
+		$status_condition = $status_map[$overdue_and_unfinish][$non_overdue_and_unfinish][$finish];
+		//echo $status_condition."<br>";
 		
 		if( count($jsonObj) !=0 ){
 			$condition = "";
@@ -75,7 +97,6 @@
 			}else{
 				$condition = $keyword." LIKE '%".$key."%' ".$status_condition;
 			}
-
 		}
 		//echo $condition."<br>";
 		$order = "ORDER by scan_no DESC,system_name DESC,status DESC";
@@ -148,25 +169,25 @@
 				echo "</div>";
 				//The href-link of bottom pages
 				echo "<div class='ui pagination menu'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' >首頁</a>";
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' > ← </a>";
+				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish ='".$non_overdue_and_unfinish."' finish ='".$finish."' >首頁</a>";
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' > ← </a>";
 				for ($j = $lower_bound; $j <= $upper_bound ;$j++){
 					if($j == $pages){
-						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>".$j."</a>";
+						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'>".$j."</a>";
 					}else{
-						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>".$j."</a>";
+						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'>".$j."</a>";
 					}
 				}
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."' > → </a>";		
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' > → </a>";		
 				//last page
-				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>末頁</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'>末頁</a>";
 				echo "</div>";
 
 				//The mobile href-link of bottom pages
 				echo "<div class='ui pagination menu mobile'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'> ← </a>";
-				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'>(".$pages."/".$Totalpages.")</a>";
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' unfinished='".$unfinished."' finished='".$finished."'> → </a>";		
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'> ← </a>";
+				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'>(".$pages."/".$Totalpages.")</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'> → </a>";		
 				echo "</div>";
 			}
 		}elseif($ap='csv'){

@@ -1,7 +1,7 @@
 <!--about.php-->
 <?php 
 	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-	else						$subpage = 1;
+	else 						$subpage = 1;
 	switch($subpage){
 		case 1:	load_about_data(); break;
 	}

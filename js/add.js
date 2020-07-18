@@ -44,9 +44,10 @@ $(document).ready(function(){
 		key = $(this).attr('key');
 		keyword	= $(this).attr('keyword');
 		type = $(this).attr('type');
-		unfinished = $(this).attr('unfinished');
-		finished = $(this).attr('finished');
-		Call_sub_vs_query_pagination_ajax(page,key,keyword,type,unfinished,finished);
+		overdue_and_unfinish = $(this).attr('overdue_and_unfinish');
+		non_overdue_and_unfinish = $(this).attr('non_overdue_and_unfinish');
+		finish = $(this).attr('finish');
+		Call_sub_vs_query_pagination_ajax(page,key,keyword,type,overdue_and_unfinish,non_overdue_and_unfinish,finish);
 	});
 
 	/*query.php's component action*/
@@ -494,14 +495,15 @@ function Call_sub_vs_query_ajax(type,ap){
 	//console.log(jsonObj);     
 	var selector = ".post."+type+" ";
 	var obj = $(selector + "input[name='status[]']");
-	var unfinished = obj[0].checked;
-	var finished   = obj[1].checked;
+	var overdue_and_unfinish = obj[0].checked;
+	var non_overdue_and_unfinish = obj[1].checked;
+	var finish = obj[2].checked;
 	var key 	= $(selector + '#key').val();
 	var keyword = $(selector + '#keyword').val();
 	if ( (typeof key != 'undefined' && key !='' && keyword !=''  && type !='') || jsonObj !='[]') {
 		//ap='csv'
 		if(ap=='csv'){
-			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_vs_query.php?key="+encodeURI(key)+"&keyword="+encodeURI(keyword)+"&type="+type+"&unfinished="+unfinished+"&finished="+finished+"&ap="+ap+"&jsonObj="+encodeURIComponent(jsonObj));
+			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_vs_query.php?key="+encodeURI(key)+"&keyword="+encodeURI(keyword)+"&type="+type+"&overdue_and_unfinish="+overdue_and_unfinish+"&non_overdue_and_unfinish="+non_overdue_and_unfinish+"&finish="+finish+"&ap="+ap+"&jsonObj="+encodeURIComponent(jsonObj));
 		}else{
 		//ap='html'
 			$.ajax({
@@ -509,7 +511,7 @@ function Call_sub_vs_query_ajax(type,ap){
 				 cache: false,
 				 dataType:'html',
 				 type:'GET',
-				 data: {key:key,keyword:keyword,type:type,unfinished:unfinished,finished:finished,ap:ap,jsonObj:jsonObj},
+				 data: {key:key,keyword:keyword,type:type,overdue_and_unfinish:overdue_and_unfinish,non_overdue_and_unfinish:non_overdue_and_unfinish,finish:finish,ap:ap,jsonObj:jsonObj},
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
@@ -524,7 +526,7 @@ function Call_sub_vs_query_ajax(type,ap){
 	return 0;
 }
 
-function Call_sub_vs_query_pagination_ajax(page,key,keyword,type,unfinished,finished){
+function Call_sub_vs_query_pagination_ajax(page,key,keyword,type,overdue_and_unfinish,non_overdue_and_unfinish,finish){
 	 var jsonObj = [];
 	 $('.post.ip_and_url_scanResult span.query_label').each(function () {
 		var id = $(this).attr("title");
@@ -542,7 +544,7 @@ function Call_sub_vs_query_pagination_ajax(page,key,keyword,type,unfinished,fini
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {page:page,key:key,keyword:keyword,type:type,unfinished:unfinished,finished:finished,jsonObj:jsonObj},
+		 data: {page:page,key:key,keyword:keyword,type:type,overdue_and_unfinish:overdue_and_unfinish,non_overdue_and_unfinish:non_overdue_and_unfinish,finish:finish,jsonObj:jsonObj},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {

@@ -1,12 +1,11 @@
 <?php
-	//header('Content-type: text/html; charset=utf-8');
-	include("../login/function.php");
+	require("../login/function.php");
 	if( (!empty($_GET['key']) && !empty($_GET['keyword']) && !empty($_GET['type']) ) || count(json_decode($_GET['jsonObj'],true)) !=0  ){
 		//過濾特殊字元(')
-		$key  		   = $_GET['key'];
-		$keyword	   = $_GET['keyword'];
-		$type 		   = $_GET['type'];
-		$jsonObj 	   = $_GET['jsonObj']; 
+		$key = $_GET['key'];
+		$keyword = $_GET['keyword'];
+		$type = $_GET['type'];
+		$jsonObj = $_GET['jsonObj']; 
 		if (!isset($_GET['page']))	$pages = 1; 
 		else						$pages = $_GET['page']; 
 		if (!isset($_GET['ap']))	$ap = 'html'; 
@@ -17,9 +16,9 @@
 		//connect database
         require("../mysql_connect.inc.php");
 		 //特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
-		$key			 = mysqli_real_escape_string($conn,$key);
-		$keyword	 	 = mysqli_real_escape_string($conn,$keyword);
-		$type	 		 = mysqli_real_escape_string($conn,$type);
+		$key = mysqli_real_escape_string($conn,$key);
+		$keyword = mysqli_real_escape_string($conn,$keyword);
+		$type = mysqli_real_escape_string($conn,$type);
 		
 		//table switch
 		switch(true){
@@ -40,7 +39,7 @@
 				break;
 			case ($type == 'gcb_client_list'):
 				$condition_table = "gcb_client_list";
-				$table = "(SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a,gcb_os as b,gcb_ie as c WHERE a.OSEnvID = b.id AND a.IEEnvID = c.id)A";
+				$table = "(SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id)A";
 				if($keyword == 'ExternalIP' or $keyword == 'InternalIP') $key = ip2long($key);
 			    $order = "ORDER by ID ASC";	
 				break;
@@ -61,7 +60,7 @@
 				break;
 		}
 
-		//condition retrieve
+		//retrieve condition
 		if( count($jsonObj) !=0 ){
 			$condition = "";
 			foreach($jsonObj as $val){
@@ -113,15 +112,6 @@
 						echo "<div class='item'>";
 							echo "<div class='content'>";
 								echo "<a class='header'>";
-								//echo "序號&nbsp";
-								/*
-								echo "發現日期&nbsp&nbsp";
-								echo "結案狀態&nbsp&nbsp";
-								echo "資安事件類型&nbsp&nbsp";
-								echo "位置&nbsp&nbsp";
-								echo "設備IP&nbsp&nbsp";
-								echo "姓名&nbsp&nbsp";
-								echo "分機&nbsp&nbsp";*/
 								echo "<a>";
 							echo "</div>";
 						echo "</div>";
@@ -173,12 +163,6 @@
 							echo "<div class='item'>";
 								echo "<div class='content'>";
 									echo "<a class='header'>";
-										/*echo "發現日期&nbsp&nbsp";
-										echo "結案狀態&nbsp&nbsp";
-										echo "影響等級";
-										echo "資安事件類型&nbsp&nbsp";
-										echo "對外IP(URL)&nbsp&nbsp";
-										echo "機關&nbsp&nbsp";*/
 									echo "</a>";
 								echo "</div>";
 							echo "</div>";
@@ -240,11 +224,6 @@
 						echo "<div class='item'>";
 							echo "<div class='content'>";
 								echo "<a class='header'>";
-								/*echo "機關名稱&nbsp&nbsp";
-								echo "姓名&nbsp&nbsp";
-								echo "聯絡人類別&nbsp&nbsp";
-								echo "信箱&nbsp&nbsp";
-								echo "電話&nbsp&nbsp";*/
 								echo "<a>";
 							echo "</div>";
 						echo "</div>";
@@ -286,7 +265,6 @@
 							echo "<div class='item'>";
 								echo "<div class='content'>";
 									echo "<a class='header'>";
-									//echo "序號&nbsp";
 									echo "電腦名稱&nbsp&nbsp";
 									echo "單位名稱&nbsp&nbsp";
 									echo "使用者帳號&nbsp&nbsp";
@@ -358,19 +336,6 @@
 					break;
 					case "wsus_client_list":
 						echo "<div class='ui relaxed divided list'>";
-							echo "<div class='item'>";
-								echo "<div class='content'>";
-									echo "<a class='header'>";
-									//echo "序號&nbsp";
-									echo "電腦名稱&nbsp&nbsp";
-									echo "內網IP&nbsp&nbsp";
-									echo "未安裝更新&nbsp&nbsp";
-									echo "安裝失敗更新&nbsp&nbsp";
-									echo "上次回報日期&nbsp&nbsp";
-									echo "<a>";
-								echo "</div>";
-							echo "</div>";
-
 					while($row = mysqli_fetch_assoc($result)) {
 						echo "<div class='item'>";
 						echo "<div class='content'>";
@@ -379,7 +344,7 @@
 							echo "<span style='background:#fde087'>".$row['IPAddress']."</span>&nbsp&nbsp";
 							echo "<span style='background:#DDDDDD'>".$row['NotInstalled']."</span>&nbsp&nbsp";
 							echo "<span style='background:#fbc5c5'>".$row['Failed']."</span>&nbsp&nbsp";
-							echo dateConvert($row['LastReportedStatusTime']);
+							echo $row['OSDescription'];
 							echo "<i class='angle double down icon'></i>";
 							echo "</a>";
 							echo "<div class='description'>";
@@ -409,6 +374,9 @@
 								echo "<li>上次同步日期:".dateConvert($row['LastSyncTime'])."</li>";
 								echo "<li>上次修改日期:".dateConvert($row['LastChangeTime'])."</li>";
 								echo "<li>上次同步結果:".$row['LastSyncResult']."</li>";
+								echo "<li>製造商:".$row['ComputerMake']."</li>";
+								echo "<li>型號:".$row['ComputerModel']."</li>";
+								echo "<li>作業系統:".$row['OSDescription']."</li>";
 								echo "</ol>";
 							echo "</div>";
 							echo "</div>";

@@ -592,9 +592,6 @@ function load_query_client(){
 							$pages = isset($_GET['page'])?$_GET['page']:1;	
 							
 							//select row_number,and other field value
-							//$sql = "SELECT * FROM security_contact ORDER by OID asc,person_type asc";
-							// select security_contact from NCERT and Internal_Primary Unit from self-creation
-							//$sql = "SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a,gcb_os as b,gcb_ie as c WHERE a.OSEnvID = b.id AND a.IEEnvID = c.id ORDER by a.ID asc,a.InternalIP asc";
 							$sql = "SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id ORDER by a.ID asc,a.InternalIP asc";
 							$result = mysqli_query($conn,$sql);
 							$rowcount = mysqli_num_rows($result);
@@ -755,12 +752,11 @@ function load_query_client(){
 									echo "<div class='item'>";
 										echo "<div class='content'>";
 											echo "<div class='header'>";
-											echo "變更排序：";
-											echo "<a href='?mainpage=query&subpage=4&tab=2&sort=FullDomainName'>電腦名稱</a>&nbsp&nbsp";
-											echo "<a href='?mainpage=query&subpage=4&tab=2&sort=IPAddress'>內網IP</a>&nbsp&nbsp";
-											echo "<a href='?mainpage=query&subpage=4&tab=2&sort=NotInstalled'>未安裝更新</a>&nbsp&nbsp";
-											echo "<a href='?mainpage=query&subpage=4&tab=2&sort=Failed'>安裝失敗更新</a>&nbsp&nbsp";
-											echo "<a href='?mainpage=query&subpage=4&tab=2&sort=LastReportedStatusTime'>上次回報日期</a>&nbsp&nbsp";
+											echo "<a href='?mainpage=query&subpage=4&tab=3&sort=FullDomainName'>電腦名稱</a>&nbsp&nbsp";
+											echo "<a href='?mainpage=query&subpage=4&tab=3&sort=IPAddress'>內網IP</a>&nbsp&nbsp";
+											echo "<a href='?mainpage=query&subpage=4&tab=3&sort=NotInstalled'>未安裝更新</a>&nbsp&nbsp";
+											echo "<a href='?mainpage=query&subpage=4&tab=3&sort=Failed'>安裝失敗更新</a>&nbsp&nbsp";
+											echo "<a href='?mainpage=query&subpage=4&tab=3&sort=OSDescription'>作業系統</a>&nbsp&nbsp";
 											echo "</div>";
 										echo "</div>";
 									echo "</div>";
@@ -773,7 +769,7 @@ function load_query_client(){
 									echo "<span style='background:#fde087'>".$row['IPAddress']."</span>&nbsp&nbsp";
 									echo "<span style='background:#DDDDDD'>".$row['NotInstalled']."</span>&nbsp&nbsp";
 									echo "<span style='background:#fbc5c5'>".$row['Failed']."</span>&nbsp&nbsp";
-									echo dateConvert($row['LastReportedStatusTime']);
+									echo $row['OSDescription'];
 									echo "<i class='angle double down icon'></i>";
 									echo "</a>";
 									echo "<div class='description'>";
@@ -803,6 +799,9 @@ function load_query_client(){
 										echo "<li>上次同步日期:".dateConvert($row['LastSyncTime'])."</li>";
 										echo "<li>上次修改日期:".dateConvert($row['LastChangeTime'])."</li>";
 										echo "<li>上次同步結果:".$row['LastSyncResult']."</li>";
+										echo "<li>製造商:".$row['ComputerMake']."</li>";
+										echo "<li>型號:".$row['ComputerModel']."</li>";
+										echo "<li>作業系統:".$row['OSDescription']."</li>";
 										echo "</ol>";
 									echo "</div>";
 									echo "</div>";

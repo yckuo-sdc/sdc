@@ -1,45 +1,36 @@
 <?php
 //PHP File Upload
 $target_dir = "../upload/contact/";
-//if(isset($_POST["submit"])) {
-	if(is_array($_FILES)) {
-		if(is_uploaded_file($_FILES["fileToUpload"]["tmp_name"])) {
-			$source_file = $_FILES["fileToUpload"]["tmp_name"];
-			$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-			$FileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-			$uploadOk = 1;
-			// Check if file already exists
-			// Check file size
-			if ($_FILES["fileToUpload"]["size"] > 500000) {
-				echo "Sorry, your file is too large.";
-				$uploadOk = 0;
-			}
-			// Allow certain file formats
-			if($FileType != "csv") {
-				echo "Sorry, only csv files are allowed.";
-				$uploadOk = 0;
-			}
-			/*if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-			&& $imageFileType != "gif" ) {
-				echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-				$uploadOk = 0;
-			}
-			 */
-			// Check if $uploadOk is set to 0 by an error
-			if ($uploadOk == 0) {
-				echo "Sorry, your file was not uploaded.";
-			// if everything is ok, try to upload file
+if(is_array($_FILES)) {
+	if(is_uploaded_file($_FILES["fileToUpload"]["tmp_name"])) {
+		$source_file = $_FILES["fileToUpload"]["tmp_name"];
+		$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+		$FileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+		$uploadOk = 1;
+		// Check if file already exists
+		// Check file size
+		if ($_FILES["fileToUpload"]["size"] > 500000) {
+			echo "Sorry, your file is too large.";
+			$uploadOk = 0;
+		}
+		// Allow certain file formats
+		if($FileType != "csv") {
+			echo "Sorry, only csv files are allowed.";
+			$uploadOk = 0;
+		}
+		// Check if $uploadOk is set to 0 by an error
+		if ($uploadOk == 0) {
+			echo "Sorry, your file was not uploaded.";
+		// if everything is ok, try to upload file
+		} else {
+			if (move_uploaded_file($source_file, $target_file)) {
+				echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
 			} else {
-				if (move_uploaded_file($source_file, $target_file)) {
-					echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
-				} else {
-					echo "Sorry, there was an error uploading your file.";
-				}
+				echo "Sorry, there was an error uploading your file.";
 			}
 		}
 	}
-//}
-//insert to database
+}
 $filename = $target_file;
 //mysql
 require("../mysql_connect.inc.php");
@@ -65,9 +56,6 @@ if ($uploadOk == 1){
 			}
 			$row++;
 		}
-			//for ($c=0; $c < $num; $c++) {
-			//    echo $data[$c] . "<br />\n";
-			//}
 		echo "<p>";
 		echo "The ".$count." records have been inserted or updated into the security_contact \n\r<br>";
 		fclose($handle);

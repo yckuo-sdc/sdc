@@ -28,14 +28,13 @@ switch($verification){
 	case "ad":
 		if(checkAccountByLDAP($account, $password) && $row['SSOID'] == $account){
 			session_start();
-			$_SESSION['account']	= $account;
-			$_SESSION['UserName']   = $row['UserName'];
-			$_SESSION['Level'] 		= $row['Level'];
-			storeUserLogs($conn,'login',$_SERVER['REMOTE_ADDR'],$account,$_SERVER['REQUEST_URI'],date('Y-m-d h:i:s'));
+			$_SESSION['account'] = $account;
+			$_SESSION['UserName'] = $row['UserName'];
+			$_SESSION['Level'] = $row['Level'];
+			storeUserLogs($conn,'login', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI'], date('Y-m-d h:i:s'));
 			if(!empty($remember)){
 				$SECRET_KEY = "security";
 				$token = GenerateRandomToken(); // generate a token, should be 128 - 256 bit
-				#$cookie = $account . ':' . $token;
 				$cookie = $account . ':' . $token. ':' .$row['UserName']. ':' .$row['Level'];
 				$mac = hash_hmac('sha256', $cookie, $SECRET_KEY);
 				$cookie .= ':' . $mac;
@@ -54,10 +53,10 @@ switch($verification){
 		$pop = POP3::popBeforeSmtp('pop3.tainan.gov.tw', 110, 30, $account,$password, 1);
 		if($pop && $row['SSOID'] == $account){
 			session_start();
-			$_SESSION['account']	= $account;
-			$_SESSION['UserName']   = $row['UserName'];
-			$_SESSION['Level'] 		= $row['Level'];
-			storeUserLogs($conn,'login',$_SERVER['REMOTE_ADDR'],$account,$_SERVER['REQUEST_URI'],date('Y-m-d h:i:s'));
+			$_SESSION['account'] = $account;
+			$_SESSION['UserName'] = $row['UserName'];
+			$_SESSION['Level'] = $row['Level'];
+			storeUserLogs($conn,'login', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI'], date('Y-m-d h:i:s'));
 			if(!empty($remember)){
 				$SECRET_KEY = "security";
 				$token = GenerateRandomToken(); // generate a token, should be 128 - 256 bit

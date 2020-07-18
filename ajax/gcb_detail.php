@@ -1,8 +1,10 @@
 <?php
-use gcb\api as gcb;
-include("gcb_api.php");
-session_start(); 
-if(verifyBySession_Cookie("account")){
+	use gcb\api as gcb;
+	include("gcb_api.php");
+	session_start(); 
+	if(!verifyBySession_Cookie("account")){
+		return 0;
+	}
 	if( isset($_GET['action']) && isset($_GET['id']) ){
 		$action = $_GET["action"];
 		$id = $_GET["id"];
@@ -20,5 +22,4 @@ if(verifyBySession_Cookie("account")){
 				break;
 		}
 	}
-}
 ?>

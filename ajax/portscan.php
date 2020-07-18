@@ -1,8 +1,7 @@
 <?php
-	header('Content-type: text/html; charset=utf-8');
-	//mysql
 	require("../mysql_connect.inc.php");
 	include("../login/function.php");
+	header('Content-type: text/html; charset=utf-8');
 	 //select row_number,and other field value
 	$sql = "SELECT * FROM  application_system";
 	$result = mysqli_query($conn,$sql);

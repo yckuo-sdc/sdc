@@ -248,6 +248,10 @@
 	height:30px;
 }
 
+.post table.single tr td{
+	text-overflow: ellipsis;
+    overflow: hidden;
+}
 
 .post_table table
 {

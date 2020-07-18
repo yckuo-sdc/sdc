@@ -106,12 +106,9 @@
 				<label>Keep Me Logged In</label>
 			  </div>
 			</div>
-			<!--<div class="ui fluid large teal submit button">-->
-				
 				<button class="ui sdc-blue fluid large button" type="submit">Login</button>
 				<input type="hidden" name="refer" value="<?php echo (isset($_GET['refer'])) ? $_GET['refer'] : 'login.php'; ?>">
 				
-				<!--</div>-->
 		  </div>
 			<?php
 				if(isset($_SESSION["error"])){

@@ -248,7 +248,7 @@ function load_tool_hydra(){
 					<div class="field">
 						<label>One Pwd</label>
 							<div class='ui input'>
-								<input type='text' id='self_password' name='self_password' value='' placeholder='One Pwd' disabled>
+								<input type='text' id='self_password' name='self_password' value='' placeholder='One Pwd' >
 							</div>
 					</div>
 

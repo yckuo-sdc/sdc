@@ -65,9 +65,9 @@
 							echo "<count>".$row['count']."</count>";
 						echo "</EventType>";
 					}
-				$sql = "SELECT AgencyName,COUNT(AgencyName) as count FROM security_event WHERE NOT AgencyName LIKE '' GROUP BY AgencyName ORDER by count desc";
-				$result 	= mysqli_query($conn,$sql);
-				$rowcount	= mysqli_num_rows($result);
+					$sql = "SELECT AgencyName,COUNT(AgencyName) as count FROM security_event WHERE NOT AgencyName LIKE '' GROUP BY AgencyName ORDER by count desc LIMIT 10";
+					$result 	= mysqli_query($conn,$sql);
+					$rowcount	= mysqli_num_rows($result);
 					while($row = mysqli_fetch_assoc($result)) {
 						$sql = "SELECT distinct IP FROM security_event WHERE AgencyName ='".$row['AgencyName']."'";
 						$res 	= mysqli_query($conn,$sql);
@@ -79,9 +79,18 @@
 						echo "<IP_count>".$IP_count."</IP_count>";
 						echo "</AgencyName>";
 					}
-				$sql = "SELECT UnitName,COUNT(UnitName) as count FROM security_event WHERE NOT UnitName LIKE '' GROUP BY UnitName ORDER by count desc LIMIT 10";
-				$result 	= mysqli_query($conn,$sql);
-				$rowcount	= mysqli_num_rows($result);
+					$sql = "SELECT IP as name,COUNT(IP) as count FROM security_event WHERE IP NOT LIKE '' GROUP BY IP ORDER by count desc LIMIT 10";
+					$result 	= mysqli_query($conn,$sql);
+					$rowcount	= mysqli_num_rows($result);
+					while($row = mysqli_fetch_assoc($result)) {
+						echo "<destinationIP>";
+						echo "<name>".$row['name']."</name>";
+						echo "<count>".$row['count']."</count>";
+						echo "</destinationIP>";
+					}
+					$sql = "SELECT UnitName,COUNT(UnitName) as count FROM security_event WHERE NOT UnitName LIKE '' GROUP BY UnitName ORDER by count desc LIMIT 10";
+					$result 	= mysqli_query($conn,$sql);
+					$rowcount	= mysqli_num_rows($result);
 					while($row = mysqli_fetch_assoc($result)) {
 						echo "<UnitName>".$row['UnitName']."</UnitName>";
 						echo "<Unitcount>".$row['count']."</Unitcount>";

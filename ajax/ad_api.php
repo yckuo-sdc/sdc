@@ -120,6 +120,30 @@ function change_computer_ou2($cn,$ou,$upper_ou){
 	curl_close($curl);
 	return $response;
 }
-	$res = change_computer_ou2('pc8280','395002900-','YongHua');
-	echo "執行結果：".$res;
+
+//change ou
+function change_ou($cn,$ou){
+	$host = "172.16.254.2";
+	$url = "http://".$host."/api/ChangeOU";
+	$curl = curl_init();
+	curl_setopt_array($curl, array(
+	  CURLOPT_URL => $url,
+	  CURLOPT_RETURNTRANSFER => true,
+	  CURLOPT_SSL_VERIFYPEER => false,
+	  CURLOPT_SSL_VERIFYHOST => false,
+	  CURLOPT_ENCODING => "",
+	  CURLOPT_MAXREDIRS => 10,
+	  CURLOPT_TIMEOUT => 0,
+	  CURLOPT_FOLLOWLOCATION => true,
+	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	  CURLOPT_CUSTOMREQUEST => "POST",
+	  CURLOPT_POSTFIELDS =>"{\"Username\":\"$cn\",\"OU\":\"$ou\"}",
+	  CURLOPT_HTTPHEADER => array("Content-Type: application/json")
+	));
+	$response = curl_exec($curl);
+	curl_close($curl);
+	return $response;
+}
+	#$res = change_ou('yckuo','395000331-');
+	#echo "執行結果：".$res;
 ?>
