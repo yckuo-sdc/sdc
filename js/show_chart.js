@@ -1,8 +1,10 @@
 /*****Main****/
 $(document).ready(function(){
-	var url;
-	if (location.protocol == 'https:') url='https://sdc-iss.tainan.gov.tw/';
-	else							   url='http://sdc-iss.tainan.gov.tw/';
+	var url,hostname;
+	if( location.hostname == 'vision.tainan.gov.tw' ) hostname = 'sdc-iss.tainan.gov.tw';
+	else											  hostname = location.hostname;
+	if (location.protocol == 'https:') url='https://' + hostname + '/';
+	else							   url='http://' + hostname + '/';
 
 	//bind show_chart_btn
 	$('#show_chart_btn').click(function (){
@@ -62,6 +64,9 @@ function Call_retrieve_c3_chartA_ajax(url){
 								count: 3
 							}
 						}
+					},
+					size:{
+						height: '100%'
 					}
 			});
 			 

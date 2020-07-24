@@ -156,6 +156,23 @@
 				}
 				break;
 		}
+		
+		//truncate the table 'ip_and_url_scanResult'
+		$sql = "TRUNCATE TABLE ip_and_url_scanResult";
+		$conn->query($sql); 
+		
+		//insert the table 'ip_and_url_scanResult' from two tables 
+		$sql = "INSERT INTO ip_and_url_scanResult(type, vitem_id, OID, ou, status, ip,system_name, flow_id, scan_no, affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated)
+                SELECT '主機弱點' AS type, vitem_id, OID, ou, status, ip, system_name, flow_id, scan_no, 'null' AS affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated
+                FROM ipscanResult
+                UNION ALL
+                SELECT '網站弱點' AS type,vitem_id, OID, ou, status, ip, system_name, flow_id, scan_no, affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated
+                FROM urlscanResult";
+		if ($conn->query($sql) == TRUE){
+		}else {
+			echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
+		}
+		
 		$sql = "INSERT INTO api_status(api_id,url,status,data_number,last_update) VALUES(".$row['id'].",'".$url."',".$status.",".$count.",'".$nowTime."')";
 		if ($conn->query($sql) == TRUE){
 		}else {

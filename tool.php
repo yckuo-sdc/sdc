@@ -1,11 +1,11 @@
 <!--tool.php-->
 <?php 
 	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-	else						$subpage = 1;
+	else						$subpage = 'nmap';
 	switch($subpage){
-		case 1:	load_tool_nmap(); 		break;
-		case 2:	load_tool_ldap(); 		break;
-		case 3:	load_tool_hydra(); 		break;
+		case 'nmap': load_tool_nmap(); 		break;
+		case 'ldap': load_tool_ldap(); 		break;
+		case 'hydra': load_tool_hydra(); 		break;
 	}
 ?>
 <?php

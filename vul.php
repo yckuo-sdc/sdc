@@ -1,12 +1,13 @@
 <!--vulnerability.php-->
 <?php 
 	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-	else						$subpage = 1;
+	else						$subpage = 'overview';
+
 	switch($subpage){
-		case 1:	load_vul_overview(); break;
-		case 2:	load_vul_search(); break;
-		case 3:	load_vul_target(); break;
-		case 4:	load_vul_retrieve(); break;
+		case 'overview': load_vul_overview(); break;
+		case 'search': load_vul_search(); break;
+		case 'target': load_vul_target(); break;
+		case 'retrieve': load_vul_retrieve(); break;
 	}
 ?>
 <?php
@@ -75,7 +76,7 @@ function load_vul_search(){
 							<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 						</div>
 						 <div class="field">
-							<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=vul&subpage=2'">顯示全部</button>
+							<button id="show_all_btn" class="ui button" onclick="window.location.href='/vul/search/'">顯示全部</button>
 						</div>
 						 <div class="field">
 							<button id="export2csv_btn" class="ui button" >匯出</button>
@@ -96,11 +97,8 @@ function load_vul_search(){
 							$pages = $_GET['page']; 
 						}
 						
-						#Create View
-						/*CREATE VIEW V_ip_and_url_scanResult AS
-						//SELECT '主機弱點' as type,vitem_id,OID,ou,status,ip,system_name,flow_id,scan_no,'null' as affect_url,manager,email,vitem_name,url,category,severity,scan_date,is_duplicated FROM ipscanResult UNION ALL SELECT '網站弱點' as type,vitem_id,OID,ou,status,ip,system_name,flow_id,scan_no,affect_url,manager,email,vitem_name,url,category,severity,scan_date,is_duplicated FROM urlscanResult ORDER BY scan_no desc,ou desc,system_name desc,status desc */
 						//select row_number,and other field value
-						$sql = "SELECT * FROM V_ip_and_url_scanResult";
+						$sql = "SELECT * FROM ip_and_url_scanResult ORDER BY scan_no DESC,ou DESC,system_name DESC,status DESC";
 						$result = mysqli_query($conn,$sql);
 						$rowcount = mysqli_num_rows($result);
 						 
@@ -171,7 +169,7 @@ function load_vul_search(){
 						
 						echo "</div>";
 						/* Create Pagination Element*/ 
-						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"vul",2,0,$pages,"");
+						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"vul","search",0,$pages,"");
 						}
 						$conn->close();
 					?>

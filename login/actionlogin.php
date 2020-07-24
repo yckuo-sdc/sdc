@@ -42,7 +42,7 @@ switch($verification){
 			}else{
 				setcookie('rememberme', "",time() - $duration,'/');
 			}
-			header("Location: /index.php"); 
+			header("Location: /"); 
 		}else{
 			session_start();
 			$_SESSION["error"] = "invalid account or password";
@@ -69,7 +69,7 @@ switch($verification){
 			}else{
 				setcookie('rememberme', "",time() - $duration,'/');
 			}
-			header("Location: /index.php"); 
+			header("Location: /"); 
 		}else{
 			session_start();
 			$_SESSION["error"] = "invalid account or password";

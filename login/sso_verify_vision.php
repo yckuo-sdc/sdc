@@ -48,9 +48,10 @@
 						'sid'	=> $sid
 					);
 					if( !empty($mainpage) && !empty($subpage) ){
-						header("Location: https://sdc-iss.tainan.gov.tw/index.php?".http_build_query($args)); 
+						#header("Location: https://sdc-iss.tainan.gov.tw/index.php?".http_build_query($args)); 
+						header("Location: /".$mainpage."/".$subpage."/?sid=".$sid); 
 					}else{	
-						header("Location: ../index.php?sid=".$sid); 
+						header("Location: ../?sid=".$sid); 
 					}	
 				}else{
 					$conn->close();

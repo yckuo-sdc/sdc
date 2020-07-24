@@ -34,9 +34,9 @@
 			if(!empty($organizationalUnit)){
 				$ou = explode("(", $organizationalUnit);
 				$ou = $ou[0];	
-				$res = ad\change_ou($cn,$ou);
-				echo "change_ou 執行結果：".$res;
-				storeUserLogs($conn,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_ou(account='.$cn.')res='.$res,date('Y-m-d h:i:s'));
+				$res = ad\change_user_ou($cn,$ou);
+				echo "change_user_ou 執行結果：".$res;
+				storeUserLogs($conn,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_ou(account='.$cn.')res='.$res,date('Y-m-d h:i:s'));
 			}
 			break;
 		case "newuser":

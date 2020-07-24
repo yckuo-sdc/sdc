@@ -1,13 +1,13 @@
 <!--query.php-->
 <?php 
 	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-	else						$subpage = 1;
+	else						$subpage = 'event';
 	switch($subpage){
-		case 1:	load_query_event(); break;
-		case 2:	load_query_ncert(); break;
-		case 3:	load_query_contact(); break;
-		case 4:	load_query_client(); break;
-		case 5:	load_query_retrieve(); break;
+		case 'event': load_query_event(); break;
+		case 'ncert': load_query_ncert(); break;
+		case 'contact': load_query_contact(); break;
+		case 'client': load_query_client(); break;
+		case 'retrieve': load_query_retrieve(); break;
 	}
 ?>
 <?php
@@ -45,7 +45,7 @@ function load_query_event(){
 						<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 					</div>
 					 <div class="field">
-						<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=1'">顯示全部</button>
+						<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/event/'">顯示全部</button>
 					</div>
 				</div>
 				</form>
@@ -116,7 +116,7 @@ function load_query_event(){
 					
 					echo "</div>";
 					/* Create Pagination Element*/ 
-					echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",1,0,$pages,"");
+					echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","event",0,$pages,"");
 					}
                     $conn->close();
                 ?>
@@ -160,7 +160,7 @@ function load_query_ncert(){
 							<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 						</div>
 						 <div class="field">
-							<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=2'">顯示全部</button>
+							<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/ncert/'">顯示全部</button>
 						</div>
 					</div>
 					</form>
@@ -267,7 +267,7 @@ function load_query_ncert(){
 						
 						echo "</div>";
 						/* Create Pagination Element*/ 
-						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",2,0,$pages,"");
+						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","ncert",0,$pages,"");
 						}
 						$conn->close();
 					?>
@@ -310,7 +310,7 @@ function load_query_contact(){
 							<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 						</div>
 						 <div class="field">
-							<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=3'">顯示全部</button>
+							<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/contact/'">顯示全部</button>
 						</div>
 					</div>
 					</form>
@@ -384,7 +384,7 @@ function load_query_contact(){
 						echo "</div>";
 												
 						/* Create Pagination Element*/ 
-						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",3,0,$pages,"");
+						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","contact",0,$pages,"");
 						}
 						$conn->close();
 					?>
@@ -442,7 +442,7 @@ function load_query_client(){
 								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 							</div>
 							 <div class="field">
-								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4&tab=1'">顯示全部</button>
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/client/?tab=1'">顯示全部</button>
 							</div>
 							 <div class="field">
 								<button id="export2csv_btn" class="ui button">匯出</button>
@@ -547,7 +547,7 @@ function load_query_client(){
 								}		
 								echo "</div>";
 								/* Create Pagination Element*/ 
-								echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,1,$pages,"");
+								echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","client",1,$pages,"");
 							}
 							$conn->close();
 						?>
@@ -577,7 +577,7 @@ function load_query_client(){
 								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 							</div>
 							 <div class="field">
-								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4&tab=2'">顯示全部</button>
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/client/?tab=2'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -682,7 +682,7 @@ function load_query_client(){
 							
 							echo "</div>";
 						    /* Create Pagination Element*/ 
-							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,2,$pages,"");
+							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","client",2,$pages,"");
 							}
 							$conn->close();
 						?>
@@ -710,7 +710,7 @@ function load_query_client(){
 								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 							</div>
 							 <div class="field">
-								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4&tab=3'">顯示全部</button>
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/client/?tab=3'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -747,16 +747,15 @@ function load_query_client(){
 							}else{
 								echo "共有".$rowcount."筆資料！";
 
-
 								echo "<div class='ui relaxed divided list'>";
 									echo "<div class='item'>";
 										echo "<div class='content'>";
 											echo "<div class='header'>";
-											echo "<a href='?mainpage=query&subpage=4&tab=3&sort=FullDomainName'>電腦名稱</a>&nbsp&nbsp";
-											echo "<a href='?mainpage=query&subpage=4&tab=3&sort=IPAddress'>內網IP</a>&nbsp&nbsp";
-											echo "<a href='?mainpage=query&subpage=4&tab=3&sort=NotInstalled'>未安裝更新</a>&nbsp&nbsp";
-											echo "<a href='?mainpage=query&subpage=4&tab=3&sort=Failed'>安裝失敗更新</a>&nbsp&nbsp";
-											echo "<a href='?mainpage=query&subpage=4&tab=3&sort=OSDescription'>作業系統</a>&nbsp&nbsp";
+											echo "<a href='/query/client/?tab=3&sort=FullDomainName'>電腦名稱</a>&nbsp&nbsp";
+											echo "<a href='/query/client/?tab=3&sort=IPAddress'>內網IP</a>&nbsp&nbsp";
+											echo "<a href='/query/client/?tab=3&sort=NotInstalled'>未安裝更新</a>&nbsp&nbsp";
+											echo "<a href='/query/client/?tab=3&sort=Failed'>安裝失敗更新</a>&nbsp&nbsp";
+											echo "<a href='/query/client/?tab=3&sort=OSDescription'>作業系統</a>&nbsp&nbsp";
 											echo "</div>";
 										echo "</div>";
 									echo "</div>";
@@ -810,7 +809,7 @@ function load_query_client(){
 							
 							echo "</div>";
 						    /* Create Pagination Element*/ 
-							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,3,$pages,$sort);
+							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","client",3,$pages,$sort);
 							}
 							$conn->close();
 						?>
@@ -838,7 +837,7 @@ function load_query_client(){
 								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
 							</div>
 							 <div class="field">
-								<button id="show_all_btn" class="ui button" onclick="window.location.href='index.php?mainpage=query&subpage=4&tab=4'">顯示全部</button>
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/client/?tab=4'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -914,7 +913,7 @@ function load_query_client(){
 								}		
 								echo "</div>";
 								/* Create Pagination Element*/ 
-								echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query",4,4,$pages,"");
+								echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","client",4,$pages,"");
 							}
 							$conn->close();
 						?>

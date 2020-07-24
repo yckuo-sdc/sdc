@@ -183,9 +183,22 @@
 	}
 
 	function pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,$mainpage,$subpage,$tab,$pages,$sort) {
+		$href = "/".$mainpage."/".$subpage."/?";
+		switch(true){
+			case ($tab == 0 && $sort == ""):
+				$href =  $href ."page=";
+				break;
+			case ($tab != 0 && $sort == ""):
+				$href =  $href ."tab=".$tab."&page=";
+				break;
+			case ($tab == 0 && $sort != ""):
+				$href =  $href ."sort=".$sort."&page=";
+				break;
+			case ($tab != 0 && $sort != ""):
+				$href =  $href ."tab=".$tab."&sort=".$sort."&page=";
+				break;
+		}
 		$result ="";
-		$href = ($tab==0)?"mainpage=".$mainpage."&subpage=".$subpage."&page=":"mainpage=".$mainpage."&subpage=".$subpage."&tab=".$tab."&page=";
-		$href = ($sort=="")?"?".$href:"?sort=".$sort."&".$href;
 
 		//The href-link of bottom pages
 		$result .="<div class='ui pagination menu'>";	

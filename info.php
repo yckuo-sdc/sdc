@@ -1,13 +1,14 @@
 <!--info.php-->
 <?php 
 	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-	else						$subpage = 1;
+	else						$subpage = 'enews';
+
 	switch($subpage){
-		case 1:	load_info_enews(); break;
-		case 2:	load_info_comparison(); break;
-		case 3:	load_info_ranking(); break;
-		case 4:	load_info_vul(); break;
-		case 5:	load_info_client(); break;
+		case 'enews': load_info_enews(); break;
+		case 'comparison': load_info_comparison(); break;
+		case 'ranking': load_info_ranking(); break;
+		case 'vul': load_info_vul(); break;
+		case 'client': load_info_client(); break;
 	}
 ?>
 <?php
@@ -92,13 +93,13 @@ function load_info_enews(){
 			</div>
 			<div class="post">
 				<div class="post_title">資安事件趨勢圖(最近3個月)</div>
-				<div class="cell">
+				<div class="post_cell">
 					<div id="chartA" class="chart"></div>	
 				</div>
 			</div>
 			<div class="post">
 				<div class="post_title">資安事件清單(最近10筆)</div>
-				<div class="cell">
+				<div class="post_cell">
 					<table class="ui very basic single line table">
 					 <?php //select data form database
 						require("mysql_connect.inc.php");
@@ -134,13 +135,13 @@ function load_info_enews(){
 						$conn->close();
 					?>
 					<div class="see_more" style="text-align:right">
-						<a href="index.php?mainpage=query&subpage=1">See More...</a>
+						<a href="/query/event/">See More...</a>
 					</div>
 				</div>
 			</div>
 			<div class="post">
 				<div class="post_title">資安事件SOP</div>
-				<div class="cell">
+				<div class="post_cell">
 					<img class="image" src="images/sop.png">
 				</div>
 			</div>
@@ -298,12 +299,12 @@ function load_info_vul(){
 						  <div class="label">修補率</div>
 					  </div>
 					  <br>
-					  <div class="ui mini statistic">
+					  <div class="ui tiny statistic">
 						  <div class="value"><?php echo $fixed_high_VUL ?> / <?php echo $total_high_VUL ?></div>
 						  <div class="label">已修補數 / 高風險總數</div>
 					  </div>
 					  <br>
-					  <div class="ui mini statistic">
+					  <div class="ui tiny statistic">
 						  <div class="value"><?php echo "220" ?> / <?php echo "295" ?></div>
 						  <div class="label">總掃描主機 / 網站數</div>
 					  </div>

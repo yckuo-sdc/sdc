@@ -122,7 +122,7 @@ function change_computer_ou2($cn,$ou,$upper_ou){
 }
 
 //change ou
-function change_ou($cn,$ou){
+function change_user_ou($cn,$ou){
 	$host = "172.16.254.2";
 	$url = "http://".$host."/api/ChangeOU";
 	$curl = curl_init();
@@ -144,6 +144,6 @@ function change_ou($cn,$ou){
 	curl_close($curl);
 	return $response;
 }
-	#$res = change_ou('yckuo','395000331-');
+	#$res = change_user_ou('yckuo','395000331-');
 	#echo "執行結果：".$res;
 ?>

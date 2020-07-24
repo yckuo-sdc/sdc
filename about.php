@@ -1,10 +1,15 @@
 <!--about.php-->
 <?php 
 	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-	else 						$subpage = 1;
+	else 						$subpage = 'data';
+
 	switch($subpage){
-		case 1:	load_about_data(); break;
+		case 'data': load_about_data(); break;
 	}
+	/*
+	$subpage_map =[ 'data' => 'load_about_data'];
+	call_user_func($subpage_map[$subpage]);
+	*/
 ?>
 <?php
 function load_about_data(){

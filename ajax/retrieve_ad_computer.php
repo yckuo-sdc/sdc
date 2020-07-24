@@ -1,7 +1,7 @@
 <?php
 namespace ad\api;
 require("../mysql_connect.inc.php");
-require("../ldap_config.inc.php");
+require("../ldap_admin_config.inc.php");
 require("../login/function.php");
 date_default_timezone_set("Asia/Taipei");
 

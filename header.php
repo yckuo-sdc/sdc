@@ -10,7 +10,7 @@
 	<meta name="keywords" content="" />
 	<meta name="description" content="" />
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700|Archivo+Narrow:400,700" rel="stylesheet" type="text/css">
-	<link rel="shortcut icon" href="images/logo.ico" />
+	<link rel="shortcut icon" href="/images/logo.ico" />
 
 	<!-- add jQuery-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -19,24 +19,24 @@
 
 	<!-- node_modules-->
 	<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
-	<script src="node_modules/d3js/d3.min.js" charset="utf-8"></script>
-	<link href="node_modules/c3js/c3.css" rel="stylesheet" type="text/css">
-	<script src="node_modules/c3js/c3.min.js"></script>
+	<script src="/node_modules/d3js/d3.min.js" charset="utf-8"></script>
+	<link href="/node_modules/c3js/c3.css" rel="stylesheet" type="text/css">
+	<script src="/node_modules/c3js/c3.min.js"></script>
 
 	<!-- semantic ui -->
-	<link rel="stylesheet" type="text/css" href="node_modules/semantic/semantic.css">
-	<script src="node_modules/semantic/semantic.js"></script>
+	<link rel="stylesheet" type="text/css" href="/node_modules/semantic/semantic.css">
+	<script src="/node_modules/semantic/semantic.js"></script>
 
 	<!-- template css-->
-	<link href="css/default.css" rel="stylesheet" type="text/css" media="all" />
+	<link href="/css/default.css" rel="stylesheet" type="text/css" media="all" />
 
 	<!-- add my CSS-->
-	<link href="css/add.css" rel="stylesheet"/>
-	<link href="css/subpage.css" rel="stylesheet"/>
+	<link href="/css/add.css" rel="stylesheet"/>
+	<link href="/css/subpage.css" rel="stylesheet"/>
 
 	<!-- add my JS-->
-	<script src="js/add.js"></script>
-	<script src='js/show_chart.js'></script>
+	<script src="/js/add.js"></script>
+	<script src='/js/show_chart.js'></script>
 
 	<!-- add php function-->
 	<?php require_once("login/function.php");?>

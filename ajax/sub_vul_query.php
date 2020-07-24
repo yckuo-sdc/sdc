@@ -25,7 +25,7 @@
 		$finish = mysqli_real_escape_string($conn,$finish);
 		
 		$table_map = [
-			'ip_and_url_scanResult' => 'V_ip_and_url_scanResult',
+			'ip_and_url_scanResult' => 'ip_and_url_scanResult',
 			'ipscanResult' => 'ipscanResult',
 			'urlscanResult' => 'urlscanResult'
 		];
@@ -99,7 +99,7 @@
 			}
 		}
 		//echo $condition."<br>";
-		$order = "ORDER by scan_no DESC,system_name DESC,status DESC";
+		$order = "ORDER by scan_no DESC,ou DESC,system_name DESC,status DESC";
 		$sql = "SELECT * FROM ".$table." WHERE ".$condition." ".$order;
 		$result = mysqli_query($conn,$sql);
 		if(!$result){
