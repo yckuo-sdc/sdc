@@ -22,10 +22,11 @@
 <div class="item">
   <div class=" header">資安查詢</div>
   <div class="menu">
-		<a class="item" href="/query/event/">本府資安事件查詢</a> 
-		<a class="item" href="/query/ncert/">技服資安通報查詢</a> 
+		<a class="item" href="/query/event/">本府資安事件</a> 
+		<a class="item" href="/query/ncert/">技服資安通報</a> 
 		<a class="item" href="/query/contact/">資安聯絡人</a> 
 		<a class="item" href="/query/client/">用戶端資安清單</a> 
+		<a class="item" href="/query/network/">網路流量日誌</a> 
 		<a class="item" href="/query/retrieve/">Retrieve GS & Ncert</a> 
   </div>
 </div>

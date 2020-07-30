@@ -14,7 +14,7 @@
 		if (!isset($_GET['ap']))	$ap = 'html'; 
 		else						$ap = $_GET['ap']; 
 
-		$jsonObj = json_decode($jsonObj,true);
+		$arr_jsonObj = json_decode($jsonObj,true);
 
 		//connect database
         require("../mysql_connect.inc.php");
@@ -74,9 +74,9 @@
 		$status_condition = $status_map[$overdue_and_unfinish][$non_overdue_and_unfinish][$finish];
 		//echo $status_condition."<br>";
 		
-		if( count($jsonObj) !=0 ){
+		if( count($arr_jsonObj) !=0 ){
 			$condition = "";
-			foreach($jsonObj as $val){
+			foreach($arr_jsonObj as $val){
 				$val['key']		= mysqli_real_escape_string($conn,$val['key']);
 				$val['keyword'] = mysqli_real_escape_string($conn,$val['keyword']);
 				if($val['keyword'] == "all"){
@@ -116,7 +116,7 @@
 				//record number on each page & maxumun pages on pagination			
 				$per = 10; 	
 				$max_pages = 10;
-				list($sql_subpage,$prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages) = getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages);
+				list($sql_subpage,$prev_page,$next_page,$lb,$ub,$Totalpages) = getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages);
 				$result = mysqli_query($conn,$sql_subpage);
 				echo "<div class='ui relaxed divided list'>";
 				while($row = mysqli_fetch_assoc($result)) {
@@ -169,25 +169,25 @@
 				echo "</div>";
 				//The href-link of bottom pages
 				echo "<div class='ui pagination menu'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish ='".$non_overdue_and_unfinish."' finish ='".$finish."' >首頁</a>";
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' > ← </a>";
-				for ($j = $lower_bound; $j <= $upper_bound ;$j++){
+				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish ='".$non_overdue_and_unfinish."' finish ='".$finish."' jsonObj='".$jsonObj."' >首頁</a>";
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."' > ← </a>";
+				for ($j = $lb; $j <= $ub ;$j++){
 					if($j == $pages){
-						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'>".$j."</a>";
+						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'>".$j."</a>";
 					}else{
-						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'>".$j."</a>";
+						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'>".$j."</a>";
 					}
 				}
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' > → </a>";		
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'> → </a>";		
 				//last page
-				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'>末頁</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'>末頁</a>";
 				echo "</div>";
 
 				//The mobile href-link of bottom pages
 				echo "<div class='ui pagination menu mobile'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'> ← </a>";
-				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'>(".$pages."/".$Totalpages.")</a>";
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."'> → </a>";		
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'> ← </a>";
+				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'>(".$pages."/".$Totalpages.")</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'> → </a>";		
 				echo "</div>";
 			}
 		}elseif($ap='csv'){

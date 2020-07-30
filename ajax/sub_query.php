@@ -11,7 +11,7 @@
 		if (!isset($_GET['ap']))	$ap = 'html'; 
 		else						$ap = $_GET['ap']; 
 		
-		$jsonObj = json_decode($jsonObj,true);
+		$arr_jsonObj = json_decode($jsonObj,true);
 		
 		//connect database
         require("../mysql_connect.inc.php");
@@ -61,9 +61,9 @@
 		}
 
 		//retrieve condition
-		if( count($jsonObj) !=0 ){
+		if( count($arr_jsonObj) !=0 ){
 			$condition = "";
-			foreach($jsonObj as $val){
+			foreach($arr_jsonObj as $val){
 				$val['key']		= mysqli_real_escape_string($conn,$val['key']);
 				$val['keyword'] = mysqli_real_escape_string($conn,$val['keyword']);
 				if($val['keyword'] == "all"){
@@ -485,25 +485,25 @@
 						
 				//The href-link of bottom pages
 				echo "<div class='ui pagination menu'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword ='".$keyword."' type='".$type."' >首頁</a>";
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' > ← </a>";
+				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."'  >首頁</a>";
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."'  > ← </a>";
 				for ($j = $lower_bound; $j <= $upper_bound ;$j++){
 					if($j == $pages){
-						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."'>".$j."</a>";
+						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."' >".$j."</a>";
 					}else{
-						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."'>".$j."</a>";
+						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."' >".$j."</a>";
 					}
 				}
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' > → </a>";		
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."' > → </a>";		
 				//last page
-				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword ='".$keyword."' type='".$type."'>末頁</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."' >末頁</a>";
 				echo "</div>";
 
 				//The mobile href-link of bottom pages
 				echo "<div class='ui pagination menu mobile'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."'> ← </a>";
-				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword ='".$keyword."' type='".$type."'>(".$pages."/".$Totalpages.")</a>";
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."'> → </a>";		
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."' > ← </a>";
+				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."' >(".$pages."/".$Totalpages.")</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."' > → </a>";		
 				echo "</div>";
 			}
 		}elseif($ap='csv'){

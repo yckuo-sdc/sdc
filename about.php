@@ -6,10 +6,6 @@
 	switch($subpage){
 		case 'data': load_about_data(); break;
 	}
-	/*
-	$subpage_map =[ 'data' => 'load_about_data'];
-	call_user_func($subpage_map[$subpage]);
-	*/
 ?>
 <?php
 function load_about_data(){

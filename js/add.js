@@ -50,7 +50,18 @@ $(document).ready(function(){
 		overdue_and_unfinish = $(this).attr('overdue_and_unfinish');
 		non_overdue_and_unfinish = $(this).attr('non_overdue_and_unfinish');
 		finish = $(this).attr('finish');
-		Call_sub_vul_query_pagination_ajax(page,key,keyword,type,overdue_and_unfinish,non_overdue_and_unfinish,finish);
+		jsonObj = $(this).attr('jsonObj');
+		Call_sub_vul_query_pagination_ajax(page,key,keyword,type,overdue_and_unfinish,non_overdue_and_unfinish,finish,jsonObj);
+	});
+
+	/*query.php's component action*/
+	$('.post.ips .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
+		key = $(this).attr('key');
+		keyword = $(this).attr('keyword');
+		operator = $(this).attr('operator');
+		page = $(this).attr('page');
+		jsonObj = $(this).attr('jsonObj');
+		Call_sub_ips_query_pagination_ajax(key,keyword,operator,page,jsonObj);
 	});
 
 	/*query.php's component action*/
@@ -59,7 +70,8 @@ $(document).ready(function(){
 		key = $(this).attr('key');
 		keyword = $(this).attr('keyword');
 		type = $(this).attr('type');
-		Call_sub_query_pagination_ajax(page,key,keyword,type);
+		jsonObj = $(this).attr('jsonObj');
+		Call_sub_query_pagination_ajax(page,key,keyword,type,jsonObj);
 	});
 	
 	/*query.php & vs_query's component action*/
@@ -112,7 +124,7 @@ $(document).ready(function(){
 		var keyword_text= $(selector + '#keyword option:selected').text();
 		if (typeof key != 'undefined' && key !='' && keyword !='') {
 			var query_content = $(selector + '.query_content');
-			var query_label ="<span class='query_label' keyword='"+keyword+"' key='"+key+"'>"+keyword_text+"："+key+"<button type='button' class='close' style='opacity:0.2'><i class='close icon'></i></button></span>";
+			var query_label ="<span class='query_label' keyword='"+keyword+"' key='"+key+"'>"+keyword_text+"="+key+"<button type='button' class='close' style='opacity:0.2'><i class='close icon'></i></button></span>";
 			query_content.append(query_label);
 		}else{
 			alert("沒有輸入");
@@ -120,7 +132,23 @@ $(document).ready(function(){
 	});
 
 	/*query.php's component action*/
-	$('.post.is_client_list .tab-content.drip_client_list .query_content').delegate('button.close', 'click', function() {
+	$('.post.ips i.square.icon').click(function() {
+		var selector = ".post.ips ";
+		var key = $(selector + '#key').val();
+		var keyword = $(selector + '#keyword').val();
+		var operator = $(selector + '#operator').val();
+		var keyword_text = $(selector + '#keyword option:selected').text();
+		if (typeof key != 'undefined' && key !='' && keyword !='' && operator !='') {
+			var query_content = $(selector + '.query_content');
+			var query_label ="<span class='query_label' keyword='"+keyword+"' operator='"+operator+"' key='"+key+"'>"+keyword_text+operator+key+"<button type='button' class='close' style='opacity:0.2'><i class='close icon'></i></button></span>";
+			query_content.append(query_label);
+		}else{
+			alert("沒有輸入");
+		}
+	});
+	
+	/*query.php's component action*/
+	$('.post.is_client_list .tab-content.drip_client_list .query_content, .post.ips .query_content').delegate('button.close', 'click', function() {
 		var span = $(this).parent('span');
 		span.remove();
 	});
@@ -133,7 +161,7 @@ $(document).ready(function(){
 		var keyword_text = $(selector + '#keyword option:selected').text();
 		if (typeof key != 'undefined' && key !='' && keyword !='') {
 			var query_content = $(selector + '.query_content');
-			var query_label ="<span class='query_label' keyword='"+keyword+"' key='"+key+"'>"+keyword_text+"："+key+"<button type='button' class='close' style='opacity:0.2'><i class='close icon'></i></button></span>";
+			var query_label ="<span class='query_label' keyword='"+keyword+"' key='"+key+"'>"+keyword_text+"="+key+"<button type='button' class='close' style='opacity:0.2'><i class='close icon'></i></button></span>";
 			query_content.append(query_label);
 		}else{
 			alert("沒有輸入");
@@ -189,6 +217,12 @@ $(document).ready(function(){
 		}
 	 });
 	
+	 $('.post.ips #key').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			Call_sub_ips_query_ajax(); 
+		}
+	 });
+	 
 	 $('.post.ip_and_url_scanResult #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
 			Call_sub_vul_query_ajax('ip_and_url_scanResult','html'); 
@@ -238,6 +272,10 @@ $(document).ready(function(){
 	
 	$('.post.is_client_list .tab-content.drip_client_list #export2csv_btn').click(function (){
 		Call_sub_query_ajax('drip_client_list','csv');
+	});
+
+	$('.post.ips #search_btn').click(function (){
+		Call_sub_ips_query_ajax();
 	});
 
 	$('.post.ip_and_url_scanResult #search_btn').click(function (){
@@ -454,17 +492,9 @@ function Call_sub_query_ajax(type,ap){
 	return 0;
  }
 
-function Call_sub_query_pagination_ajax(page,key,keyword,type){
+function Call_sub_query_pagination_ajax(page,key,keyword,type,jsonObj){
 	 var selector = ".post."+type+" ";
 	 if(type == 'gcb_client_list' || type == 'wsus_client_list' || type == 'antivirus_client_list' || type == 'drip_client_list')  selector = ".post.is_client_list .tab-content."+type+" ";
-	 var jsonObj = [];
-	 $(selector + 'span.query_label').each(function () {
-		item = {}
-		item ["keyword"] = $(this).attr("keyword");
-		item ["key"] 	 = $(this).attr("key");
-		jsonObj.push(item);
-	 });
-	 jsonObj = JSON.stringify(jsonObj);
 	 $.ajax({
 		 url: '/ajax/sub_query.php',
 		 cache: false,
@@ -478,6 +508,90 @@ function Call_sub_query_pagination_ajax(page,key,keyword,type){
 			 $(selector + '.record_content').html("");
 			 $(selector + '.record_content').html(data);
 			 //console.log("done");
+		 }
+	});
+	return 0;
+ }
+
+function Call_sub_ips_query_ajax(){
+	var type ="ips";
+	var selector = ".post."+type+" ";
+	var key = $(selector + '#key').val();
+	var keyword = $(selector + '#keyword').val();
+	var operator = $(selector + '#operator').val();
+	var jsonObj = [];
+	$(selector + 'span.query_label').each(function () {
+		item = {}
+		item["keyword"] = $(this).attr("keyword");
+		item["key"] = $(this).attr("key");
+		item["operator"] = $(this).attr("operator");
+		jsonObj.push(item);
+	});
+	jsonObj = JSON.stringify(jsonObj);
+	if ( (typeof key != 'undefined' && key !='' && keyword !='' && operator !='') || jsonObj !='[]' ) {
+		//ap='html'
+		$.ajax({
+			 url: '/ajax/sub_ips_query.php',
+			 cache: false,
+			 dataType:'html',
+			 type:'GET',
+			 data: {key:key,keyword:keyword,operator:operator,jsonObj:jsonObj},
+			 error: function(xhr) {
+				 alert('Ajax failed');
+			 },success: function(data) {
+				 $(selector + '.record_content').html("");
+				 $(selector + '.record_content').html(data);
+			 }
+		});
+	}else{
+			alert("沒有輸入");
+	}
+	return 0;
+}
+
+function Call_load_ips_query_ajax(){
+	var type ='ips';
+	var selector = '.post.'+type+' ';
+	var key = 'any';
+	var keyword = 'all';
+	var operator = '=';
+	var jsonObj =[];
+	jsonObj = JSON.stringify(jsonObj);
+	if ( (typeof key != 'undefined' && key !='' && keyword !='' && operator !='') || jsonObj !='[]' ) {
+		//ap='html'
+		$.ajax({
+			 url: '/ajax/sub_ips_query.php',
+			 cache: false,
+			 dataType:'html',
+			 type:'GET',
+			 data: {key:key,keyword:keyword,operator:operator,jsonObj:jsonObj},
+			 error: function(xhr) {
+				 alert('Ajax failed');
+			 },success: function(data) {
+				 $(selector + '.record_content').html("");
+				 $(selector + '.record_content').html(data);
+			 }
+		});
+	}else{
+			alert("沒有輸入");
+	}
+	return 0;
+}
+
+function Call_sub_ips_query_pagination_ajax(key,keyword,operator,page,jsonObj){
+	 var type ="ips";
+	 var selector = ".post."+type+" ";
+	 $.ajax({
+		 url: '/ajax/sub_ips_query.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {key:key,keyword:keyword,operator:operator,page:page,jsonObj:jsonObj},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 $(selector + '.record_content').html("");
+			 $(selector + '.record_content').html(data);
 		 }
 	});
 	return 0;
@@ -528,18 +642,7 @@ function Call_sub_vul_query_ajax(type,ap){
 	return 0;
 }
 
-function Call_sub_vul_query_pagination_ajax(page,key,keyword,type,overdue_and_unfinish,non_overdue_and_unfinish,finish){
-	 var jsonObj = [];
-	 $('.post.ip_and_url_scanResult span.query_label').each(function () {
-		var id = $(this).attr("title");
-		var email = $(this).val();
-		item = {}
-		item ["keyword"] = $(this).attr("keyword");
-		item ["key"] 	 = $(this).attr("key");
-		jsonObj.push(item);
-	 });
-	 jsonObj = JSON.stringify(jsonObj);
-	 //console.log(jsonObj);     
+function Call_sub_vul_query_pagination_ajax(page,key,keyword,type,overdue_and_unfinish,non_overdue_and_unfinish,finish,jsonObj){
 	 var selector = ".post."+type+" ";
 	 $.ajax({
 		 url: '/ajax/sub_vul_query.php',
@@ -759,8 +862,11 @@ function pageSwitch(){
 	//var subpage = (getParameterByName('subpage',url)!= null)?getParameterByName('subpage',url):1;	
 	
 	var tab = (getParameterByName('tab',url)!= null)?getParameterByName('tab',url):1;	
-	//console.log(mainpage+subpage);
     switch(true){
+		//load ips_query
+      	case (mainpage == 'query' && subpage == 'network' ):
+			Call_load_ips_query_ajax();
+        	break;
 		//load ldap's tree
       	case (mainpage == 'tool' && subpage == 'ldap' ):
 			Call_retrieve_ldap_tree_ajax();

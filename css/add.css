@@ -612,6 +612,7 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 	}
 	.ui.list > .item .content{
 		white-space: normal;
+		word-break: break-all;
 	}
 	.ui.pagination.menu{
 	     display:none;

@@ -142,7 +142,7 @@ function load_info_enews(){
 			<div class="post">
 				<div class="post_title">資安事件SOP</div>
 				<div class="post_cell">
-					<img class="image" src="images/sop.png">
+					<img class="image" src="/images/sop.png">
 				</div>
 			</div>
 		</div>
@@ -283,6 +283,16 @@ function load_info_vul(){
 								$total_high_VUL = $row['total_high_VUL'];
 								$high_completion = $row['high_completion'];
 							}
+							// select form scanTarget	
+							$sql = "SELECT COUNT(DISTINCT ip) as host_num FROM scanTarget";
+							$result = mysqli_query($conn,$sql);
+							$row = @mysqli_fetch_assoc($result);
+							$host_num = $row['host_num'];
+							$sql = "SELECT SUM(CASE domain WHEN '' THEN 0 ELSE LENGTH(domain)-LENGTH(REPLACE(domain,';',''))+1 END) AS url_num FROM scanTarget";
+							$result = mysqli_query($conn,$sql);
+							$row = @mysqli_fetch_assoc($result);
+							$url_num = $row['url_num'];
+							
 							$conn->close();
 							?>
 							</tbody>
@@ -305,7 +315,7 @@ function load_info_vul(){
 					  </div>
 					  <br>
 					  <div class="ui tiny statistic">
-						  <div class="value"><?php echo "220" ?> / <?php echo "295" ?></div>
+						  <div class="value"><?php echo $host_num ?> / <?php echo $url_num ?></div>
 						  <div class="label">總掃描主機 / 網站數</div>
 					  </div>
 					</center>
