@@ -1,24 +1,23 @@
 /*****Main****/
 $(document).ready(function(){
 	var url,hostname;
-	if( location.hostname == 'vision.tainan.gov.tw' ) hostname = 'sdc-iss.tainan.gov.tw';
+	if( location.hostname == 'vision.tainan.gov.tw' ) hostname = 'vision.tainan.gov.tw/common/sdciss_lib';
 	else											  hostname = location.hostname;
 	if (location.protocol == 'https:') url='https://' + hostname + '/';
 	else							   url='http://' + hostname + '/';
 
 	//bind show_chart_btn
 	$('#show_chart_btn').click(function (){
-		Call_retrieve_c3_chartB_ajax(url);
+		c3_chartC_ajax(url);
 	});
 	
-	Call_retrieve_c3_chartA_ajax(url);
-	Call_retrieve_c3_chartB_ajax(url);
-	Call_retrieve_c3_chartC_ajax(url);
-	//Call_retrieve_c3_chartD_ajax(url);
-	Call_retrieve_c3_chartE_ajax(url);
+	c3_chartA_ajax(url);
+	c3_chartC_ajax(url);
+	c3_chartE_ajax(url);
+	c3_chartF_ajax(url);
 });
 
-function Call_retrieve_c3_chartA_ajax(url){
+function c3_chartA_ajax(url){
 	$.ajax({
 		 url: url+'ajax/chart.php',
 		 cache: false,
@@ -31,19 +30,15 @@ function Call_retrieve_c3_chartA_ajax(url){
 			 var countArray=[],nameArray=[];
 			 var countArray_done=[],nameArray_done=[];
 			$(data).find("OccurrenceTime").each(function(){
-				// console.log($(this).text());
 				 nameArray.push($(this).text());
 			});
 			$(data).find("count").each(function(){
-				// console.log($(this).text());
 				 countArray.push(+$(this).text());
 			});
 			$(data).find("OccurrenceTime_done").each(function(){
-				// console.log($(this).text());
 				 nameArray_done.push($(this).text());
 			});
 			$(data).find("count_done").each(function(){
-				// console.log($(this).text());
 				 countArray_done.push(+$(this).text());
 			});
 			countArray.unshift('資安事件數量');
@@ -75,111 +70,74 @@ function Call_retrieve_c3_chartA_ajax(url){
 	return 0;
  }
 
-function Call_retrieve_c3_chartB_ajax(url){
-	$.ajax({
-		 url: url+'ajax/chart.php',
-		 cache: false,
-		 dataType:'html',
-		 type:'GET',
-		 data: {chartID:'chartB'},
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-			 //console.log("data");
-			 
-			 var countArray18=[],countArray19=[];
-			 var nameArray18=[],nameArray19=[];
-			 //console.log($(data).find("month").length);
-			$(data).find("month2018").each(function(){
-				// console.log($(this).text());
-				 nameArray18.push($(this).text());
-			});
-			$(data).find("count2018").each(function(){
-				 //console.log($(this).text());
-				 countArray18.push(+$(this).text());
-			});
-			$(data).find("month2019").each(function(){
-				 //console.log($(this).text());
-				 nameArray19.push($(this).text());
-			});
-			$(data).find("count2019").each(function(){
-				// console.log($(this).text());
-				 countArray19.push(+$(this).text());
-			});
-			//var countArray2 = countArray.slice();
-			var d = new Date();
-			var n = d.getFullYear();
-			countArray18.unshift((n-1)+'資安事件(數量)');
-			countArray19.unshift(n+'資安事件(數量)');
-			//countArray2.unshift('data2');
-			var chart = c3.generate({
-					bindto: '#chartB',
-					data: {
-						columns: [
-							countArray18,countArray19
-						],
-						type: 'bar'
-					},axis: {
-						x: {
-							type: 'category',
-							categories: nameArray18
-						}
-					},bar: {
-						width: {
-							ratio: 0.5 // this makes bar width 50% of length between ticks	
-						}
-					}
-			});
-			 
-		 }
-	});
-	return 0;
- }
-
-function Call_retrieve_c3_chartC_ajax(url){
+function c3_chartC_ajax(url){
 	$.ajax({
 		url: url+'ajax/chart.php',
 		cache: false,
-		dataType:'html',
+		dataType:'json',
 		type:'GET',
 		data: {chartID:'chartC'},
 		error: function(xhr) {
 			alert('Ajax failed');
 		},success: function(data) {	 
-			var countArray=[],Unitcount=[];
-			var nameArray=[],UnitName=[];
-			var destipArray=[],destipName=[];
-			var countIP=[];
-			var mArray=[];
-			$(data).find("EventType").each(function(){
-				// console.log($(this).text());
-				 var name=$(this).children("name").text();
-				 var count=$(this).children("count").text();
-				 //console.log(name);
-				 //console.log(count);
-				 mArray.push([name,count]);
-
-			});
-			$(data).find("AgencyName").each(function(){
-				//console.log($(this).text());
-				 var name=$(this).children("name").text();
-				 var count=$(this).children("count").text();
-				 var IP_count=$(this).children("IP_count").text();
-				 nameArray.push(name);
-				 countArray.push(count);
-				 countIP.push(IP_count);
-			});
-			$(data).find("DestinationIP").each(function(){
-				//console.log($(this).text());
-				 var name=$(this).children("name").text();
-				 var count=$(this).children("count").text();
-				 destipName.push(name);
-				 destipArray.push(count);
-			});
+			//console.log(data);
+			var tmp_data, len;
+			var lastyearcountArray = [], lastyearnameArray = [];
+			var thisyearcountArray = [], thisyearnameArray = [];
+			var eventtypeArray = [];
+			var agencynameArray = [], agencycountArray = [], agencyipArray = [];
+			var destipnameArray = [], destipcountArray = [];
+			var total_ip = 0;
+			tmp_data = data.LastYearEvent;
+			len = tmp_data.length;
+			for(var i=0; i<len; i++){
+				var name = tmp_data[i].name;
+				var count = tmp_data[i].count;
+				lastyearnameArray.push(name);
+				lastyearcountArray.push(count);
+			}
+			tmp_data = data.ThisYearEvent;
+			len = tmp_data.length;
+			for(var i=0; i<len; i++){
+				var name = tmp_data[i].name;
+				var count = tmp_data[i].count;
+				thisyearnameArray.push(name);
+				thisyearcountArray.push(count);
+			}
+			tmp_data = data.EventType;
+			len = tmp_data.length;
+			for(var i=0; i<len; i++){
+				var name = tmp_data[i].name;
+				var count = tmp_data[i].count;
+				eventtypeArray.push([name, count]);
+			}
+			tmp_data = data.AgencyName;
+			len = tmp_data.length;
+			for(var i=0; i<len; i++){
+				var name = tmp_data[i].name;
+				var count = tmp_data[i].count;
+				var IP_count = tmp_data[i].IP_count;
+				agencynameArray.push(name);
+				agencycountArray.push(count);
+				agencyipArray.push(IP_count);
+			}
+			tmp_data = data.DestIP;
+			len = tmp_data.length;
+			for(var i=0; i<len; i++){
+				var name = tmp_data[i].name;
+				var count = tmp_data[i].count;
+				destipnameArray.push(name);
+				destipcountArray.push(count);
+			}
+			
 			//add the label of bar chart
-			countArray.unshift('機關資安事件數量');
-			countIP.unshift('機關資安事件IP數量');
-			destipArray.unshift('攻擊目標IP數量');
+			var d = new Date();
+			var n = d.getFullYear();
+			lastyearcountArray.unshift((n-1)+'資安事件(數量)');
+			thisyearcountArray.unshift(n+'資安事件(數量)');
+			agencycountArray.unshift('機關資安事件數量');
+			agencyipArray.unshift('機關資安事件IP數量');
+			destipcountArray.unshift('攻擊目標IP數量');
 		
 			//the setting of pie chart
 			var cht_width = '500px';	//default width
@@ -193,10 +151,29 @@ function Call_retrieve_c3_chartC_ajax(url){
 			var cht_height = cht_width * 0.4205;
 
 			var chart = c3.generate({
+				bindto: '#chartB',
+				data: {
+					columns: [
+						lastyearcountArray,thisyearcountArray
+					],
+					type: 'bar'
+				},axis: {
+					x: {
+						type: 'category',
+						categories: lastyearnameArray
+					}
+				},bar: {
+					width: {
+						ratio: 0.5 // this makes bar width 50% of length between ticks	
+					}
+				}
+			});
+		
+			var chart = c3.generate({
 				bindto: '#chartC',
 				data: {
 				columns:
-					mArray,
+					eventtypeArray,
 				type : 'pie'
 				},
 				size:{
@@ -210,7 +187,7 @@ function Call_retrieve_c3_chartC_ajax(url){
 			var chart = c3.generate({
 				bindto: '#chartC-2',
 				data:{ 
-					columns: [countArray,countIP],
+					columns: [agencycountArray,agencyipArray],
 					type: 'bar',
 					groups: [
 						['機關資安事件數量', '機關資安事件IP數量']
@@ -219,7 +196,7 @@ function Call_retrieve_c3_chartC_ajax(url){
 					rotated: true,
 					x: {
 						type: 'category',
-						categories: nameArray,
+						categories: agencynameArray,
 						rotated: true
 					}
 				},bar: {
@@ -241,13 +218,13 @@ function Call_retrieve_c3_chartC_ajax(url){
 			var chart = c3.generate({
 				bindto: '#chartC-3',
 				data:{ 
-					columns: [destipArray],
+					columns: [destipcountArray],
 					type: 'bar'
 				},axis: {
 					rotated: true,
 					x: {
 						type: 'category',
-						categories: destipName,
+						categories: destipnameArray,
 						rotated: true
 					}
 				},bar: {
@@ -266,128 +243,52 @@ function Call_retrieve_c3_chartC_ajax(url){
 				}
 			});
 
-
 		}
 	});
 	return 0;
 	
 }	
 
-function Call_retrieve_c3_chartD_ajax(url){
+function c3_chartE_ajax(url){
 	$.ajax({
-		url: url+'ajax/chart.php',
-		cache: false,
-		dataType:'html',
-		type:'GET',
-		data: {chartID:'chartD'},
-		error: function(xhr) {
-			alert('Ajax failed');
-		},success: function(data) {	 
-			var ouArray=[],total_VULArray=[],fixed_VULArray=[],percentArray=[];
-			var unfixed_VULArray=[];
-			$(data).find("VUL").each(function(){
-				// console.log($(this).text());
-				 var ou=$(this).children("ou").text();
-				 var unfixed_VUL=$(this).children("unfixed_VUL").text();
-				 //var total_VUL=$(this).children("total_VUL").text();
-				 var fixed_VUL=$(this).children("fixed_VUL").text();
-				 //console.log(name);
-				 //console.log(count);
-				 ouArray.push(ou);
-				 unfixed_VULArray.push(-unfixed_VUL);
-				 //total_VULArray.push(total_VUL);
-				 fixed_VULArray.push(fixed_VUL);
-				 percentArray.push(fixed_VUL);
-			});
-			//add the label of bar chart
-			unfixed_VULArray.unshift('待修補數量');
-			//total_VULArray.unshift('漏洞數量');
-			fixed_VULArray.unshift('已修補數量');
-			//percentArray.unshift('data3');
-		
-
-			var chart = c3.generate({
-				bindto: '#chartD',
-				size: {
-					//height: 800,
-					//width: 600
-				},
-				data:{ 
-					columns: [unfixed_VULArray,fixed_VULArray],
-					//columns: [total_VULArray,fixed_VULArray],
-					type: 'bar',
-					groups:[
-						['待修補數量','已修補數量']
-						//['漏洞數量','已修補數量']
-					],
-					colors: {
-						待修補數量: '#d62728',
-						已修補數量: '#2ca02c'
-					},
-					labels:{
-						format:{
-							待修補數量: d3.format(''),
-							已修補數量: d3.format(''),
-						}
-					}
-				},axis: {
-					rotated: true,
-					x: {
-							type: 'category',
-							categories: ouArray
-					}
-
-				},bar: {
-					width: {
-						ratio: 0.5 // this makes bar width 50% of length between ticks	
-					}
-				},
-			});
-
-		}
-	});
-	return 0;
-}	
-
-function Call_retrieve_c3_chartE_ajax(url){
-	$.ajax({
-		url: url+'ajax/chart.php',
-		cache: false,
-		dataType:'html',
-		type:'GET',
-		data: {chartID:'chartE'},
-		error: function(xhr) {
-			alert('Ajax failed');
-		},success: function(data) {	 
-			var mArray=[];
-			var nArray=[];
-			var passArray=[];
-			var total_ip=0;
-			$(data).find("OSEnvID").each(function(){
-				// console.log($(this).text());
-				 var name=$(this).children("name").text();
-				 var count=$(this).children("count").text();
-				 //console.log(name);
-				 //console.log(count);
-				 mArray.push([name,count]);
-
-			});
-			$(data).find("drip_vlan").each(function(){
-				// console.log($(this).text());
-				 var name=$(this).children("name").text();
-				 var count=$(this).children("count").text();
-				 //console.log(name);
-				 //console.log(count);
-				 nArray.push([name,count]);
-				 total_ip = total_ip + parseInt(count);
-			});
-			$(data).find("gcb_pass").each(function(){
-				 var total_count=$(this).children("total_count").text();
-				 var pass_count=$(this).children("pass_count").text();
-				 //passArray.push(Math.round((pass_count / total_count*10000) / 100));
-				 passArray.push(pass_count / total_count * 100);
-			});
-			passArray.unshift('通過率');
+		 url: url+'ajax/chart.php',
+		 cache: false,
+		 dataType:'json',
+		 type:'GET',
+		 data: {chartID:'chartE'},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			//console.log(data);	
+			var tmp_data, len;
+			var dripArray = [], gcbpassArray = [], osArray = [];
+			var total_ip = 0;
+			tmp_data = data.DrIP;
+			len = tmp_data.length;
+			for(var i=0; i<len; i++){
+				var name = tmp_data[i].name;
+				var count = tmp_data[i].count;
+				dripArray.push([name, count]);
+				total_ip = total_ip + parseInt(count);
+			}
+			tmp_data = data.GCBPass;
+			len = tmp_data.length;
+			for(var i=0; i<len; i++){
+				var total_count = tmp_data[i].total_count;
+				var pass_count = tmp_data[i].pass_count;
+				gcbpassArray.push(pass_count / total_count * 100);
+			}
+			tmp_data = data.OSEnv;
+			len = tmp_data.length;
+			for(var i=0; i<len; i++){
+				var name = tmp_data[i].name;
+				var count = tmp_data[i].count;
+				osArray.push([name, count]);
+			}
+			
+			//add the label of chart
+			gcbpassArray.unshift('通過率');
+			
 			//the setting of pie chart
 			var cht_width = '500px';	//default width
 			var arr = $('.post_title');
@@ -397,21 +298,16 @@ function Call_retrieve_c3_chartE_ajax(url){
 					break;	
 				}
 			}
-			var cht_height = cht_width * 0.4205;
+			var cht_height = cht_width * 0.4205;	//default height
 
 			var chart = c3.generate({
-				bindto: '#chartE',
+				bindto: '#chartE-3',
 				data: {
 				columns:
-					mArray,
+					osArray,
 				type : 'pie'
 				},
 				pie:{
-					label: {
-						/*format: function (value, ratio, id) {
-							  return d3.format()(value);
-						}*/
-					}
 				},
 				size:{
 					height: '100%'
@@ -423,26 +319,18 @@ function Call_retrieve_c3_chartE_ajax(url){
 						} 
 					} 
 				}
-
-				,
-				onresize: function(){
-			
-				}
 			});
-
+			
 			var chart = c3.generate({
-				bindto: '#chartG',
+				bindto: '#chartE-1',
 				data: {
 				columns:
-					nArray,
+					dripArray,
 				type : 'donut'
 				},
 				donut:{
 					title: "IP總數:"+total_ip,
 					label: {
-						/*format: function (value, ratio, id) {
-							  return d3.format()(value);
-						}*/
 					}
 				},
 				size:{
@@ -455,18 +343,13 @@ function Call_retrieve_c3_chartE_ajax(url){
 						} 
 					} 
 				}
-
-				,
-				onresize: function(){
-			
-				}
 			});
 			
 			var chart = c3.generate({
-				bindto: '#chartF',
+				bindto: '#chartE-2',
 				data: {
 					columns: [
-						passArray
+						gcbpassArray
 					],
 					type: 'gauge',
 					onclick: function (d, i) { console.log("onclick", d, i); },
@@ -485,10 +368,136 @@ function Call_retrieve_c3_chartE_ajax(url){
 					height: 180
 				}
 			});
-		}
+
+		 }
 	});
 	return 0;
-}	
+ }
 
+function c3_chartF_ajax(url){
+	$.ajax({
+		 url: url+'ajax/chart.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: {chartID:'chartF'},
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 var appName=[],appCount=[];
+			 var attackName=[],attackCount=[];
+			 var deniedappName=[],deniedappCount=[];
+			$(data).find("top-applications").each(function(){
+				 var name=$(this).children("name").text();
+				 var count=$(this).children("nsess").text();
+				 appName.push(name);
+				 appCount.push(count);
+			});
+			
+			$(data).find("top-attacks").each(function(){
+				 var name=$(this).children("threatid").text();
+				 var count=$(this).children("count").text();
+				 attackName.push(name);
+				 attackCount.push(count);
+			});
+			
+			$(data).find("top-denied-applications").each(function(){
+				 var name=$(this).children("app").text();
+				 var count=$(this).children("repeatcnt").text();
+				 deniedappName.push(name);
+				 deniedappCount.push(count);
+			});
+	
+			//add the label of chart
+			appCount.unshift('同時連線數');
+			attackCount.unshift('觸發數');
+			deniedappCount.unshift('repeat count');
+			
+			var chart = c3.generate({
+				bindto: '#chartF',
+				data:{ 
+					columns: [appCount],
+					type: 'bar'
+				},axis: {
+					rotated: true,
+					x: {
+						type: 'category',
+						categories: appName,
+						rotated: true
+					}
+				},bar: {
+					width: {
+						ratio: 0.5 // this makes bar width 50% of length between ticks	
+					}
+				},size:{
+					height: '100%'
+				},grid: {
+					x: {
+						show: true
+					},
+					y: {
+						show: true
+					}
+				}
+			});
 
+			var chart = c3.generate({
+				bindto: '#chartF-2',
+				data:{ 
+					columns: [attackCount],
+					type: 'bar'
+				},axis: {
+					rotated: true,
+					x: {
+						type: 'category',
+						categories: attackName,
+						rotated: true
+					}
+				},bar: {
+					width: {
+						ratio: 0.5 // this makes bar width 50% of length between ticks	
+					}
+				},size:{
+					height: '100%'
+				},grid: {
+					x: {
+						show: true
+					},
+					y: {
+						show: true
+					}
+				}
+			});
+
+			var chart = c3.generate({
+				bindto: '#chartF-3',
+				data:{ 
+					columns: [deniedappCount],
+					type: 'bar'
+				},axis: {
+					rotated: true,
+					x: {
+						type: 'category',
+						categories: deniedappName,
+						rotated: true
+					}
+				},bar: {
+					width: {
+						ratio: 0.5 // this makes bar width 50% of length between ticks	
+					}
+				},size:{
+					height: '100%'
+				},grid: {
+					x: {
+						show: true
+					},
+					y: {
+						show: true
+					}
+				}
+			});
+		 }
+	});
+	return 0;
+ }
 

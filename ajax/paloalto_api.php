@@ -5,8 +5,6 @@ namespace paloalto\api;
 Class PaloaltoAPI {
 	private $host;
 	private $apikey;
-	//private $object_map = [ 0 => 'ApplicationGroups', 1 => 'Addresses'];
-	//private $policy_map = [ 0 => 'SecurityRules' ];
 
 	public function __construct($host, $username, $password){  // a public function (default)
 		$this->host = $host;
@@ -30,8 +28,16 @@ Class PaloaltoAPI {
 		$apikey = $this->apikey;
 		$args = array('type' => 'log', 'log-type' => $log_type, 'dir' => $dir, 'nlogs' => $nlogs, 'skip' => $skip, 'query' => $query, 'async' => 'yes', 'uniq' => 'yes');
 		$url = "https://$host/api/?".http_build_query($args)."&key=$apikey";
-		#echo $url;
-		$res = $this->CustomCurlRequest($url);
+		$res = $this->CurlRequest($url);
+		return $res;
+	}
+
+	public function GetReportList($report_type, $report_name){
+		$host = $this->host;
+		$apikey = $this->apikey;
+		$args = array('type' => 'report', 'reporttype' => $report_type, 'reportname' => $report_name, 'async' => 'yes', 'uniq' => 'yes');
+		$url = "https://$host/api/?".http_build_query($args)."&key=$apikey";
+		$res = $this->CurlRequest($url);
 		return $res;
 	}
 
@@ -39,7 +45,7 @@ Class PaloaltoAPI {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://".$host."/api/?type=$type&cmd=$cmd&key=$apikey";
-		$res = $this->CustomCurlRequest($url);
+		$res = $this->CurlRequest($url);
 		return $res;
 	}
 
@@ -48,7 +54,7 @@ Class PaloaltoAPI {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://$host/restapi/9.0/Objects/$object_type?name=$name&location=vsys&vsys=vsys1&output-format=json&key=".$apikey;
-		$res = CustomCurlRequest($url);
+		$res = CurlRequest($url);
 		return $res;
 	}
 
@@ -56,7 +62,7 @@ Class PaloaltoAPI {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://$host/restapi/9.0/Policies/$policy_type?name=$name&location=vsys&vsys=vsys1&output-format=json&key=".$apikey;
-		$res = CustomCurlRequest($url);
+		$res = CurlRequest($url);
 		return $res;
 	}
 
@@ -64,14 +70,14 @@ Class PaloaltoAPI {
 	private function GetAPIKey($type, $username, $password){
 		$host = $this->host;
 		$url = "https://".$host."/api/?type=$type&user=$username&password=$password";
-		$res = $this->CustomCurlRequest($url);
+		$res = $this->CurlRequest($url);
 		$xml = simplexml_load_string($res) or die("Error: Cannot create object");
 		$apikey = $xml->result->key;
 		return $apikey;
 	}
 	
-	//Curl Request with custom setting
-	private function CustomCurlRequest($url){
+	//Curl Request with options
+	private function CurlRequest($url){
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
 		  CURLOPT_URL => $url,

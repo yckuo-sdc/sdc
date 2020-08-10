@@ -5,21 +5,21 @@ $(document).ready(function(){
 	
 	//sidebar內容切換
 	$('#sidebar li li').click(function(){
-			var num = $(this).index();
-			var content = $('#content').find('.sub-content')[num];
-			$('#sidebar li li').removeClass('active');
-			$(this).addClass('active');
-			$('#content .sub-content').removeClass('show').hide();
-			$(content).addClass('show').show();
-			// push state for changing browser history
-			var url=location.href;
-			if(getParameterByName('mainpage',url)!= null){
-				var mainpage = getParameterByName('mainpage',url);
-			}else{
-				var mainpage = 1;
-			}
-			subpage = num + 1;
-			history.pushState({"mainpage": mainpage,"subpage": subpage},"", "index.php?mainpage="+mainpage+"&subpage="+subpage);
+		var num = $(this).index();
+		var content = $('#content').find('.sub-content')[num];
+		$('#sidebar li li').removeClass('active');
+		$(this).addClass('active');
+		$('#content .sub-content').removeClass('show').hide();
+		$(content).addClass('show').show();
+		// push state for changing browser history
+		var url=location.href;
+		if(getParameterByName('mainpage',url)!= null){
+			var mainpage = getParameterByName('mainpage',url);
+		}else{
+			var mainpage = 1;
+		}
+		subpage = num + 1;
+		history.pushState({"mainpage": mainpage,"subpage": subpage},"", "index.php?mainpage="+mainpage+"&subpage="+subpage);
 	});
 	
 	//tabular tab 內容切換
@@ -35,43 +35,40 @@ $(document).ready(function(){
 		var page=location.pathname.split("/");
 		var mainpage = page[1];	
 		var subpage = page[2];	
-		//var mainpage = (getParameterByName('mainpage',url)!= null)?getParameterByName('mainpage',url):1;	
-		//var subpage = (getParameterByName('subpage',url)!= null)?getParameterByName('subpage',url):1;	
 		var tab = num + 1;
 		history.pushState({"mainpage": mainpage,"subpage": subpage,"tab": tab},"", "/"+mainpage+"/"+subpage+"/?tab="+tab);
 	});
 
 	/*vs_query.php's component action*/
 	$('.post.ip_and_url_scanResult .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
-		page = $(this).attr('page');
-		key = $(this).attr('key');
-		keyword	= $(this).attr('keyword');
-		type = $(this).attr('type');
-		overdue_and_unfinish = $(this).attr('overdue_and_unfinish');
-		non_overdue_and_unfinish = $(this).attr('non_overdue_and_unfinish');
-		finish = $(this).attr('finish');
-		jsonObj = $(this).attr('jsonObj');
-		Call_sub_vul_query_pagination_ajax(page,key,keyword,type,overdue_and_unfinish,non_overdue_and_unfinish,finish,jsonObj);
+		var page = $(this).attr('page');
+		var key = $(this).attr('key');
+		var keyword	= $(this).attr('keyword');
+		var type = $(this).attr('type');
+		var jsonStatus = $(this).attr('jsonStatus');
+		var jsonObj = $(this).attr('jsonObj');
+		sub_vul_query_pagination_ajax(page,key,keyword,type,jsonStatus,jsonObj);
 	});
 
 	/*query.php's component action*/
-	$('.post.ips .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
-		key = $(this).attr('key');
-		keyword = $(this).attr('keyword');
-		operator = $(this).attr('operator');
-		page = $(this).attr('page');
-		jsonObj = $(this).attr('jsonObj');
-		Call_sub_ips_query_pagination_ajax(key,keyword,operator,page,jsonObj);
+	$('.post.network .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
+		var key = $(this).attr('key');
+		var keyword = $(this).attr('keyword');
+		var operator = $(this).attr('operator');
+		var page = $(this).attr('page');
+		var jsonObj = $(this).attr('jsonObj');
+		var type = $(this).attr('type');
+		sub_ips_query_pagination_ajax(key,keyword,operator,page,jsonObj,type);
 	});
 
 	/*query.php's component action*/
 	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content, .post.is_client_list .tab-content.gcb_client_list .record_content, .post.is_client_list .tab-content.wsus_client_list .record_content, .post.is_client_list .tab-content.antivirus_client_list .record_content, .post.is_client_list .tab-content.drip_client_list .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
-		page = $(this).attr('page');
-		key = $(this).attr('key');
-		keyword = $(this).attr('keyword');
-		type = $(this).attr('type');
-		jsonObj = $(this).attr('jsonObj');
-		Call_sub_query_pagination_ajax(page,key,keyword,type,jsonObj);
+		var page = $(this).attr('page');
+		var key = $(this).attr('key');
+		var keyword = $(this).attr('keyword');
+		var type = $(this).attr('type');
+		var jsonObj = $(this).attr('jsonObj');
+		sub_query_pagination_ajax(page,key,keyword,type,jsonObj);
 	});
 	
 	/*query.php & vs_query's component action*/
@@ -132,8 +129,8 @@ $(document).ready(function(){
 	});
 
 	/*query.php's component action*/
-	$('.post.ips i.square.icon').click(function() {
-		var selector = ".post.ips ";
+	$('.post.network .tab-content.yonghua i.square.icon').click(function() {
+		var selector = ".post.network .tab-content.yonghua ";
 		var key = $(selector + '#key').val();
 		var keyword = $(selector + '#keyword').val();
 		var operator = $(selector + '#operator').val();
@@ -148,7 +145,23 @@ $(document).ready(function(){
 	});
 	
 	/*query.php's component action*/
-	$('.post.is_client_list .tab-content.drip_client_list .query_content, .post.ips .query_content').delegate('button.close', 'click', function() {
+	$('.post.network .tab-content.minjhih i.square.icon').click(function() {
+		var selector = ".post.network .tab-content.minjhih ";
+		var key = $(selector + '#key').val();
+		var keyword = $(selector + '#keyword').val();
+		var operator = $(selector + '#operator').val();
+		var keyword_text = $(selector + '#keyword option:selected').text();
+		if (typeof key != 'undefined' && key !='' && keyword !='' && operator !='') {
+			var query_content = $(selector + '.query_content');
+			var query_label ="<span class='query_label' keyword='"+keyword+"' operator='"+operator+"' key='"+key+"'>"+keyword_text+operator+key+"<button type='button' class='close' style='opacity:0.2'><i class='close icon'></i></button></span>";
+			query_content.append(query_label);
+		}else{
+			alert("沒有輸入");
+		}
+	});
+	
+	/*query.php's component action*/
+	$('.post.is_client_list .tab-content.drip_client_list .query_content, .post.network .tab-content.yonghua .query_content, .post.network .tab-content.minjhih .query_content').delegate('button.close', 'click', function() {
 		var span = $(this).parent('span');
 		span.remove();
 	});
@@ -177,163 +190,171 @@ $(document).ready(function(){
 	//bind key_press
 	 $('.post.security_event #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
-			Call_sub_query_ajax('security_event','html'); 
+			sub_query_ajax('security_event','html'); 
 		}
 	 });
 
 	 $('.post.tainangov_security_Incident #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
-			Call_sub_query_ajax('tainangov_security_Incident','html'); 
+			sub_query_ajax('tainangov_security_Incident','html'); 
 		}
 	 });
 	
 	 $('.post.security_contact #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
-			Call_sub_query_ajax('security_contact','html'); 
+			sub_query_ajax('security_contact','html'); 
 		}
 	 });
 	
 	 $('.post.is_client_list .tab-content.gcb_client_list #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
-			Call_sub_query_ajax('gcb_client_list','html'); 
+			sub_query_ajax('gcb_client_list','html'); 
 		}
 	 });
 
 	 $('.post.is_client_list .tab-content.wsus_client #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
-			Call_sub_query_ajax('wsus_client_list','html'); 
+			sub_query_ajax('wsus_client_list','html'); 
 		}
 	 });
 	
 	 $('.post.is_client_list .tab-content.antivirus_client #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
-			Call_sub_query_ajax('antivirus_client_list','html'); 
+			sub_query_ajax('antivirus_client_list','html'); 
 		}
 	 });
 
 	 $('.post.is_client_list .tab-content.drip_client #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
-			Call_sub_query_ajax('drip_client_list','html'); 
+			sub_query_ajax('drip_client_list','html'); 
 		}
 	 });
 	
-	 $('.post.ips #key').keyup(function(event) {
+	 $('.post.network .tab-content.yonghua #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
-			Call_sub_ips_query_ajax(); 
+			sub_ips_query_ajax('yonghua'); 
 		}
 	 });
 	 
+	 $('.post.network .tab-content.minjhih #key').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			sub_ips_query_ajax('minjhih'); 
+		}
+	 });
+	
 	 $('.post.ip_and_url_scanResult #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
-			Call_sub_vul_query_ajax('ip_and_url_scanResult','html'); 
+			sub_vul_query_ajax('ip_and_url_scanResult','html'); 
 		}
 	 });
 
 	 $('.post.nmap #target').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
-			Call_retrieve_nmap_ajax('nmap');	
+			retrieve_nmap_ajax('nmap');	
 		}
 	 });
 
 	 $('.post.ldap #target').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
-			Call_retrieve_ldap_ajax('search');	
+			retrieve_ldap_ajax('search');	
 		}
 	 });
 
 	//bind serach_btn
 	$('.post.security_event #search_btn').click(function (){
-		Call_sub_query_ajax('security_event','html');
+		sub_query_ajax('security_event','html');
 	});
 
 	$('.post.tainangov_security_Incident #search_btn').click(function (){
-		Call_sub_query_ajax('tainangov_security_Incident','html');
+		sub_query_ajax('tainangov_security_Incident','html');
 	});
 
 	$('.post.security_contact #search_btn').click(function (){
-		Call_sub_query_ajax('security_contact','html');
+		sub_query_ajax('security_contact','html');
 	});
 	
 	$('.post.is_client_list .tab-content.gcb_client_list #search_btn').click(function (){
-		Call_sub_query_ajax('gcb_client_list','html');
+		sub_query_ajax('gcb_client_list','html');
 	});
 	
 	$('.post.is_client_list .tab-content.wsus_client_list #search_btn').click(function (){
-		Call_sub_query_ajax('wsus_client_list','html');
+		sub_query_ajax('wsus_client_list','html');
 	});
 	
 	$('.post.is_client_list .tab-content.antivirus_client_list #search_btn').click(function (){
-		Call_sub_query_ajax('antivirus_client_list','html');
+		sub_query_ajax('antivirus_client_list','html');
 	});
 	
 	$('.post.is_client_list .tab-content.drip_client_list #search_btn').click(function (){
-		Call_sub_query_ajax('drip_client_list','html');
+		sub_query_ajax('drip_client_list','html');
 	});
 	
 	$('.post.is_client_list .tab-content.drip_client_list #export2csv_btn').click(function (){
-		Call_sub_query_ajax('drip_client_list','csv');
+		sub_query_ajax('drip_client_list','csv');
 	});
 
-	$('.post.ips #search_btn').click(function (){
-		Call_sub_ips_query_ajax();
+	$('.post.network .tab-content.yonghua #search_btn').click(function (){
+		sub_ips_query_ajax('yonghua');
 	});
-
+	
+	$('.post.network .tab-content.minjhih #search_btn').click(function (){
+		sub_ips_query_ajax('minjhih');
+	});
+	
 	$('.post.ip_and_url_scanResult #search_btn').click(function (){
-		Call_sub_vul_query_ajax('ip_and_url_scanResult','html');
+		sub_vul_query_ajax('ip_and_url_scanResult','html');
 	});
 
 	$('.post.ip_and_url_scanResult #export2csv_btn').click(function (){
-		Call_sub_vul_query_ajax('ip_and_url_scanResult','csv');
+		sub_vul_query_ajax('ip_and_url_scanResult','csv');
 	});
 
 	/*bind retrieve button*/
 
 	//retrieve from Google Sheets of security events
 	$('#gs_event_btn').click(function(){
-		Call_retrieve_gs_ajax();	
+		retrieve_gs_ajax();	
 	});
 	//retrieve from Google Sheets of Ncert security incidents
 	$('#gs_ncert_event_btn').click(function(){
-		Call_retrieve_ncert_event_gs_ajax();
+		retrieve_ncert_event_gs_ajax();
 	});
 	//retrieve from GCB API
 	$('#gcb_api_btn').click(function(){
-		Call_retrieve_gcb_ajax();	
+		retrieve_gcb_ajax();	
 	});
 	//retrieve from Vulnerability Scans
 	$('#vs_btn').click(function(){
-		Call_retrieve_vs_ajax();	
+		retrieve_vs_ajax();	
 	});
 	//retrieve from nmap
 	$('.post.nmap #nmap_btn').click(function(){
-		Call_retrieve_nmap_ajax('nmap');	
+		retrieve_nmap_ajax('nmap');	
 	});
 	//retrieve from ldap search
 	$('.post.ldap #ldap_search_btn').click(function(){
-		Call_retrieve_ldap_ajax('search');	
+		retrieve_ldap_ajax('search');	
 	});
 	//retrieve from ldap newuser
 	$('.post.ldap #ldap_newuser_btn').click(function(){
-		Call_retrieve_ldap_ajax('newuser');	
+		retrieve_ldap_ajax('newuser');	
 	});
 	//retrieve from hydra
 	$('.post.hydra #hydra_btn').click(function(){
-		Call_retrieve_hydra_ajax('hydra');
+		retrieve_hydra_ajax('hydra');
 		console.log("hydra");
 	});
 	//retrieve from drip_IP_block
 	$('.post.is_client_list #block-btn').click(function(){
 		var response = $(this).parent().find('.block_IP_response');
-		console.log($(this).attr('data-ip'));
 		console.log("block-btn");
-		Call_drip_block_IP_ajax('block',$(this).attr('data-ip'),response);
+		drip_block_IP_ajax('block',$(this).attr('data-ip'),response);
 	});
 	//retrieve from drip_IP_unblock
 	$('.post.is_client_list #unblock-btn').click(function(){
 		var response = $(this).parent().find('.block_IP_response');
-		console.log($(this).attr('data-ip'));
 		console.log("unblock-btn");
-		Call_drip_block_IP_ajax('unblock',$(this).attr('data-ip'),response);
+		drip_block_IP_ajax('unblock',$(this).attr('data-ip'),response);
 	});
 	
 	//semantic progress bar
@@ -378,6 +399,9 @@ $(document).ready(function(){
 	$('#sidebar a').css('text-decoration','none');
 
 });
+
+
+/******Custom Functions*******/
 
 //ldap_edit
 function ldap_edit(isActive) {
@@ -429,7 +453,7 @@ function ldap_clear() {
 	return 0;
 }
 
-function Call_drip_block_IP_ajax(type,ip,response){
+function drip_block_IP_ajax(type,ip,response){
 	$('.ui.inline.loader').addClass('active');
 	console.log(type);
 	$.ajax({
@@ -451,14 +475,14 @@ function Call_drip_block_IP_ajax(type,ip,response){
 	return 0;
  }
 
-function Call_sub_query_ajax(type,ap){
+function sub_query_ajax(type,ap){
 	var selector = ".post."+type+" ";
 	if(type == 'gcb_client_list' || type == 'wsus_client_list' || type == 'antivirus_client_list' || type == 'drip_client_list'){
 		 selector = ".post.is_client_list .tab-content."+type+" ";
 	 }
 	var jsonObj = [];
 	$(selector + 'span.query_label').each(function () {
-		item = {}
+		var item = {}
 		item ["keyword"] = $(this).attr("keyword");
 		item ["key"] 	 = $(this).attr("key");
 		jsonObj.push(item);
@@ -492,7 +516,7 @@ function Call_sub_query_ajax(type,ap){
 	return 0;
  }
 
-function Call_sub_query_pagination_ajax(page,key,keyword,type,jsonObj){
+function sub_query_pagination_ajax(page,key,keyword,type,jsonObj){
 	 var selector = ".post."+type+" ";
 	 if(type == 'gcb_client_list' || type == 'wsus_client_list' || type == 'antivirus_client_list' || type == 'drip_client_list')  selector = ".post.is_client_list .tab-content."+type+" ";
 	 $.ajax({
@@ -513,21 +537,27 @@ function Call_sub_query_pagination_ajax(page,key,keyword,type,jsonObj){
 	return 0;
  }
 
-function Call_sub_ips_query_ajax(){
-	var type ="ips";
-	var selector = ".post."+type+" ";
+function sub_ips_query_ajax(type){
+	var selector = ".post.network .tab-content."+type+" ";
 	var key = $(selector + '#key').val();
 	var keyword = $(selector + '#keyword').val();
 	var operator = $(selector + '#operator').val();
 	var jsonObj = [];
 	$(selector + 'span.query_label').each(function () {
-		item = {}
+		var item = {}
 		item["keyword"] = $(this).attr("keyword");
 		item["key"] = $(this).attr("key");
 		item["operator"] = $(this).attr("operator");
 		jsonObj.push(item);
 	});
 	jsonObj = JSON.stringify(jsonObj);
+	var myContent = JSON.stringify({
+	   	 aList1: 1,
+		 aList2: 2,
+		 aList3: 3
+	});
+	console.log(myContent);     
+	console.log(jsonObj);     
 	if ( (typeof key != 'undefined' && key !='' && keyword !='' && operator !='') || jsonObj !='[]' ) {
 		//ap='html'
 		$.ajax({
@@ -535,7 +565,7 @@ function Call_sub_ips_query_ajax(){
 			 cache: false,
 			 dataType:'html',
 			 type:'GET',
-			 data: {key:key,keyword:keyword,operator:operator,jsonObj:jsonObj},
+			 data: {key:key,keyword:keyword,operator:operator,jsonObj:jsonObj,type:type},
 			 error: function(xhr) {
 				 alert('Ajax failed');
 			 },success: function(data) {
@@ -549,9 +579,8 @@ function Call_sub_ips_query_ajax(){
 	return 0;
 }
 
-function Call_load_ips_query_ajax(){
-	var type ='ips';
-	var selector = '.post.'+type+' ';
+function load_ips_query_ajax(type){
+	var selector = ".post.network .tab-content."+type+" ";
 	var key = 'any';
 	var keyword = 'all';
 	var operator = '=';
@@ -564,7 +593,7 @@ function Call_load_ips_query_ajax(){
 			 cache: false,
 			 dataType:'html',
 			 type:'GET',
-			 data: {key:key,keyword:keyword,operator:operator,jsonObj:jsonObj},
+			 data: {key:key,keyword:keyword,operator:operator,jsonObj:jsonObj,type:type},
 			 error: function(xhr) {
 				 alert('Ajax failed');
 			 },success: function(data) {
@@ -578,15 +607,14 @@ function Call_load_ips_query_ajax(){
 	return 0;
 }
 
-function Call_sub_ips_query_pagination_ajax(key,keyword,operator,page,jsonObj){
-	 var type ="ips";
-	 var selector = ".post."+type+" ";
+function sub_ips_query_pagination_ajax(key,keyword,operator,page,jsonObj,type){
+	 var selector = ".post.network .tab-content."+type+" ";
 	 $.ajax({
 		 url: '/ajax/sub_ips_query.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:key,keyword:keyword,operator:operator,page:page,jsonObj:jsonObj},
+		 data: {key:key,keyword:keyword,operator:operator,page:page,jsonObj:jsonObj,type:type},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -597,29 +625,31 @@ function Call_sub_ips_query_pagination_ajax(key,keyword,operator,page,jsonObj){
 	return 0;
  }
 
-function Call_sub_vul_query_ajax(type,ap){
+function sub_vul_query_ajax(type,ap){
 	var jsonObj = [];
 	$('.post.ip_and_url_scanResult span.query_label').each(function () {
 		var id = $(this).attr("title");
 		var email = $(this).val();
-		item = {}
+		var item = {}
 		item ["keyword"] = $(this).attr("keyword");
 		item ["key"] 	 = $(this).attr("key");
 		jsonObj.push(item);
 	});
 	jsonObj = JSON.stringify(jsonObj);
-	//console.log(jsonObj);     
 	var selector = ".post."+type+" ";
 	var obj = $(selector + "input[name='status[]']");
-	var overdue_and_unfinish = obj[0].checked;
-	var non_overdue_and_unfinish = obj[1].checked;
-	var finish = obj[2].checked;
+	var jsonStatus = {};
+	jsonStatus ["overdue_and_unfinish"] = obj[0].checked;
+	jsonStatus ["non_overdue_and_unfinish"] = obj[1].checked;
+	jsonStatus ["finish"] = obj[2].checked;
+	jsonStatus = JSON.stringify(jsonStatus);
+
 	var key 	= $(selector + '#key').val();
 	var keyword = $(selector + '#keyword').val();
 	if ( (typeof key != 'undefined' && key !='' && keyword !=''  && type !='') || jsonObj !='[]') {
 		//ap='csv'
 		if(ap=='csv'){
-			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_vul_query.php?key="+encodeURI(key)+"&keyword="+encodeURI(keyword)+"&type="+type+"&overdue_and_unfinish="+overdue_and_unfinish+"&non_overdue_and_unfinish="+non_overdue_and_unfinish+"&finish="+finish+"&ap="+ap+"&jsonObj="+encodeURIComponent(jsonObj));
+			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_vul_query.php?key="+encodeURI(key)+"&keyword="+encodeURI(keyword)+"&type="+type+"&ap="+ap+"&jsonStatus="+encodeURIComponent(jsonStatus)+"&jsonObj="+encodeURIComponent(jsonObj));
 		}else{
 		//ap='html'
 			$.ajax({
@@ -627,7 +657,7 @@ function Call_sub_vul_query_ajax(type,ap){
 				 cache: false,
 				 dataType:'html',
 				 type:'GET',
-				 data: {key:key,keyword:keyword,type:type,overdue_and_unfinish:overdue_and_unfinish,non_overdue_and_unfinish:non_overdue_and_unfinish,finish:finish,ap:ap,jsonObj:jsonObj},
+				 data: {key:key,keyword:keyword,type:type,ap:ap,jsonStatus:jsonStatus,jsonObj:jsonObj},
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
@@ -642,14 +672,14 @@ function Call_sub_vul_query_ajax(type,ap){
 	return 0;
 }
 
-function Call_sub_vul_query_pagination_ajax(page,key,keyword,type,overdue_and_unfinish,non_overdue_and_unfinish,finish,jsonObj){
+function sub_vul_query_pagination_ajax(page,key,keyword,type,jsonStatus,jsonObj){
 	 var selector = ".post."+type+" ";
 	 $.ajax({
 		 url: '/ajax/sub_vul_query.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {page:page,key:key,keyword:keyword,type:type,overdue_and_unfinish:overdue_and_unfinish,non_overdue_and_unfinish:non_overdue_and_unfinish,finish:finish,jsonObj:jsonObj},
+		 data: {page:page,key:key,keyword:keyword,type:type,jsonStatus:jsonStatus,jsonObj:jsonObj},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -670,7 +700,7 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-function Call_retrieve_ou_vul_ajax(){
+function retrieve_ou_vul_ajax(){
 	var url;
 	if (location.protocol == 'https:') url='https://sdc-iss.tainan.gov.tw/';
 	else							   url='http://sdc-iss.tainan.gov.tw/';
@@ -695,7 +725,7 @@ function Call_retrieve_ou_vul_ajax(){
 	return 0;
  }
 
-function Call_retrieve_gs_ajax(){
+function retrieve_gs_ajax(){
 	$.ajax({
 		 url: '/ajax/retrieve_event.php',
 		 cache: false,
@@ -712,7 +742,7 @@ function Call_retrieve_gs_ajax(){
 	return 0;
 }
 
-function Call_retrieve_ncert_event_gs_ajax(){
+function retrieve_ncert_event_gs_ajax(){
 	$.ajax({
 		 url: '/ajax/retrieve_ncert_event.php',
 		 cache: false,
@@ -729,7 +759,7 @@ function Call_retrieve_ncert_event_gs_ajax(){
 	return 0;
 }
 
-function Call_retrieve_gcb_ajax(){
+function retrieve_gcb_ajax(){
 	$.ajax({
 		 url: '/ajax/retrieve_gcb.php',
 		 cache: false,
@@ -746,7 +776,7 @@ function Call_retrieve_gcb_ajax(){
 	return 0;
 }
 
-function Call_retrieve_vs_ajax(){
+function retrieve_vs_ajax(){
 	$('.ui.inline.loader').addClass('active');
 	$.ajax({
 		 url: '/ajax/retrieve_vs.php',
@@ -765,7 +795,7 @@ function Call_retrieve_vs_ajax(){
 	return 0;
 }
 
-function Call_retrieve_ldap_tree_ajax(){
+function retrieve_ldap_tree_ajax(){
 	var selector = ".post.ldap_computer_tree ";
 	var url;
 	if (location.protocol == 'https:') url='https://' + location.hostname +'/';
@@ -788,7 +818,7 @@ function Call_retrieve_ldap_tree_ajax(){
 	return 0;
 }
 
-function Call_retrieve_hydra_ajax(type){
+function retrieve_hydra_ajax(type){
 	var selector = ".post."+type+" ";
 	$(selector + '.ui.inline.loader').addClass('active');
 	console.log($(selector + "input[name='one_pwd_mode']:checked").val());
@@ -809,7 +839,7 @@ function Call_retrieve_hydra_ajax(type){
 	return 0;
 }
 
-function Call_retrieve_nmap_ajax(type){
+function retrieve_nmap_ajax(type){
 	var selector = ".post."+type+" ";
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
@@ -829,7 +859,7 @@ function Call_retrieve_nmap_ajax(type){
 	return 0;
 }
 
-function Call_retrieve_ldap_ajax(type){
+function retrieve_ldap_ajax(type){
 	var selector = ".post.ldap ";
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
@@ -857,7 +887,6 @@ function pageSwitch(){
 	var mainpage = (typeof page[1] != 'undefined')? page[1]:'info';	
 	var subpage = (typeof page[2] != 'undefined')?page[2]:'enews';	
 
-	//console.log(url);
 	//var mainpage = (getParameterByName('mainpage',url)!= null)?getParameterByName('mainpage',url):'info';	
 	//var subpage = (getParameterByName('subpage',url)!= null)?getParameterByName('subpage',url):1;	
 	
@@ -865,18 +894,18 @@ function pageSwitch(){
     switch(true){
 		//load ips_query
       	case (mainpage == 'query' && subpage == 'network' ):
-			Call_load_ips_query_ajax();
+			load_ips_query_ajax('yonghua');
+			load_ips_query_ajax('minjhih');
         	break;
 		//load ldap's tree
       	case (mainpage == 'tool' && subpage == 'ldap' ):
-			Call_retrieve_ldap_tree_ajax();
+			retrieve_ldap_tree_ajax();
         	break;
 	 	//load ou_vs_content
      	case (mainpage == 'vul' && subpage == 'overview' ):
-			Call_retrieve_ou_vul_ajax();
+			retrieve_ou_vul_ajax();
         	break;
       	default:
-        	//console.log("nothing");
         	break;
     }	
 	var num = tab-1;

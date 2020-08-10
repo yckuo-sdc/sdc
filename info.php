@@ -5,10 +5,10 @@
 
 	switch($subpage){
 		case 'enews': load_info_enews(); break;
-		case 'comparison': load_info_comparison(); break;
 		case 'ranking': load_info_ranking(); break;
 		case 'vul': load_info_vul(); break;
 		case 'client': load_info_client(); break;
+		case 'network': load_info_network(); break;
 	}
 ?>
 <?php
@@ -150,29 +150,19 @@ function load_info_enews(){
 	</div><!-- end #content -->
 </div> <!--end #page-->
 <?php } 
-function load_info_comparison(){
+function load_info_ranking(){
 ?>	
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">Compared with last year</div>
+				<div class="post_title">資安事件跨年度比較</div>
 				<div class="post_cell">
 				繪製長條圖時，長條柱或柱組中線須對齊項目刻度。相較之下，折線圖則是將數據代表之點對齊項目刻度。在數字大且接近時，兩者皆可使用波浪形省略符號，以擴大表現數據間的差距，增強理解和清晰度。
 				</div>
 				<div id="chartB" class="chart"></div>	
 				<button id="show_chart_btn" class="ui button">Plot</button>
 			</div>
-		</div>
-		<div style="clear: both;">&nbsp;</div>
-	</div><!-- end #content -->
-</div> <!--end #page-->
-<?php } 
-function load_info_ranking(){
-?>	
-<div id="page" class="container">
-	<div id="content">
-		<div class="sub-content show">
 			<div class="post">
 				<div class="post_title">資安類型統計圖</div>
 				<div class="post_cell">
@@ -191,12 +181,6 @@ function load_info_ranking(){
 					<div id="chartC-3" class="chart"></div>	
 			    </div>		
 			</div>
-			<!--<div class="post">
-				<div class="post_title">Top 10 攻擊來源IP</div>
-				<div class="post_cell">
-					<div id="chartC-4" class="chart"></div>	
-			    </div>		
-			</div>-->
 		</div>
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
@@ -414,7 +398,7 @@ function load_info_client(){
 			<div class="post">
 				<div class="post_title">網段使用IP統計圖</div>
 				<div class="post_cell">
-					<div id="chartG" class="chart"></div>	
+					<div id="chartE-1" class="chart"></div>	
 				</div>
 			</div> <!--end #post-->
 			<div class="post">
@@ -440,13 +424,13 @@ function load_info_client(){
 						  <div class="label">通過數 / 總安裝數</div>
 						</div>
 					</center>
-					<div id="chartF" class="chart"></div>	
+					<div id="chartE-2" class="chart"></div>	
 				</div>
 			</div>
 			<div class="post">
 				<div class="post_title">GCB作業系統統計圖</div>
 				<div class="post_cell">
-					<div id="chartE" class="chart"></div>	
+					<div id="chartE-3" class="chart"></div>	
 			    </div>		
 			</div>
 			<div class="post">
@@ -583,8 +567,142 @@ function load_info_client(){
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
 </div> <!--end #page-->
- 
 <?php } 
+function load_info_network(){
 ?>	
+<div id="page" class="container">
+	<div id="content">
+		<div class="sub-content show">
+			<div class="post">
+				<div class="post_title">Top 10 對外應用程式</div>
+				<div class="post_cell">
+					<div id="chartF" class="chart"></div>	
+			    </div>		
+			</div>
+			<div class="post">
+				<div class="post_title">Top 10 攻擊方式</div>
+				<div class="post_cell">
+					<div id="chartF-2" class="chart"></div>	
+			    </div>		
+			</div>
+			<div class="post">
+				<div class="post_title">Top 10 被阻擋應用程式</div>
+				<div class="post_cell">
+					<div id="chartF-3" class="chart"></div>	
+			    </div>		
+			</div>
+			<div class="post">
+				<div class="post_title">威脅日誌(最近10筆)</div>
+				<div class="post_cell">
+					<!--<table class="ui very basic single line table">-->
+					<table class="ui very basic table">
+					 <?php 
+						require_once("ajax/paloalto_api.php");
+						require_once("ajax/paloalto_config.inc.php");
+						$pa = new paloalto\api\PaloaltoAPI($host, $username, $password);
+						$log_type = 'threat';
+						$dir = 'backward';
+						$nlogs = 10;
+						$skip = 0;
+						$query = '';
+						$res = $pa->GetLogList($log_type, $dir, $nlogs, $skip, $query);
+						$xml = simplexml_load_string($res) or die("Error: Cannot create object");
+						$job = $xml->result->job;
+						$xml_type = "op";
+						$cmd = "<show><query><result><id>".$job."</id></result></query></show>";
+						$res = $pa->GetXmlCmdResponse($xml_type, $cmd);
+						$xml = simplexml_load_string($res) or die("Error: Cannot create object");
+						$count = 0;
+						echo "<thead>";	
+						echo "<tr>";
+							echo "<th>接收時間</th>";
+							echo "<th>名稱</th>";
+							echo "<th>類型</th>";
+							echo "<th>來源IP</th>";
+							echo "<th>目的IP</th>";
+							echo "<th>目的port</th>";
+							echo "<th>應用程式</th>";
+						echo "</tr>";
+						echo "</thead>";	
+						echo "<tbody>";	
+						foreach($xml->result->log->logs->entry as $log){
+							echo "<tr>";
+								echo "<td>".$log->receive_time."</td>";
+                        		echo "<td>".$log->threatid."</td>";
+								echo "<td>".$log->subtype."</td>";
+                        		echo "<td>".$log->src."</td>";
+								echo "<td>".$log->dst."</td>";
+								echo "<td>".$log->dport."</td>";
+								echo "<td>".$log->app."</td>";
+							echo "</tr>";
+						}
+						echo "</tbody>";
+						echo "</table>";
+					?>
+					<div class="see_more" style="text-align:right">
+						<a href="/query/network/">See More...</a>
+					</div>
+				</div>
+			</div>
+			<div class="post">
+				<div class="post_title">Top 10 目的地國家</div>
+				<div class="post_cell">
+					<table class="ui very basic single line table">
+					<tr>
+						<th>目的地國家</th>
+						<th>位元組</th>
+						<th>同時連線數</th>
+					</tr>
+					<?php
+					$report_type = 'predefined';
+					$report_name = 'top-destination-countries';	
+					$res = $pa->GetReportList($report_type, $report_name);
+					$xml = simplexml_load_string($res) or die("Error: Cannot create object");
+					$max_count = 10;
+					$max_bytes = 0;
+					$max_sessions = 0;
+					$count = 0;
+					foreach($xml->result->entry as $log){
+						if($count >= $max_count){
+							break;
+						}elseif($count == 0){
+							$max_sessions = $log->sessions;
+						}	
+						if( ($log->bytes - $max_bytes) > 0){
+							$max_bytes = $log->bytes;
+						}
+						$count = $count + 1;
+					}
+					$count = 0;
+					foreach($xml->result->entry as $log){
+						if($count >= $max_count){
+							break;
+						}
+						$bytes_ratio = round($log->bytes*100/$max_bytes,0);
+						$sessions_ratio = round($log->sessions*100/$max_sessions,0);
+						$bytes_ratio = ($bytes_ratio != 0)? $bytes_ratio : 1;
+						$sessions_ratio = ($sessions_ratio != 0)? $sessions_ratio : 1;
+						$Gbytes = round($log->bytes/1024/1024/1024,1);
+						$Ksessions = round($log->sessions/1000,1);
+						echo "<tr>";
+							echo "<td>".$log->dstloc."</td>";
+							echo "<td>";
+								echo "<div style='width:".$bytes_ratio."%;background:#78838c'>&nbsp</div>";	
+								echo $Gbytes."G";
+							echo "</td>";
+							echo "<td>";
+								echo "<div style='width:".$sessions_ratio."%;background:#78838c'>&nbsp</div>";	
+								echo $Ksessions."k";
+							echo "</td>";
+						echo "</tr>";
+						$count = $count + 1;
+					}
+					?>
+					</table>
+			    </div>		
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+	</div><!-- end #content -->
+<?php } ?>	
 		
 		

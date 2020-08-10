@@ -18,7 +18,6 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
 	<!-- node_modules-->
-	<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
 	<script src="/node_modules/d3js/d3.min.js" charset="utf-8"></script>
 	<link href="/node_modules/c3js/c3.css" rel="stylesheet" type="text/css">
 	<script src="/node_modules/c3js/c3.min.js"></script>

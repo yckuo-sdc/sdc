@@ -11,6 +11,7 @@
 	$keyword = $_GET['keyword'];
 	$operator = $_GET['operator'];
 	$jsonObj = $_GET['jsonObj']; 
+	$type = $_GET['type']; 
 	$page = isset($_GET['page']) ? $_GET['page'] : 1;	
 	
 	$prev_page = ($page == 1) ? 1 : ($page-1);
@@ -53,8 +54,11 @@
 		}
 	}
 	$nlogs = $max_item;
-	$dir = "backward";
+	$dir = 'backward';
 	$skip = ($page-1)*$nlogs;
+	
+	$host_map = ['yonghua' => '172.16.254.209', 'minjhih' => '10.6.2.102',];
+	$host = $host_map[$type];
 	
 	$pa = new pa\PaloaltoAPI($host, $username, $password);
 	$log_type_map = ['traffic','threat','data'];
@@ -65,9 +69,9 @@
 		$xml = simplexml_load_string($res) or die("Error: Cannot create object");
 		$job = $xml->result->job;
 
-		$type = "op";
+		$xml_type = "op";
 		$cmd = "<show><query><result><id>".$job."</id></result></query></show>";
-		$res = $pa->GetXmlCmdResponse($type, $cmd);
+		$res = $pa->GetXmlCmdResponse($xml_type, $cmd);
 		$xml = simplexml_load_string($res) or die("Error: Cannot create object");
 
 		if($xml['status'] != 'success'){
@@ -116,20 +120,20 @@
 	
 	//The href-link of bottom pages
 	echo "<div class='ui pagination menu'>";	
-	echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."'> ← </a>";
+	echo "<a class='item' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."'> ← </a>";
 	for ($p = $lb; $p <= $ub ;$p++){
 		if($p == $page){
-			echo"<a class='active item bold' href='javascript: void(0)' page='".$p."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' >".$p."</a>";
+			echo"<a class='active item bold' href='javascript: void(0)' page='".$p."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' >".$p."</a>";
 		}else{
-			echo"<a class='item test' href='javascript: void(0)' page='".$p."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' >".$p."</a>";
+			echo"<a class='item' href='javascript: void(0)' page='".$p."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' >".$p."</a>";
 		}
 	}
-	echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' > → </a>";		   echo "</div>";
+	echo"<a class='item' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' > → </a>";		   echo "</div>";
 
 	//The mobile href-link of bottom pages
 	echo "<div class='ui pagination menu mobile'>";	
-	echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' > ← </a>";
-	echo"<a class='active item bold' href='javascript: void(0)' page='".$page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' >".$page."</a>";
-	echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' > → </a>";		
+	echo "<a class='item' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' > ← </a>";
+	echo"<a class='active item bold' href='javascript: void(0)' page='".$page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' >".$page."</a>";
+	echo"<a class='item' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' > → </a>";		
 	echo "</div>";
 ?> 

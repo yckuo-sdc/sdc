@@ -13,10 +13,10 @@
   <div class="header">視覺化資訊</div>
   <div class="menu">
       <a class="item" href="/info/enews/">Enews</a>
-      <a class="item" href="/info/comparison/">Comparsion</a>
       <a class="item" href="/info/ranking/">Ranking Data</a>
       <a class="item" href="/info/vul/">VUL Bar</a>
       <a class="item" href="/info/client/">Client</a>
+      <a class="item" href="/info/network/">Network</a>
   </div>
 </div>
 <div class="item">

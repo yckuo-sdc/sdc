@@ -1,28 +1,24 @@
 <?php
 	require("../login/function.php");
 	if( (!empty($_GET['key']) && !empty($_GET['keyword']) && !empty($_GET['type']) ) || count(json_decode($_GET['jsonObj'],true)) !=0  ){
-		//過濾特殊字元(')
+		
 		$key = $_GET['key'];
 		$keyword = $_GET['keyword'];
 		$type = $_GET['type'];
-		$overdue_and_unfinish = $_GET['overdue_and_unfinish'];
-		$non_overdue_and_unfinish = $_GET['non_overdue_and_unfinish'];
-		$finish = $_GET['finish'];
+		$jsonStatus = $_GET['jsonStatus']; 
 		$jsonObj = $_GET['jsonObj']; 
 		if (!isset($_GET['page']))	$pages = 1; 
 		else						$pages = $_GET['page']; 
 		if (!isset($_GET['ap']))	$ap = 'html'; 
 		else						$ap = $_GET['ap']; 
 
+		$arr_jsonStatus = json_decode($jsonStatus,true);
 		$arr_jsonObj = json_decode($jsonObj,true);
 
 		//connect database
         require("../mysql_connect.inc.php");
 		 //特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
 		$type = mysqli_real_escape_string($conn,$type);
-		$overdue_and_unfinish = mysqli_real_escape_string($conn,$overdue_and_unfinish);
-		$non_overdue_and_unfinish = mysqli_real_escape_string($conn,$non_overdue_and_unfinish);
-		$finish = mysqli_real_escape_string($conn,$finish);
 		
 		$table_map = [
 			'ip_and_url_scanResult' => 'ip_and_url_scanResult',
@@ -30,6 +26,47 @@
 			'urlscanResult' => 'urlscanResult'
 		];
 		$table = $table_map[$type];
+		
+		$status_map2 = [	//overdue_and_unfinish + non_overdue_and_unfinish + finish
+			"1" => [
+				"1" =>  [ 
+					"1" => "" , //done 
+					"0" => "AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)')" //done
+				],
+				"0" => [ 
+					"1" => "AND (
+						( severity IN ('High','Critical') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date < DATE_SUB(NOW(), INTERVAL 1 MONTH) )
+						OR 
+						( severity IN ('Medium') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date < DATE_SUB(NOW(), INTERVAL 2 MONTH) )
+						OR status IN ('已修補','豁免','誤判')
+					)"  ,  //done
+					"0" => "AND (
+						( severity IN ('High','Critical') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date < DATE_SUB(NOW(), INTERVAL 1 MONTH) )
+						OR 
+						( severity IN ('Medium') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date < DATE_SUB(NOW(), INTERVAL 2 MONTH) )
+					)"  //done
+				]
+			],
+			"0" => [	
+				"1" => [
+					"1" => "AND (
+						( severity IN ('High','Critical') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date >= DATE_SUB(NOW(), INTERVAL 1 MONTH) )
+						OR 
+						( severity IN ('Medium') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date >= DATE_SUB(NOW(), INTERVAL 2 MONTH) )
+						OR status IN ('已修補','豁免','誤判')
+					)"  ,  //done
+					"0" => "AND (
+						( severity IN ('High','Critical') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date >= DATE_SUB(NOW(), INTERVAL 1 MONTH) )
+						OR 
+						( severity IN ('Medium') AND status IN ('待處理','待處理(經複查仍有弱點)','豁免(待簽核)','誤判(待簽核)','已修補(待複檢)') AND scan_date >= DATE_SUB(NOW(), INTERVAL 2 MONTH) )
+					)" //done
+				],
+				"0" => [ 
+					"1" => "AND status IN ('已修補','豁免','誤判')", //done
+					'0' => "AND status IN ('')"  //done 
+				]
+			]	
+		];
 		
 		$status_map = [	//overdue_and_unfinish + non_overdue_and_unfinish + finish
 			"true" => [
@@ -71,8 +108,9 @@
 				]
 			]	
 		];
-		$status_condition = $status_map[$overdue_and_unfinish][$non_overdue_and_unfinish][$finish];
-		//echo $status_condition."<br>";
+		
+		$status_condition = $status_map2[$arr_jsonStatus['overdue_and_unfinish']][$arr_jsonStatus['non_overdue_and_unfinish']][$arr_jsonStatus['finish']];
+		//$status_condition = $status_map[$overdue_and_unfinish][$non_overdue_and_unfinish][$finish];
 		
 		if( count($arr_jsonObj) !=0 ){
 			$condition = "";
@@ -123,9 +161,7 @@
 					echo "<div class='item'>";
 					echo "<div class='content'>";
 						echo "<a>";
-						if($table=="V_ip_and_url_scanResult"){
-							echo "<span style='background:#f3c4c4'>".$row['type']."</span>&nbsp&nbsp";
-						}
+						echo "<span style='background:#f3c4c4'>".$row['type']."</span>&nbsp&nbsp";
 						echo $row['flow_id']."&nbsp&nbsp";
 						echo str_replace("/臺南市政府/","",$row['ou'])."&nbsp&nbsp";
 						echo "<span style='background:#fde087'>".$row['system_name']."</span>&nbsp&nbsp";
@@ -138,9 +174,7 @@
 						echo "</a>";
 						echo "<div class='description'>";
 							echo "<ol>";
-							if($table=="V_ip_and_url_scanResult"){
-								echo "<li>弱點類別:".$row['type']."</li>";
-							}
+							echo "<li>弱點類別:".$row['type']."</li>";
 							echo "<li>流水號:".$row['flow_id']."</li>";
 							echo "<li>弱點序號:".$row['vitem_id']."</li>";
 							echo "<li>弱點名稱:".$row['vitem_name']."</li>";
@@ -151,10 +185,7 @@
 							echo "<li>掃描日期:".date_format(new DateTime($row['scan_date']),'Y-m-d')."</li>";
 							echo "<li>管理員:".$row['manager']."</li>";
 							echo "<li>Email:".$row['email']."</li>";
-							//urlscanResult's extra field 
-							if($table=="urlscanResult" || $table=="V_ip_and_url_scanResult"){
-								echo "<li>影響網址:<a href='".$row['affect_url']."' target='_blank'>".$row['affect_url']."</a></li>";
-							}
+							echo "<li>影響網址:<a href='".$row['affect_url']."' target='_blank'>".$row['affect_url']."</a></li>";
 							echo "<li>弱點詳細資訊:<a href='".$row['url']."' target='_blank'>".$row['url']."</a></li>";
 							echo "<li>總類:".$row['category']."</li>";
 							echo "<li>風險程度:".$row['severity']."</li>";
@@ -169,25 +200,25 @@
 				echo "</div>";
 				//The href-link of bottom pages
 				echo "<div class='ui pagination menu'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish ='".$non_overdue_and_unfinish."' finish ='".$finish."' jsonObj='".$jsonObj."' >首頁</a>";
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."' > ← </a>";
+				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonStatus='".$jsonStatus."' jsonObj='".$jsonObj."' >首頁</a>";
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonStatus='".$jsonStatus."'  jsonObj='".$jsonObj."' > ← </a>";
 				for ($j = $lb; $j <= $ub ;$j++){
 					if($j == $pages){
-						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'>".$j."</a>";
+						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonStatus='".$jsonStatus."' jsonObj='".$jsonObj."'>".$j."</a>";
 					}else{
-						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'>".$j."</a>";
+						echo"<a class='item test' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonStatus='".$jsonStatus."' jsonObj='".$jsonObj."'>".$j."</a>";
 					}
 				}
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'> → </a>";		
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonStatus='".$jsonStatus."' jsonObj='".$jsonObj."'> → </a>";		
 				//last page
-				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'>末頁</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$Totalpages."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonStatus='".$jsonStatus."' jsonObj='".$jsonObj."'>末頁</a>";
 				echo "</div>";
 
 				//The mobile href-link of bottom pages
 				echo "<div class='ui pagination menu mobile'>";	
-				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'> ← </a>";
-				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'>(".$pages."/".$Totalpages.")</a>";
-				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' overdue_and_unfinish='".$overdue_and_unfinish."' non_overdue_and_unfinish='".$non_overdue_and_unfinish."' finish='".$finish."' jsonObj='".$jsonObj."'> → </a>";		
+				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonStatus='".$jsonStatus."' jsonObj='".$jsonObj."'> ← </a>";
+				echo"<a class='active item bold' href='javascript: void(0)' page='".$pages."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonStatus='".$jsonStatus."' jsonObj='".$jsonObj."'>(".$pages."/".$Totalpages.")</a>";
+				echo"<a class='item test' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonStatus='".$jsonStatus."' jsonObj='".$jsonObj."'> → </a>";		
 				echo "</div>";
 			}
 		}elseif($ap='csv'){

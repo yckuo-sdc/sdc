@@ -104,7 +104,7 @@
 				//record number on each page & maxumun pages on pagination			
 				$per = 10; 	
 				$max_pages = 10;
-				list($sql_subpage,$prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages) = getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages);
+				list($sql_subpage,$prev_page,$next_page,$lb,$ub,$Totalpages) = getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages);
 				$result = mysqli_query($conn,$sql_subpage);
 				switch($type){
 					case "security_event": 
@@ -487,7 +487,7 @@
 				echo "<div class='ui pagination menu'>";	
 				echo "<a class='item test' href='javascript: void(0)' page='1' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."'  >首頁</a>";
 				echo "<a class='item test' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."'  > ← </a>";
-				for ($j = $lower_bound; $j <= $upper_bound ;$j++){
+				for ($j = $lb; $j <= $ub ;$j++){
 					if($j == $pages){
 						echo"<a class='active item bold' href='javascript: void(0)' page='".$j."' key='".$key."' keyword ='".$keyword."' type='".$type."' jsonObj='".$jsonObj."' >".$j."</a>";
 					}else{

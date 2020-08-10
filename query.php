@@ -913,15 +913,15 @@ function load_query_ips(){
 <div id="page" class="container">
 <div id="content">
 		<div class="sub-content show">
-			<div class="post ips">
+			<div class="post network">
 				<div class="post_title">網路流量日誌(IPS)</div>
 				<div class="post_cell">
 					<div class="ui top attached tabular menu">
-						<a class="active item">YongHua</a>
-						<a class="item">MinJhih</a>
+						<a class="active item">Yonghua</a>
+						<a class="item">Minjhih</a>
 					</div>
 					<div class="ui bottom attached segment">
-						<div class="tab-content nmap show">
+						<div class="tab-content yonghua show">
 						<div class="query_content"></div>
 						<form class="ui form" action="javascript:void(0)">
 						<div class="fields">
@@ -962,7 +962,46 @@ function load_query_ips(){
 						</form>
 						<div class="record_content"></div>
 						</div> <!-- end of .tabular-->
-						<div class="tab-content portscan">
+						<div class="tab-content minjhih">
+						<div class="query_content"></div>
+						<form class="ui form" action="javascript:void(0)">
+						<div class="fields">
+							<div class="field">
+								<label>種類</label>
+								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
+								<option value="addr.src" class="keyword_paper active" selected>來源IP</option>
+								<option value="addr.dst" class="keyword_paper active">目的IP</option>
+								<option value="port.dst" class="keyword_paper active">目的port</option>
+								<option value="app" class="keyword_paper active">應用程式</option>
+								<option value="action" class="keyword_paper active">動作</option>
+								</select>
+							</div>
+							<div class="field">
+								<label>運算</label>
+								<select name="operator" id="operator" class="ui fluid dropdown" required>
+								<option value="=" class="keyword_paper active" selected>=</option>
+								<option value="!=" class="keyword_paper active">!=</option>
+								</select>
+							</div>
+							<div class="field">
+								<label>關鍵字</label>
+								<div class="ui input">
+									<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
+								</div>
+							</div>
+							<div class="field">
+								<label>新增條件</label>
+								<i class="large square icon plus"></i>
+							</div>
+							<div class="field">
+								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+							</div>
+							 <div class="field">
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/network/'">顯示全部</button>
+							</div>
+						</div>
+						</form>
+						<div class="record_content"></div>
 						</div> <!-- end of .tabular-->
 					</div> <!-- end of .attached.segment-->
 				</div>
