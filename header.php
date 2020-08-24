@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<!--header.php-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
+<!--header-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,15 +30,13 @@
 	<link href="/css/default.css" rel="stylesheet" type="text/css" media="all" />
 
 	<!-- add my CSS-->
-	<link href="/css/add.css" rel="stylesheet"/>
 	<link href="/css/subpage.css" rel="stylesheet"/>
+	<link href="/css/add.css" rel="stylesheet"/>
 
 	<!-- add my JS-->
 	<script src="/js/add.js"></script>
-	<script src='/js/show_chart.js'></script>
+	<script src='/js/showchart.js'></script>
 
-	<!-- add php function-->
-	<?php require_once("login/function.php");?>
 </head>
 <body id="example">
 

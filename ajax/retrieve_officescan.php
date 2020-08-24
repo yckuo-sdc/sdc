@@ -60,13 +60,13 @@ if (($handle = fopen($file, "r")) !== FALSE) {
 	echo "No target-data \n\r<br>";
 	$status = 400;
 }
-	$sql = "SELECT * FROM api_list WHERE class LIKE '防毒軟體' and name LIKE '用戶端清單' ";
-	$result = mysqli_query($conn,$sql);
-	$row = mysqli_fetch_assoc($result);
-	$sql = "INSERT INTO api_status(api_id,url,status,data_number,last_update) VALUES(".$row['id'].",'',".$status.",".$count.",'".$nowTime."')";
-	if ($conn->query($sql) == TRUE){
-	}else {
-		echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
-	}
-	$conn->close();
-?>
+
+$sql = "SELECT * FROM api_list WHERE class LIKE '防毒軟體' and name LIKE '用戶端清單' ";
+$result = mysqli_query($conn,$sql);
+$row = mysqli_fetch_assoc($result);
+$sql = "INSERT INTO api_status(api_id,url,status,data_number,last_update) VALUES(".$row['id'].",'',".$status.",".$count.",'".$nowTime."')";
+if ($conn->query($sql) == TRUE){
+}else {
+	echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
+}
+$conn->close();

@@ -1,14 +1,12 @@
-<!--tool.php-->
+<!--tool-->
 <?php 
-	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-	else						$subpage = 'nmap';
-	switch($subpage){
-		case 'nmap': load_tool_nmap(); 		break;
-		case 'ldap': load_tool_ldap(); 		break;
-		case 'hydra': load_tool_hydra(); 		break;
-	}
-?>
-<?php
+if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
+else						$subpage = 'nmap';
+switch($subpage){
+	case 'nmap': load_tool_nmap(); 		break;
+	case 'ldap': load_tool_ldap(); 		break;
+	case 'hydra': load_tool_hydra(); 		break;
+}
 function load_tool_nmap(){
 ?>
 <div id="page" class="container">

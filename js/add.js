@@ -3,7 +3,7 @@ $(document).ready(function(){
 
 	pageSwitch();
 	
-	//sidebar內容切換
+	//sidebar switch
 	$('#sidebar li li').click(function(){
 		var num = $(this).index();
 		var content = $('#content').find('.sub-content')[num];
@@ -22,7 +22,7 @@ $(document).ready(function(){
 		history.pushState({"mainpage": mainpage,"subpage": subpage},"", "index.php?mainpage="+mainpage+"&subpage="+subpage);
 	});
 	
-	//tabular tab 內容切換
+	//tabular tab switch
 	$('.tabular.menu .item').click(function(){
 		var num = $(this).index();
 		var content = $('.ui.attached.segment').find('.tab-content')[num];
@@ -161,7 +161,39 @@ $(document).ready(function(){
 	});
 	
 	/*query.php's component action*/
-	$('.post.is_client_list .tab-content.drip_client_list .query_content, .post.network .tab-content.yonghua .query_content, .post.network .tab-content.minjhih .query_content').delegate('button.close', 'click', function() {
+	$('.post.network .tab-content.idc i.square.icon').click(function() {
+		var selector = ".post.network .tab-content.idc ";
+		var key = $(selector + '#key').val();
+		var keyword = $(selector + '#keyword').val();
+		var operator = $(selector + '#operator').val();
+		var keyword_text = $(selector + '#keyword option:selected').text();
+		if (typeof key != 'undefined' && key !='' && keyword !='' && operator !='') {
+			var query_content = $(selector + '.query_content');
+			var query_label ="<span class='query_label' keyword='"+keyword+"' operator='"+operator+"' key='"+key+"'>"+keyword_text+operator+key+"<button type='button' class='close' style='opacity:0.2'><i class='close icon'></i></button></span>";
+			query_content.append(query_label);
+		}else{
+			alert("沒有輸入");
+		}
+	});
+	
+	/*query.php's component action*/
+	$('.post.network .tab-content.intrayonghua i.square.icon').click(function() {
+		var selector = ".post.network .tab-content.intrayonghua ";
+		var key = $(selector + '#key').val();
+		var keyword = $(selector + '#keyword').val();
+		var operator = $(selector + '#operator').val();
+		var keyword_text = $(selector + '#keyword option:selected').text();
+		if (typeof key != 'undefined' && key !='' && keyword !='' && operator !='') {
+			var query_content = $(selector + '.query_content');
+			var query_label ="<span class='query_label' keyword='"+keyword+"' operator='"+operator+"' key='"+key+"'>"+keyword_text+operator+key+"<button type='button' class='close' style='opacity:0.2'><i class='close icon'></i></button></span>";
+			query_content.append(query_label);
+		}else{
+			alert("沒有輸入");
+		}
+	});
+	
+	/*query.php's component action*/
+	$('.post.is_client_list .tab-content.drip_client_list .query_content, .post.network .tab-content.yonghua .query_content, .post.network .tab-content.minjhih .query_content, .post.network .tab-content.idc .query_content, .post.network .tab-content.intrayonghua .query_content').delegate('button.close', 'click', function() {
 		var span = $(this).parent('span');
 		span.remove();
 	});
@@ -242,6 +274,18 @@ $(document).ready(function(){
 		}
 	 });
 	
+	 $('.post.network .tab-content.idc #key').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			sub_ips_query_ajax('idc'); 
+		}
+	 });
+	
+	 $('.post.network .tab-content.intrayonghua #key').keyup(function(event) {
+		 if(event.keyCode == 13 ) {
+			sub_ips_query_ajax('intrayonghua'); 
+		}
+	 });
+	
 	 $('.post.ip_and_url_scanResult #key').keyup(function(event) {
 		 if(event.keyCode == 13 ) {
 			sub_vul_query_ajax('ip_and_url_scanResult','html'); 
@@ -301,6 +345,14 @@ $(document).ready(function(){
 		sub_ips_query_ajax('minjhih');
 	});
 	
+	$('.post.network .tab-content.idc #search_btn').click(function (){
+		sub_ips_query_ajax('idc');
+	});
+	
+	$('.post.network .tab-content.intrayonghua #search_btn').click(function (){
+		sub_ips_query_ajax('intrayonghua');
+	});
+	
 	$('.post.ip_and_url_scanResult #search_btn').click(function (){
 		sub_vul_query_ajax('ip_and_url_scanResult','html');
 	});
@@ -311,49 +363,46 @@ $(document).ready(function(){
 
 	/*bind retrieve button*/
 
-	//retrieve from Google Sheets of security events
+	//Google Sheets of security events
 	$('#gs_event_btn').click(function(){
 		retrieve_gs_ajax();	
 	});
-	//retrieve from Google Sheets of Ncert security incidents
+	//Google Sheets of Ncert security incidents
 	$('#gs_ncert_event_btn').click(function(){
 		retrieve_ncert_event_gs_ajax();
 	});
-	//retrieve from GCB API
+	//GCB API
 	$('#gcb_api_btn').click(function(){
 		retrieve_gcb_ajax();	
 	});
-	//retrieve from Vulnerability Scans
+	//Vulnerability Scans
 	$('#vs_btn').click(function(){
 		retrieve_vs_ajax();	
 	});
-	//retrieve from nmap
+	//Nmap
 	$('.post.nmap #nmap_btn').click(function(){
 		retrieve_nmap_ajax('nmap');	
 	});
-	//retrieve from ldap search
+	//LDAP search
 	$('.post.ldap #ldap_search_btn').click(function(){
 		retrieve_ldap_ajax('search');	
 	});
-	//retrieve from ldap newuser
+	//LDAP newuser
 	$('.post.ldap #ldap_newuser_btn').click(function(){
 		retrieve_ldap_ajax('newuser');	
 	});
-	//retrieve from hydra
+	//Hydra
 	$('.post.hydra #hydra_btn').click(function(){
 		retrieve_hydra_ajax('hydra');
-		console.log("hydra");
 	});
-	//retrieve from drip_IP_block
+	//drip_IP_block
 	$('.post.is_client_list #block-btn').click(function(){
 		var response = $(this).parent().find('.block_IP_response');
-		console.log("block-btn");
 		drip_block_IP_ajax('block',$(this).attr('data-ip'),response);
 	});
-	//retrieve from drip_IP_unblock
+	//drip_IP_unblock
 	$('.post.is_client_list #unblock-btn').click(function(){
 		var response = $(this).parent().find('.block_IP_response');
-		console.log("unblock-btn");
 		drip_block_IP_ajax('unblock',$(this).attr('data-ip'),response);
 	});
 	
@@ -551,15 +600,9 @@ function sub_ips_query_ajax(type){
 		jsonObj.push(item);
 	});
 	jsonObj = JSON.stringify(jsonObj);
-	var myContent = JSON.stringify({
-	   	 aList1: 1,
-		 aList2: 2,
-		 aList3: 3
-	});
-	console.log(myContent);     
-	console.log(jsonObj);     
 	if ( (typeof key != 'undefined' && key !='' && keyword !='' && operator !='') || jsonObj !='[]' ) {
 		//ap='html'
+		$(selector + '.ui.inline.loader').addClass('active');
 		$.ajax({
 			 url: '/ajax/sub_ips_query.php',
 			 cache: false,
@@ -569,6 +612,7 @@ function sub_ips_query_ajax(type){
 			 error: function(xhr) {
 				 alert('Ajax failed');
 			 },success: function(data) {
+				 $(selector + '.ui.inline.loader').removeClass('active');
 				 $(selector + '.record_content').html("");
 				 $(selector + '.record_content').html(data);
 			 }
@@ -588,6 +632,7 @@ function load_ips_query_ajax(type){
 	jsonObj = JSON.stringify(jsonObj);
 	if ( (typeof key != 'undefined' && key !='' && keyword !='' && operator !='') || jsonObj !='[]' ) {
 		//ap='html'
+		$(selector + '.ui.inline.loader').addClass('active');
 		$.ajax({
 			 url: '/ajax/sub_ips_query.php',
 			 cache: false,
@@ -597,6 +642,7 @@ function load_ips_query_ajax(type){
 			 error: function(xhr) {
 				 alert('Ajax failed');
 			 },success: function(data) {
+				 $(selector + '.ui.inline.loader').removeClass('active');
 				 $(selector + '.record_content').html("");
 				 $(selector + '.record_content').html(data);
 			 }
@@ -715,11 +761,9 @@ function retrieve_ou_vul_ajax(){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 //console.log("success");
 			 $(selector + '.ui.inline.loader').removeClass('active');
 			 $(selector + '.ou_vs_content').html("");
 			 $(selector + '.ou_vs_content').html(data);
-			 //console.log("done");
 		 }
 	});
 	return 0;
@@ -821,7 +865,6 @@ function retrieve_ldap_tree_ajax(){
 function retrieve_hydra_ajax(type){
 	var selector = ".post."+type+" ";
 	$(selector + '.ui.inline.loader').addClass('active');
-	console.log($(selector + "input[name='one_pwd_mode']:checked").val());
 	$.ajax({
 		 url: '/ajax/sub_hydra.php',
 		 cache: false,
@@ -896,6 +939,8 @@ function pageSwitch(){
       	case (mainpage == 'query' && subpage == 'network' ):
 			load_ips_query_ajax('yonghua');
 			load_ips_query_ajax('minjhih');
+			load_ips_query_ajax('idc');
+			load_ips_query_ajax('intrayonghua');
         	break;
 		//load ldap's tree
       	case (mainpage == 'tool' && subpage == 'ldap' ):

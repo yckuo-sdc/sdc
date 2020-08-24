@@ -1,4 +1,4 @@
-<!--siderbar.php-->
+<!--siderbar-->
 <div class="item">
   <a class="ui logo icon image" href="/"><img src="/images/logo.png"></a>
   <a href="/"><b>SDC ISS</b></a>
@@ -35,8 +35,8 @@
   <div class="menu">
       <a class="item" href="/vul/overview/">整體數據</a>
       <a class="item" href="/vul/search/">弱點查詢</a>
-      <a class="item" href="/vul/target/">Scan Target</a>
-      <a class="item" href="/vul/retrieve/">Retrieve VS</a>
+      <a class="item" href="/vul/target/">掃描資產</a>
+      <a class="item" href="/vul/retrieve/">Retrieve VUL</a>
   </div>
 </div>
 <div class="item">
@@ -60,5 +60,5 @@
     
   </div>
 </div>
-	<a class="item" href="/login/logout.php"><b>登出<?php echo "(".$_SESSION['UserName'].")";?></b></a>
+	<a class="item" href="/login/logout.php"><b><?php echo $_SESSION['UserName']."(登出)";?></b></a>
 

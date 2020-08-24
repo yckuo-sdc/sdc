@@ -64,4 +64,3 @@ SET A.OrgName = CONCAT('(AD)',B.OrgName)";
 $conn->query($sql); 
 
 $conn->close();
-?>

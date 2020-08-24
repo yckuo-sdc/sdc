@@ -62,5 +62,3 @@ if ($uploadOk == 1){
 	}
 }
 $conn->close();	
-
-?>

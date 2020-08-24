@@ -1,18 +1,28 @@
-<!--query.php-->
+<!--query-->
 <?php 
-	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-	else						$subpage = 'event';
-	switch($subpage){
-		case 'event': load_query_event(); break;
-		case 'ncert': load_query_ncert(); break;
-		case 'contact': load_query_contact(); break;
-		case 'client': load_query_client(); break;
-		case 'network': load_query_ips(); break;
-		case 'retrieve': load_query_retrieve(); break;
-	}
-?>
-<?php
+if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
+else						$subpage = 'event';
+switch($subpage){
+	case 'event': load_query_event(); break;
+	case 'ncert': load_query_ncert(); break;
+	case 'contact': load_query_contact(); break;
+	case 'client': load_query_client(); break;
+	case 'network': load_query_ips(); break;
+	case 'retrieve': load_query_retrieve(); break;
+}
 function load_query_event(){
+	$db = Database::get();
+	$table = "security_event"; // 設定你想查詢資料的資料表
+	$condition = "1";
+	$order_by = "EventID DESC,OccurrenceTime DESC";
+	$db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$last_num_rows = $db->getLastNumRows();
+	
+	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
+	$page_parm = getPaginationParameter($page, $last_num_rows);
+	
+	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
+	$events = $db->query($table, $condition, $order_by, $fields = "*", $limit);
 ?>
 <div id="page" class="container">
 <div id="content">
@@ -26,7 +36,6 @@ function load_query_event(){
 			    	<div class="field">
 					    <label>種類</label>
 						<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-                   		 <!--<option value="" class="keyword_paper active" selected>關鍵字種類</option>-->
 						<option value="IP" class="keyword_paper active" selected>設備IP</option>
 						<option value="Status" class="keyword_paper active">結案狀態</option>
 						<option value="EventTypeName" class="keyword_paper active">資安類型</option>
@@ -51,75 +60,55 @@ function load_query_event(){
 				</div>
 				</form>
 				<div class="record_content">
-                <?php //select data form database
-                    require("mysql_connect.inc.php");
-                    //------------pagination----------//
-					$pages = isset($_GET['page'])?$_GET['page']:1;	
-                    
-                    //select row_number,and other field value
-                    $sql = "SELECT * FROM security_event ORDER by EventID desc,OccurrenceTime desc";
-                    $result = mysqli_query($conn,$sql);
-                    $rowcount = mysqli_num_rows($result);
-
-					//record number on each page			
-					$per = 10; 	
-					// maximum pages on pagination	
-                    $max_pages = 10;
-
-					list($sql_subpage,$prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages) = getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages);
-
-					$result = mysqli_query($conn,$sql_subpage);
-                                        
-                    if($rowcount==0){
-                        echo "查無此筆紀錄";
-                    }else{
-                        echo "共有".$rowcount."筆資料！";
-						echo "<div class='ui relaxed divided list'>";
-                    while($row = mysqli_fetch_assoc($result)) {
+                <?php
+				if($last_num_rows==0){
+					echo "查無此筆紀錄";
+				}else{
+					echo "共有".$last_num_rows."筆資料！";
+					echo "<div class='ui relaxed divided list'>";
+					foreach($events as $event){	
 						echo "<div class='item'>";
 						echo "<div class='content'>";
 							echo "<a>";
-							if($row['Status']=="已結案")echo "<i class='check circle icon' style='color:green'></i>";
+							if($event['Status']=="已結案")echo "<i class='check circle icon' style='color:green'></i>";
 							else echo "<i class='exclamation circle icon'></i>";
-                        	echo date_format(new DateTime($row['OccurrenceTime']),'Y-m-d')."&nbsp&nbsp";
-                        	echo $row['Status']."&nbsp&nbsp";
-                        	echo "<span style='background:#fde087'>".$row['EventTypeName']."</span>&nbsp&nbsp";
-                        	echo $row['Location']."&nbsp&nbsp";
-							echo "<span style='background:#DDDDDD'>".$row['IP']."</span>&nbsp&nbsp";
-							echo $row['DeviceOwnerName']."&nbsp&nbsp";
-							echo $row['DeviceOwnerPhone']."&nbsp&nbsp";
+							echo date_format(new DateTime($event['OccurrenceTime']),'Y-m-d')."&nbsp&nbsp";
+							echo $event['Status']."&nbsp&nbsp";
+							echo "<span style='background:#fde087'>".$event['EventTypeName']."</span>&nbsp&nbsp";
+							echo $event['Location']."&nbsp&nbsp";
+							echo "<span style='background:#DDDDDD'>".$event['IP']."</span>&nbsp&nbsp";
+							echo $event['DeviceOwnerName']."&nbsp&nbsp";
+							echo $event['DeviceOwnerPhone']."&nbsp&nbsp";
 							echo "<i class='angle double down icon'></i>";
 							echo "</a>";
 							echo "<div class='description'>";
 								echo "<ol>";
-								echo "<li>序號:".$row['EventID']."</li>";
-								echo "<li>結案狀態:".$row['Status']."</li>";
-								echo "<li>發現日期:".date_format(new DateTime($row['OccurrenceTime']),'Y-m-d')."</li>";
-								echo "<li>資安事件類型:".$row['EventTypeName']."</li>";
-								echo "<li>位置:".$row['Location']."</li>";
-								echo "<li>電腦IP:".$row['IP']."</li>";
-								echo "<li>封鎖原因:".$row['BlockReason']."</li>";
-								echo "<li>設備類型:".$row['DeviceTypeName']."</li>";
-								echo "<li>電腦所有人姓名:".$row['DeviceOwnerName']."</li>";
-								echo "<li>電腦所有人分機:".$row['DeviceOwnerPhone']."</li>";
-								echo "<li>機關:".$row['AgencyName']."</li>";
-								echo "<li>單位:".$row['UnitName']."</li>";
-								echo "<li>處理日期(國眾):".$row['NetworkProcessContent']."</li>";
-								echo "<li>處理日期(三佑科技):".$row['MaintainProcessContent']."</li>";
-								echo "<li>處理日期(京稘或中華SOC):".$row['AntivirusProcessContent']."</li>";
-								echo "<li>未能處理之原因及因應方式:".$row['UnprocessedReason']."</li>";
-								echo "<li>備註:".$row['Remarks']."</li>";
+								echo "<li>序號:".$event['EventID']."</li>";
+								echo "<li>結案狀態:".$event['Status']."</li>";
+								echo "<li>發現日期:".date_format(new DateTime($event['OccurrenceTime']),'Y-m-d')."</li>";
+								echo "<li>資安事件類型:".$event['EventTypeName']."</li>";
+								echo "<li>位置:".$event['Location']."</li>";
+								echo "<li>電腦IP:".$event['IP']."</li>";
+								echo "<li>封鎖原因:".$event['BlockReason']."</li>";
+								echo "<li>設備類型:".$event['DeviceTypeName']."</li>";
+								echo "<li>電腦所有人姓名:".$event['DeviceOwnerName']."</li>";
+								echo "<li>電腦所有人分機:".$event['DeviceOwnerPhone']."</li>";
+								echo "<li>機關:".$event['AgencyName']."</li>";
+								echo "<li>單位:".$event['UnitName']."</li>";
+								echo "<li>處理日期(國眾):".$event['NetworkProcessContent']."</li>";
+								echo "<li>處理日期(三佑科技):".$event['MaintainProcessContent']."</li>";
+								echo "<li>處理日期(京稘或中華SOC):".$event['AntivirusProcessContent']."</li>";
+								echo "<li>未能處理之原因及因應方式:".$event['UnprocessedReason']."</li>";
+								echo "<li>備註:".$event['Remarks']."</li>";
 								echo "</ol>";
 							echo "</div>";
 							echo "</div>";
 						echo "</div>";
-                    }
-					
-					echo "</div>";
-					/* Create Pagination Element*/ 
-					echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","event",0,$pages,"");
 					}
-                    $conn->close();
+				echo "</div>";
+				/* Create Pagination Element*/ 
+				echo pagination($prev_page = $page_parm['prev_page'], $next_page = $page_parm['next_page'], $lower_bound = $page_parm['lower_bound'], $upper_bound = $page_parm['upper_bound'], $total_page = $page_parm['total_page'], "query", "event", 0, $page, "");
+				}
                 ?>
 				</div>
 			</div>
@@ -129,6 +118,18 @@ function load_query_event(){
 	</div>
 <?php } 
 function load_query_ncert(){
+	$db = Database::get();
+	$table = "tainangov_security_Incident"; // 設定你想查詢資料的資料表
+	$condition = "1";
+	$order_by = "IncidentID DESC";
+	$db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$last_num_rows = $db->getLastNumRows();
+	
+	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
+	$page_parm = getPaginationParameter($page, $last_num_rows);
+	
+	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
+	$incidents = $db->query($table, $condition, $order_by, $fields = "*", $limit);
 ?>	
 <div id="page" class="container">
 <div id="content">
@@ -142,7 +143,7 @@ function load_query_ncert(){
 						<div class="field">
 							<label>種類</label>
 							<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-							<option value="PublicIP" class="keyword_paper active" selected>對外IP(網址)</option>
+							<option value="PublicIP" class="keyword_paper active" selected>IP(網址)</option>
 							<option value="Status" class="keyword_paper active">結案狀態</option>
 							<option value="Classification" class="keyword_paper active">事故類型</option>
 							<option value="OrganizationName" class="keyword_paper active">機關名稱</option>
@@ -166,95 +167,66 @@ function load_query_ncert(){
 					</div>
 					</form>
 					<div class="record_content">
-					<?php //select data form database
-						require("mysql_connect.inc.php");
-						//------------pagination----------//
-						$pages = isset($_GET['page'])?$_GET['page']:1;	
-						
-						//select row_number,and other field value
-						//$sql = "SELECT * FROM security_contact ORDER by OID asc,person_type asc";
-						// select security_contact from NCERT and Internal_Primary Unit from self-creation
-						$sql = "SELECT * FROM tainangov_security_Incident ORDER by IncidentID desc";
-							
-						$result = mysqli_query($conn,$sql);
-						$rowcount = mysqli_num_rows($result);
-									
-						$per = 10; 		
-						$max_pages = 10;
-						$Totalpages = ceil($rowcount / $per); 
-						$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
-						$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
-						$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
-						if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
-						elseif($pages == $Totalpages)	$offset = $rowcount - $start;
-						else							$offset = $per;
-									
-						$prev_page = ($pages > 1) ? $pages -1 : 1;
-						$next_page = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
-						$sql_subpage = $sql." limit ".$start.",".$offset;
-									
-						$result = mysqli_query($conn,$sql_subpage);
-											
-						if($rowcount==0){
-							echo "查無此筆紀錄";
-						}else{
-							echo "共有".$rowcount."筆資料！";
-							echo "<div class='ui relaxed divided list'>";
-							while($row = mysqli_fetch_assoc($result)) {
-								echo "<div class='item'>";
-								echo "<div class='content'>";
-									echo "<a>";
-									echo date_format(new DateTime($row['OccurrenceTime']),'Y-m-d')."&nbsp&nbsp";
-									echo $row['Status']."&nbsp&nbsp";
-									echo "<span style='background:#DDDDDD'>".$row['ImpactLevel']."</span>&nbsp&nbsp";
-									echo $row['Classification']."&nbsp&nbsp";
-									echo "<span style='background:#fde087'>".$row['PublicIP']."</span>&nbsp&nbsp";
-									echo $row['OrganizationName'];
-									echo "<i class='angle double down icon'></i>";
-									echo "</a>";
-									
-									echo "<div class='description'>";
-										echo "<ol>";
-										echo "<li>編號:".$row['IncidentID']."</li>";
-										echo "<li>結案狀態:".$row['Status']."</li>";
-										echo "<li>事件編號:".$row['NccstID']."</li>";	
-										echo "<li>行政院攻防演練:".$row['NccstPT']."</li>";
-										echo "<li>攻防演練衝擊性:".$row['NccstPTImpact']."</li>";
-										echo "<li>機關名稱:".$row['OrganizationName']."</li>";
-										echo "<li>聯絡人:".$row['ContactPerson']."</li>";
-										echo "<li>電話:".$row['Tel']."</li>";
-										echo "<li>電子郵件:".$row['Email']."</li>";
-										echo "<li>資安維護廠商:".$row['SponsorName']."</li>";
-										echo "<li>對外IP或網址:".$row['PublicIP']."</li>";
-										echo "<li>使用用途:".$row['DeviceUsage']."</li>";
-										echo "<li>作業系統:".$row['OperatingSystem']."</li>";
-										echo "<li>入侵網址:".$row['IntrusionURL']."</li>";
-										echo "<li>影響等級:".$row['ImpactLevel']."</li>";
-										echo "<li>事故分類:".$row['Classification']."</li>";
-										echo "<li>事故說明:".$row['Explaination']."</li>";
-										echo "<li>影響評估:".$row['Evaluation']."</li>";
-										echo "<li>應變措施:".$row['Response']."</li>";
-										echo "<li>解決辦法/結報內容:".$row['Solution']."</li>";
-										echo "<li>發生時間:".$row['OccurrenceTime']."</li>";
-										echo "<li>通報時間:".$row['InformTime']."</li>";	
-										echo "<li>修復時間:".$row['RepairTime']."</li>";
-										echo "<li>審核機關審核時間:".$row['TainanGovVerificationTime']."</li>";
-										echo "<li>技服中心審核時間:".$row['NccstVerificationTime']."</li>";
-										echo "<li>通報結報時間:".$row['FinishTime']."</li>";	
-										echo "<li>通報執行時間(時:分):".$row['InformExecutionTime']."</li>";
-										echo "<li>結案執行時間(時:分):".$row['FinishExecutionTime']."</li>";
-										echo "<li>中華SOC複測結果:".$row['SOCConfirmation']."</li>";
-										echo "<li>改善計畫提報日期:".$row['ImprovementPlanTime']."</li>";	
-										echo "</ol>";
-									echo "</div>";
-									echo "</div>";
+					<?php
+					if($last_num_rows==0){
+						echo "查無此筆紀錄";
+					}else{
+						echo "共有".$last_num_rows."筆資料！";
+						echo "<div class='ui relaxed divided list'>";
+						foreach($incidents as $incident){	
+							echo "<div class='item'>";
+							echo "<div class='content'>";
+								echo "<a>";
+								echo date_format(new DateTime($incident['OccurrenceTime']),'Y-m-d')."&nbsp&nbsp";
+								echo $incident['Status']."&nbsp&nbsp";
+								echo "<span style='background:#DDDDDD'>".$incident['ImpactLevel']."</span>&nbsp&nbsp";
+								echo $incident['Classification']."&nbsp&nbsp";
+								echo "<span style='background:#fde087'>".$incident['PublicIP']."</span>&nbsp&nbsp";
+								echo $incident['OrganizationName'];
+								echo "<i class='angle double down icon'></i>";
+								echo "</a>";
+								
+								echo "<div class='description'>";
+									echo "<ol>";
+									echo "<li>編號:".$incident['IncidentID']."</li>";
+									echo "<li>結案狀態:".$incident['Status']."</li>";
+									echo "<li>事件編號:".$incident['NccstID']."</li>";	
+									echo "<li>行政院攻防演練:".$incident['NccstPT']."</li>";
+									echo "<li>攻防演練衝擊性:".$incident['NccstPTImpact']."</li>";
+									echo "<li>機關名稱:".$incident['OrganizationName']."</li>";
+									echo "<li>聯絡人:".$incident['ContactPerson']."</li>";
+									echo "<li>電話:".$incident['Tel']."</li>";
+									echo "<li>電子郵件:".$incident['Email']."</li>";
+									echo "<li>資安維護廠商:".$incident['SponsorName']."</li>";
+									echo "<li>對外IP或網址:".$incident['PublicIP']."</li>";
+									echo "<li>使用用途:".$incident['DeviceUsage']."</li>";
+									echo "<li>作業系統:".$incident['OperatingSystem']."</li>";
+									echo "<li>入侵網址:".$incident['IntrusionURL']."</li>";
+									echo "<li>影響等級:".$incident['ImpactLevel']."</li>";
+									echo "<li>事故分類:".$incident['Classification']."</li>";
+									echo "<li>事故說明:".$incident['Explaination']."</li>";
+									echo "<li>影響評估:".$incident['Evaluation']."</li>";
+									echo "<li>應變措施:".$incident['Response']."</li>";
+									echo "<li>解決辦法/結報內容:".$incident['Solution']."</li>";
+									echo "<li>發生時間:".$incident['OccurrenceTime']."</li>";
+									echo "<li>通報時間:".$incident['InformTime']."</li>";	
+									echo "<li>修復時間:".$incident['RepairTime']."</li>";
+									echo "<li>審核機關審核時間:".$incident['TainanGovVerificationTime']."</li>";
+									echo "<li>技服中心審核時間:".$incident['NccstVerificationTime']."</li>";
+									echo "<li>通報結報時間:".$incident['FinishTime']."</li>";	
+									echo "<li>通報執行時間(時:分):".$incident['InformExecutionTime']."</li>";
+									echo "<li>結案執行時間(時:分):".$incident['FinishExecutionTime']."</li>";
+									echo "<li>中華SOC複測結果:".$incident['SOCConfirmation']."</li>";
+									echo "<li>改善計畫提報日期:".$incident['ImprovementPlanTime']."</li>";	
+									echo "</ol>";
 								echo "</div>";
-							}
+								echo "</div>";
 							echo "</div>";
-						/* Create Pagination Element*/ 
-						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","ncert",0,$pages,"");
 						}
-						$conn->close();
+						echo "</div>";
+					/* Create Pagination Element*/ 
+					echo pagination($prev_page = $page_parm['prev_page'], $next_page = $page_parm['next_page'], $lower_bound = $page_parm['lower_bound'], $upper_bound = $page_parm['upper_bound'], $total_page = $page_parm['total_page'], "query", "ncert", 0, $page, "");
+					}
 					?>
 					</div> <!--End of record_content-->	
 				</div><!--End of post_cell-->
@@ -264,6 +236,17 @@ function load_query_ncert(){
 	</div>
 <?php } 
 function load_query_contact(){
+	$db = Database::get();
+	$sql = "SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by OID asc,person_type asc";
+	$db->execute($sql);
+	$last_num_rows = $db->getLastNumRows();
+	
+	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
+	$page_parm = getPaginationParameter($page, $last_num_rows);
+	
+	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
+	$sql = $sql." limit ".$start.",".$offset;
+	$contacts = $db->execute($sql);
 ?>	
 <div id="page" class="container">
 <div id="content">
@@ -277,7 +260,6 @@ function load_query_contact(){
 						<div class="field">
 							<label>種類</label>
 							<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-							 <!--<option value="" class="keyword_paper active" selected>關鍵字種類</option>-->
 							<option value="organization" class="keyword_paper active" selected>機關名稱</option>
 							<option value="OID" class="keyword_paper active">機關OID</option>
 							<option value="person_name" class="keyword_paper active">聯絡人姓名</option>
@@ -300,76 +282,48 @@ function load_query_contact(){
 					</div>
 					</form>
 					<div class="record_content">
-					<?php //select data form database
-						require("mysql_connect.inc.php");
-						$pages = isset($_GET['page'])?$_GET['page']:1;	
-						
-						// select security_contact from NCERT and Internal_Primary Unit from self-creation
-						$sql = "SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by OID asc,person_type asc";
-							
-						$result = mysqli_query($conn,$sql);
-						$rowcount = mysqli_num_rows($result);
-									
-						$per = 10; 		
-						$max_pages = 10;
-						$Totalpages = ceil($rowcount / $per); 
-						$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
-						$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
-						$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
-						if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
-						elseif($pages == $Totalpages)	$offset = $rowcount - $start;
-						else							$offset = $per;
-									
-						$prev_page = ($pages > 1) ? $pages -1 : 1;
-						$next_page = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
-						$sql_subpage = $sql." limit ".$start.",".$offset;
-									
-						$result = mysqli_query($conn,$sql_subpage);
-											
-						if($rowcount==0){
-							echo "查無此筆紀錄";
-						}else{
-							echo "共有".$rowcount."筆資料！";
-
-
-							echo "<div class='ui relaxed divided list'>";
-						while($row = mysqli_fetch_assoc($result)) {
+					<?php
+					if($last_num_rows==0){
+						echo "查無此筆紀錄";
+					}else{
+						echo "共有".$last_num_rows."筆資料！";
+						echo "<div class='ui relaxed divided list'>";
+						foreach($contacts as $contact){	
 							echo "<div class='item'>";
 							echo "<div class='content'>";
 								echo "<a>";
-								echo $row['organization']."&nbsp&nbsp";
-								echo $row['person_name']."&nbsp&nbsp";
-								echo "<span style='background:#fde087'>".$row['person_type']."</span>&nbsp&nbsp";
-								echo $row['email']."&nbsp&nbsp";
-								echo "<span style='background:#DDDDDD'>".$row['tel']."#".$row['ext']."</span>&nbsp&nbsp";
+								echo $contact['organization']."&nbsp&nbsp";
+								echo $contact['person_name']."&nbsp&nbsp";
+								echo "<span style='background:#fde087'>".$contact['person_type']."</span>&nbsp&nbsp";
+								echo $contact['email']."&nbsp&nbsp";
+								echo "<span style='background:#DDDDDD'>".$contact['tel']."#".$contact['ext']."</span>&nbsp&nbsp";
 								echo "<i class='angle double down icon'></i>";
 								echo "</a>";
 								echo "<div class='description'>";
 									echo "<ol>";
-									echo "<li>序號:".$row['CID']."</li>";
-									echo "<li>OID:".$row['OID']."</li>";
-									echo "<li>機關名稱:".$row['organization']."</li>";
-									echo "<li>單位名稱:".$row['unit']."</li>";
-									echo "<li>姓名:".$row['person_name']."</li>";
-									echo "<li>職稱:".$row['position']."</li>";
-									echo "<li>資安聯絡人類型:".$row['person_type']."</li>";
-									echo "<li>地址:".$row['address']."</li>";
-									echo "<li>電話:".$row['tel']."</li>";
-									echo "<li>分機:".$row['ext']."</li>";
-									echo "<li>傳真:".$row['fax']."</li>";
-									echo "<li>email:".$row['email']."</li>";
+									echo "<li>序號:".$contact['CID']."</li>";
+									echo "<li>OID:".$contact['OID']."</li>";
+									echo "<li>機關名稱:".$contact['organization']."</li>";
+									echo "<li>單位名稱:".$contact['unit']."</li>";
+									echo "<li>姓名:".$contact['person_name']."</li>";
+									echo "<li>職稱:".$contact['position']."</li>";
+									echo "<li>資安聯絡人類型:".$contact['person_type']."</li>";
+									echo "<li>地址:".$contact['address']."</li>";
+									echo "<li>電話:".$contact['tel']."</li>";
+									echo "<li>分機:".$contact['ext']."</li>";
+									echo "<li>傳真:".$contact['fax']."</li>";
+									echo "<li>email:".$contact['email']."</li>";
 									echo "</ol>";
 								echo "</div>";
 								echo "</div>";
 							echo "</div>";
 						}
-						
-						echo "</div>";
-												
-						/* Create Pagination Element*/ 
-						echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","contact",0,$pages,"");
-						}
-						$conn->close();
+					
+					echo "</div>";
+											
+					/* Create Pagination Element*/ 
+					echo pagination($prev_page = $page_parm['prev_page'], $next_page = $page_parm['next_page'], $lower_bound = $page_parm['lower_bound'], $upper_bound = $page_parm['upper_bound'], $total_page = $page_parm['total_page'], "query", "contact", 0, $page, "");
+					}
 					?>
 					</div> <!--End of record_content-->	
 				</div><!--End of post_cell-->
@@ -639,7 +593,7 @@ function load_query_client(){
 									echo "</a>";
 									echo "<div class='description'>";
 										echo "<ol>";
-										echo "<li><a href='ajax/gcb_detail.php?action=detail&id=".$row['ID']."' target='_blank'>序號:".$row['ID']."(用戶端資訊)&nbsp<i class='external alternate icon'></i></a></li>";
+										echo "<li><a href='/ajax/gcb_detail.php?action=detail&id=".$row['ID']."' target='_blank'>序號:".$row['ID']."(用戶端資訊)&nbsp<i class='external alternate icon'></i></a></li>";
 										echo "<li>外部IP:".long2ip($row['ExternalIP'])."</li>";
 										echo "<li>內部IP:".long2ip($row['InternalIP'])."</li>";
 										echo "<li>電腦名稱:".$row['Name']."</li>";
@@ -653,7 +607,7 @@ function load_query_client(){
 										echo "<li>Gcb總通過數[包含例外]:".$row['GsAll_1']."</li>";
 										echo "<li>Gcb總通過數[總數]:".$row['GsAll_2']."</li>";
 										echo "<li>Gcb例外數量:".$row['GsExcTot']."</li>";
-										echo "<li><a href='ajax/gcb_detail.php?action=gscan&id=".$row['GsID']."' target='_blank'>Gcb掃描編號:".$row['GsID']."(掃描結果資訊)&nbsp<i class='external alternate icon'></i></a></li>";
+										echo "<li><a href='/ajax/gcb_detail.php?action=gscan&id=".$row['GsID']."' target='_blank'>Gcb掃描編號:".$row['GsID']."(掃描結果資訊)&nbsp<i class='external alternate icon'></i></a></li>";
 										echo "<li>Gcb派送編號:".$row['GsSetDeployID']."</li>";
 										echo "<li>Gcb狀態:".$GsStat_str."</li>";
 										echo "<li>Gcb回報時間:".$row['GsUpdatedAt']."</li>";
@@ -919,6 +873,8 @@ function load_query_ips(){
 					<div class="ui top attached tabular menu">
 						<a class="active item">Yonghua</a>
 						<a class="item">Minjhih</a>
+						<a class="item">IDC</a>
+						<a class="item">IntraYonghua</a>
 					</div>
 					<div class="ui bottom attached segment">
 						<div class="tab-content yonghua show">
@@ -960,6 +916,7 @@ function load_query_ips(){
 							</div>
 						</div>
 						</form>
+						<div class="ui centered inline loader"></div>
 						<div class="record_content"></div>
 						</div> <!-- end of .tabular-->
 						<div class="tab-content minjhih">
@@ -1001,9 +958,134 @@ function load_query_ips(){
 							</div>
 						</div>
 						</form>
+						<div class="ui centered inline loader"></div>
+						<div class="record_content"></div>
+						</div> <!-- end of .tabular-->
+						<div class="tab-content idc">
+						<div class="query_content"></div>
+						<form class="ui form" action="javascript:void(0)">
+						<div class="fields">
+							<div class="field">
+								<label>種類</label>
+								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
+								<option value="addr.src" class="keyword_paper active" selected>來源IP</option>
+								<option value="addr.dst" class="keyword_paper active">目的IP</option>
+								<option value="port.dst" class="keyword_paper active">目的port</option>
+								<option value="app" class="keyword_paper active">應用程式</option>
+								<option value="action" class="keyword_paper active">動作</option>
+								</select>
+							</div>
+							<div class="field">
+								<label>運算</label>
+								<select name="operator" id="operator" class="ui fluid dropdown" required>
+								<option value="=" class="keyword_paper active" selected>=</option>
+								<option value="!=" class="keyword_paper active">!=</option>
+								</select>
+							</div>
+							<div class="field">
+								<label>關鍵字</label>
+								<div class="ui input">
+									<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
+								</div>
+							</div>
+							<div class="field">
+								<label>新增條件</label>
+								<i class="large square icon plus"></i>
+							</div>
+							<div class="field">
+								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+							</div>
+							 <div class="field">
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/network/'">顯示全部</button>
+							</div>
+						</div>
+						</form>
+						<div class="ui centered inline loader"></div>
+						<div class="record_content"></div>
+						</div> <!-- end of .tabular-->
+						<div class="tab-content intrayonghua">
+						<div class="query_content"></div>
+						<form class="ui form" action="javascript:void(0)">
+						<div class="fields">
+							<div class="field">
+								<label>種類</label>
+								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
+								<option value="addr.src" class="keyword_paper active" selected>來源IP</option>
+								<option value="addr.dst" class="keyword_paper active">目的IP</option>
+								<option value="port.dst" class="keyword_paper active">目的port</option>
+								<option value="app" class="keyword_paper active">應用程式</option>
+								<option value="action" class="keyword_paper active">動作</option>
+								</select>
+							</div>
+							<div class="field">
+								<label>運算</label>
+								<select name="operator" id="operator" class="ui fluid dropdown" required>
+								<option value="=" class="keyword_paper active" selected>=</option>
+								<option value="!=" class="keyword_paper active">!=</option>
+								</select>
+							</div>
+							<div class="field">
+								<label>關鍵字</label>
+								<div class="ui input">
+									<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
+								</div>
+							</div>
+							<div class="field">
+								<label>新增條件</label>
+								<i class="large square icon plus"></i>
+							</div>
+							<div class="field">
+								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+							</div>
+							 <div class="field">
+								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/network/'">顯示全部</button>
+							</div>
+						</div>
+						</form>
+						<div class="ui centered inline loader"></div>
 						<div class="record_content"></div>
 						</div> <!-- end of .tabular-->
 					</div> <!-- end of .attached.segment-->
+				</div>
+			</div>
+			<div class="post">
+				<div class="post_title">Client應用程式白名單</div>
+				<div class="post_cell">
+				<?php
+					require_once("ajax/paloalto_api.php");
+					require_once("ajax/paloalto_config.inc.php");
+					$pa = new paloalto\api\PaloaltoAPI($host, $username, $password);
+					$object_type = 'ApplicationGroups'; 
+					$name = '';
+					$res = $pa->GetObjectList($object_type, $name);
+					$res = json_decode($res);
+					echo "<table class='ui celled table'>";
+					echo "<thead>";
+						echo "<tr>";
+							echo "<th>群組名稱</th>";
+							echo "<th>成員</th>";
+							echo "<th>應用程式</th>";
+						echo "</tr>";
+					echo "</thead>";
+					echo "<tbody>";
+					foreach($res->result->entry as $key => $entry){
+						$size = count($entry->members->member);
+						$name = $entry->{'@name'};
+						foreach($entry->members->member as $key => $val){
+							echo "<tr>";
+							if($key == 0){
+								echo "<td rowspan=".$size.">".$name."</td>";
+								echo "<td rowspan=".$size.">".$size."</td>";
+								echo "<td>".$val."</td>";	
+							}else{
+								echo "<td>".$val."</td>";	
+							}
+							echo "</tr>";
+						}
+					}
+					echo "</tbody>";
+					echo "</table>";
+				?>
 				</div>
 			</div>
 		</div>

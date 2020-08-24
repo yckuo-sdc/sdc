@@ -102,7 +102,6 @@ if (isset($rows['values'])) {
 		echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
 	}
 }
-	$conn->close();	
+$conn->close();	
 	//print_r($data);
-?>
 	

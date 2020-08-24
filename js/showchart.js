@@ -8,53 +8,53 @@ $(document).ready(function(){
 
 	//bind show_chart_btn
 	$('#show_chart_btn').click(function (){
-		c3_chartC_ajax(url);
+		c3_chart_Ranking_ajax(url);
 	});
 	
-	c3_chartA_ajax(url);
-	c3_chartC_ajax(url);
-	c3_chartE_ajax(url);
-	c3_chartF_ajax(url);
+	c3_chart_enews_ajax(url);
+	c3_chart_ranking_ajax(url);
+	c3_chart_client_ajax(url);
+	c3_chart_network_ajax(url);
 });
 
-function c3_chartA_ajax(url){
+function c3_chart_enews_ajax(url){
 	$.ajax({
 		 url: url+'ajax/chart.php',
 		 cache: false,
-		 dataType:'html',
+		 dataType:'json',
 		 type:'GET',
-		 data: {chartID:'chartA'},
+		 data: {chartID:'enews'},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 var countArray=[],nameArray=[];
-			 var countArray_done=[],nameArray_done=[];
-			$(data).find("OccurrenceTime").each(function(){
-				 nameArray.push($(this).text());
-			});
-			$(data).find("count").each(function(){
-				 countArray.push(+$(this).text());
-			});
-			$(data).find("OccurrenceTime_done").each(function(){
-				 nameArray_done.push($(this).text());
-			});
-			$(data).find("count_done").each(function(){
-				 countArray_done.push(+$(this).text());
-			});
+			 //console.log(data);
+			 var countArray = [], timeArray = [], donecountArray = [];
+			 var len = data.length;
+			 for(var i=0; i<len; i++){
+				 var time = data[i].time;
+				 var count = data[i].count;
+				 var donecount = data[i].donecount;
+				 timeArray.push(time);
+			 	 countArray.push(count);
+			 	 donecountArray.push(donecount);
+			 }
+
+			//add the label of bar chart
 			countArray.unshift('資安事件數量');
-			countArray_done.unshift('資安事件已結案數量');
+			donecountArray.unshift('資安事件已結案數量');
+			
 			var chart = c3.generate({
 					bindto: '#chartA',
 					data: {
 						columns: [
 							countArray,
-							countArray_done
+							donecountArray
 						],
 						type:  'area-step'
 					},axis: {
 						x: {
 							type: 'category',
-							categories: nameArray,
+							categories: timeArray,
 							tick: {
 								count: 3
 							}
@@ -64,19 +64,19 @@ function c3_chartA_ajax(url){
 						height: '100%'
 					}
 			});
-			 
+			
 		 }
 	});
 	return 0;
  }
 
-function c3_chartC_ajax(url){
+function c3_chart_ranking_ajax(url){
 	$.ajax({
 		url: url+'ajax/chart.php',
 		cache: false,
 		dataType:'json',
 		type:'GET',
-		data: {chartID:'chartC'},
+		data: {chartID:'ranking'},
 		error: function(xhr) {
 			alert('Ajax failed');
 		},success: function(data) {	 
@@ -249,13 +249,13 @@ function c3_chartC_ajax(url){
 	
 }	
 
-function c3_chartE_ajax(url){
+function c3_chart_client_ajax(url){
 	$.ajax({
 		 url: url+'ajax/chart.php',
 		 cache: false,
 		 dataType:'json',
 		 type:'GET',
-		 data: {chartID:'chartE'},
+		 data: {chartID:'client'},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -374,13 +374,13 @@ function c3_chartE_ajax(url){
 	return 0;
  }
 
-function c3_chartF_ajax(url){
+function c3_chart_network_ajax(url){
 	$.ajax({
 		 url: url+'ajax/chart.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {chartID:'chartF'},
+		 data: {chartID:'network'},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {

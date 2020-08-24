@@ -6,8 +6,8 @@ use PHPMailer\PHPMailer\SMTP;
 //Load composer's autoloader
 $local_path = "/var/www/html/utility/PHPMailer-master/";
 require_once $local_path.'vendor/autoload.php';
-require_once("function.php");
-require_once("../mysql_connect.inc.php");
+require_once 'function.php';
+require_once '../mysql_connect.inc.php';
 
 $account  	  = $_POST['account'];
 $password 	  = $_POST['password'];
@@ -46,7 +46,7 @@ switch($verification){
 		}else{
 			session_start();
 			$_SESSION["error"] = "invalid account or password";
-			header("Location: /login/login.php"); 
+			header("Location: /login/"); 
 		}
 		break;
 	case "mail":
@@ -73,9 +73,8 @@ switch($verification){
 		}else{
 			session_start();
 			$_SESSION["error"] = "invalid account or password";
-			header("Location: /login/login.php"); 
+			header("Location: /login/"); 
 		}
 		break;
 }
 
-?>

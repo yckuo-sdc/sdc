@@ -460,6 +460,11 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
     word-wrap: break-word;
 }
 
+.ui.statistic > .label{
+	margin-top: 1% !important;
+	font-size: 1rem;
+	font-family: Microsoft JhengHei; 
+}
 
 /*@media only screen and (min-width: 400px) and (max-width: 700px) and (orientation: portrait){*/
 @media screen and (orientation: portrait),screen and (min-width: 350px) and (max-width: 700px){

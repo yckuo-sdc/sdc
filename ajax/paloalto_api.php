@@ -54,7 +54,7 @@ Class PaloaltoAPI {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://$host/restapi/9.0/Objects/$object_type?name=$name&location=vsys&vsys=vsys1&output-format=json&key=".$apikey;
-		$res = CurlRequest($url);
+		$res = $this->CurlRequest($url);
 		return $res;
 	}
 
@@ -62,7 +62,7 @@ Class PaloaltoAPI {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://$host/restapi/9.0/Policies/$policy_type?name=$name&location=vsys&vsys=vsys1&output-format=json&key=".$apikey;
-		$res = CurlRequest($url);
+		$res = $this->CurlRequest($url);
 		return $res;
 	}
 
@@ -97,5 +97,4 @@ Class PaloaltoAPI {
 	}
 
 }
-?>
 

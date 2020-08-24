@@ -144,6 +144,5 @@ if (isset($rows['values'])) {
 	}
 	
 }
-	$conn->close();	
-?>
+$conn->close();	
 	

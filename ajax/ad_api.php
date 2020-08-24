@@ -146,4 +146,3 @@ function change_user_ou($cn,$ou){
 }
 	#$res = change_user_ou('yckuo','395000331-');
 	#echo "執行結果：".$res;
-?>

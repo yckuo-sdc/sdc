@@ -175,5 +175,3 @@ function get_gscan_result($token,$gs_id){
 	curl_close($curl);
 	return $response;
 }
-
-?>

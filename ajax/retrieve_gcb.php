@@ -7,4 +7,3 @@ $token = gcb\get_access_token($api_key);
 // '0' represent no limit 
 $limit = 0;
 gcb\get_client_list_insert2DB($token,$limit);
-?>

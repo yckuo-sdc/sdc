@@ -1,56 +1,70 @@
-<!--info.php-->
+<!--info-->
 <?php 
-	if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-	else						$subpage = 'enews';
+if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
+else						$subpage = 'enews';
 
-	switch($subpage){
-		case 'enews': load_info_enews(); break;
-		case 'ranking': load_info_ranking(); break;
-		case 'vul': load_info_vul(); break;
-		case 'client': load_info_client(); break;
-		case 'network': load_info_network(); break;
-	}
-?>
-<?php
+switch($subpage){
+	case 'enews': load_info_enews(); break;
+	case 'ranking': load_info_ranking(); break;
+	case 'vul': load_info_vul(); break;
+	case 'client': load_info_client(); break;
+	case 'network': load_info_network(); break;
+}
 function load_info_enews(){
+	$db = Database::get();
+	$table = "tainangov_security_Incident"; // 設定你想查詢資料的資料表
+	$db->query($table, $condition = "1", $order_by = "1", $fields = "*", $limit = "");
+	$ncert_num = $db->getLastNumRows();
+	$db->query($table, $condition = "Status LIKE '已結案'", $order_by = "1", $fields = "*", $limit = "");
+	$done_ncert_num = $db->getLastNumRows();
+                    
+	$table = "security_event"; // 設定你想查詢資料的資料表
+	$db->query($table, $condition = "1", $order_by = "1", $fields = "*", $limit = "");
+	$event_num = $db->getLastNumRows();
+	$db->query($table, $condition = "Status LIKE '已結案'", $order_by = "1", $fields = "*", $limit = "");
+	$done_event_num = $db->getLastNumRows();
+	$db->query($table, $condition = "Status LIKE '未完成'", $order_by = "1", $fields = "*", $limit = "");
+	$undone_event_num = $db->getLastNumRows();
+	$db->query($table, $condition = "Status LIKE '未完成' AND NOT(UnprocessedReason LIKE '')", $order_by = "1", $fields = "*", $limit = "");
+	$excepted_event_num = $db->getLastNumRows();
+
+	$date_from_week = date('Y-m-d',strtotime('monday this week'));  
+	$date_to_week = date('Y-m-d',strtotime('sunday this week'));
+	$date_from_month = date('Y-m-d',strtotime('first day of this month'));
+	$date_to_month = date('Y-m-d',strtotime('last day of this month'));  
+	$db->query($table, $condition = "OccurrenceTime BETWEEN '".$date_from_month."' AND '".$date_to_month."'", $order_by = "1", $fields = "*", $limit = "");
+	$thisMonth_event_num = $db->getLastNumRows();
+	$db->query($table, $condition = "OccurrenceTime BETWEEN '".$date_from_week."' AND '".$date_to_week."'", $order_by = "1", $fields = "*", $limit = "");
+	$thisWeek_event_num = $db->getLastNumRows();
+	$completion_rate = round($done_event_num / $event_num * 100,2)."%"; 
+
+	$order_by = "EventID desc";
+	$limit = "LIMIT 10";
+	$last_10_events = $db->query($table, $condition = "1", $order_by , $fields = "*", $limit);
 ?>
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
+				<div class="post_title">資安事件列管(已結案/總數)</div>
+				<div class="post_cell">
+					<center>
+						<div class="ui small statistic">
+						  <div class="value"><?php echo $done_event_num." / ".$event_num ?>  </div>
+						  <div class="label">本府事件</div>
+						</div>
+						<br>
+						<div class="ui small statistic">
+						  <div class="value"><?php echo $done_ncert_num." / ".$ncert_num ?>  </div>
+						  <div class="label">技服通報</div>
+						</div>
+					</center>
+			    </div>		
+			</div>
+			<div class="post">
 				<div class="post_title">Enews</div>
 					<div class="post_cell">
 					<div class="post_table">
-               		 <?php //select data form database
-                    	require("mysql_connect.inc.php");
-                   		 //select row_number,and other field value
-                    	$sql = "SELECT OccurrenceTime FROM security_event";
-                    	$result = mysqli_query($conn,$sql);
-                    	$num_total_entry = mysqli_num_rows($result);
-                    	$sql = "SELECT * FROM security_event WHERE Status LIKE '已結案'";
-                    	$result = mysqli_query($conn,$sql);
-                    	$num_done_entry = mysqli_num_rows($result);
-                    	$sql = "SELECT * FROM security_event WHERE Status LIKE '未完成'";
-                    	$result = mysqli_query($conn,$sql);
-                    	$num_undone_entry = mysqli_num_rows($result);
-						$sql = "SELECT * FROM security_event WHERE Status LIKE '未完成' AND NOT(UnprocessedReason LIKE '' )";
-                    	$result = mysqli_query($conn,$sql);
-                    	$num_exception_entry = mysqli_num_rows($result);
-						
-						$date_from_week = date('Y-m-d',strtotime('monday this week'));  
-						$date_to_week = date('Y-m-d',strtotime('sunday this week'));
-						$date_from_month = date('Y-m-d',strtotime('first day of this month'));
-						$date_to_month = date('Y-m-d',strtotime('last day of this month'));  
-
-                    	$sql = "SELECT * FROM security_event WHERE OccurrenceTime BETWEEN '".$date_from_month."' AND '".$date_to_month."'";
-                    	$result = mysqli_query($conn,$sql);
-                    	$num_thisMonth_entry = mysqli_num_rows($result);
-                    	$sql = "SELECT * FROM security_event WHERE OccurrenceTime BETWEEN '".$date_from_week."' AND '".$date_to_week."'";
-                    	$result = mysqli_query($conn,$sql);
-                    	$num_thisWeek_entry = mysqli_num_rows($result);
-						$completion_rate = round($num_done_entry/$num_total_entry*100,2)."%"; 
-					?>
-
 					<table>
 					<tr>
 						<th>項目</th>
@@ -58,36 +72,32 @@ function load_info_enews(){
 					</tr>
 					<tr>
 						<td>列管數量</td>
-						<td><?php echo $num_total_entry ?></td>
+						<td><?php echo $event_num ?></td>
 					</tr>
 					<tr>
 						<td>已完成</td>
-						<td><?php echo $num_done_entry ?></td>
+						<td><?php echo $done_event_num ?></td>
 					</tr>
 					<tr>
 						<td>未完成</td>
-						<td><?php echo $num_undone_entry ?></td>
+						<td><?php echo $undone_event_num ?></td>
 					</tr>
 					<tr>
 						<td>無法完成</td>
-						<td><?php echo $num_exception_entry ?></td>
+						<td><?php echo $excepted_event_num ?></td>
 					</tr>
 						<td>本月已發生</td>
-						<td><?php echo $num_thisMonth_entry ?></td>
+						<td><?php echo $thisMonth_event_num ?></td>
 					</tr>
 					<tr>
 						<td>本周已發生</td>
-						<td><?php echo $num_thisWeek_entry ?></td>
+						<td><?php echo $thisWeek_event_num ?></td>
 					</tr>
 					<tr>
 						<td>完成率</td>
 						<td><?php echo $completion_rate ?></td>
 					</tr>
 					</table>
-					<?php
-                    $conn->close();
-
-					?>
 					</div>
 					</div>
 			</div>
@@ -101,43 +111,35 @@ function load_info_enews(){
 				<div class="post_title">資安事件清單(最近10筆)</div>
 				<div class="post_cell">
 					<table class="ui very basic single line table">
-					 <?php //select data form database
-						require("mysql_connect.inc.php");
-						 //select row_number,and other field value
-						$sql = "SELECT * FROM security_event ORDER BY EventID desc LIMIT 10";
-						$result = mysqli_query($conn,$sql);
-						$num_total_entry = mysqli_num_rows($result);
-						echo "<thead>";	
-						echo "<tr>";
-							echo "<th>發現日期</th>";
-							echo "<th>結案狀態</th>";
-							echo "<th>資安事件類型</th>";
-							echo "<th>位置</th>";
-							echo "<th>設備IP</th>";
-							echo "<th>所有人機關</th>";
-							echo "<th>所有人姓名</th>";
-						echo "</tr>";
-						echo "</thead>";	
-						echo "<tbody>";	
-						 while($row = mysqli_fetch_assoc($result)) {
+						<thead>	
+							<tr>
+								<th>發現日期</th>
+								<th>結案狀態</th>
+								<th>資安事件類型</th>
+								<th>位置</th>
+								<th>設備IP</th>
+								<th>所有人機關</th>
+								<th>所有人姓名</th>
+							</tr>
+						</thead>
+						<tbody>	
+						<?php
+						foreach($last_10_events as $event) {   
 							echo "<tr>";
-								echo "<td>".date_format(new DateTime($row['OccurrenceTime']),'Y-m-d')."</td>";
-								echo "<td>".$row['Status']."</td>";
-                        		echo "<td>".$row['EventTypeName']."</td>";
-								echo "<td>".$row['Location']."</td>";
-								echo "<td>".$row['IP']."</td>";
-								echo "<td>".$row['AgencyName']."</td>";
-								echo "<td>".$row['DeviceOwnerName']."</td>";
+								echo "<td>".date_format(new DateTime($event['OccurrenceTime']),'Y-m-d')."</td>";
+								echo "<td>".$event['Status']."</td>";
+                        		echo "<td>".$event['EventTypeName']."</td>";
+								echo "<td>".$event['Location']."</td>";
+								echo "<td>".$event['IP']."</td>";
+								echo "<td>".$event['AgencyName']."</td>";
+								echo "<td>".$event['DeviceOwnerName']."</td>";
 							echo "</tr>";
-						 }
-						echo "</tbody>";
-						echo "</table>";
-						$conn->close();
-					?>
-					<div class="see_more" style="text-align:right">
-						<a href="/query/event/">See More...</a>
-					</div>
+						}
+						?>
+						</tbody>
+						</table>
 				</div>
+				<div class="see_more" style="text-align:right"><a href="/query/event/">See More...</a></div>
 			</div>
 			<div class="post">
 				<div class="post_title">資安事件SOP</div>
@@ -186,6 +188,15 @@ function load_info_ranking(){
 	</div><!-- end #content -->
 <?php } 
 function load_info_vul(){
+	$db = Database::get();
+	$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL,sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion,sum(total_VUL - overdue_high_VUL - overdue_medium_VUL) as non_overdue_VUL, sum(total_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as non_overdue_completion	FROM V_VUL_tableau GROUP BY ou ORDER BY total_completion desc";
+	$ou_vul = $db->execute($sql);
+	$sql = "SELECT sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL, sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion ,sum(total_VUL - overdue_high_VUL - overdue_medium_VUL) as non_overdue_VUL, sum(total_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as non_overdue_completion	FROM V_VUL_tableau";
+	$total_vul = $db->execute($sql);
+	$sql = "SELECT COUNT(DISTINCT ip) as host_num FROM scanTarget";
+	$host_num = $db->execute($sql)[0]['host_num'];
+	$sql = "SELECT SUM(CASE domain WHEN '' THEN 0 ELSE LENGTH(domain)-LENGTH(REPLACE(domain,';',''))+1 END) AS url_num FROM scanTarget";
+	$url_num = $db->execute($sql)[0]['url_num'];
 ?>	
 <div id="page" class="container">
 	<div id="content">
@@ -195,12 +206,6 @@ function load_info_vul(){
 					<div class="post_cell">
 						臺南市政府弱掃平台各單位弱點數量，高風險應於<font color="red">1</font>個月內修補完成，中風險應於<font color="red">2</font>個月內修補完成。<br>
 						<div class="post_table">
-						<?php //select row_number,and other field value
-                    	require("mysql_connect.inc.php");
-						$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL,sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion,sum(total_VUL - overdue_high_VUL - overdue_medium_VUL) as non_overdue_VUL, sum(total_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as non_overdue_completion	FROM V_VUL_tableau GROUP BY ou ORDER BY total_completion desc";
-						$result 	= mysqli_query($conn,$sql);
-						$rowcount	= mysqli_num_rows($result);
-						?>
 						<table>
 							<thead>
 								<tr>
@@ -212,72 +217,56 @@ function load_info_vul(){
 							</thead>
 							<tbody>
 							<?php
-							while($row = mysqli_fetch_assoc($result)) {
-							    //hide the 區公所 ou
-								if(strchr($row['ou'],"區公所") == "區公所") echo "<tr style='opacity:0.5'>";
+							foreach($ou_vul as $vul) {
+							    //hide ou = 區公所
+								if(strchr($vul['ou'],"區公所") == "區公所") echo "<tr style='opacity:0.5'>";
 								else echo "<tr>";
-									echo "<td data-label='OU'>".$row['ou']."</td>";
+									echo "<td data-label='OU'>".$vul['ou']."</td>";
 									echo "<td data-label='Total-Risks'>";
-									echo "<div class='ui teal progress yckuo' data-percent='".round($row['total_completion'],0)."' data-total='100' id='example1'>";
+									echo "<div class='ui teal progress yckuo' data-percent='".round($vul['total_completion'],0)."' data-total='100' id='example1'>";
 						 			echo "<div class='bar'><div class='progress'></div></div>";
-						  			echo "<div class='label'>".$row['fixed_VUL']."/".$row['total_VUL']."</div>";
+						  			echo "<div class='label'>".$vul['fixed_VUL']."/".$vul['total_VUL']."</div>";
 									echo "</div>";
 									echo "</td>";
 									echo "<td data-label='Non-Overdue-Risks'>";
-									echo "<div class='ui teal progress yckuo' data-percent='".round($row['non_overdue_completion'],0)."' data-total='100' id='example1'>";
+									echo "<div class='ui teal progress yckuo' data-percent='".round($vul['non_overdue_completion'],0)."' data-total='100' id='example1'>";
 						 			echo "<div class='bar'><div class='progress'></div></div>";
-						  			echo "<div class='label'>".$row['non_overdue_VUL']."/".$row['total_VUL']."</div>";
+						  			echo "<div class='label'>".$vul['non_overdue_VUL']."/".$vul['total_VUL']."</div>";
 									echo "</div>";
 									echo "</td>";
 									echo "<td data-label='High-Risks'>";
-									echo "<div class='ui teal progress yckuo' data-percent='".round($row['high_completion'],0)."' data-total='100' id='example1'>";
+									echo "<div class='ui teal progress yckuo' data-percent='".round($vul['high_completion'],0)."' data-total='100' id='example1'>";
 						 			echo "<div class='bar'><div class='progress'></div></div>";
-						  			echo "<div class='label'>".$row['fixed_high_VUL']."/".$row['total_high_VUL']."</div>";
+						  			echo "<div class='label'>".$vul['fixed_high_VUL']."/".$vul['total_high_VUL']."</div>";
 									echo "</div>";
 									echo "</td>";
 								echo "</tr>";
 							}
-							$sql = "SELECT sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL, sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion ,sum(total_VUL - overdue_high_VUL - overdue_medium_VUL) as non_overdue_VUL, sum(total_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as non_overdue_completion	FROM V_VUL_tableau";
-							$result 	= mysqli_query($conn,$sql);
-							$rowcount	= mysqli_num_rows($result);
-							while($row = mysqli_fetch_assoc($result)) {
-								echo "<tr style='color:#FF0000'>";
-									echo "<td data-label='OU'>Total</td>";
-
-									echo "<td data-label='Total-Risks'>";
-									echo "<div class='ui teal progress yckuo' data-percent='".round($row['total_completion'],0)."' data-total='100' id='example1'>";
-						 			echo "<div class='bar'><div class='progress'></div></div>";
-						  			echo "<div class='label'>".$row['fixed_VUL']."/".$row['total_VUL']."</div>";
-									echo "</div>";
-									echo "</td>";
-									echo "<td data-label='Non-Overdue-Risks'>";
-									echo "<div class='ui teal progress yckuo' data-percent='".round($row['non_overdue_completion'],0)."' data-total='100' id='example1'>";
-						 			echo "<div class='bar'><div class='progress'></div></div>";
-						  			echo "<div class='label'>".$row['non_overdue_VUL']."/".$row['total_VUL']."</div>";
-									echo "</div>";
-									echo "</td>";
-									echo "<td data-label='High-Risks'>";
-									echo "<div class='ui teal progress yckuo' data-percent='".round($row['high_completion'],0)."' data-total='100' id='example1'>";
-						 			echo "<div class='bar'><div class='progress'></div></div>";
-						  			echo "<div class='label'>".$row['fixed_high_VUL']."/".$row['total_high_VUL']."</div>";
-									echo "</div>";
-									echo "</td>";
-								echo "</tr>";
-								$fixed_high_VUL	= $row['fixed_high_VUL'];
-								$total_high_VUL = $row['total_high_VUL'];
-								$high_completion = $row['high_completion'];
-							}
-							// select form scanTarget	
-							$sql = "SELECT COUNT(DISTINCT ip) as host_num FROM scanTarget";
-							$result = mysqli_query($conn,$sql);
-							$row = @mysqli_fetch_assoc($result);
-							$host_num = $row['host_num'];
-							$sql = "SELECT SUM(CASE domain WHEN '' THEN 0 ELSE LENGTH(domain)-LENGTH(REPLACE(domain,';',''))+1 END) AS url_num FROM scanTarget";
-							$result = mysqli_query($conn,$sql);
-							$row = @mysqli_fetch_assoc($result);
-							$url_num = $row['url_num'];
-							
-							$conn->close();
+							$vul = $total_vul[0];
+							echo "<tr style='color:#FF0000'>";
+								echo "<td data-label='OU'>Total</td>";
+								echo "<td data-label='Total-Risks'>";
+								echo "<div class='ui teal progress yckuo' data-percent='".round($vul['total_completion'],0)."' data-total='100' id='example1'>";
+								echo "<div class='bar'><div class='progress'></div></div>";
+								echo "<div class='label'>".$vul['fixed_VUL']."/".$vul['total_VUL']."</div>";
+								echo "</div>";
+								echo "</td>";
+								echo "<td data-label='Non-Overdue-Risks'>";
+								echo "<div class='ui teal progress yckuo' data-percent='".round($vul['non_overdue_completion'],0)."' data-total='100' id='example1'>";
+								echo "<div class='bar'><div class='progress'></div></div>";
+								echo "<div class='label'>".$vul['non_overdue_VUL']."/".$vul['total_VUL']."</div>";
+								echo "</div>";
+								echo "</td>";
+								echo "<td data-label='High-Risks'>";
+								echo "<div class='ui teal progress yckuo' data-percent='".round($vul['high_completion'],0)."' data-total='100' id='example1'>";
+								echo "<div class='bar'><div class='progress'></div></div>";
+								echo "<div class='label'>".$vul['fixed_high_VUL']."/".$vul['total_high_VUL']."</div>";
+								echo "</div>";
+								echo "</td>";
+							echo "</tr>";
+							$fixed_high_VUL	= $vul['fixed_high_VUL'];
+							$total_high_VUL = $vul['total_high_VUL'];
+							$high_completion = $vul['high_completion'];
 							?>
 							</tbody>
 						</table>	
@@ -288,14 +277,14 @@ function load_info_vul(){
 				<div class="post_title">High Severity Info</div>
 				<div class="post_cell">
 					<center>
-					  <div class="ui statistic">
+					  <div class="ui small statistic">
 						  <div class="value"><?php echo round($high_completion,0) ?> % </div>
 						  <div class="label">修補率</div>
 					  </div>
 					  <br>
 					  <div class="ui tiny statistic">
 						  <div class="value"><?php echo $fixed_high_VUL ?> / <?php echo $total_high_VUL ?></div>
-						  <div class="label">已修補數 / 高風險總數</div>
+						  <div class="label">已修補數 / 總數</div>
 					  </div>
 					  <br>
 					  <div class="ui tiny statistic">
@@ -311,6 +300,53 @@ function load_info_vul(){
 </div> <!--end #page-->
 <?php } 
 function load_info_client(){
+	$db = Database::get();
+	$sql = "SELECT COUNT(*) AS total_num,SUM(ad) AS ad_num,SUM(gcb) AS gcb_num,SUM(wsus) AS wsus_num,SUM(antivirus) AS antivirus_num FROM drip_client_list";
+	$device_num = $db->execute($sql)[0];
+	$total_num = $device_num['total_num'];
+	$ad_num = $device_num['ad_num'];
+	$gcb_num = $device_num['gcb_num'];
+	$wsus_num = $device_num['wsus_num'];
+	$antivirus_num = $device_num['antivirus_num'];
+	$total_rate = round($total_num/$total_num*100,2)."%"; 
+	$ad_rate = round($ad_num/$total_num*100,2)."%"; 
+	$gcb_rate = round($gcb_num/$total_num*100,2)."%"; 
+	$wsus_rate = round($wsus_num/$total_num*100,2)."%"; 
+	$antivirus_rate = round($antivirus_num/$total_num*100,2)."%"; 
+	
+	$table = "ad_comupter_list"; // 設定你想查詢資料的資料表
+	$db->query($table, $condition = "1", $order_by = "1", $fields = "*", $limit = "");
+	$ad_num = $db->getLastNumRows();
+	
+	$sql = "SELECT COUNT(ID) as total_count,SUM(CASE WHEN GsAll_2 = GsAll_1 THEN 1 ELSE 0 END) as pass_count FROM gcb_client_list";
+	$gcb = $db->execute($sql)[0];
+	$total_count = $gcb['total_count'];
+	$pass_count = $gcb['pass_count'];
+	$total_rate = ($total_count != 0) ? round($total_count/$total_count*100,2)."%" : 0; 
+	$pass_rate = ($total_count != 0) ? round($pass_count/$total_count*100,2)."%" : 0; 
+	
+	$sql = "SELECT COUNT(TargetID) as total_count,SUM(CASE WHEN Failed LIKE '0' THEN 1 ELSE 0 END) as pass_count FROM wsus_computer_status";
+	$wsus = $db->execute($sql)[0];
+	$total_num = $wsus['total_count'];
+	$pass_num = $wsus['pass_count'];
+	$table = "wsus_computer_status"; // 設定你想查詢資料的資料表
+	$db->query($table, $condition = "LastSyncTime > ADDDATE(NOW(), INTERVAL -1 WEEK)", $order_by = "1", $fields = "*", $limit = "");
+	$sync_num = $db->getLastNumRows();
+	$total_rate = round($total_num/$total_num*100,2)."%"; 
+	$pass_rate = round($pass_num/$total_num*100,2)."%"; 
+	$sync_rate = round($sync_num/$total_num*100,2)."%"; 
+	
+	$table = "antivirus_client_list"; // 設定你想查詢資料的資料表
+	$db->query($table, $condition = "1", $order_by = "1", $fields = "*", $limit = "");
+	$total_antivirus_num = $db->getLastNumRows();
+	$db->query($table, $condition = "DLPState IN ('已停止','需要重新啟動','執行')", $order_by = "1", $fields = "*", $limit = "");
+	$dlp_num = $db->getLastNumRows();
+	$total_antivirus_rate = round($total_antivirus_num/$total_antivirus_num*100,2)."%"; 
+	$dlp_rate = round($dlp_num/$total_antivirus_num*100,2)."%"; 
+	$client_antivirus_num = $antivirus_num;
+	$server_antivirus_num = $total_antivirus_num - $client_antivirus_num;
+	$client_antivirus_rate = round($client_antivirus_num/$total_antivirus_num*100,2)."%"; 
+	$server_antivirus_rate = round($server_antivirus_num/$total_antivirus_num*100,2)."%"; 
 ?>	
 <div id="page" class="container">
 	<div id="content">
@@ -319,24 +355,6 @@ function load_info_client(){
 				<div class="post_title">用戶端資安總表</div>
 					<div class="post_cell">
 					<div class="post_table">
-					<?php //select data form database
-                    	require("mysql_connect.inc.php");
-                   		 //select row_number,and other field value
-						$sql = "SELECT COUNT(*) AS total_num,SUM(ad) AS ad_num,SUM(gcb) AS gcb_num,SUM(wsus) AS wsus_num,SUM(antivirus) AS antivirus_num FROM drip_client_list";
-						$result = mysqli_query($conn,$sql);
-						$row = @mysqli_fetch_assoc($result);
-						$total_num = $row['total_num'];
-						$ad_num = $row['ad_num'];
-						$gcb_num = $row['gcb_num'];
-						$wsus_num = $row['wsus_num'];
-						$antivirus_num = $row['antivirus_num'];
-						$total_rate = round($total_num/$total_num*100,2)."%"; 
-						$ad_rate = round($ad_num/$total_num*100,2)."%"; 
-						$gcb_rate = round($gcb_num/$total_num*100,2)."%"; 
-						$wsus_rate = round($wsus_num/$total_num*100,2)."%"; 
-						$antivirus_rate = round($antivirus_num/$total_num*100,2)."%"; 
-					?>
-
 					<table>
 					<tr>
 						<th>項目</th>
@@ -388,36 +406,29 @@ function load_info_client(){
 						</td>
 					</tr>
 					</table>
-					<?php
-                    $conn->close();
-
-					?>
 					</div>
 				</div>
-			</div> <!--end #post-->
+			</div> 
 			<div class="post">
 				<div class="post_title">網段使用IP統計圖</div>
 				<div class="post_cell">
 					<div id="chartE-1" class="chart"></div>	
 				</div>
-			</div> <!--end #post-->
+			</div> 
+			<div class="post">
+				<div class="post_title">AD統計</div>
+				<div class="post_cell">
+					<center>
+						<div class="ui statistic">
+						  <div class="value"><?php echo $ad_num ?>  </div>
+						  <div class="label">電腦導入數</div>
+						</div>
+					</center>
+			    </div>		
+			</div>
 			<div class="post">
 				<div class="post_title">GCB總通過率</div>
-					<div class="post_cell">
-					<div class="post_table">
-               		 <?php //select data form database
-                    	require("mysql_connect.inc.php");
-                   		 //select row_number,and other field value
-                    	$sql = "SELECT COUNT(ID) as total_count,SUM(CASE WHEN GsAll_2 = GsAll_1 THEN 1 ELSE 0 END) as pass_count FROM gcb_client_list";
-                    	$result = mysqli_query($conn,$sql);
-						$row = @mysqli_fetch_assoc($result);
-                    	$total_count = $row['total_count'];
-                    	$pass_count = $row['pass_count'];
-						$total_rate = ($total_count != 0) ? round($total_count/$total_count*100,2)."%" : 0; 
-						$pass_rate = ($total_count != 0) ? round($pass_count/$total_count*100,2)."%" : 0; 
-						$conn->close();
-					?>
-					</div>
+				<div class="post_cell">
 					<center>
 						<div class="ui statistic">
 						  <div class="value"><?php echo $pass_count." / ".$total_count ?>  </div>
@@ -437,23 +448,6 @@ function load_info_client(){
 				<div class="post_title">WSUS總通過率</div>
 					<div class="post_cell">
 					<div class="post_table">
-               		 <?php //select data form database
-                    	require("mysql_connect.inc.php");
-                   		 //select row_number,and other field value
-                    	$sql = "SELECT COUNT(TargetID) as total_count,SUM(CASE WHEN Failed LIKE '0' THEN 1 ELSE 0 END) as pass_count FROM wsus_computer_status";
-                    	$result = mysqli_query($conn,$sql);
-						$row = @mysqli_fetch_assoc($result);
-                    	$total_num = $row['total_count'];
-                    	$pass_num = $row['pass_count'];
-						$sql = "SELECT * FROM wsus_computer_status WHERE LastSyncTime > ADDDATE(NOW(), INTERVAL -1 WEEK)";
-                    	$result = mysqli_query($conn,$sql);
-						//用戶端1周內同步成功數	
-						$sync_num = mysqli_num_rows($result);
-						$total_rate = round($total_num/$total_num*100,2)."%"; 
-						$pass_rate = round($pass_num/$total_num*100,2)."%"; 
-						$sync_rate = round($sync_num/$total_num*100,2)."%"; 
-					?>
-
 					<table>
 					<tr>
 						<th>項目</th>
@@ -476,10 +470,6 @@ function load_info_client(){
 						<td><?php echo $sync_rate ?></td>
 					</tr>
 					</table>
-					<?php
-                    $conn->close();
-
-					?>
 					</div>
 				</div>
 			</div>
@@ -487,25 +477,6 @@ function load_info_client(){
 				<div class="post_title">AntiVirus總通過率</div>
 					<div class="post_cell">
 					<div class="post_table">
-               		 <?php //select data form database
-                    	require("mysql_connect.inc.php");
-                   		 //select row_number,and other field value
-                    	$sql = "SELECT COUNT(GUID) AS total_count FROM antivirus_client_list";
-                    	$result = mysqli_query($conn,$sql);
-						$row = @mysqli_fetch_assoc($result);
-                    	$total_num = $row['total_count'];
-						$sql = "SELECT COUNT(*) AS dlp_count FROM antivirus_client_list WHERE DLPState IN ('已停止','需要重新啟動','執行') ";
-                    	$result = mysqli_query($conn,$sql);
-						$row = @mysqli_fetch_assoc($result);
-						//用戶端DLP安裝成功數	
-                    	$dlp_num = $row['dlp_count'];
-						$total_rate = round($total_num/$total_num*100,2)."%"; 
-						$dlp_rate = round($dlp_num/$total_num*100,2)."%"; 
-						$client_av_num = $antivirus_num;
-						$server_av_num = $total_num - $client_av_num;
-						$client_av_rate = round($client_av_num/$total_num*100,2)."%"; 
-						$server_av_rate = round($server_av_num/$total_num*100,2)."%"; 
-					?>
 					<table>
 					<tr>
 						<th>項目</th>
@@ -514,8 +485,8 @@ function load_info_client(){
 					</tr>
 					<tr>
 						<td>用戶端總數</td>
-						<td><?php echo $total_num ?></td>
-						<td><?php echo $total_rate ?></td>
+						<td><?php echo $total_antivirus_num ?></td>
+						<td><?php echo $total_antivirus_rate ?></td>
 					</tr>
 					<tr>
 						<td>DLP安裝成功數</td>
@@ -524,44 +495,17 @@ function load_info_client(){
 					</tr>
 					<tr>
 						<td>Client安裝數</td>
-						<td><?php echo $client_av_num ?></td>
-						<td><?php echo $client_av_rate ?></td>
+						<td><?php echo $client_antivirus_num ?></td>
+						<td><?php echo $client_antivirus_rate ?></td>
 					</tr>
 					<tr>
 						<td>Server安裝數</td>
-						<td><?php echo $server_av_num ?></td>
-						<td><?php echo $server_av_rate ?></td>
+						<td><?php echo $server_antivirus_num ?></td>
+						<td><?php echo $server_antivirus_rate ?></td>
 					</tr>
 					</table>
-					<?php
-                    $conn->close();
-
-					?>
 					</div>
 				</div>
-			</div>
-			<div class="post">
-				<div class="post_title">AD統計</div>
-				<div class="post_cell">
-               		 <?php //select data form database
-                    	require("mysql_connect.inc.php");
-                   		 //select row_number,and other field value
-                    	$sql = "SELECT COUNT(*) AS ad_num FROM ad_comupter_list";
-                    	$result = mysqli_query($conn,$sql);
-						$row = @mysqli_fetch_assoc($result);
-                    	$ad_num = $row['ad_num'];
-					?>
-					<center>
-						<div class="ui statistic">
-						  <div class="value"><?php echo $ad_num ?>  </div>
-						  <div class="label">電腦導入數</div>
-						</div>
-						<!--<div class="ui statistic">
-						  <div class="value"><?php echo $ad_num ?>  </div>
-						  <div class="label">使用者數</div>
-						</div>-->
-					</center>
-			    </div>		
 			</div>
 		</div>
 		<div style="clear: both;">&nbsp;</div>
@@ -594,18 +538,12 @@ function load_info_network(){
 			<div class="post">
 				<div class="post_title">威脅日誌(最近10筆)</div>
 				<div class="post_cell">
-					<!--<table class="ui very basic single line table">-->
 					<table class="ui very basic table">
-					 <?php 
+					<?php 
 						require_once("ajax/paloalto_api.php");
 						require_once("ajax/paloalto_config.inc.php");
 						$pa = new paloalto\api\PaloaltoAPI($host, $username, $password);
-						$log_type = 'threat';
-						$dir = 'backward';
-						$nlogs = 10;
-						$skip = 0;
-						$query = '';
-						$res = $pa->GetLogList($log_type, $dir, $nlogs, $skip, $query);
+						$res = $pa->GetLogList($log_type = 'threat', $dir = 'backward', $nlogs = 10, $skip = 0, $query ='');
 						$xml = simplexml_load_string($res) or die("Error: Cannot create object");
 						$job = $xml->result->job;
 						$xml_type = "op";
@@ -700,6 +638,12 @@ function load_info_network(){
 					?>
 					</table>
 			    </div>		
+			</div>
+			<div class="post">
+				<div class="post_title">市府網段區隔</div>
+				<div class="post_cell">
+					<img class="image" src="/images/network.png">
+				</div>
 			</div>
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
