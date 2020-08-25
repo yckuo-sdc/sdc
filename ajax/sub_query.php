@@ -35,6 +35,7 @@ if( (!empty($_GET['key']) && !empty($_GET['keyword']) && !empty($_GET['type']) )
 		case ($type == 'security_contact'):
 			$condition_table = "security_contact";
 			$table = "(select * from security_contact union select * from security_contact_extra)a";
+			$table = "(SELECT a.*, b.rank FROM( SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by OID asc,person_type asc )a LEFT JOIN security_rank AS b ON a.OID = b.OID)v";
 			$order = "order by oid asc,person_type asc";	
 			break;
 		case ($type == 'gcb_client_list'):
@@ -233,6 +234,7 @@ if( (!empty($_GET['key']) && !empty($_GET['keyword']) && !empty($_GET['type']) )
 						echo "<div class='content'>";
 							echo "<a>";
 							echo $row['organization']."&nbsp&nbsp";
+							if( !empty($row['rank'] )) echo "<span style='color:#f80000'>".$row['rank']."</span>&nbsp&nbsp";
 							echo $row['person_name']."&nbsp&nbsp";
 							echo "<span style='background:#fde087'>".$row['person_type']."</span>&nbsp&nbsp";
 							echo $row['email']."&nbsp&nbsp";
@@ -243,6 +245,7 @@ if( (!empty($_GET['key']) && !empty($_GET['keyword']) && !empty($_GET['type']) )
 								echo "<ol>";
 								echo "<li>序號:".$row['CID']."</li>";
 								echo "<li>OID:".$row['OID']."</li>";
+								echo "<li>資安責任等級:".$row['rank']."</li>";
 								echo "<li>機關名稱:".$row['organization']."</li>";
 								echo "<li>姓名:".$row['person_name']."</li>";
 								echo "<li>單位名稱:".$row['unit']."</li>";

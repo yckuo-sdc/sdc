@@ -2,6 +2,7 @@
 <?php 
 if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
 else						$subpage = 'event';
+
 switch($subpage){
 	case 'event': load_query_event(); break;
 	case 'ncert': load_query_ncert(); break;
@@ -10,6 +11,7 @@ switch($subpage){
 	case 'network': load_query_ips(); break;
 	case 'retrieve': load_query_retrieve(); break;
 }
+
 function load_query_event(){
 	$db = Database::get();
 	$table = "security_event"; // 設定你想查詢資料的資料表
@@ -237,7 +239,7 @@ function load_query_ncert(){
 <?php } 
 function load_query_contact(){
 	$db = Database::get();
-	$sql = "SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by OID asc,person_type asc";
+	$sql = "SELECT a.*, b.rank FROM( SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by OID asc,person_type asc )a LEFT JOIN security_rank AS b ON a.OID = b.OID";
 	$db->execute($sql);
 	$last_num_rows = $db->getLastNumRows();
 	
@@ -261,6 +263,7 @@ function load_query_contact(){
 							<label>種類</label>
 							<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 							<option value="organization" class="keyword_paper active" selected>機關名稱</option>
+							<option value="rank" class="keyword_paper active">機關資安等級</option>
 							<option value="OID" class="keyword_paper active">機關OID</option>
 							<option value="person_name" class="keyword_paper active">聯絡人姓名</option>
 							<option value="person_type" class="keyword_paper active">聯絡人類別</option>
@@ -293,6 +296,7 @@ function load_query_contact(){
 							echo "<div class='content'>";
 								echo "<a>";
 								echo $contact['organization']."&nbsp&nbsp";
+								if( !empty($contact['rank'] )) echo "<span style='color:#f80000'>".$contact['rank']."</span>&nbsp&nbsp";
 								echo $contact['person_name']."&nbsp&nbsp";
 								echo "<span style='background:#fde087'>".$contact['person_type']."</span>&nbsp&nbsp";
 								echo $contact['email']."&nbsp&nbsp";
@@ -303,6 +307,7 @@ function load_query_contact(){
 									echo "<ol>";
 									echo "<li>序號:".$contact['CID']."</li>";
 									echo "<li>OID:".$contact['OID']."</li>";
+									echo "<li>資安責任等級:".$contact['rank']."</li>";
 									echo "<li>機關名稱:".$contact['organization']."</li>";
 									echo "<li>單位名稱:".$contact['unit']."</li>";
 									echo "<li>姓名:".$contact['person_name']."</li>";
@@ -333,6 +338,18 @@ function load_query_contact(){
 	</div>
 <?php } 
 function load_query_client(){
+	$db = Database::get();
+	$table = "drip_client_list"; // 設定你想查詢資料的資料表
+	$condition = "1";
+	$order_by = "DetectorName,IP";
+	$db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$last_num_rows = $db->getLastNumRows();
+	
+	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
+	$page_parm = getPaginationParameter($page, $last_num_rows);
+	
+	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
+	$IS_client = $db->query($table, $condition, $order_by, $fields = "*", $limit);
 ?>	
 <div id="page" class="container">
 <div id="content">
@@ -392,104 +409,88 @@ function load_query_client(){
 							<i class='circle blue icon'></i>antivirus
 							<p></p>
 						<div class="record_content">
-						<?php //select data form database
-							require("mysql_connect.inc.php");
-							//------------pagination----------//
-							$pages = isset($_GET['page'])?$_GET['page']:1;	
-							
-							//select row_number,and other field value
-							$sql = "SELECT * FROM drip_client_list ORDER by DetectorName ASC,IP ASC";
-							$result = mysqli_query($conn,$sql);
-							$rowcount = mysqli_num_rows($result);
-										
-							$per = 10; 		
-							$max_pages = 10;
-							$Totalpages = ceil($rowcount / $per); 
-							$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
-							$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
-							$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
-							if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
-							elseif($pages == $Totalpages)	$offset = $rowcount - $start;
-							else							$offset = $per;
-										
-							$prev_page = ($pages > 1) ? $pages -1 : 1;
-							$next_page = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
-							$sql_subpage = $sql." limit ".$start.",".$offset;
-										
-							$result = mysqli_query($conn,$sql_subpage);
-												
-							if($rowcount==0){
-								echo "查無此筆紀錄";
-							}else{
-								echo "共有".$rowcount."筆資料！";
-								echo "<div class='ui relaxed divided list'>";
-								while($row = mysqli_fetch_assoc($result)) {
-									echo "<div class='item'>";
-									echo "<div class='content'>";
-										echo "<a>";
-										if($row['ad']==1) echo "<i class='circle yellow icon'></i>";
-										else echo "<i class='circle outline icon'></i>";
-										if($row['gcb']==1) echo "<i class='circle green icon'></i>";
-										else echo "<i class='circle outline icon'></i>";
-										if($row['wsus']==1) echo "<i class='circle red icon'></i>";
-										else echo "<i class='circle outline icon'></i>";
-										if($row['antivirus']==1) echo "<i class='circle blue icon'></i>";
-										else echo "<i class='circle outline icon'></i>";
-										echo $row['DetectorName']."&nbsp&nbsp";
-										echo "<span style='background:#fde087'>".$row['IP']."</span>&nbsp&nbsp";
-										//echo "<span style='background:#DDDDDD'>".$row['MAC']."</span>&nbsp&nbsp";
-										echo $row['ClientName']."&nbsp&nbsp";
-										echo "<span style='background:#fbc5c5'>".$row['OrgName']."</span>&nbsp&nbsp";
-										echo $row['Owner']."&nbsp&nbsp";
-										echo $row['UserName']."&nbsp&nbsp";
-										echo "<i class='angle double down icon'></i>";
-										echo "</a>";
-									echo "<div class='description'>";
-
-										
-										echo "<ol>";
-										echo "<li>內網IP:".$row['IP']."</li>";
-										echo "<li>MAC位址:".$row['MAC']."</li>";
-										echo "<li>設備名稱:".$row['ClientName']."</li>";
-										echo "<li>群組名稱:".$row['GroupName']."</li>";
-										echo "<li>網卡製造商:".$row['NICProductor']."</li>";
-										echo "<li>偵測器名稱:".$row['DetectorName']."</li>";
-										echo "<li>偵測器IP:".$row['DetectorIP']."</li>";
-										echo "<li>偵測器群組:".$row['DetectorGroup']."</li>";
-										echo "<li>交換器名稱:".$row['SwitchName']."</li>";
-										echo "<li>連接埠名稱:".$row['PortName']."</li>";
-										echo "<li>最後上線時間:".$row['LastOnlineTime']."</li>";
-										echo "<li>最後下線時間:".$row['LastOfflineTime']."</li>";
-										echo "<li>IP封鎖原因:".$row['IP_BlockReason']."</li>";
-										echo "<li>MAC封鎖原因:".$row['MAC_BlockReason']."</li>";
-										echo "<li>備註ByIP:".$row['MemoByIP']."</li>";
-										echo "<li>備註ByMac:".$row['MemoByMAC']."</li>";
-										echo "<li>ad安裝:".$row['ad']."</li>";
-										echo "<li>gcb安裝:".$row['gcb']."</li>";
-										echo "<li>wsus安裝:".$row['wsus']."</li>";
-										echo "<li>antivirus安裝:".$row['antivirus']."</li>";
-										echo "<li>OrgName:".$row['OrgName']."</li>";
-										echo "<li>Owner:".$row['Owner']."</li>";
-										echo "<li>UserName:".$row['UserName']."</li>";
-										echo "</ol>";
-										if(issetBySession("Level") && $_SESSION['Level'] == 2){
-											echo "<button data-ip='".$row['IP']."' id='block-btn' class='ui button'>Block IP</button>";
-											echo "<button data-ip='".$row['IP']."' id='unblock-btn' class='ui button'>UnBlock IP</button>";
-											echo "<div class='ui centered inline loader'></div>";
-											echo "<div class='block_IP_response'></div>";
-										}
-									echo "</div>";
-									echo "</div>";
-									echo "</div>";
-								}		
+						<?php
+						if($last_num_rows==0){
+							echo "查無此筆紀錄";
+						}else{
+							echo "共有".$last_num_rows."筆資料！";
+							echo "<div class='ui relaxed divided list'>";
+							foreach($IS_client as $client){
+								echo "<div class='item'>";
+								echo "<div class='content'>";
+									echo "<a>";
+									if($client['ad']==1) echo "<i class='circle yellow icon'></i>";
+									else echo "<i class='circle outline icon'></i>";
+									if($client['gcb']==1) echo "<i class='circle green icon'></i>";
+									else echo "<i class='circle outline icon'></i>";
+									if($client['wsus']==1) echo "<i class='circle red icon'></i>";
+									else echo "<i class='circle outline icon'></i>";
+									if($client['antivirus']==1) echo "<i class='circle blue icon'></i>";
+									else echo "<i class='circle outline icon'></i>";
+									echo $client['DetectorName']."&nbsp&nbsp";
+									echo "<span style='background:#fde087'>".$client['IP']."</span>&nbsp&nbsp";
+									echo $client['ClientName']."&nbsp&nbsp";
+									echo "<span style='background:#fbc5c5'>".$client['OrgName']."</span>&nbsp&nbsp";
+									echo $client['Owner']."&nbsp&nbsp";
+									echo $client['UserName']."&nbsp&nbsp";
+									echo "<i class='angle double down icon'></i>";
+									echo "</a>";
+								echo "<div class='description'>";
+									echo "<ol>";
+									echo "<li>內網IP:".$client['IP']."</li>";
+									echo "<li>MAC位址:".$client['MAC']."</li>";
+									echo "<li>設備名稱:".$client['ClientName']."</li>";
+									echo "<li>群組名稱:".$client['GroupName']."</li>";
+									echo "<li>網卡製造商:".$client['NICProductor']."</li>";
+									echo "<li>偵測器名稱:".$client['DetectorName']."</li>";
+									echo "<li>偵測器IP:".$client['DetectorIP']."</li>";
+									echo "<li>偵測器群組:".$client['DetectorGroup']."</li>";
+									echo "<li>交換器名稱:".$client['SwitchName']."</li>";
+									echo "<li>連接埠名稱:".$client['PortName']."</li>";
+									echo "<li>最後上線時間:".$client['LastOnlineTime']."</li>";
+									echo "<li>最後下線時間:".$client['LastOfflineTime']."</li>";
+									echo "<li>IP封鎖原因:".$client['IP_BlockReason']."</li>";
+									echo "<li>MAC封鎖原因:".$client['MAC_BlockReason']."</li>";
+									echo "<li>備註ByIP:".$client['MemoByIP']."</li>";
+									echo "<li>備註ByMac:".$client['MemoByMAC']."</li>";
+									echo "<li>ad安裝:".$client['ad']."</li>";
+									echo "<li>gcb安裝:".$client['gcb']."</li>";
+									echo "<li>wsus安裝:".$client['wsus']."</li>";
+									echo "<li>antivirus安裝:".$client['antivirus']."</li>";
+									echo "<li>OrgName:".$client['OrgName']."</li>";
+									echo "<li>Owner:".$client['Owner']."</li>";
+									echo "<li>UserName:".$client['UserName']."</li>";
+									echo "</ol>";
+									if(issetBySession("Level") && $_SESSION['Level'] == 2){
+										echo "<button data-ip='".$client['IP']."' id='block-btn' class='ui button'>Block IP</button>";
+										echo "<button data-ip='".$client['IP']."' id='unblock-btn' class='ui button'>UnBlock IP</button>";
+										echo "<div class='ui centered inline loader'></div>";
+										echo "<div class='block_IP_response'></div>";
+									}
 								echo "</div>";
-								/* Create Pagination Element*/ 
-								echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","client",1,$pages,"");
-							}
-							$conn->close();
+								echo "</div>";
+								echo "</div>";
+							}		
+							echo "</div>";
+							/* Create Pagination Element*/ 
+							echo pagination($prev_page = $page_parm['prev_page'], $next_page = $page_parm['next_page'], $lower_bound = $page_parm['lower_bound'], $upper_bound = $page_parm['upper_bound'], $total_page = $page_parm['total_page'], "query", "client", 1, $page, "");
+						}
 						?>
 						</div> <!--End of record_content-->	
 					</div> <!--End of tabular_content-->	
+	<?php
+	$db = Database::get();
+	$sql = "SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id ORDER by a.ID asc,a.InternalIP asc";
+	$db->execute($sql);
+	$last_num_rows = $db->getLastNumRows();
+
+	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
+	$page_parm = getPaginationParameter($page, $last_num_rows);
+
+	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
+	$sql = $sql." limit ".$start.",".$offset;
+	$gcb_client = $db->execute($sql);
+	?>
 						<div class="tab-content gcb_client_list show">
 						<form class="ui form" action="javascript:void(0)">
 
@@ -519,112 +520,95 @@ function load_query_client(){
 						</div>
 						</form>
 						<div class="record_content">
-							
-
-						<?php //select data form database
-					
-
-							require("mysql_connect.inc.php");
-							//------------pagination----------//
-							$pages = isset($_GET['page'])?$_GET['page']:1;	
-							
-							//select row_number,and other field value
-							$sql = "SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id ORDER by a.ID asc,a.InternalIP asc";
-							$result = mysqli_query($conn,$sql);
-							$rowcount = mysqli_num_rows($result);
-										
-							$per = 10; 		
-							$max_pages = 10;
-							$Totalpages = ceil($rowcount / $per); 
-							$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
-							$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
-							$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
-							if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
-							elseif($pages == $Totalpages)	$offset = $rowcount - $start;
-							else							$offset = $per;
-										
-							$prev_page = ($pages > 1) ? $pages -1 : 1;
-							$next_page = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
-							$sql_subpage = $sql." limit ".$start.",".$offset;
-										
-							$result = mysqli_query($conn,$sql_subpage);
-												
-							if($rowcount==0){
-								echo "查無此筆紀錄";
-							}else{
-								echo "共有".$rowcount."筆資料！";
-
-
-							echo "<div class='ui relaxed divided list'>";
-							while($row = mysqli_fetch_assoc($result)) {
-								echo "<div class='item'>";
-								echo "<div class='content'>";
-									echo "<a>";
-									if($row['IsOnline'] == "1")		echo "<i class='circle green icon'></i>";
-									else							echo "<i class='circle outline icon'></i>";
-									switch($row['GsStat']){
-										case '0':
-											$GsStat_str = "未套用";
-											break;
-										case '1':
-											$GsStat_str = "已套用";
-											break;
-										case '-1':
-											$GsStat_str = "套用失敗";
-											break;
-										case '2':
-											$GsStat_str = "還原成功";
-											break;
-										case '-2':
-											$GsStat_str = "未套用";
-											break;
-										default:
-											$GsStat_str = "None";
-											break;
-									}
-									
-									echo $row['Name']."&nbsp&nbsp";
-									echo "<span style='background:#fde087'>".$row['OrgName']."</span>&nbsp&nbsp";
-									echo $row['UserName']."&nbsp&nbsp";
-									echo $row['Owner']."&nbsp&nbsp";
-									echo "<span style='background:#DDDDDD'>".long2ip($row['InternalIP'])."</span>&nbsp&nbsp";
-									echo $row['os_name']."&nbsp&nbsp";
-									echo "<i class='angle double down icon'></i>";
-									echo "</a>";
-									echo "<div class='description'>";
-										echo "<ol>";
-										echo "<li><a href='/ajax/gcb_detail.php?action=detail&id=".$row['ID']."' target='_blank'>序號:".$row['ID']."(用戶端資訊)&nbsp<i class='external alternate icon'></i></a></li>";
-										echo "<li>外部IP:".long2ip($row['ExternalIP'])."</li>";
-										echo "<li>內部IP:".long2ip($row['InternalIP'])."</li>";
-										echo "<li>電腦名稱:".$row['Name']."</li>";
-										echo "<li>單位名稱:".$row['OrgName']."</li>";
-										echo "<li>使用者帳號:".$row['UserName']."</li>";
-										echo "<li>使用者名稱:".$row['Owner']."</li>";
-										echo "<li>OS:".$row['os_name']."</li>";
-										echo "<li>IE:".$row['ie_name']."</li>";
-										echo "<li>是否上線:".$row['IsOnline']."</li>";
-										echo "<li>Gcb總通過數[未包含例外]:".$row['GsAll_0']."</li>";
-										echo "<li>Gcb總通過數[包含例外]:".$row['GsAll_1']."</li>";
-										echo "<li>Gcb總通過數[總數]:".$row['GsAll_2']."</li>";
-										echo "<li>Gcb例外數量:".$row['GsExcTot']."</li>";
-										echo "<li><a href='/ajax/gcb_detail.php?action=gscan&id=".$row['GsID']."' target='_blank'>Gcb掃描編號:".$row['GsID']."(掃描結果資訊)&nbsp<i class='external alternate icon'></i></a></li>";
-										echo "<li>Gcb派送編號:".$row['GsSetDeployID']."</li>";
-										echo "<li>Gcb狀態:".$GsStat_str."</li>";
-										echo "<li>Gcb回報時間:".$row['GsUpdatedAt']."</li>";
-										echo "</ol>";
-									echo "</div>";
-									echo "</div>";
+						<?php
+						if($last_num_rows==0){
+							echo "查無此筆紀錄";
+						}else{
+							echo "共有".$last_num_rows."筆資料！";
+						echo "<div class='ui relaxed divided list'>";
+						foreach($gcb_client as $client){
+							echo "<div class='item'>";
+							echo "<div class='content'>";
+								echo "<a>";
+								if($client['IsOnline'] == "1")		echo "<i class='circle green icon'></i>";
+								else							echo "<i class='circle outline icon'></i>";
+								switch($client['GsStat']){
+									case '0':
+										$GsStat_str = "未套用";
+										break;
+									case '1':
+										$GsStat_str = "已套用";
+										break;
+									case '-1':
+										$GsStat_str = "套用失敗";
+										break;
+									case '2':
+										$GsStat_str = "還原成功";
+										break;
+									case '-2':
+										$GsStat_str = "未套用";
+										break;
+									default:
+										$GsStat_str = "None";
+										break;
+								}
+								
+								echo $client['Name']."&nbsp&nbsp";
+								echo "<span style='background:#fde087'>".$client['OrgName']."</span>&nbsp&nbsp";
+								echo $client['UserName']."&nbsp&nbsp";
+								echo $client['Owner']."&nbsp&nbsp";
+								echo "<span style='background:#DDDDDD'>".long2ip($client['InternalIP'])."</span>&nbsp&nbsp";
+								echo $client['os_name']."&nbsp&nbsp";
+								echo "<i class='angle double down icon'></i>";
+								echo "</a>";
+								echo "<div class='description'>";
+									echo "<ol>";
+									echo "<li><a href='/ajax/gcb_detail.php?action=detail&id=".$client['ID']."' target='_blank'>序號:".$client['ID']."(用戶端資訊)&nbsp<i class='external alternate icon'></i></a></li>";
+									echo "<li>外部IP:".long2ip($client['ExternalIP'])."</li>";
+									echo "<li>內部IP:".long2ip($client['InternalIP'])."</li>";
+									echo "<li>電腦名稱:".$client['Name']."</li>";
+									echo "<li>單位名稱:".$client['OrgName']."</li>";
+									echo "<li>使用者帳號:".$client['UserName']."</li>";
+									echo "<li>使用者名稱:".$client['Owner']."</li>";
+									echo "<li>OS:".$client['os_name']."</li>";
+									echo "<li>IE:".$client['ie_name']."</li>";
+									echo "<li>是否上線:".$client['IsOnline']."</li>";
+									echo "<li>Gcb總通過數[未包含例外]:".$client['GsAll_0']."</li>";
+									echo "<li>Gcb總通過數[包含例外]:".$client['GsAll_1']."</li>";
+									echo "<li>Gcb總通過數[總數]:".$client['GsAll_2']."</li>";
+									echo "<li>Gcb例外數量:".$client['GsExcTot']."</li>";
+									echo "<li><a href='/ajax/gcb_detail.php?action=gscan&id=".$client['GsID']."' target='_blank'>Gcb掃描編號:".$client['GsID']."(掃描結果資訊)&nbsp<i class='external alternate icon'></i></a></li>";
+									echo "<li>Gcb派送編號:".$client['GsSetDeployID']."</li>";
+									echo "<li>Gcb狀態:".$GsStat_str."</li>";
+									echo "<li>Gcb回報時間:".$client['GsUpdatedAt']."</li>";
+									echo "</ol>";
 								echo "</div>";
-							}
-							
+								echo "</div>";
 							echo "</div>";
-						    /* Create Pagination Element*/ 
-							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","client",2,$pages,"");
-							}
-							$conn->close();
+						}
+						
+						echo "</div>";
+						/* Create Pagination Element*/ 
+						echo pagination($prev_page = $page_parm['prev_page'], $next_page = $page_parm['next_page'], $lower_bound = $page_parm['lower_bound'], $upper_bound = $page_parm['upper_bound'], $total_page = $page_parm['total_page'], "query", "client", 2, $page, "");
+						}
 						?>
 						</div> <!--End of record_content-->	
 					</div> <!--End of tabular_content-->	
+	<?php
+	$sort = isset($_GET['sort'])?$_GET['sort']:'TargetID';	
+	$db = Database::get();
+	$table = "wsus_computer_status"; // 設定你想查詢資料的資料表
+	$condition = "1";
+	$order_by = $sort;
+	$db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$last_num_rows = $db->getLastNumRows();
+
+	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
+	$page_parm = getPaginationParameter($page, $last_num_rows);
+
+	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
+	$wsus_client = $db->query($table, $condition, $order_by, $fields = "*", $limit);
+	?>	
 					<div class="tab-content wsus_client_list">
 						<form class="ui form" action="javascript:void(0)">
 
@@ -652,105 +636,92 @@ function load_query_client(){
 						</div>
 						</form>
 						<div class="record_content">
-						<?php //select data form database
-							require("mysql_connect.inc.php");
-							//------------pagination----------//
-							$pages = isset($_GET['page'])?$_GET['page']:1;	
-							$sort = isset($_GET['sort'])?$_GET['sort']:'TargetID';	
-							
-							$sql = "SELECT * FROM wsus_computer_status ORDER by $sort asc";
-							$result = mysqli_query($conn,$sql);
-							$rowcount = mysqli_num_rows($result);
-										
-							$per = 10; 		
-							$max_pages = 10;
-							$Totalpages = ceil($rowcount / $per); 
-							$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
-							$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
-							$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
-							if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
-							elseif($pages == $Totalpages)	$offset = $rowcount - $start;
-							else							$offset = $per;
-										
-							$prev_page = ($pages > 1) ? $pages -1 : 1;
-							$next_page = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
-							$sql_subpage = $sql." limit ".$start.",".$offset;
-										
-							$result = mysqli_query($conn,$sql_subpage);
-												
-							if($rowcount==0){
-								echo "查無此筆紀錄";
-							}else{
-								echo "共有".$rowcount."筆資料！";
-
-								echo "<div class='ui relaxed divided list'>";
-									echo "<div class='item'>";
-										echo "<div class='content'>";
-											echo "<div class='header'>";
-											echo "<a href='/query/client/?tab=3&sort=FullDomainName'>電腦名稱</a>&nbsp&nbsp";
-											echo "<a href='/query/client/?tab=3&sort=IPAddress'>內網IP</a>&nbsp&nbsp";
-											echo "<a href='/query/client/?tab=3&sort=NotInstalled'>未安裝更新</a>&nbsp&nbsp";
-											echo "<a href='/query/client/?tab=3&sort=Failed'>安裝失敗更新</a>&nbsp&nbsp";
-											echo "<a href='/query/client/?tab=3&sort=OSDescription'>作業系統</a>&nbsp&nbsp";
-											echo "</div>";
+						<?php
+						if($last_num_rows==0){
+							echo "查無此筆紀錄";
+						}else{
+							echo "共有".$last_num_rows."筆資料！";
+							echo "<div class='ui relaxed divided list'>";
+								echo "<div class='item'>";
+									echo "<div class='content'>";
+										echo "<div class='header'>";
+										echo "<a href='/query/client/?tab=3&sort=FullDomainName'>電腦名稱</a>&nbsp&nbsp";
+										echo "<a href='/query/client/?tab=3&sort=IPAddress'>內網IP</a>&nbsp&nbsp";
+										echo "<a href='/query/client/?tab=3&sort=NotInstalled'>未安裝更新</a>&nbsp&nbsp";
+										echo "<a href='/query/client/?tab=3&sort=Failed'>安裝失敗更新</a>&nbsp&nbsp";
+										echo "<a href='/query/client/?tab=3&sort=OSDescription'>作業系統</a>&nbsp&nbsp";
 										echo "</div>";
 									echo "</div>";
-
-							while($row = mysqli_fetch_assoc($result)) {
-								echo "<div class='item'>";
-								echo "<div class='content'>";
-									echo "<a>";
-									echo strtoupper(str_replace(".tainan.gov.tw","",$row['FullDomainName']))."&nbsp&nbsp";
-									echo "<span style='background:#fde087'>".$row['IPAddress']."</span>&nbsp&nbsp";
-									echo "<span style='background:#DDDDDD'>".$row['NotInstalled']."</span>&nbsp&nbsp";
-									echo "<span style='background:#fbc5c5'>".$row['Failed']."</span>&nbsp&nbsp";
-									echo $row['OSDescription'];
-									echo "<i class='angle double down icon'></i>";
-									echo "</a>";
-									echo "<div class='description'>";
-										echo "<ol>";
-										echo "<li>序號:".$row['TargetID']."</li>";
-										echo "<li>電腦名稱:".strtoupper(str_replace(".tainan.gov.tw","",$row['FullDomainName']))."</li>";
-										echo "<li>內網IP:".$row['IPAddress']."</li>";
-										echo "<li>未知更新數量:".$row['Unknown']."</li>";
-										echo "<li>未安裝更新數量:".$row['NotInstalled']."</li>";
-										$sql = "SELECT KBArticleID FROM wsus_computer_updatestatus_kbid WHERE TargetID = ".$row['TargetID']." AND UpdateState = 'NotInstalled' ORDER by ID asc";
-										$result_NotInstalled = mysqli_query($conn,$sql);
-										while($row_NotInstalled = mysqli_fetch_assoc($result_NotInstalled)) {
-											echo "<strong>KB".$row_NotInstalled['KBArticleID']."</strong> ";	
-										}	
-										echo "<li>已下載更新數量:".$row['Downloaded']."</li>";
-										echo "<li>已安裝更新數量:".$row['Installed']."</li>";
-										echo "<li>安裝失敗更新數量:".$row['Failed']."</li>";
-										$sql = "SELECT KBArticleID FROM wsus_computer_updatestatus_kbid WHERE TargetID = ".$row['TargetID']." AND UpdateState = 'Failed' ORDER by ID asc";
-										$result_Failed = mysqli_query($conn,$sql);
-										while($row_Failed = mysqli_fetch_assoc($result_Failed)) {
-											echo "<strong>KB".$row_Failed['KBArticleID']."</strong> ";	
-										}	
-										echo "<li>已安裝待重開機更新數量:".$row['InstalledPendingReboot']."</li>";
-										echo "<li>上次狀態回報日期:".dateConvert($row['LastReportedStatusTime'])."</li>";
-										echo "<li>上次更新重開機日期:".dateConvert($row['LastReportedRebootTime'])."</li>";
-										echo "<li>上次可用更新日期:".dateConvert($row['EffectiveLastDetectionTime'])."</li>";
-										echo "<li>上次同步日期:".dateConvert($row['LastSyncTime'])."</li>";
-										echo "<li>上次修改日期:".dateConvert($row['LastChangeTime'])."</li>";
-										echo "<li>上次同步結果:".$row['LastSyncResult']."</li>";
-										echo "<li>製造商:".$row['ComputerMake']."</li>";
-										echo "<li>型號:".$row['ComputerModel']."</li>";
-										echo "<li>作業系統:".$row['OSDescription']."</li>";
-										echo "</ol>";
-									echo "</div>";
-									echo "</div>";
 								echo "</div>";
-							}
-							
+						foreach($wsus_client as $client) {
+							$table = "wsus_computer_updatestatus_kbid";
+							$condition = "TargetID = ".$client['TargetID']." AND UpdateState = 'NotInstalled'";
+							$order_by = "ID";
+							$notinstalled_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+							$condition = "TargetID = ".$client['TargetID']." AND UpdateState = 'Failed'";
+							$failed_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+							echo "<div class='item'>";
+							echo "<div class='content'>";
+								echo "<a>";
+								echo strtoupper(str_replace(".tainan.gov.tw","",$client['FullDomainName']))."&nbsp&nbsp";
+								echo "<span style='background:#fde087'>".$client['IPAddress']."</span>&nbsp&nbsp";
+								echo "<span style='background:#DDDDDD'>".$client['NotInstalled']."</span>&nbsp&nbsp";
+								echo "<span style='background:#fbc5c5'>".$client['Failed']."</span>&nbsp&nbsp";
+								echo $client['OSDescription'];
+								echo "<i class='angle double down icon'></i>";
+								echo "</a>";
+								echo "<div class='description'>";
+									echo "<ol>";
+									echo "<li>序號:".$client['TargetID']."</li>";
+									echo "<li>電腦名稱:".strtoupper(str_replace(".tainan.gov.tw","",$client['FullDomainName']))."</li>";
+									echo "<li>內網IP:".$client['IPAddress']."</li>";
+									echo "<li>未知更新數量:".$client['Unknown']."</li>";
+									echo "<li>未安裝更新數量:".$client['NotInstalled']."</li>";
+									foreach($notinstalled_kb as $kb) {
+										echo "<strong>KB".$kb['KBArticleID']."</strong> ";	
+									}	
+									echo "<li>已下載更新數量:".$client['Downloaded']."</li>";
+									echo "<li>已安裝更新數量:".$client['Installed']."</li>";
+									echo "<li>安裝失敗更新數量:".$client['Failed']."</li>";
+									foreach($failed_kb as $kb) {
+										echo "<strong>KB".$kb['KBArticleID']."</strong> ";	
+									}	
+									echo "<li>已安裝待重開機更新數量:".$client['InstalledPendingReboot']."</li>";
+									echo "<li>上次狀態回報日期:".dateConvert($client['LastReportedStatusTime'])."</li>";
+									echo "<li>上次更新重開機日期:".dateConvert($client['LastReportedRebootTime'])."</li>";
+									echo "<li>上次可用更新日期:".dateConvert($client['EffectiveLastDetectionTime'])."</li>";
+									echo "<li>上次同步日期:".dateConvert($client['LastSyncTime'])."</li>";
+									echo "<li>上次修改日期:".dateConvert($client['LastChangeTime'])."</li>";
+									echo "<li>上次同步結果:".$client['LastSyncResult']."</li>";
+									echo "<li>製造商:".$client['ComputerMake']."</li>";
+									echo "<li>型號:".$client['ComputerModel']."</li>";
+									echo "<li>作業系統:".$client['OSDescription']."</li>";
+									echo "</ol>";
+								echo "</div>";
+								echo "</div>";
 							echo "</div>";
-						    /* Create Pagination Element*/ 
-							echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","client",3,$pages,$sort);
-							}
-							$conn->close();
+						}
+						echo "</div>";
+						/* Create Pagination Element*/ 
+						echo pagination($prev_page = $page_parm['prev_page'], $next_page = $page_parm['next_page'], $lower_bound = $page_parm['lower_bound'], $upper_bound = $page_parm['upper_bound'], $total_page = $page_parm['total_page'], "query", "client", 3, $page, $sort);
+						}
 						?>
 						</div> <!--End of record_content-->	
 					</div> <!--End of tabular_content-->	
+	<?php
+	$db = Database::get();
+	$table = "antivirus_client_list"; // 設定你想查詢資料的資料表
+	$condition = "1";
+	$order_by = "DomainLevel, ClientName";
+	$db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$last_num_rows = $db->getLastNumRows();
+
+	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
+	$page_parm = getPaginationParameter($page, $last_num_rows);
+
+	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
+	$antivirus_client = $db->query($table, $condition, $order_by, $fields = "*", $limit);
+	?>	
 					<div class="tab-content antivirus_client_list show">
 						<form class="ui form" action="javascript:void(0)">
 
@@ -779,79 +750,52 @@ function load_query_client(){
 						</form>
 						<div class="record_content">
 						<?php //select data form database
-							require("mysql_connect.inc.php");
-							//------------pagination----------//
-							$pages = isset($_GET['page'])?$_GET['page']:1;	
-							
-							//select row_number,and other field value
-							$sql = "SELECT * FROM antivirus_client_list ORDER by DomainLevel asc,ClientName asc";
-							$result = mysqli_query($conn,$sql);
-							$rowcount = mysqli_num_rows($result);
-										
-							$per = 10; 		
-							$max_pages = 10;
-							$Totalpages = ceil($rowcount / $per); 
-							$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
-							$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
-							$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
-							if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
-							elseif($pages == $Totalpages)	$offset = $rowcount - $start;
-							else							$offset = $per;
-										
-							$prev_page = ($pages > 1) ? $pages -1 : 1;
-							$next_page = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
-							$sql_subpage = $sql." limit ".$start.",".$offset;
-										
-							$result = mysqli_query($conn,$sql_subpage);
-												
-							if($rowcount==0){
-								echo "查無此筆紀錄";
-							}else{
-								echo "共有".$rowcount."筆資料！";
-								echo "<div class='ui relaxed divided list'>";
-								while($row = mysqli_fetch_assoc($result)) {
-									echo "<div class='item'>";
-									echo "<div class='content'>";
-										echo "<a>";
-										if($row['ConnectionState'] == "線上")	echo "<i class='circle green icon'></i>";
-										else									echo "<i class='circle outline icon'></i>";
-										echo $row['ClientName']."&nbsp&nbsp";
-										echo "<span style='background:#fde087'>".$row['IP']."</span>&nbsp&nbsp";
-										//echo "<span style='background:#DDDDDD'>".$row['ConnectionState']."</span>&nbsp&nbsp";
-										echo "<span style='background:#fbc5c5'>".$row['OS']."</span>&nbsp&nbsp";
-										echo $row['VirusNum']."&nbsp&nbsp";
-										echo $row['SpywareNum']."&nbsp&nbsp";
-										echo "<span style='background:#DDDDDD'>".$row['VirusPatternVersion']."</span>&nbsp&nbsp";
-										echo $row['LogonUser']."&nbsp&nbsp";
-										echo "<i class='angle double down icon'></i>";
-										echo "</a>";
-									echo "<div class='description'>";
-										echo "<ol>";
-										echo "<li>設備名稱:".$row['ClientName']."</li>";
-										echo "<li>內網IP:".$row['IP']."</li>";
-										echo "<li>網域階層:".$row['DomainLevel']."</li>";
-										echo "<li>連線狀態:".$row['ConnectionState']."</li>";
-										echo "<li>GUID:".$row['GUID']."</li>";
-										echo "<li>掃描方式:".$row['ScanMethod']."</li>";
-										echo "<li>DLP狀態:".$row['DLPState']."</li>";
-										echo "<li>病毒數量:".$row['VirusNum']."</li>";
-										echo "<li>間諜程式數量:".$row['SpywareNum']."</li>";
-										echo "<li>作業系統:".$row['OS']."</li>";
-										echo "<li>位元版本:".$row['BitVersion']."</li>";
-										echo "<li>MAC位址:".$row['MAC']."</li>";
-										echo "<li>設備版本:".$row['ClientVersion']."</li>";
-										echo "<li>病毒碼版本:".$row['VirusPatternVersion']."</li>";
-										echo "<li>登入使用者:".$row['LogonUser']."</li>";
-										echo "</ol>";
-									echo "</div>";
-									echo "</div>";
-									echo "</div>";
-								}		
+						if($last_num_rows==0){
+							echo "查無此筆紀錄";
+						}else{
+							echo "共有".$last_num_rows."筆資料！";
+							echo "<div class='ui relaxed divided list'>";
+							foreach($antivirus_client as $client) {
+								echo "<div class='item'>";
+								echo "<div class='content'>";
+									echo "<a>";
+									if($client['ConnectionState'] == "線上")	echo "<i class='circle green icon'></i>";
+									else									echo "<i class='circle outline icon'></i>";
+									echo $client['ClientName']."&nbsp&nbsp";
+									echo "<span style='background:#fde087'>".$client['IP']."</span>&nbsp&nbsp";
+									echo "<span style='background:#fbc5c5'>".$client['OS']."</span>&nbsp&nbsp";
+									echo $client['VirusNum']."&nbsp&nbsp";
+									echo $client['SpywareNum']."&nbsp&nbsp";
+									echo "<span style='background:#DDDDDD'>".$client['VirusPatternVersion']."</span>&nbsp&nbsp";
+									echo $client['LogonUser']."&nbsp&nbsp";
+									echo "<i class='angle double down icon'></i>";
+									echo "</a>";
+								echo "<div class='description'>";
+									echo "<ol>";
+									echo "<li>設備名稱:".$client['ClientName']."</li>";
+									echo "<li>內網IP:".$client['IP']."</li>";
+									echo "<li>網域階層:".$client['DomainLevel']."</li>";
+									echo "<li>連線狀態:".$client['ConnectionState']."</li>";
+									echo "<li>GUID:".$client['GUID']."</li>";
+									echo "<li>掃描方式:".$client['ScanMethod']."</li>";
+									echo "<li>DLP狀態:".$client['DLPState']."</li>";
+									echo "<li>病毒數量:".$client['VirusNum']."</li>";
+									echo "<li>間諜程式數量:".$client['SpywareNum']."</li>";
+									echo "<li>作業系統:".$client['OS']."</li>";
+									echo "<li>位元版本:".$client['BitVersion']."</li>";
+									echo "<li>MAC位址:".$client['MAC']."</li>";
+									echo "<li>設備版本:".$client['ClientVersion']."</li>";
+									echo "<li>病毒碼版本:".$client['VirusPatternVersion']."</li>";
+									echo "<li>登入使用者:".$client['LogonUser']."</li>";
+									echo "</ol>";
 								echo "</div>";
-								/* Create Pagination Element*/ 
-								echo pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,"query","client",4,$pages,"");
-							}
-							$conn->close();
+								echo "</div>";
+								echo "</div>";
+							}		
+							echo "</div>";
+							/* Create Pagination Element*/ 
+							echo pagination($prev_page = $page_parm['prev_page'], $next_page = $page_parm['next_page'], $lower_bound = $page_parm['lower_bound'], $upper_bound = $page_parm['upper_bound'], $total_page = $page_parm['total_page'], "query", "client", 4, $page, "");
+						}
 						?>
 						</div> <!--End of record_content-->	
 					</div> <!--End of tabular_content-->	
