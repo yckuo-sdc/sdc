@@ -996,9 +996,8 @@ function load_query_ips(){
 				<div class="post_title">Client應用程式白名單</div>
 				<div class="post_cell">
 				<?php
-					require_once("ajax/paloalto_api.php");
-					require_once("ajax/paloalto_config.inc.php");
-					$pa = new paloalto\api\PaloaltoAPI($host, $username, $password);
+					require 'libraries/PaloAltoAPI.php';
+					$pa = new PaloAltoAPI();
 					$object_type = 'ApplicationGroups'; 
 					$name = '';
 					$res = $pa->GetObjectList($object_type, $name);

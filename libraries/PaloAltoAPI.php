@@ -1,14 +1,20 @@
 <?php
 /*** manual： https://172.16.254.209/php/rest/browse.php ***/
-namespace paloalto\api;
+if(!defined("SITE_ROOT"))	define("SITE_ROOT", "/var/www/html/sdc");
+require SITE_ROOT.'/config/PaloAlto.php';
 
-Class PaloaltoAPI {
+Class PaloAltoAPI {
+
 	private $host;
 	private $apikey;
 
-	public function __construct($host, $username, $password){  // a public function (default)
-		$this->host = $host;
-		$this->apikey = $this->GetAPIKey("keygen", $username, $password);
+	public function __construct($host = null){  // a public function (default)
+		if($host == null){	
+			$this->host = PaloAlto::ADDRESS;
+		}else{
+			$this->host = $host;
+		}
+		$this->apikey = $this->GetAPIKey("keygen", PaloAlto::USERNAME, PaloAlto::PASSWORD);
 	}
 
 	public function GetProperty(){  // a public function (default)

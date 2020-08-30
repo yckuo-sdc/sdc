@@ -166,6 +166,40 @@ function getFullTextSearchSQL($conn,$table,$key) {
 	return $result_sql;
 }	
 
+function getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages) {
+	$Totalpages = ceil($rowcount / $per); 
+	$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
+	$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
+	$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
+	if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
+	elseif($pages == $Totalpages)	$offset = $rowcount - $start;
+	else							$offset = $per;
+				
+	$prev_page  = ($pages > 1) ? $pages -1 : 1;
+	$next_page  = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
+	$result_sql = $sql." limit ".$start.",".$offset;
+
+	return array($result_sql, $prev_page, $next_page, $lower_bound, $upper_bound, $Totalpages);
+}
+
+function getFullTextSearchSQL2($db,$table,$key) {
+	$query_table = "information_schema.columns"; // 設定你想查詢資料的資料表
+	$condition = "table_name = '".$table."'";
+	$fields = "column_name"; 
+	$columns = $db->query($query_table, $condition, $order_by = "1", $fields, $limit = "");
+	$last_num_rows = $db->getLastNumRows();
+	$result_sql = "";
+	$count = 0;
+	foreach($columns as $col) {
+		if (++$count == $last_num_rows) {  //last row
+			$result_sql = $result_sql." ".$col['column_name']." LIKE '%".$key."%'";
+		} else {  		//not last row
+			$result_sql = $result_sql." ".$col['column_name']." LIKE '%".$key."%' OR";
+		}
+	}
+	return $result_sql;
+}	
+
 function getPaginationParameter($page, $last_num_rows) {
 	$per = 10;
 	$max_page = 10;
@@ -183,20 +217,39 @@ function getPaginationParameter($page, $last_num_rows) {
 	return array('prev_page' => $prev_page, 'next_page' => $next_page, 'lower_bound' => $lower_bound, 'upper_bound' => $upper_bound, 'total_page' => $total_page, 'start' => $start, 'offset' => $offset);
 }
 
-function getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages) {
-	$Totalpages = ceil($rowcount / $per); 
-	$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
-	$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
-	$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
-	if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
-	elseif($pages == $Totalpages)	$offset = $rowcount - $start;
-	else							$offset = $per;
-				
-	$prev_page  = ($pages > 1) ? $pages -1 : 1;
-	$next_page  = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
-	$result_sql = $sql." limit ".$start.",".$offset;
+function createPagination($pageParm, $page, $pageAttr) {
+	$res ="";
+	$attr = "";
+	$prev_page = $pageParm['prev_page'];
+	$next_page = $pageParm['next_page'];
+	$lb = $pageParm['lower_bound'];
+	$ub = $pageParm['upper_bound'];
+	$Totalpages = $pageParm['total_page'];
+	
+	foreach($pageAttr as $key => $val) {
+		$attr = $attr.$key."='".$val."' ";
+	}
 
-	return array($result_sql, $prev_page, $next_page, $lower_bound, $upper_bound, $Totalpages);
+	$res .="<div class='ui pagination menu'>";	
+	$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='1'>首頁</a>";
+	$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$prev_page."'> ← </a>";
+	for ($j = $lb; $j <= $ub ;$j++){
+		if($j == $page){
+			$res .="<a class='active item bold' href='javascript:void(0)' ".$attr." page='".$j."'>".$j."</a>";
+		}else{
+			$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$j."'>".$j."</a>";
+		}
+	}
+	$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$next_page."'> → </a>";		
+	$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$Totalpages."'>末頁 </a>";		
+	$res .="</div>";
+   
+	$res .="<div class='ui pagination menu mobile'>";	
+		$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$prev_page."'> ← </a>";
+		$res .="<a class='active item bold' href='javascript:void(0)' ".$attr." page='".$page."'>(".$page."/".$Totalpages.")</a>";
+		$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$next_page."'> → </a>";		
+	$res .="</div>";
+	return $res;
 }
 
 function pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,$mainpage,$subpage,$tab,$pages,$sort) {

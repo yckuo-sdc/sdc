@@ -315,8 +315,8 @@ function load_info_client(){
 	$antivirus_rate = round($antivirus_num/$total_num*100,2)."%"; 
 	
 	$table = "ad_comupter_list"; // 設定你想查詢資料的資料表
-	$db->query($table, $condition = "1", $order_by = "1", $fields = "*", $limit = "");
-	$ad_num = $db->getLastNumRows();
+	$db->query($table, $condition = "1", $order_by = "1", $fields = "DISTINCT(CommonName)", $limit = "");
+	$ad_computer_num = $db->getLastNumRows();
 	
 	$sql = "SELECT COUNT(ID) as total_count,SUM(CASE WHEN GsAll_2 = GsAll_1 THEN 1 ELSE 0 END) as pass_count FROM gcb_client_list";
 	$gcb = $db->execute($sql)[0];
@@ -327,14 +327,14 @@ function load_info_client(){
 	
 	$sql = "SELECT COUNT(TargetID) as total_count,SUM(CASE WHEN Failed LIKE '0' THEN 1 ELSE 0 END) as pass_count FROM wsus_computer_status";
 	$wsus = $db->execute($sql)[0];
-	$total_num = $wsus['total_count'];
-	$pass_num = $wsus['pass_count'];
+	$total_wsus_num = $wsus['total_count'];
+	$pass_wsus_num = $wsus['pass_count'];
 	$table = "wsus_computer_status"; // 設定你想查詢資料的資料表
 	$db->query($table, $condition = "LastSyncTime > ADDDATE(NOW(), INTERVAL -1 WEEK)", $order_by = "1", $fields = "*", $limit = "");
-	$sync_num = $db->getLastNumRows();
-	$total_rate = round($total_num/$total_num*100,2)."%"; 
-	$pass_rate = round($pass_num/$total_num*100,2)."%"; 
-	$sync_rate = round($sync_num/$total_num*100,2)."%"; 
+	$sync_wsus_num = $db->getLastNumRows();
+	$total_wsus_rate = round($total_wsus_num/$total_wsus_num*100,2)."%"; 
+	$pass_wsus_rate = round($pass_wsus_num/$total_wsus_num*100,2)."%"; 
+	$sync_wsus_rate = round($sync_wsus_num/$total_wsus_num*100,2)."%"; 
 	
 	$table = "antivirus_client_list"; // 設定你想查詢資料的資料表
 	$db->query($table, $condition = "1", $order_by = "1", $fields = "*", $limit = "");
@@ -420,7 +420,7 @@ function load_info_client(){
 				<div class="post_cell">
 					<center>
 						<div class="ui statistic">
-						  <div class="value"><?php echo $ad_num ?>  </div>
+						  <div class="value"><?php echo $ad_computer_num ?>  </div>
 						  <div class="label">電腦導入數</div>
 						</div>
 					</center>
@@ -456,18 +456,18 @@ function load_info_client(){
 					</tr>
 					<tr>
 						<td>用戶端總數</td>
-						<td><?php echo $total_num ?></td>
-						<td><?php echo $total_rate ?></td>
+						<td><?php echo $total_wsus_num ?></td>
+						<td><?php echo $total_wsus_rate ?></td>
 					</tr>
 					<tr>
 						<td>安裝成功數</td>
-						<td><?php echo $pass_num ?></td>
-						<td><?php echo $pass_rate ?></td>
+						<td><?php echo $pass_wsus_num ?></td>
+						<td><?php echo $pass_wsus_rate ?></td>
 					</tr>
 					<tr>
 						<td>1周內同步成功數</td>
-						<td><?php echo $sync_num ?></td>
-						<td><?php echo $sync_rate ?></td>
+						<td><?php echo $sync_wsus_num ?></td>
+						<td><?php echo $sync_wsus_rate ?></td>
 					</tr>
 					</table>
 					</div>
@@ -540,9 +540,8 @@ function load_info_network(){
 				<div class="post_cell">
 					<table class="ui very basic table">
 					<?php 
-						require_once("ajax/paloalto_api.php");
-						require_once("ajax/paloalto_config.inc.php");
-						$pa = new paloalto\api\PaloaltoAPI($host, $username, $password);
+						require_once 'libraries/PaloAltoAPI.php';
+						$pa = new PaloAltoAPI();
 						$res = $pa->GetLogList($log_type = 'threat', $dir = 'backward', $nlogs = 10, $skip = 0, $query ='');
 						$xml = simplexml_load_string($res) or die("Error: Cannot create object");
 						$job = $xml->result->job;

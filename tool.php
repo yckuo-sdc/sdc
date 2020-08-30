@@ -23,7 +23,7 @@ function load_tool_nmap(){
 						<div class="tab-content nmap show">
 							<form class="ui form" action="javascript:void(0)">
 								<div class="field">
-									<label>Target(IP or Domain name)</label>
+									<label>Host(IP or Domain name)</label>
 									<div class="ui input">
 										<?php $target = "localhost vision.tainan.gov.tw 10.7.102.4";?>
 										<input type="text" class="target" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
@@ -34,6 +34,13 @@ function load_tool_nmap(){
 									<button id="nmap_btn" class="ui button">Scan</button>
 									<div class="ui centered inline loader"></div>
 								</div>
+								<div class="ui message">
+									<div class="header"><a href='https://nmap.org/nsedoc/' target='_blank'>Nmap Scripts</a></div>
+									<ul class="list">
+									  <li>nmap -sV --script ssl-cert,ssl-enum-ciphers  -p 443,465,993,995 &lthost&gt</li>
+									  <li>nmap -sV --script ssl-enum-ciphers,ssl-cert -p 443 &lthost&gt</li>
+									</ul>
+							  	</div>
 							</form>
 							<div class="record_content"></div>
 						</div> <!-- end of .tabular-->

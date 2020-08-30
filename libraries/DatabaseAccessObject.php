@@ -86,8 +86,11 @@ class DatabaseAccessObject {
         $tmp_dat = array();
 
         foreach ($data_array as $key => $value) {
-            $value = mysqli_real_escape_string($this->link, $value);
-            $tmp_col[] = $key;
+			//kkc modified on 20200827
+            #$value = mysqli_real_escape_string($this->link, $value);
+            $value = $this->getEscapedString($value);
+			
+			$tmp_col[] = $key;
             $tmp_dat[] = "'$value'";
         }
         $columns = join(",", $tmp_col);
@@ -117,12 +120,16 @@ class DatabaseAccessObject {
         if($key_column == null) return false;
         if(count($data_array) == 0) return false;
 
-        $id = mysqli_real_escape_string($this->link, $id);
+		//kkc modified on 20200827
+        #$id = mysqli_real_escape_string($this->link, $id);
+        $id = $this->getEscapedString($id);
 
         $setting_list = "";
         for ($xx = 0; $xx < count($data_array); $xx++) {
             list($key, $value) = each($data_array);
-            $value = mysqli_real_escape_string($this->link, $value);
+			//kkc modified on 20200827
+            #$value = mysqli_real_escape_string($this->link, $value);
+            $value = $this->getEscapedString($value);
             $setting_list .= $key . "=" . "\"" . $value . "\"";
             if ($xx != count($data_array) - 1)
                 $setting_list .= ",";
@@ -143,6 +150,10 @@ class DatabaseAccessObject {
         if ($table===null) return false;
         if($id===null) return false;
         if($key_column===null) return false;
+
+		//kkc inserted on 20200827
+		$id = $this->getEscapedString($id);
+        $key_column = $this->getEscapedString($key_column);
 
         return $this->execute("DELETE FROM $table WHERE " . $key_column . " = " . "\"" . $id . "\"");
     }
@@ -187,6 +198,13 @@ class DatabaseAccessObject {
     }
 
     /**
+     * @return string
+     */
+    public function getEscapedString($str) {
+		return mysqli_real_escape_string($this->link, $str);
+    }
+	
+	/**
      * @param int $last_num_rows
      */
     private function setLastNumRows($last_num_rows) {

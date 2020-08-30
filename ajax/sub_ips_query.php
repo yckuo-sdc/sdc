@@ -1,8 +1,6 @@
 <?php
-use paloalto\api as pa;
-require("../login/function.php");
-require_once("paloalto_api.php");
-require_once("paloalto_config.inc.php");
+require '../login/function.php';
+require '../libraries/PaloAltoAPI.php';
 if( (empty($_GET['key']) ||  empty($_GET['keyword']) ||  empty($_GET['operator']) ) && count(json_decode($_GET['jsonObj'],true)) == 0  ){
 	echo "沒有輸入";
 	return;
@@ -60,7 +58,7 @@ $skip = ($page-1)*$nlogs;
 $host_map = ['yonghua' => '172.16.254.209', 'minjhih' => '10.6.2.102', 'idc' => '10.7.11.240', 'intrayonghua' => '172.16.254.205'];
 $host = $host_map[$type];
 
-$pa = new pa\PaloaltoAPI($host, $username, $password);
+$pa = new PaloAltoAPI($host);
 $log_type_map = ['traffic','threat','data'];
 
 for($lt=0; $lt<count($log_type_map); $lt++){

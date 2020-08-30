@@ -1,17 +1,17 @@
 <?php
-require("../mysql_connect.inc.php");
-include("../login/function.php");
+require '../login/function.php';
+require '../libraries/Database.php';
 header('Content-type: text/html; charset=utf-8');
- //select row_number,and other field value
-$sql = "SELECT * FROM  application_system";
-$result = mysqli_query($conn,$sql);
-$num_total_entry = mysqli_num_rows($result);
 
-while($row = mysqli_fetch_assoc($result)) {
-	$SubnetName = $row['Name'];
-	$SID 		= $row['SID'];
-	$IPv4 		= $row['IP'];
-	$IPInteger 	= ip2long($IPv4);
+$db = Database::get();
+$table = "application_system"; // 設定你想查詢資料的資料表
+$aps = $db->query($table, $condition = "1", $order_by = "1", $fields = "*", $limit = "");
+
+foreach($aps as $ap) {
+	$SubnetName = $ap['Name'];
+	$SID = $ap['SID'];
+	$IPv4 = $ap['IP'];
+	$IPInteger = ip2long($IPv4);
 	echo $IPv4."\n";
 	$output = shell_exec("/usr/bin/nmap -Pn ".$IPv4);
 	$res = NmapParser($output);
@@ -21,17 +21,22 @@ while($row = mysqli_fetch_assoc($result)) {
 			echo $v2." ";
 		}
 		echo "\n";
-		$ScanTime = date('Y-m-d h:i:s');	
-		$sql = "INSERT INTO portscanResult(SubnetName,SID,IPInteger,IPv4,PortNumber,Protocol,Status,Service,ScanTime) VALUES('$SubnetName',$SID,$IPInteger,'$IPv4','$v1[0]','$v1[1]','$v1[2]','$v1[3]','$ScanTime')" ;
-		if ($conn->query($sql) == TRUE){
-		}else {
-			echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
-		}
+		$scan['SubnetName'] = $SubnetName;
+		$scan['SID'] = $SID;
+		$scan['IPInteger'] = $IPInteger;
+		$scan['IPv4'] = $IPv4;
+		$scan['PortNumber'] = $v1[0];
+		$scan['Protocol'] = $v1[1];
+		$scan['Status'] = $v1[2];
+		$scan['Service'] = $v1[3];
+		$scan['ScanTime'] = date('Y-m-d h:i:s');	
+
+		$table = "portscanResult"; // 設定你想新增資料的資料表
+		$db->insert($table, $scan);
 	}
-	$sql = "UPDATE application_system SET Scan_Result='".$output."' WHERE SID =".$SID;
-	if ($conn->query($sql) == TRUE){
-	}else {
-		echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
-	}
+	$table = "application_system";
+	$data_array['Scan_Result'] = $output;
+	$key_column = "SID";
+	$id = $SID;
+	$db->update($table, $data_array, $key_column, $id);
 }
-$conn->close();	

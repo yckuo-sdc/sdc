@@ -1,5 +1,5 @@
 <?php
-define("SITE_ROOT", "/var/www/html/sdc");
+if(!defined("SITE_ROOT"))	define("SITE_ROOT", "/var/www/html/sdc");
 require SITE_ROOT.'/libraries/DatabaseAccessObject.php';
 require SITE_ROOT.'/config/MySQL.php';
 

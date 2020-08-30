@@ -1,4 +1,7 @@
 <?php
+require '../libraries/Database.php';
+$db = Database::get();
+
 //PHP File Upload
 $target_dir = "../upload/contact/";
 if(is_array($_FILES)) {
@@ -32,27 +35,33 @@ if(is_array($_FILES)) {
 	}
 }
 $filename = $target_file;
-//mysql
-require("../mysql_connect.inc.php");
 $row = 1;
 $count = 0;
 if ($uploadOk == 1){
 	//讀取csv檔
 	if (($handle = fopen($filename, "r")) !== FALSE) {
-		$sql = "TRUNCATE TABLE security_contact";
-		$conn->query($sql); 
+		$table = "security_contact";
+		$key_column = "1";
+		$id = "1"; 
+		$db->delete($table, $key_column, $id); 
 		while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 			//ignore the first row(table head)
 			if($row != 1){
 				$num = count($data);
-				//echo "<p> $num fields in line $row: <br /></p>\n";
-				$sql = "insert into security_contact(OID,organization,person_name,unit,position,person_type,address,tel,ext,fax,email) values('".$data[0]."','".$data[1]."','".$data[2]."','".$data[3]."','".$data[4]."','".$data[5]."','".$data[6]."','".$data[7]."','".$data[8]."','".$data[9]."','".$data[10]."')"; 
-				if ($conn->query($sql) == TRUE) {
-					//echo "此筆資料已被上傳成功\n\r";		
-					$count = $count + 1;							
-				} else {
-					echo "Error: " . $sql . "<br>" . $conn->error."<p>\n\r";
-				}
+				$status['OID']= $db->getEscapedString(trim($data[0]));
+				$status['organization']= $db->getEscapedString(trim($data[1]));
+				$status['person_name']= $db->getEscapedString(trim($data[2]));
+				$status['unit']= $db->getEscapedString(trim($data[3]));
+				$status['position']= $db->getEscapedString(trim($data[4]));
+				$status['person_type']= $db->getEscapedString(trim($data[5]));
+				$status['address']= $db->getEscapedString(trim($data[6]));
+				$status['tel']= $db->getEscapedString(trim($data[7]));
+				$status['ext']= $db->getEscapedString(trim($data[8]));
+				$status['fax']= $db->getEscapedString(trim($data[9]));
+				$status['email']= $db->getEscapedString(trim($data[10]));
+				
+				$db->insert($table, $status);
+				$count = $count + 1;							
 			}
 			$row++;
 		}
@@ -61,4 +70,3 @@ if ($uploadOk == 1){
 		fclose($handle);
 	}
 }
-$conn->close();	
