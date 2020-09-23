@@ -39,8 +39,8 @@ $(document).ready(function(){
 		history.pushState({"mainpage": mainpage,"subpage": subpage,"tab": tab},"", "/"+mainpage+"/"+subpage+"/?tab="+tab);
 	});
 
-	/*vs_query.php's component action*/
-	$('.post.ip_and_url_scanResult .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
+	/*vul_query.php's component action*/
+	$('.post.ip_and_url_scanResult .record_content').on('click', '.ui.pagination.menu > .item', function() {
 		var page = $(this).attr('page');
 		var key = $(this).attr('key');
 		var keyword	= $(this).attr('keyword');
@@ -51,7 +51,7 @@ $(document).ready(function(){
 	});
 
 	/*query.php's component action*/
-	$('.post.network .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
+	$('.post.network .record_content').on('click', '.ui.pagination.menu > .item', function() {
 		var key = $(this).attr('key');
 		var keyword = $(this).attr('keyword');
 		var operator = $(this).attr('operator');
@@ -62,7 +62,7 @@ $(document).ready(function(){
 	});
 
 	/*query.php's component action*/
-	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content, .post.is_client_list .tab-content.gcb_client_list .record_content, .post.is_client_list .tab-content.wsus_client_list .record_content, .post.is_client_list .tab-content.antivirus_client_list .record_content, .post.is_client_list .tab-content.drip_client_list .record_content').delegate('.ui.pagination.menu > .item', 'click', function() {
+	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content, .post.is_client_list .tab-content.gcb_client_list .record_content, .post.is_client_list .tab-content.wsus_client_list .record_content, .post.is_client_list .tab-content.antivirus_client_list .record_content, .post.is_client_list .tab-content.drip_client_list .record_content').on('click', '.ui.pagination.menu > .item', function() {
 		var page = $(this).attr('page');
 		var key = $(this).attr('key');
 		var keyword = $(this).attr('keyword');
@@ -71,8 +71,8 @@ $(document).ready(function(){
 		sub_query_pagination_ajax(page,key,keyword,type,jsonObj);
 	});
 	
-	/*query.php & vs_query's component action*/
-	$('.record_content').delegate('.ui.list > .item a', 'click', function() {
+	/*query.php & vul_query's component action*/
+	$('.record_content').on('click', '.ui.list > .item a', function() {
 		var icon = $(this).find('i.icon');
 		var detail = $(this).parent().find('.description');
 		if(detail.hasClass('show')){
@@ -85,7 +85,7 @@ $(document).ready(function(){
 	});
 
 	/*query.php's component action*/
-	$('.ou_vs_content').delegate('.ou_block > a', 'click', function() {
+	$('.ou_vs_content').on('click', '.ou_block > a', function() {
 		var icon = $(this).find('i.icon');
 		var detail = $(this).parent().find('.description');
 		if(detail.hasClass('show')){
@@ -97,8 +97,21 @@ $(document).ready(function(){
 		}
 	});
 	
+	/*query.php's component action*/
+	$('.post.isac .dynamiclists i.icon').on('click', function() {
+		var icon = $(this);
+		var detail = $(this).closest('.dynamiclists').find('.remaining.card');
+		if(detail.hasClass('show')){
+			icon.removeClass('down').addClass('right');
+			detail.removeClass('show');
+		}else{
+			icon.removeClass('right').addClass('down');
+			detail.addClass('show');
+		}
+	});
+
 	/*sub_ldap_tree.php's component action*/
-	$('.ldap_tree_content').delegate('li > i.square.icon', 'click', function() {
+	$('.ldap_tree_content').on('click', 'li > i.square.icon', function() {
 		var icon1 = $(this);
 		var icon2 = $(this).parent('li').children('i.folder.icon');
 		var detail = $(this).parent('li');
@@ -193,7 +206,7 @@ $(document).ready(function(){
 	});
 	
 	/*query.php's component action*/
-	$('.post.is_client_list .tab-content.drip_client_list .query_content, .post.network .tab-content.yonghua .query_content, .post.network .tab-content.minjhih .query_content, .post.network .tab-content.idc .query_content, .post.network .tab-content.intrayonghua .query_content').delegate('button.close', 'click', function() {
+	$('.post.is_client_list .tab-content.drip_client_list .query_content, .post.network .tab-content.yonghua .query_content, .post.network .tab-content.minjhih .query_content, .post.network .tab-content.idc .query_content, .post.network .tab-content.intrayonghua .query_content').on('click', 'button.close', function() {
 		var span = $(this).parent('span');
 		span.remove();
 	});
@@ -214,7 +227,7 @@ $(document).ready(function(){
 	});
 
 	/*vul.php's component action*/
-	$('.post.ip_and_url_scanResult .query_content').delegate('button.close', 'click', function() {
+	$('.post.ip_and_url_scanResult .query_content').on('click', 'button.close', function() {
 		var span = $(this).parent('span');
 		span.remove();
 	});
@@ -377,7 +390,7 @@ $(document).ready(function(){
 	});
 	//Vulnerability Scans
 	$('#vs_btn').click(function(){
-		retrieve_vs_ajax();	
+		retrieve_vul_ajax();	
 	});
 	//Nmap
 	$('.post.nmap #nmap_btn').click(function(){
@@ -427,7 +440,6 @@ $(document).ready(function(){
 			cache: false,
 			processData:false,
 			success: function(data){
-				$(".retrieve_ncert").html("");
 				$(".retrieve_ncert").html(data);
 			},
 			error: function(){
@@ -488,7 +500,6 @@ function ldap_edit(isActive) {
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			$(selector + '.record_content').html("");
 			$(selector + '.record_content').html(data);
 		 }
 	});
@@ -516,7 +527,6 @@ function drip_block_IP_ajax(type,ip,response){
 		 },success: function(data) {
 			 $('.ui.inline.loader').removeClass('active');
 			 console.log("success");
-			 response.html("");
 			 response.html(data);
 			 console.log("done");
 		 }
@@ -554,7 +564,6 @@ function sub_query_ajax(type,ap){
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
-					 $(selector + '.record_content').html("");
 					 $(selector + '.record_content').html(data);
 				 }
 			});
@@ -578,7 +587,6 @@ function sub_query_pagination_ajax(page,key,keyword,type,jsonObj){
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 //console.log("success");
-			 $(selector + '.record_content').html("");
 			 $(selector + '.record_content').html(data);
 			 //console.log("done");
 		 }
@@ -613,7 +621,6 @@ function sub_ips_query_ajax(type){
 				 alert('Ajax failed');
 			 },success: function(data) {
 				 $(selector + '.ui.inline.loader').removeClass('active');
-				 $(selector + '.record_content').html("");
 				 $(selector + '.record_content').html(data);
 			 }
 		});
@@ -643,7 +650,6 @@ function load_ips_query_ajax(type){
 				 alert('Ajax failed');
 			 },success: function(data) {
 				 $(selector + '.ui.inline.loader').removeClass('active');
-				 $(selector + '.record_content').html("");
 				 $(selector + '.record_content').html(data);
 			 }
 		});
@@ -664,7 +670,6 @@ function sub_ips_query_pagination_ajax(key,keyword,operator,page,jsonObj,type){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $(selector + '.record_content').html("");
 			 $(selector + '.record_content').html(data);
 		 }
 	});
@@ -707,7 +712,6 @@ function sub_vul_query_ajax(type,ap){
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
-					 $(selector + '.record_content').html("");
 					 $(selector + '.record_content').html(data);
 				 }
 			});
@@ -729,7 +733,6 @@ function sub_vul_query_pagination_ajax(page,key,keyword,type,jsonStatus,jsonObj)
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $(selector + '.record_content').html("");
 			 $(selector + '.record_content').html(data);
 		 }
 	});
@@ -753,7 +756,7 @@ function retrieve_ou_vul_ajax(){
 	var selector = ".post.vul_overview ";
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: url+'ajax/retrieve_ou_vul.php',
+		 url: url+'ajax/fetch_ou_vul.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -762,7 +765,6 @@ function retrieve_ou_vul_ajax(){
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.ou_vs_content').html("");
 			 $(selector + '.ou_vs_content').html(data);
 		 }
 	});
@@ -771,7 +773,7 @@ function retrieve_ou_vul_ajax(){
 
 function retrieve_gs_ajax(){
 	$.ajax({
-		 url: '/ajax/retrieve_event.php',
+		 url: '/ajax/fetch_event.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -779,7 +781,6 @@ function retrieve_gs_ajax(){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(response) {
-			 $('.retrieve_info').html("");
 			 $('.retrieve_info').html(response);
 		 }
 	});
@@ -788,7 +789,7 @@ function retrieve_gs_ajax(){
 
 function retrieve_ncert_event_gs_ajax(){
 	$.ajax({
-		 url: '/ajax/retrieve_ncert_event.php',
+		 url: '/ajax/fetch_ncert.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -796,7 +797,6 @@ function retrieve_ncert_event_gs_ajax(){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(response) {
-			 $('.retrieve_info').html("");
 			 $('.retrieve_info').html(response);
 		 }
 	});
@@ -805,7 +805,7 @@ function retrieve_ncert_event_gs_ajax(){
 
 function retrieve_gcb_ajax(){
 	$.ajax({
-		 url: '/ajax/retrieve_gcb.php',
+		 url: '/ajax/fetch_gcb.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -813,17 +813,16 @@ function retrieve_gcb_ajax(){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(response) {
-			 $('.retrieve_info').html("");
 			 $('.retrieve_info').html(response);
 		 }
 	});
 	return 0;
 }
 
-function retrieve_vs_ajax(){
+function retrieve_vul_ajax(){
 	$('.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: '/ajax/retrieve_vs.php',
+		 url: '/ajax/fetch_vul.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -832,8 +831,7 @@ function retrieve_vs_ajax(){
 			 alert('Ajax failed');
 		 },success: function(response) {
 			 $('.ui.inline.loader').removeClass('active');
-			 $('.retrieve_vs_info').html("");
-			 $('.retrieve_vs_info').html(response);
+			 $('.retrieve_vul').html(response);
 		 }
 	});
 	return 0;
@@ -855,7 +853,6 @@ function retrieve_ldap_tree_ajax(){
 			 alert('Ajax failed');
 		 },success: function(data) {
              $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.ldap_tree_content').html("");
 			 $(selector + '.ldap_tree_content').html(data);
 		 }
 	});
@@ -875,7 +872,6 @@ function retrieve_hydra_ajax(type){
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.record_content').html("");
 			 $(selector + '.record_content').html(data);
 		 }
 	});
@@ -895,7 +891,6 @@ function retrieve_nmap_ajax(type){
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.record_content').html("");
 			 $(selector + '.record_content').html(data);
 		 }
 	});
@@ -915,7 +910,6 @@ function retrieve_ldap_ajax(type){
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.record_content').html("");
 			 $(selector + '.record_content').html(data);
 		 }
 	});
@@ -936,7 +930,7 @@ function pageSwitch(){
 	var tab = (getParameterByName('tab',url)!= null)?getParameterByName('tab',url):1;	
     switch(true){
 		//load ips_query
-      	case (mainpage == 'query' && subpage == 'network' ):
+      	case (mainpage == 'network' && subpage == 'search' ):
 			load_ips_query_ajax('yonghua');
 			load_ips_query_ajax('minjhih');
 			load_ips_query_ajax('idc');

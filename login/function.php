@@ -9,16 +9,14 @@ function verifyBySession_Cookie($var){
 		//使用者選擇了記住登入狀態
 		if(isset($_COOKIE['rememberme'])){
 			$SECRET_KEY = "security";
-			#list ($user, $token, $mac, $UserName, $Level) = explode(':', $_COOKIE['rememberme']);
 			list ($user, $token, $UserName, $Level, $mac) = explode(':', $_COOKIE['rememberme']);
 			if (hash_equals(hash_hmac('sha256', $user . ':' . $token .':'. $UserName . ':' . $Level, $SECRET_KEY), $mac)) {
 				//使用者名稱和密碼對了，把使用者的個人資料放到session裡面 
 				$_SESSION['account'] = $user;   
 				$_SESSION['UserName'] = $UserName;
 				$_SESSION['Level'] = $Level;
-				require("mysql_connect.inc.php");
-				storeUserLogs($conn,'rememberLogin',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],$_SERVER['REQUEST_URI'],date('Y-m-d h:i:s'));
-				$conn->close();
+				$db = Database::get();
+				storeUserLogs($db,'rememberLogin',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],$_SERVER['REQUEST_URI']);
 				//echo "a";	
 				return true;	
 			}else{
@@ -83,15 +81,33 @@ function checkAccountByLDAP($user, $ldappass){
 }
 
 //store user's action to DB's log table	
-function storeUserLogs($conn,$type,$ip,$user,$msg,$time){
-	//特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
-	$type= mysqli_real_escape_string($conn,$type);
-	$ip= mysqli_real_escape_string($conn,$ip);
-	$user= mysqli_real_escape_string($conn,$user);
-	$msg= mysqli_real_escape_string($conn,$msg);
-	$time= mysqli_real_escape_string($conn,$time);
-	$sql = "INSERT INTO logs(type,ip,user,msg,time) VALUES('".$type."','".$ip."','".$user."','".$msg."','".$time."')";
-	mysqli_query($conn,$sql);
+function storeUserLogs($db, $type, $ip, $user, $msg){
+	$type = $db->getEscapedString($type);
+	$ip = $db->getEscapedString($ip);
+	$user = $db->getEscapedString($user);
+	$msg = $db->getEscapedString($msg);
+	$time = date('Y-m-d H:i:s');
+	
+	$table = "logs"; // 設定你想新增資料的資料表
+	$data_array['type'] = $type;
+	$data_array['ip'] = $ip;
+	$data_array['user'] = $user;
+	$data_array['msg'] = $msg;
+	$data_array['time'] = $time;
+	$db->insert($table, $data_array);
+}	
+
+//store user's action to DB's log table	
+function storeUserLogs2($db, $type, $ip, $user, $msg){
+	$time = date('Y-m-d H:i:s');
+	
+	$table = "logs"; // 設定你想新增資料的資料表
+	$data_array['type'] = $type;
+	$data_array['ip'] = $ip;
+	$data_array['user'] = $user;
+	$data_array['msg'] = $msg;
+	$data_array['time'] = $time;
+	$db->insert($table, $data_array);
 }	
 
 //LDAP recursive search and print
@@ -148,58 +164,6 @@ function phpAlert($msg) {
 	echo '<script type="text/javascript">alert("' . $msg . '")</script>';
 }
 
-function getFullTextSearchSQL($conn,$table,$key) {
-	$sql = "SELECT column_name FROM information_schema.columns WHERE table_name = '".$table."'";
-	$result = mysqli_query($conn,$sql);
-	$rowcount = mysqli_num_rows($result);
-	$result_sql = "";
-	$count = 0;
-	while($row = mysqli_fetch_assoc($result)){
-		if (++$count == $rowcount) {
-			//last row
-			$result_sql = $result_sql." ".$row['column_name']." LIKE '%".$key."%'";
-		} else {
-			//not last row
-			$result_sql = $result_sql." ".$row['column_name']." LIKE '%".$key."%' OR";
-		}
-	}
-	return $result_sql;
-}	
-
-function getPaginationSQL($sql,$per,$max_pages,$rowcount,$pages) {
-	$Totalpages = ceil($rowcount / $per); 
-	$lower_bound = ($pages <= $max_pages) ? 1 : $pages - $max_pages + 1;
-	$upper_bound = ($pages <= $max_pages) ? min($max_pages,$Totalpages) : $pages;					
-	$start = ($pages -1)*$per; //計算資料庫取資料範圍的開始值。
-	if($pages == 1)					$offset = ($rowcount < $per) ? $rowcount : $per;
-	elseif($pages == $Totalpages)	$offset = $rowcount - $start;
-	else							$offset = $per;
-				
-	$prev_page  = ($pages > 1) ? $pages -1 : 1;
-	$next_page  = ($pages < $Totalpages) ? $pages +1 : $Totalpages;	
-	$result_sql = $sql." limit ".$start.",".$offset;
-
-	return array($result_sql, $prev_page, $next_page, $lower_bound, $upper_bound, $Totalpages);
-}
-
-function getFullTextSearchSQL2($db,$table,$key) {
-	$query_table = "information_schema.columns"; // 設定你想查詢資料的資料表
-	$condition = "table_name = '".$table."'";
-	$fields = "column_name"; 
-	$columns = $db->query($query_table, $condition, $order_by = "1", $fields, $limit = "");
-	$last_num_rows = $db->getLastNumRows();
-	$result_sql = "";
-	$count = 0;
-	foreach($columns as $col) {
-		if (++$count == $last_num_rows) {  //last row
-			$result_sql = $result_sql." ".$col['column_name']." LIKE '%".$key."%'";
-		} else {  		//not last row
-			$result_sql = $result_sql." ".$col['column_name']." LIKE '%".$key."%' OR";
-		}
-	}
-	return $result_sql;
-}	
-
 function getPaginationParameter($page, $last_num_rows) {
 	$per = 10;
 	$max_page = 10;
@@ -217,7 +181,7 @@ function getPaginationParameter($page, $last_num_rows) {
 	return array('prev_page' => $prev_page, 'next_page' => $next_page, 'lower_bound' => $lower_bound, 'upper_bound' => $upper_bound, 'total_page' => $total_page, 'start' => $start, 'offset' => $offset);
 }
 
-function createPagination($pageParm, $page, $pageAttr) {
+function createPaginationElement($pageParm, $page, $pageAttr) {
 	$res ="";
 	$attr = "";
 	$prev_page = $pageParm['prev_page'];

@@ -7,7 +7,7 @@ switch($subpage){
 	case 'overview': load_vul_overview(); break;
 	case 'search': load_vul_search(); break;
 	case 'target': load_vul_target(); break;
-	case 'retrieve': load_vul_retrieve(); break;
+	case 'fetch': load_vul_fetch(); break;
 }
 
 function load_vul_overview(){
@@ -27,16 +27,16 @@ function load_vul_overview(){
 function load_vul_search(){
 	$db = Database::get();
 	$table = "ip_and_url_scanResult"; // 設定你想查詢資料的資料表
-	$condition = "1";
+	$condition = "1 = ?";
 	$order_by = "scan_no DESC,ou DESC,system_name DESC,status DESC";
-	$db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$db->query($table, $condition, $order_by, $fields = "*", $limit = "", [1]);
 	$last_num_rows = $db->getLastNumRows();
 	
 	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
 	$page_parm = getPaginationParameter($page, $last_num_rows);
 	
 	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
-	$vuls = $db->query($table, $condition, $order_by, $fields = "*", $limit);
+	$vuls = $db->query($table, $condition, $order_by, $fields = "*", $limit, [1]);
 ?>	
 <div id="page" class="container">
 	<div id="content">
@@ -113,7 +113,7 @@ function load_vul_search(){
 							echo $vul['scan_no']."&nbsp&nbsp";
 					
 				
-							echo "<i class='angle double down icon'></i>";
+							echo "<i class='angle down icon'></i>";
 							echo "</a>";
 							echo "<div class='description'>";
 							 
@@ -156,15 +156,15 @@ function load_vul_search(){
 function load_vul_target(){
 	$db = Database::get();
 	$table = "scanTarget"; // 設定你想查詢資料的資料表
-	$condition = "1";
+	$condition = "1 = ?";
 	$order_by = "ou";
-	$scanTarget = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$scanTarget = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", [1]);
 	$last_num_rows = $db->getLastNumRows();
 	
 	$sql = "SELECT COUNT(DISTINCT ip) as host_num FROM scanTarget";
-	$host_num = $db->execute($sql)[0]['host_num'];
+	$host_num = $db->execute($sql, [])[0]['host_num'];
 	$sql = "SELECT SUM(CASE domain WHEN '' THEN 0 ELSE LENGTH(domain)-LENGTH(REPLACE(domain,';',''))+1 END) AS url_num FROM scanTarget";
-	$url_num = $db->execute($sql)[0]['url_num'];
+	$url_num = $db->execute($sql, [])[0]['url_num'];
 ?>	
 <div id="page" class="container">
 	<div id="content">
@@ -224,11 +224,11 @@ function load_vul_target(){
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
 <?php } 
-function load_vul_retrieve(){
-	require 'config/ChtSecurityAPI.php';
+function load_vul_fetch(){
+	require 'vendor/autoload.php';
 	$db = Database::get();
 	$sql = "SELECT api_status.*,api_list.name,api_list.data_type FROM api_status,api_list WHERE api_status.id IN(SELECT MAX(id) FROM api_status WHERE api_id IN(SELECT id FROM api_list WHERE class ='弱掃平台') AND api_status.status=200 AND api_status.api_id = api_list.id GROUP BY api_id)";
-	$vul_api = $db->execute($sql);
+	$vul_api = $db->execute($sql, []);
 	
 	$key = ChtSecurityAPI::KEY;
 	$nowTime = date("Y-m-d H:i:s");
@@ -246,7 +246,7 @@ function load_vul_retrieve(){
 <div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">Retrieve VUL</div>
+				<div class="post_title">Fetch VUL</div>
 				<form class="ui form" action="javascript:void(0)">
 					<div class="field">
 						<label>nowTime</label>
@@ -271,9 +271,9 @@ function load_vul_retrieve(){
 					echo $api['name'].": update ".$api['data_number']." records on ".$api['last_update']."<br>";
 				}
 				?>
-				<button id="vs_btn" class="ui button">Retrieve VS</button>
+				<button id="vs_btn" class="ui button">Fetch VUL</button>
 				<div class="ui centered inline loader"></div>
-				<div class="retrieve_vs_info"></div>
+				<div class="retrieve_vul"></div>
 			</div>
 		</div>
 		<div style="clear: both;">&nbsp;</div>

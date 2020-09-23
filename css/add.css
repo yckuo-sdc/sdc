@@ -451,6 +451,15 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 	border-radius: 1vw;
 	font-size: 2vmin;
 }
+
+.ui.cards > .remaining.card{
+	display:none !important;
+}
+
+.ui.cards > .remaining.card.show{
+	display:block !important;
+}
+
 .ui.pagination.menu.mobile{
 	display:none;
 }

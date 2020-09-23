@@ -1,6 +1,7 @@
 <?php
 require '../login/function.php';
 require '../libraries/PaloAltoAPI.php';
+
 if( (empty($_GET['key']) ||  empty($_GET['keyword']) ||  empty($_GET['operator']) ) && count(json_decode($_GET['jsonObj'],true)) == 0  ){
 	echo "沒有輸入";
 	return;
@@ -25,6 +26,7 @@ $query_map =[ // operator + keyword
 		'addr.src' => 'in',
 		'addr.dst' => 'in',
 		'port.dst' => 'eq',
+		'rule' => 'eq',
 		'app' => 'eq',
 		'action' => 'eq',
 	],
@@ -32,6 +34,7 @@ $query_map =[ // operator + keyword
 		'addr.src' => 'notin',
 		'addr.dst' => 'notin',
 		'port.dst' => 'neq',
+		'rule' => 'neq',
 		'app' => 'neq',
 		'action' => 'neq',
 	]
@@ -40,22 +43,23 @@ $query_map =[ // operator + keyword
 if( count($arr_jsonObj) !=0 ){  // retrieve query
 	$query = '';
 	foreach($arr_jsonObj as $val){
-		$one_query = '( '.$val['keyword'].' '.$query_map[$val['operator']][$val['keyword']].' '.$val['key'].' )';
-		$query = $query.' AND '.$one_query;
+		$one_query = "( ".$val['keyword']." ".$query_map[$val['operator']][$val['keyword']]." '".$val['key']."' )";
+		$query = $query." AND ".$one_query;
 	}
 	$query = substr($query, 4);
 }else{
 	if($key == 'any' && $keyword == 'all' && $operator == '='){
-		$query = '';
+		$query = "";
 	}else{
-		$query = '( '.$keyword.' '.$query_map[$operator][$keyword].' '.$key.' )';
+		$query = "( ".$keyword." ".$query_map[$operator][$keyword]." '".$key."' )";
 	}
 }
+//echo $query."<br>";
 $nlogs = $max_item;
 $dir = 'backward';
 $skip = ($page-1)*$nlogs;
 
-$host_map = ['yonghua' => '172.16.254.209', 'minjhih' => '10.6.2.102', 'idc' => '10.7.11.240', 'intrayonghua' => '172.16.254.205'];
+$host_map = ['yonghua' => '172.16.254.209', 'minjhih' => '10.6.2.102', 'idc' => '10.7.11.241', 'intrayonghua' => '172.16.254.205'];
 $host = $host_map[$type];
 
 $pa = new PaloAltoAPI($host);
@@ -100,7 +104,7 @@ for($lt=0; $lt<count($log_type_map); $lt++){
 			echo $log->app."&nbsp&nbsp";
 			echo "<span style='background:#fbc5c5'>".$log->subtype."</span>&nbsp&nbsp";
 			echo $log->action."&nbsp&nbsp";
-			echo "<i class='angle double down icon'></i>";
+			echo "<i class='angle down icon'></i>";
 			echo "</a>";
 			echo "<div class='description'>";
 				echo "<ol>";

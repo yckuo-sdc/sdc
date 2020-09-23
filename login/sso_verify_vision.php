@@ -1,6 +1,8 @@
 <?php
 if(!empty($_GET)){ 
 	require_once("function.php");
+	require '../libraries/DatabasePDO.php';
+	$db = Database::get();
 	$apcode = 'sdc-iss';
 	if(!isset($_GET["action"]))	$action = "";
 	else				$action = $_GET["action"];
@@ -26,22 +28,18 @@ if(!empty($_GET)){
 			$account = trim(curl_exec($ch)); 
 			curl_close($ch);
 			
-			require_once("../mysql_connect.inc.php");	
-			 //特殊字元跳脫(NUL (ASCII 0), \n, \r, \, ', ", and Control-Z)
-			$account  = mysqli_real_escape_string($conn,$account);
-			$sql = "SELECT * FROM users where SSOID = '$account'";
-			$result = mysqli_query($conn,$sql);
-			$row = @mysqli_fetch_assoc($result);
+			$table = "users"; // 設定你想查詢資料的資料表
+			$condition = "SSOID = :SSOID";
+			$user = $db->query($table, $condition, $order_by = 1, $fields = "*", $limit = "", [':SSOID'=>$account])[0];
 				
-			if($row['SSOID'] == $account){
+			if($user['SSOID'] == $account){
 				session_start();
 				# fetch the present Session ID
 				$sid = session_id();
-				$_SESSION['account']	= $account;
-				$_SESSION['UserName']   = $row['UserName'];
-				$_SESSION['Level'] = $row['Level'];
-				storeUserLogs($conn,'ssoLogin',$_SERVER['REMOTE_ADDR'],$account,$_SERVER['REQUEST_URI'],date('Y-m-d h:i:s'));
-				$conn->close();
+				$_SESSION['account'] = $account;
+				$_SESSION['UserName'] = $user['UserName'];
+				$_SESSION['Level'] = $user['Level'];
+				storeUserLogs2($db,'ssoLogin',$_SERVER['REMOTE_ADDR'],$account,$_SERVER['REQUEST_URI']);
 				$args = array(
 					'mainpage' => $mainpage,
 					'subpage' => $subpage,
@@ -54,7 +52,6 @@ if(!empty($_GET)){
 					header("Location: ../?sid=".$sid); 
 				}	
 			}else{
-				$conn->close();
 				header("refresh:0;url=error.html"); 
 			}		
 			break;

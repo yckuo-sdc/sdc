@@ -7,7 +7,7 @@ if(empty($_GET['target'])){
 	return 0;	
 }
 
-$target = $_GET['target'];
+$target = escapeshellcmd($_GET['target']);
 $output = shell_exec("/usr/bin/nmap $target");
 echo "<pre>$output</pre>";
 system("killall -q nmap");	//kill the task

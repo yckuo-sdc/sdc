@@ -1,5 +1,12 @@
 <?php
-require '../libraries/Database.php';
+require '../login/function.php';
+require '../libraries/DatabasePDO.php';
+ 
+session_start(); 
+if( !issetBySession("Level") || $_SESSION['Level'] != 2){
+	return;
+}
+
 $db = Database::get();
 
 //PHP File Upload
@@ -48,18 +55,32 @@ if ($uploadOk == 1){
 			//ignore the first row(table head)
 			if($row != 1){
 				$num = count($data);
-				$status['OID']= $db->getEscapedString(trim($data[0]));
-				$status['organization']= $db->getEscapedString(trim($data[1]));
-				$status['person_name']= $db->getEscapedString(trim($data[2]));
-				$status['unit']= $db->getEscapedString(trim($data[3]));
-				$status['position']= $db->getEscapedString(trim($data[4]));
-				$status['person_type']= $db->getEscapedString(trim($data[5]));
-				$status['address']= $db->getEscapedString(trim($data[6]));
-				$status['tel']= $db->getEscapedString(trim($data[7]));
-				$status['ext']= $db->getEscapedString(trim($data[8]));
-				$status['fax']= $db->getEscapedString(trim($data[9]));
-				$status['email']= $db->getEscapedString(trim($data[10]));
+
+				/*$status['OID'] = mb_convert_encoding(trim($data[0]), "UTF-8", mb_detect_encoding($data[0]));
+				$status['organization'] = mb_convert_encoding(trim($data[1]), "UTF-8", mb_detect_encoding($data[1]));
+				$status['person_name'] = mb_convert_encoding(trim($data[2]), "UTF-8", mb_detect_encoding($data[2]));
+				$status['unit'] = mb_convert_encoding(trim($data[3]), "UTF-8", mb_detect_encoding($data[3]));
+				$status['position'] = mb_convert_encoding(trim($data[4]), "UTF-8", mb_detect_encoding($data[4]));
+				$status['person_type'] = mb_convert_encoding(trim($data[5]), "UTF-8", mb_detect_encoding($data[5]));
+				$status['address'] = mb_convert_encoding(trim($data[6]), "UTF-8", mb_detect_encoding($data[6]));
+				$status['tel'] = mb_convert_encoding(trim($data[7]), "UTF-8", mb_detect_encoding($data[7]));
+				$status['ext'] = mb_convert_encoding(trim($data[8]), "UTF-8", mb_detect_encoding($data[8]));
+				$status['fax'] = mb_convert_encoding(trim($data[9]), "UTF-8", mb_detect_encoding($data[9]));
+				$status['email'] = mb_convert_encoding(trim($data[10]), "UTF-8", mb_detect_encoding($data[10]));
+				*/
 				
+				$status['OID']= trim($data[0]);
+				$status['organization']= trim($data[1]);
+				$status['person_name']= trim($data[2]);
+				$status['unit']= trim($data[3]);
+				$status['position']= trim($data[4]);
+				$status['person_type']= trim($data[5]);
+				$status['address']= trim($data[6]);
+				$status['tel']= trim($data[7]);
+				$status['ext']= trim($data[8]);
+				$status['fax']= trim($data[9]);
+				$status['email']= trim($data[10]);
+				 
 				$db->insert($table, $status);
 				$count = $count + 1;							
 			}

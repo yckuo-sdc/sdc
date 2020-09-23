@@ -1,7 +1,6 @@
 <?php
-$path = "/var/www/html/utility/google-api-php-client-2.2.2/";
-require $path.'vendor/autoload.php';  // include your composer dependencies
-require '../libraries/Database.php';
+require '../vendor/autoload.php';  // include your composer dependencies(google api library) 
+require '../libraries/DatabasePDO.php';
 
 $db = Database::get();
 $client = new Google_Client();  // 載入 google api library
@@ -12,7 +11,7 @@ $client->useApplicationDefaultCredentials();
 $client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
 $client->setAccessType('offline');
 //這邊要設定的是你下載下來的金鑰檔
-$client->setAuthConfig($path.'My Project for google sheet-3d2d6667b843.json');
+$client->setAuthConfig('../config/My Project for google sheet-3d2d6667b843.json');  //這邊要設定的是你下載下來的金鑰檔
 
 //以下是建立存取 google sheets 的範
 $sheets = new \Google_Service_Sheets($client);
@@ -41,7 +40,6 @@ if (isset($rows['values'])) {
 		//filter non-exist the data(ex: $row[15] is not exist)
 		for($i=0;$i<30;$i++){
 			$row[$i] = isset($row[$i]) ? $row[$i] : "";
-			$row[$i] = $db->getEscapedString($row[$i]);
             //filter empty values of datatime field
 			if( $i >= 20 && $i <= 25){ 
 				if(empty($row[$i])){
@@ -91,8 +89,8 @@ if (isset($rows['values'])) {
 	echo "update ".$count." records on ".$nowTime."<br>";
 	
 	$table = "api_list"; // 設定你想查詢資料的資料表
-	$condition = "class LIKE '資安事件' and name LIKE '技服資安通報' ";
-	$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "");
+	$condition = "class LIKE :class and name LIKE :name";
+	$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'資安事件', ':name'=>'技服資安通報']);
 	$table = "api_status"; // 設定你想新增資料的資料表
 	$data_array['api_id'] = $api_list[0]['id'];
 	$data_array['url'] = $url;

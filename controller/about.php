@@ -10,8 +10,8 @@ switch($subpage){
 function load_about_data(){
 	$db = Database::get();
 	$table = "api_list"; // 設定你想查詢資料的資料表
-	$condition = "1";
-	$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "");
+	$condition = "1 = ?";
+	$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [1]);
 ?>
 <div id="page" class="container">
 	<div id="content">

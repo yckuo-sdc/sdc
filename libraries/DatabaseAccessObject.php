@@ -204,6 +204,31 @@ class DatabaseAccessObject {
 		return mysqli_real_escape_string($this->link, $str);
     }
 	
+    /**
+     * @return string
+     * 這段用OR方式串接欄位與key並取得全文檢索condition回傳
+     */
+    public function getFullTextSearchCondition($table = null, $key = null) {
+        if($table===null) return false;
+        if($key===null) return false;
+		
+		$key = $this->getEscapedString($key);
+		
+		$schema_table = "information_schema.columns";
+		$condition = "table_name = '" . $table . "'";
+		$fields = "column_name"; 
+		$columns = $this->query($schema_table, $condition, $order_by = "1", $fields, $limit = "");
+		$last_num_rows = $this->getLastNumRows();
+		$response = "";
+	
+		foreach($columns as $col) {
+			$response = $response . " " . $col['column_name'] . " LIKE '%" . $key . "%' OR";
+		}
+		$response = substr($response, 0, strlen($response) - 3);
+	
+		return $response;
+    }
+	
 	/**
      * @param int $last_num_rows
      */

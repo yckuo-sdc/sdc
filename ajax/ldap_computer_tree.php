@@ -1,7 +1,8 @@
 <?php
 // connect to AD server
-require("../ldap_admin_config.inc.php");
+require("../config/ldap_admin_config.inc.php");
 require("../login/function.php");
+
 $ldapconn = ldap_connect($host_ip) or die("Could not connect to LDAP server.");
 $set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 if($ldapconn){

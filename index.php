@@ -1,53 +1,47 @@
 <!--index-->
 <?php 
 require_once 'login/function.php';
-# fetch and update Session ID with sso_verify_vision.php
-if(isset($_GET['sid']))	session_id($_GET['sid']);	
+require 'libraries/DatabasePDO.php';
+
+if(isset($_GET['sid']))	session_id($_GET['sid']);	# fetch and update Session ID with sso_verify_vision.php
+
 session_start(); 
 if(!verifyBySession_Cookie("account")){
-	return 0;
+	return ;
 }
 
 if(isset($_GET['mainpage']) AND !empty($_GET['mainpage']))$mainpage = $_GET['mainpage'];
 else													  $mainpage = "info";
-require 'mysql_connect.inc.php';
-require 'libraries/Database.php';
-storeUserLogs($conn, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], $_SERVER['REQUEST_URI'], date('Y-m-d h:i:s'));
-$conn->close();
 
-require 'header.php';  // 載入共用的頁首
+$controller_array = scandir('controller');
+$controller_array = array_change_key_case($controller_array, CASE_LOWER);
+
+$db = Database::get();
+//storeUserLogs($db, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], $_SERVER['REQUEST_URI']);
+storeUserLogs2($db, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], $_SERVER['REQUEST_URI']);
+
+require 'view/header.php'; 
 ?>
 	<div class="ui vertical inverted sidebar menu left" id="toc">
-		<?php require('sidebar.php');  // 載入共用的側欄?>
+		<?php require 'view/sidebar.php'; ?>
 	</div>
-	<?php require 'menu.php';  // 載入共用的選單?>
+	<?php require 'view/nav.php'; ?>
 	<div class="pusher">
 		<div class="full height">
 			<div class="toc">
 				<div class="ui vertical inverted sidebar menu left overlay visible">
-					<?php require('sidebar.php');  // 載入共用的側欄?>
+					<?php require 'view/sidebar.php'; ?>
 				</div>
 			</div>
 			<div class="article">
 			<?php
-			switch($mainpage){  // 依照 GET 參數載入共用的內容
-				case "about":
-				  require 'about.php';
-				break;
-				case "info":
-				  require 'info.php';
-				break;
-				case "query":
-				  require 'query.php';
-				break;
-				case "vul":
-				  require 'vul.php';
-				break;
-				case "tool":
-				  require 'tool.php';
-				break;
+			if (in_array($mainpage.'.php', $controller_array)) {
+				  require 'controller/'.$mainpage.'.php';
+			}else{
+				  require 'controller/login.php';
 			}
-			require 'footer.php';  // 載入共用的頁尾
+
+			require 'view/footer.php'; 
 			?>
 			</div>
 		</div>

@@ -4,8 +4,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 
 RewriteRule ^(about)/(data)/$ index.php?mainpage=$1&subpage=$2 [QSA]
 RewriteRule ^(info)/(enews|ranking|vul|client|network)/$ index.php?mainpage=$1&subpage=$2 [QSA]
-RewriteRule ^(query)/(event|ncert|contact|client|network|retrieve)/$ index.php?mainpage=$1&subpage=$2 [QSA]
-RewriteRule ^(vul)/(overview|search|target|retrieve)/$ index.php?mainpage=$1&subpage=$2 [QSA]
+RewriteRule ^(query)/(event|ncert|contact|client|fetch)/$ index.php?mainpage=$1&subpage=$2 [QSA]
+RewriteRule ^(vul)/(overview|search|target|fetch)/$ index.php?mainpage=$1&subpage=$2 [QSA]
+RewriteRule ^(network)/(search|malware|allowlist)/$ index.php?mainpage=$1&subpage=$2 [QSA]
 RewriteRule ^(tool)/(nmap|ldap|hydra)/$ index.php?mainpage=$1&subpage=$2 [QSA]
 #RewriteCond %{REQUEST_FILENAME} !-d
 #RewriteRule . /

@@ -26,8 +26,7 @@
 		<a class="item" href="/query/ncert/">技服資安通報</a> 
 		<a class="item" href="/query/contact/">資安聯絡人</a> 
 		<a class="item" href="/query/client/">用戶端資安清單</a> 
-		<a class="item" href="/query/network/">網路流量日誌</a> 
-		<a class="item" href="/query/retrieve/">Retrieve GS & Ncert</a> 
+		<a class="item" href="/query/fetch/">Fetch GS & Ncert</a> 
   </div>
 </div>
 <div class="item">
@@ -36,7 +35,15 @@
       <a class="item" href="/vul/overview/">整體數據</a>
       <a class="item" href="/vul/search/">弱點查詢</a>
       <a class="item" href="/vul/target/">掃描資產</a>
-      <a class="item" href="/vul/retrieve/">Retrieve VUL</a>
+      <a class="item" href="/vul/fetch/">Fetch VUL</a>
+  </div>
+</div>
+<div class="item">
+  <div class=" header">網路防護</div>
+  <div class="menu">
+      <a class="item" href="/network/search/">網路流量日誌</a>
+      <a class="item" href="/network/malware/">惡意中繼站</a>
+      <a class="item" href="/network/allowlist/">應用程式核可清單</a>
   </div>
 </div>
 <div class="item">
@@ -54,6 +61,7 @@
 	<a class="item" href="https://tndev.tainan.gov.tw/tndev/" target="_blank">MIS網管系統</a>
 	<a class="item" href="https://sdc-mrbs.tainan.gov.tw" target="_blank">SDC會議室預約系統</a>
 	<a class="item" href="https://sdc-mrbs.tainan.gov.tw/callcenter/login.php" target="_blank">Call Center預約</a>
+	<a class="item" href="https://tainan-vsms.chtsecurity.com/cgi-bin/login.pl" target="_blank">弱點掃描管理平台</a>	
 	<a class="item" href="http://webad2019.tainan.gov.tw" target="_blank">WebAD</a>
 	<a class="item" href="http://eisms.tainan.gov.tw" target="_blank">E-ISMS</a>
 	<a class="item" href="https://sdc-iss.tainan.gov.tw:4000/" target="_blank">OpenVas(開源漏洞掃描工具)</a>	

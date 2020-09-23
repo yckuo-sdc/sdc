@@ -1,6 +1,7 @@
 <?php
 use gcb\api as gcb;
 require 'gcb_api.php';
+
 session_start(); 
 if(!verifyBySession_Cookie("account")){
 	return 0;

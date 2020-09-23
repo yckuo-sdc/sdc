@@ -9,22 +9,22 @@ switch($subpage){
 	case 'contact': load_query_contact(); break;
 	case 'client': load_query_client(); break;
 	case 'network': load_query_ips(); break;
-	case 'retrieve': load_query_retrieve(); break;
+	case 'fetch': load_query_fetch(); break;
 }
 
 function load_query_event(){
 	$db = Database::get();
 	$table = "security_event"; // 設定你想查詢資料的資料表
-	$condition = "1";
+	$condition = "1 = ?";
 	$order_by = "EventID DESC,OccurrenceTime DESC";
-	$db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$db->query($table, $condition, $order_by, $fields = "*", $limit = "", [1]);
 	$last_num_rows = $db->getLastNumRows();
 	
 	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
 	$page_parm = getPaginationParameter($page, $last_num_rows);
 	
 	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
-	$events = $db->query($table, $condition, $order_by, $fields = "*", $limit);
+	$events = $db->query($table, $condition, $order_by, $fields = "*", $limit, [1]);
 ?>
 <div id="page" class="container">
 <div id="content">
@@ -33,18 +33,17 @@ function load_query_event(){
 				<div class="post_title">本府資安事件查詢</div>
 				<div class="post_cell">
 				<form class="ui form" action="javascript:void(0)">
-
  				<div class="fields">
 			    	<div class="field">
 					    <label>種類</label>
 						<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-						<option value="IP" class="keyword_paper active" selected>設備IP</option>
-						<option value="Status" class="keyword_paper active">結案狀態</option>
-						<option value="EventTypeName" class="keyword_paper active">資安類型</option>
-						<option value="DeviceTypeName" class="keyword_paper active">設備類型</option>
-						<option value="DeviceOwnerName" class="keyword_paper active">所有人姓名</option>
-						<option value="OccurrenceTime" class="keyword_paper active">發現日期</option>
-						<option value="all" class="keyword_paper active">全部</option>
+						<option value="IP"  selected>設備IP</option>
+						<option value="Status" >結案狀態</option>
+						<option value="EventTypeName" >資安類型</option>
+						<option value="DeviceTypeName" >設備類型</option>
+						<option value="DeviceOwnerName" >所有人姓名</option>
+						<option value="OccurrenceTime" >發現日期</option>
+						<option value="all" >全部</option>
 						</select>
 					</div>
 				 	<div class="field">
@@ -81,7 +80,7 @@ function load_query_event(){
 							echo "<span style='background:#DDDDDD'>".$event['IP']."</span>&nbsp&nbsp";
 							echo $event['DeviceOwnerName']."&nbsp&nbsp";
 							echo $event['DeviceOwnerPhone']."&nbsp&nbsp";
-							echo "<i class='angle double down icon'></i>";
+							echo "<i class='angle down icon'></i>";
 							echo "</a>";
 							echo "<div class='description'>";
 								echo "<ol>";
@@ -116,22 +115,22 @@ function load_query_event(){
 			</div>
 			</div>
 		</div>
-		<div style="clear: both;">&nbsp;</div>
+		<div style="clear: both;"></div>
 	</div>
 <?php } 
 function load_query_ncert(){
 	$db = Database::get();
 	$table = "tainangov_security_Incident"; // 設定你想查詢資料的資料表
-	$condition = "1";
+	$condition = "1 = ?";
 	$order_by = "IncidentID DESC";
-	$db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$db->query($table, $condition, $order_by, $fields = "*", $limit = "", [1]);
 	$last_num_rows = $db->getLastNumRows();
 	
 	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
 	$page_parm = getPaginationParameter($page, $last_num_rows);
 	
 	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
-	$incidents = $db->query($table, $condition, $order_by, $fields = "*", $limit);
+	$incidents = $db->query($table, $condition, $order_by, $fields = "*", $limit, [1]);
 ?>	
 <div id="page" class="container">
 <div id="content">
@@ -140,18 +139,17 @@ function load_query_ncert(){
 				<div class="post_title">技服資安通報查詢</div>
 				<div class="post_cell">
 					<form class="ui form" action="javascript:void(0)">
-
 					<div class="fields">
 						<div class="field">
 							<label>種類</label>
 							<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-							<option value="PublicIP" class="keyword_paper active" selected>IP(網址)</option>
-							<option value="Status" class="keyword_paper active">結案狀態</option>
-							<option value="Classification" class="keyword_paper active">事故類型</option>
-							<option value="OrganizationName" class="keyword_paper active">機關名稱</option>
-							<option value="NccstPT" class="keyword_paper active">攻防演練(是/否)</option>
-							<option value="OccurrenceTime" class="keyword_paper active">發現日期</option>
-							<option value="all" class="keyword_paper active">全部</option>
+							<option value="PublicIP"  selected>IP(網址)</option>
+							<option value="Status" >結案狀態</option>
+							<option value="Classification" >事故類型</option>
+							<option value="OrganizationName" >機關名稱</option>
+							<option value="NccstPT" >攻防演練(是/否)</option>
+							<option value="OccurrenceTime" >發現日期</option>
+							<option value="all" >全部</option>
 							</select>
 						</div>
 						<div class="field">
@@ -185,7 +183,7 @@ function load_query_ncert(){
 								echo $incident['Classification']."&nbsp&nbsp";
 								echo "<span style='background:#fde087'>".$incident['PublicIP']."</span>&nbsp&nbsp";
 								echo $incident['OrganizationName'];
-								echo "<i class='angle double down icon'></i>";
+								echo "<i class='angle down icon'></i>";
 								echo "</a>";
 								
 								echo "<div class='description'>";
@@ -234,21 +232,27 @@ function load_query_ncert(){
 				</div><!--End of post_cell-->
 			</div><!--End of post-->
 		</div><!--End of sub-content-->
-		<div style="clear: both;">&nbsp;</div>
+		<div style="clear: both;"></div>
 	</div>
 <?php } 
 function load_query_contact(){
 	$db = Database::get();
 	$sql = "SELECT a.*, b.rank FROM( SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by OID asc,person_type asc )a LEFT JOIN security_rank AS b ON a.OID = b.OID";
-	$db->execute($sql);
+	$db->execute($sql, []);
 	$last_num_rows = $db->getLastNumRows();
-	
+
+	$table = "(SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra)a";
+	$condition = "1 = ? GROUP BY OID";
+	$fields = "OID";
+	$db->query($table, $condition, $order_by = "1" , $fields, $limit = "", [1]);
+	$oid_num = $db->getLastNumRows();
+
 	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
 	$page_parm = getPaginationParameter($page, $last_num_rows);
 	
 	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
 	$sql = $sql." limit ".$start.",".$offset;
-	$contacts = $db->execute($sql);
+	$contacts = $db->execute($sql, []);
 ?>	
 <div id="page" class="container">
 <div id="content">
@@ -257,17 +261,16 @@ function load_query_contact(){
 				<div class="post_title">資安聯絡人</div>
 				<div class="post_cell">
 					<form class="ui form" action="javascript:void(0)">
-
 					<div class="fields">
 						<div class="field">
 							<label>種類</label>
 							<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-							<option value="organization" class="keyword_paper active" selected>機關名稱</option>
-							<option value="rank" class="keyword_paper active">機關資安等級</option>
-							<option value="OID" class="keyword_paper active">機關OID</option>
-							<option value="person_name" class="keyword_paper active">聯絡人姓名</option>
-							<option value="person_type" class="keyword_paper active">聯絡人類別</option>
-							<option value="all" class="keyword_paper active">全部</option>
+							<option value="organization"  selected>機關名稱</option>
+							<option value="rank" >機關資安等級</option>
+							<option value="OID" >機關OID</option>
+							<option value="person_name" >聯絡人姓名</option>
+							<option value="person_type" >聯絡人類別</option>
+							<option value="all" >全部</option>
 							</select>
 						</div>
 						<div class="field">
@@ -290,6 +293,7 @@ function load_query_contact(){
 						echo "查無此筆紀錄";
 					}else{
 						echo "共有".$last_num_rows."筆資料！";
+						echo "共有".$oid_num."個機關！";
 						echo "<div class='ui relaxed divided list'>";
 						foreach($contacts as $contact){	
 							echo "<div class='item'>";
@@ -301,7 +305,7 @@ function load_query_contact(){
 								echo "<span style='background:#fde087'>".$contact['person_type']."</span>&nbsp&nbsp";
 								echo $contact['email']."&nbsp&nbsp";
 								echo "<span style='background:#DDDDDD'>".$contact['tel']."#".$contact['ext']."</span>&nbsp&nbsp";
-								echo "<i class='angle double down icon'></i>";
+								echo "<i class='angle down icon'></i>";
 								echo "</a>";
 								echo "<div class='description'>";
 									echo "<ol>";
@@ -334,22 +338,22 @@ function load_query_contact(){
 				</div><!--End of post_cell-->
 			</div><!--End of post-->
 		</div><!--End of sub-content-->
-		<div style="clear: both;">&nbsp;</div>
+		<div style="clear: both;"></div>
 	</div>
 <?php } 
 function load_query_client(){
 	$db = Database::get();
 	$table = "drip_client_list"; // 設定你想查詢資料的資料表
-	$condition = "1";
+	$condition = "1 = ?";
 	$order_by = "DetectorName,IP";
-	$db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$db->query($table, $condition, $order_by, $fields = "*", $limit = "", [1]);
 	$last_num_rows = $db->getLastNumRows();
 	
 	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
 	$page_parm = getPaginationParameter($page, $last_num_rows);
 	
 	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
-	$IS_client = $db->query($table, $condition, $order_by, $fields = "*", $limit);
+	$IS_client = $db->query($table, $condition, $order_by, $fields = "*", $limit, [1]);
 ?>	
 <div id="page" class="container">
 <div id="content">
@@ -371,15 +375,15 @@ function load_query_client(){
 							<div class="field">
 								<label>種類</label>
 								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-								<option value="ClientName" class="keyword_paper active" selected>電腦名稱</option>
-								<option value="IP" class="keyword_paper active">內部IP</option>
-								<option value="UserName" class="keyword_paper active">使用者帳號</option>
-								<option value="OrgName" class="keyword_paper active">單位名稱</option>
-								<option value="ad" class="keyword_paper active">ad</option>
-								<option value="gcb" class="keyword_paper active">gcb</option>
-								<option value="wsus" class="keyword_paper active">wsus</option>
-								<option value="antivirus" class="keyword_paper active">antivirus</option>
-								<option value="all" class="keyword_paper active">全部</option>
+								<option value="ClientName"  selected>電腦名稱</option>
+								<option value="IP" >內部IP</option>
+								<option value="UserName" >使用者帳號</option>
+								<option value="OrgName" >單位名稱</option>
+								<option value="ad" >ad</option>
+								<option value="gcb" >gcb</option>
+								<option value="wsus" >wsus</option>
+								<option value="antivirus" >antivirus</option>
+								<option value="all" >全部</option>
 								</select>
 							</div>
 							<div class="field">
@@ -433,7 +437,7 @@ function load_query_client(){
 									echo "<span style='background:#fbc5c5'>".$client['OrgName']."</span>&nbsp&nbsp";
 									echo $client['Owner']."&nbsp&nbsp";
 									echo $client['UserName']."&nbsp&nbsp";
-									echo "<i class='angle double down icon'></i>";
+									echo "<i class='angle down icon'></i>";
 									echo "</a>";
 								echo "<div class='description'>";
 									echo "<ol>";
@@ -481,7 +485,7 @@ function load_query_client(){
 	<?php
 	$db = Database::get();
 	$sql = "SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id ORDER by a.ID asc,a.InternalIP asc";
-	$db->execute($sql);
+	$db->execute($sql, []);
 	$last_num_rows = $db->getLastNumRows();
 
 	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
@@ -489,7 +493,7 @@ function load_query_client(){
 
 	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
 	$sql = $sql." limit ".$start.",".$offset;
-	$gcb_client = $db->execute($sql);
+	$gcb_client = $db->execute($sql, []);
 	?>
 						<div class="tab-content gcb_client_list show">
 						<form class="ui form" action="javascript:void(0)">
@@ -498,11 +502,11 @@ function load_query_client(){
 							<div class="field">
 								<label>種類</label>
 								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-								<option value="Name" class="keyword_paper active" selected>電腦名稱</option>
-								<option value="InternalIP" class="keyword_paper active">內部IP</option>
-								<option value="UserName" class="keyword_paper active">使用者帳號</option>
-								<option value="OrgName" class="keyword_paper active">單位名稱</option>
-								<option value="all" class="keyword_paper active">全部</option>
+								<option value="Name"  selected>電腦名稱</option>
+								<option value="InternalIP" >內部IP</option>
+								<option value="UserName" >使用者帳號</option>
+								<option value="OrgName" >單位名稱</option>
+								<option value="all" >全部</option>
 								</select>
 							</div>
 							<div class="field">
@@ -559,7 +563,7 @@ function load_query_client(){
 								echo $client['Owner']."&nbsp&nbsp";
 								echo "<span style='background:#DDDDDD'>".long2ip($client['InternalIP'])."</span>&nbsp&nbsp";
 								echo $client['os_name']."&nbsp&nbsp";
-								echo "<i class='angle double down icon'></i>";
+								echo "<i class='angle down icon'></i>";
 								echo "</a>";
 								echo "<div class='description'>";
 									echo "<ol>";
@@ -598,16 +602,16 @@ function load_query_client(){
 	$sort = isset($_GET['sort'])?$_GET['sort']:'TargetID';	
 	$db = Database::get();
 	$table = "wsus_computer_status"; // 設定你想查詢資料的資料表
-	$condition = "1";
+	$condition = "1 = ?";
 	$order_by = $sort;
-	$db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$db->query($table, $condition, $order_by, $fields = "*", $limit = "", [1]);
 	$last_num_rows = $db->getLastNumRows();
 
 	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
 	$page_parm = getPaginationParameter($page, $last_num_rows);
 
 	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
-	$wsus_client = $db->query($table, $condition, $order_by, $fields = "*", $limit);
+	$wsus_client = $db->query($table, $condition, $order_by, $fields = "*", $limit, [1]);
 	?>	
 					<div class="tab-content wsus_client_list">
 						<form class="ui form" action="javascript:void(0)">
@@ -616,9 +620,9 @@ function load_query_client(){
 							<div class="field">
 								<label>種類</label>
 								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-								<option value="FullDomainName" class="keyword_paper active" selected>電腦名稱</option>
-								<option value="IPAddress" class="keyword_paper active">內部IP</option>
-								<option value="all" class="keyword_paper active">全部</option>
+								<option value="FullDomainName"  selected>電腦名稱</option>
+								<option value="IPAddress" >內部IP</option>
+								<option value="all" >全部</option>
 								</select>
 							</div>
 							<div class="field">
@@ -655,11 +659,12 @@ function load_query_client(){
 								echo "</div>";
 						foreach($wsus_client as $client) {
 							$table = "wsus_computer_updatestatus_kbid";
-							$condition = "TargetID = ".$client['TargetID']." AND UpdateState = 'NotInstalled'";
 							$order_by = "ID";
-							$notinstalled_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
-							$condition = "TargetID = ".$client['TargetID']." AND UpdateState = 'Failed'";
-							$failed_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+							$condition = "TargetID = :TargetID AND UpdateState = :UpdateState";
+							$data_array = [':TargetID'=>$client['TargetID'],':UpdateState'=>'NotInstalled'];
+							$notinstalled_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "",$data_array);
+							$data_array = [':TargetID'=>$client['TargetID'],':UpdateState'=>'Failed'];
+							$failed_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", $data_array);
 							echo "<div class='item'>";
 							echo "<div class='content'>";
 								echo "<a>";
@@ -668,7 +673,7 @@ function load_query_client(){
 								echo "<span style='background:#DDDDDD'>".$client['NotInstalled']."</span>&nbsp&nbsp";
 								echo "<span style='background:#fbc5c5'>".$client['Failed']."</span>&nbsp&nbsp";
 								echo $client['OSDescription'];
-								echo "<i class='angle double down icon'></i>";
+								echo "<i class='angle down icon'></i>";
 								echo "</a>";
 								echo "<div class='description'>";
 									echo "<ol>";
@@ -711,16 +716,16 @@ function load_query_client(){
 	<?php
 	$db = Database::get();
 	$table = "antivirus_client_list"; // 設定你想查詢資料的資料表
-	$condition = "1";
+	$condition = "1 = ?";
 	$order_by = "DomainLevel, ClientName";
-	$db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$db->query($table, $condition, $order_by, $fields = "*", $limit = "", [1]);
 	$last_num_rows = $db->getLastNumRows();
 
 	$page = isset($_GET['page']) ? $_GET['page'] : 1; 
 	$page_parm = getPaginationParameter($page, $last_num_rows);
 
 	$limit = "limit ".($start = $page_parm['start']).",".($offset = $page_parm['offset']);	
-	$antivirus_client = $db->query($table, $condition, $order_by, $fields = "*", $limit);
+	$antivirus_client = $db->query($table, $condition, $order_by, $fields = "*", $limit, [1]);
 	?>	
 					<div class="tab-content antivirus_client_list show">
 						<form class="ui form" action="javascript:void(0)">
@@ -729,9 +734,9 @@ function load_query_client(){
 							<div class="field">
 								<label>種類</label>
 								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-								<option value="ClientName" class="keyword_paper active" selected>電腦名稱</option>
-								<option value="IP" class="keyword_paper active">內部IP</option>
-								<option value="all" class="keyword_paper active">全部</option>
+								<option value="ClientName"  selected>電腦名稱</option>
+								<option value="IP" >內部IP</option>
+								<option value="all" >全部</option>
 								</select>
 							</div>
 							<div class="field">
@@ -768,7 +773,7 @@ function load_query_client(){
 									echo $client['SpywareNum']."&nbsp&nbsp";
 									echo "<span style='background:#DDDDDD'>".$client['VirusPatternVersion']."</span>&nbsp&nbsp";
 									echo $client['LogonUser']."&nbsp&nbsp";
-									echo "<i class='angle double down icon'></i>";
+									echo "<i class='angle down icon'></i>";
 									echo "</a>";
 								echo "<div class='description'>";
 									echo "<ol>";
@@ -803,259 +808,30 @@ function load_query_client(){
 				</div><!--End of post_cell-->
 			</div><!--End of post-->
 		</div><!--End of sub-content-->
-		<div style="clear: both;">&nbsp;</div>
+		<div style="clear: both;"></div>
 	</div>
 <?php } 
-function load_query_ips(){
-?>	
-<div id="page" class="container">
-<div id="content">
-		<div class="sub-content show">
-			<div class="post network">
-				<div class="post_title">網路流量日誌(IPS)</div>
-				<div class="post_cell">
-					<div class="ui top attached tabular menu">
-						<a class="active item">Yonghua</a>
-						<a class="item">Minjhih</a>
-						<a class="item">IDC</a>
-						<a class="item">IntraYonghua</a>
-					</div>
-					<div class="ui bottom attached segment">
-						<div class="tab-content yonghua show">
-						<div class="query_content"></div>
-						<form class="ui form" action="javascript:void(0)">
-						<div class="fields">
-							<div class="field">
-								<label>種類</label>
-								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-								<option value="addr.src" class="keyword_paper active" selected>來源IP</option>
-								<option value="addr.dst" class="keyword_paper active">目的IP</option>
-								<option value="port.dst" class="keyword_paper active">目的port</option>
-								<option value="app" class="keyword_paper active">應用程式</option>
-								<option value="action" class="keyword_paper active">動作</option>
-								</select>
-							</div>
-							<div class="field">
-								<label>運算</label>
-								<select name="operator" id="operator" class="ui fluid dropdown" required>
-								<option value="=" class="keyword_paper active" selected>=</option>
-								<option value="!=" class="keyword_paper active">!=</option>
-								</select>
-							</div>
-							<div class="field">
-								<label>關鍵字</label>
-								<div class="ui input">
-									<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
-								</div>
-							</div>
-							<div class="field">
-								<label>新增條件</label>
-								<i class="large square icon plus"></i>
-							</div>
-							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
-							</div>
-							 <div class="field">
-								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/network/'">顯示全部</button>
-							</div>
-						</div>
-						</form>
-						<div class="ui centered inline loader"></div>
-						<div class="record_content"></div>
-						</div> <!-- end of .tabular-->
-						<div class="tab-content minjhih">
-						<div class="query_content"></div>
-						<form class="ui form" action="javascript:void(0)">
-						<div class="fields">
-							<div class="field">
-								<label>種類</label>
-								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-								<option value="addr.src" class="keyword_paper active" selected>來源IP</option>
-								<option value="addr.dst" class="keyword_paper active">目的IP</option>
-								<option value="port.dst" class="keyword_paper active">目的port</option>
-								<option value="app" class="keyword_paper active">應用程式</option>
-								<option value="action" class="keyword_paper active">動作</option>
-								</select>
-							</div>
-							<div class="field">
-								<label>運算</label>
-								<select name="operator" id="operator" class="ui fluid dropdown" required>
-								<option value="=" class="keyword_paper active" selected>=</option>
-								<option value="!=" class="keyword_paper active">!=</option>
-								</select>
-							</div>
-							<div class="field">
-								<label>關鍵字</label>
-								<div class="ui input">
-									<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
-								</div>
-							</div>
-							<div class="field">
-								<label>新增條件</label>
-								<i class="large square icon plus"></i>
-							</div>
-							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
-							</div>
-							 <div class="field">
-								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/network/'">顯示全部</button>
-							</div>
-						</div>
-						</form>
-						<div class="ui centered inline loader"></div>
-						<div class="record_content"></div>
-						</div> <!-- end of .tabular-->
-						<div class="tab-content idc">
-						<div class="query_content"></div>
-						<form class="ui form" action="javascript:void(0)">
-						<div class="fields">
-							<div class="field">
-								<label>種類</label>
-								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-								<option value="addr.src" class="keyword_paper active" selected>來源IP</option>
-								<option value="addr.dst" class="keyword_paper active">目的IP</option>
-								<option value="port.dst" class="keyword_paper active">目的port</option>
-								<option value="app" class="keyword_paper active">應用程式</option>
-								<option value="action" class="keyword_paper active">動作</option>
-								</select>
-							</div>
-							<div class="field">
-								<label>運算</label>
-								<select name="operator" id="operator" class="ui fluid dropdown" required>
-								<option value="=" class="keyword_paper active" selected>=</option>
-								<option value="!=" class="keyword_paper active">!=</option>
-								</select>
-							</div>
-							<div class="field">
-								<label>關鍵字</label>
-								<div class="ui input">
-									<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
-								</div>
-							</div>
-							<div class="field">
-								<label>新增條件</label>
-								<i class="large square icon plus"></i>
-							</div>
-							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
-							</div>
-							 <div class="field">
-								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/network/'">顯示全部</button>
-							</div>
-						</div>
-						</form>
-						<div class="ui centered inline loader"></div>
-						<div class="record_content"></div>
-						</div> <!-- end of .tabular-->
-						<div class="tab-content intrayonghua">
-						<div class="query_content"></div>
-						<form class="ui form" action="javascript:void(0)">
-						<div class="fields">
-							<div class="field">
-								<label>種類</label>
-								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-								<option value="addr.src" class="keyword_paper active" selected>來源IP</option>
-								<option value="addr.dst" class="keyword_paper active">目的IP</option>
-								<option value="port.dst" class="keyword_paper active">目的port</option>
-								<option value="app" class="keyword_paper active">應用程式</option>
-								<option value="action" class="keyword_paper active">動作</option>
-								</select>
-							</div>
-							<div class="field">
-								<label>運算</label>
-								<select name="operator" id="operator" class="ui fluid dropdown" required>
-								<option value="=" class="keyword_paper active" selected>=</option>
-								<option value="!=" class="keyword_paper active">!=</option>
-								</select>
-							</div>
-							<div class="field">
-								<label>關鍵字</label>
-								<div class="ui input">
-									<input type='text' name='key' id='key' placeholder="請輸入關鍵字">
-								</div>
-							</div>
-							<div class="field">
-								<label>新增條件</label>
-								<i class="large square icon plus"></i>
-							</div>
-							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
-							</div>
-							 <div class="field">
-								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/network/'">顯示全部</button>
-							</div>
-						</div>
-						</form>
-						<div class="ui centered inline loader"></div>
-						<div class="record_content"></div>
-						</div> <!-- end of .tabular-->
-					</div> <!-- end of .attached.segment-->
-				</div>
-			</div>
-			<div class="post">
-				<div class="post_title">Client應用程式白名單</div>
-				<div class="post_cell">
-				<?php
-					require 'libraries/PaloAltoAPI.php';
-					$pa = new PaloAltoAPI();
-					$object_type = 'ApplicationGroups'; 
-					$name = '';
-					$res = $pa->GetObjectList($object_type, $name);
-					$res = json_decode($res);
-					echo "<table class='ui celled table'>";
-					echo "<thead>";
-						echo "<tr>";
-							echo "<th>群組名稱</th>";
-							echo "<th>成員</th>";
-							echo "<th>應用程式</th>";
-						echo "</tr>";
-					echo "</thead>";
-					echo "<tbody>";
-					foreach($res->result->entry as $key => $entry){
-						$size = count($entry->members->member);
-						$name = $entry->{'@name'};
-						foreach($entry->members->member as $key => $val){
-							echo "<tr>";
-							if($key == 0){
-								echo "<td rowspan=".$size.">".$name."</td>";
-								echo "<td rowspan=".$size.">".$size."</td>";
-								echo "<td>".$val."</td>";	
-							}else{
-								echo "<td>".$val."</td>";	
-							}
-							echo "</tr>";
-						}
-					}
-					echo "</tbody>";
-					echo "</table>";
-				?>
-				</div>
-			</div>
-		</div>
-		<div style="clear: both;">&nbsp;</div>
-	</div>
-<?php } 
-function load_query_retrieve(){
+function load_query_fetch(){
 ?>	
 <div id="page" class="container">
 <div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">Retrieve from Google Sheets and GCB</div>
+				<div class="post_title">Fetch Google Sheets and GCB</div>
 				<div class="post_cell">
-					<button id="gs_event_btn" class="ui button self-btn">Retrieve Event GS</button>
-					<button id="gs_ncert_event_btn" class="ui button self-btn">Retrieve Ncert-Event_GS</button>
-					<button id="gcb_api_btn" class="ui button self-btn">Retrieve GCB</button>
+					<button id="gs_event_btn" class="ui button self-btn">Fetch Event GS</button>
+					<button id="gs_ncert_event_btn" class="ui button self-btn">Fetch Ncert GS</button>
+					<button id="gcb_api_btn" class="ui button self-btn">Fetch GCB</button>
 					<div class="retrieve_info"></div>
 				</div>
 			</div>
 			<?php 
-				// admin is given permission to edit this block	
-				if(issetBySession("Level") && $_SESSION['Level'] == 2){
-					//echo $_SESSION['Level'];
+			// admin is given permission to edit this block	
+			if(issetBySession("Level") && $_SESSION['Level'] == 2){
+				//echo $_SESSION['Level'];
 			?>
 			<div class="post">
-				<div class="post_title">Retrieve from Ncert</div>
+				<div class="post_title">Fetch Ncert</div>
 				<div class="post_cell">
 					1.從Ncert下載資安人員列表，另存成csv檔且修改編碼為UTF-8。
 					<br>2.上傳此csv檔可更新「資安聯絡人」資料，並顯示已更新數量。
@@ -1073,7 +849,7 @@ function load_query_retrieve(){
 			</div>
 			<?php } ?>
 		</div>
-		<div style="clear: both;">&nbsp;</div>
+		<div style="clear: both;"></div>
 	</div>
 <?php } 
 ?>	

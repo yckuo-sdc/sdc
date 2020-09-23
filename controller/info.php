@@ -13,34 +13,34 @@ switch($subpage){
 function load_info_enews(){
 	$db = Database::get();
 	$table = "tainangov_security_Incident"; // 設定你想查詢資料的資料表
-	$db->query($table, $condition = "1", $order_by = "1", $fields = "*", $limit = "");
+	$db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "*", $limit = "", [1]);
 	$ncert_num = $db->getLastNumRows();
-	$db->query($table, $condition = "Status LIKE '已結案'", $order_by = "1", $fields = "*", $limit = "");
+	$db->query($table, $condition = "Status LIKE :Status", $order_by = "1", $fields = "*", $limit = "", [':Status'=>'已結案']);
 	$done_ncert_num = $db->getLastNumRows();
                     
 	$table = "security_event"; // 設定你想查詢資料的資料表
-	$db->query($table, $condition = "1", $order_by = "1", $fields = "*", $limit = "");
+	$db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "*", $limit = "", [1]);
 	$event_num = $db->getLastNumRows();
-	$db->query($table, $condition = "Status LIKE '已結案'", $order_by = "1", $fields = "*", $limit = "");
+	$db->query($table, $condition = "Status LIKE :Status", $order_by = "1", $fields = "*", $limit = "", [':Status'=>'已結案']);
 	$done_event_num = $db->getLastNumRows();
-	$db->query($table, $condition = "Status LIKE '未完成'", $order_by = "1", $fields = "*", $limit = "");
+	$db->query($table, $condition = "Status LIKE :Status", $order_by = "1", $fields = "*", $limit = "", [':Status'=>'未完成']);
 	$undone_event_num = $db->getLastNumRows();
-	$db->query($table, $condition = "Status LIKE '未完成' AND NOT(UnprocessedReason LIKE '')", $order_by = "1", $fields = "*", $limit = "");
+	$db->query($table, $condition = "Status LIKE :Status AND NOT(UnprocessedReason LIKE :UnprocessedReason)", $order_by = "1", $fields = "*", $limit = "", [':Status'=>'已結案', 'UnprocessedReason'=>'']);
 	$excepted_event_num = $db->getLastNumRows();
 
 	$date_from_week = date('Y-m-d',strtotime('monday this week'));  
 	$date_to_week = date('Y-m-d',strtotime('sunday this week'));
 	$date_from_month = date('Y-m-d',strtotime('first day of this month'));
 	$date_to_month = date('Y-m-d',strtotime('last day of this month'));  
-	$db->query($table, $condition = "OccurrenceTime BETWEEN '".$date_from_month."' AND '".$date_to_month."'", $order_by = "1", $fields = "*", $limit = "");
+	$db->query($table, $condition = "OccurrenceTime BETWEEN :date_from_month AND :date_to_month", $order_by = "1", $fields = "*", $limit = "", [':date_from_month'=>$date_from_month, ':date_to_month'=>$date_to_month]);
 	$thisMonth_event_num = $db->getLastNumRows();
-	$db->query($table, $condition = "OccurrenceTime BETWEEN '".$date_from_week."' AND '".$date_to_week."'", $order_by = "1", $fields = "*", $limit = "");
+	$db->query($table, $condition = "OccurrenceTime BETWEEN :date_from_week AND :date_to_week", $order_by = "1", $fields = "*", $limit = "", [':date_from_week'=>$date_from_week, ':date_to_week'=>$date_to_week]);
 	$thisWeek_event_num = $db->getLastNumRows();
 	$completion_rate = round($done_event_num / $event_num * 100,2)."%"; 
 
 	$order_by = "EventID desc";
 	$limit = "LIMIT 10";
-	$last_10_events = $db->query($table, $condition = "1", $order_by , $fields = "*", $limit);
+	$last_10_events = $db->query($table, $condition = "1 = ?", $order_by , $fields = "*", $limit, [1]);
 ?>
 <div id="page" class="container">
 	<div id="content">
@@ -190,17 +190,41 @@ function load_info_ranking(){
 function load_info_vul(){
 	$db = Database::get();
 	$sql = "SELECT ou,sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL,sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion,sum(total_VUL - overdue_high_VUL - overdue_medium_VUL) as non_overdue_VUL, sum(total_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as non_overdue_completion	FROM V_VUL_tableau GROUP BY ou ORDER BY total_completion desc";
-	$ou_vul = $db->execute($sql);
+	$ou_vul = $db->execute($sql, []);
 	$sql = "SELECT sum(total_VUL) as total_VUL,sum(fixed_VUL) as fixed_VUL,sum(fixed_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as total_completion,sum(total_high_VUL) as total_high_VUL, sum(fixed_high_VUL) as fixed_high_VUL, sum(fixed_high_VUL)*100.0 / NULLIF(SUM(total_high_VUL), 0) as high_completion ,sum(total_VUL - overdue_high_VUL - overdue_medium_VUL) as non_overdue_VUL, sum(total_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / NULLIF(SUM(total_VUL), 0) as non_overdue_completion	FROM V_VUL_tableau";
-	$total_vul = $db->execute($sql);
+	$total_vul = $db->execute($sql, []);
 	$sql = "SELECT COUNT(DISTINCT ip) as host_num FROM scanTarget";
-	$host_num = $db->execute($sql)[0]['host_num'];
+	$host_num = $db->execute($sql, [])[0]['host_num'];
 	$sql = "SELECT SUM(CASE domain WHEN '' THEN 0 ELSE LENGTH(domain)-LENGTH(REPLACE(domain,';',''))+1 END) AS url_num FROM scanTarget";
-	$url_num = $db->execute($sql)[0]['url_num'];
+	$url_num = $db->execute($sql, [])[0]['url_num'];
+	$fixed_high_VUL	= $total_vul[0]['fixed_high_VUL'];
+	$total_high_VUL = $total_vul[0]['total_high_VUL'];
+	$high_completion = $total_vul[0]['high_completion'];
 ?>	
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
+			<div class="post">
+				<div class="post_title">High Severity Info</div>
+				<div class="post_cell">
+					<center>
+					  <div class="ui small statistic">
+						  <div class="value"><?php echo round($high_completion,0) ?> % </div>
+						  <div class="label">修補率</div>
+					  </div>
+					  <br>
+					  <div class="ui tiny statistic">
+						  <div class="value"><?php echo $fixed_high_VUL ?> / <?php echo $total_high_VUL ?></div>
+						  <div class="label">已修補數 / 總數</div>
+					  </div>
+					  <br>
+					  <div class="ui tiny statistic">
+						  <div class="value"><?php echo $host_num ?> / <?php echo $url_num ?></div>
+						  <div class="label">總掃描主機 / 網站數</div>
+					  </div>
+					</center>
+				</div>
+			</div>
 			<div class="post">
 				<div class="post_title">VUL Bar</div>
 					<div class="post_cell">
@@ -218,9 +242,7 @@ function load_info_vul(){
 							<tbody>
 							<?php
 							foreach($ou_vul as $vul) {
-							    //hide ou = 區公所
-								if(strchr($vul['ou'],"區公所") == "區公所") echo "<tr style='opacity:0.5'>";
-								else echo "<tr>";
+								echo "<tr>";
 									echo "<td data-label='OU'>".$vul['ou']."</td>";
 									echo "<td data-label='Total-Risks'>";
 									echo "<div class='ui teal progress yckuo' data-percent='".round($vul['total_completion'],0)."' data-total='100' id='example1'>";
@@ -264,9 +286,6 @@ function load_info_vul(){
 								echo "</div>";
 								echo "</td>";
 							echo "</tr>";
-							$fixed_high_VUL	= $vul['fixed_high_VUL'];
-							$total_high_VUL = $vul['total_high_VUL'];
-							$high_completion = $vul['high_completion'];
 							?>
 							</tbody>
 						</table>	
@@ -274,24 +293,9 @@ function load_info_vul(){
 					</div>
 			</div>
 			<div class="post">
-				<div class="post_title">High Severity Info</div>
+				<div class="post_title">SDC Assignment</div>
 				<div class="post_cell">
-					<center>
-					  <div class="ui small statistic">
-						  <div class="value"><?php echo round($high_completion,0) ?> % </div>
-						  <div class="label">修補率</div>
-					  </div>
-					  <br>
-					  <div class="ui tiny statistic">
-						  <div class="value"><?php echo $fixed_high_VUL ?> / <?php echo $total_high_VUL ?></div>
-						  <div class="label">已修補數 / 總數</div>
-					  </div>
-					  <br>
-					  <div class="ui tiny statistic">
-						  <div class="value"><?php echo $host_num ?> / <?php echo $url_num ?></div>
-						  <div class="label">總掃描主機 / 網站數</div>
-					  </div>
-					</center>
+					<object type="application/pdf" data="/upload/info/VULAssignment.pdf" width="100%" height="500"></object>
 				</div>
 			</div>
 		</div>
@@ -302,7 +306,7 @@ function load_info_vul(){
 function load_info_client(){
 	$db = Database::get();
 	$sql = "SELECT COUNT(*) AS total_num,SUM(ad) AS ad_num,SUM(gcb) AS gcb_num,SUM(wsus) AS wsus_num,SUM(antivirus) AS antivirus_num FROM drip_client_list";
-	$device_num = $db->execute($sql)[0];
+	$device_num = $db->execute($sql, [])[0];
 	$total_num = $device_num['total_num'];
 	$ad_num = $device_num['ad_num'];
 	$gcb_num = $device_num['gcb_num'];
@@ -315,31 +319,31 @@ function load_info_client(){
 	$antivirus_rate = round($antivirus_num/$total_num*100,2)."%"; 
 	
 	$table = "ad_comupter_list"; // 設定你想查詢資料的資料表
-	$db->query($table, $condition = "1", $order_by = "1", $fields = "DISTINCT(CommonName)", $limit = "");
+	$db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "DISTINCT(CommonName)", $limit = "", [1]);
 	$ad_computer_num = $db->getLastNumRows();
 	
 	$sql = "SELECT COUNT(ID) as total_count,SUM(CASE WHEN GsAll_2 = GsAll_1 THEN 1 ELSE 0 END) as pass_count FROM gcb_client_list";
-	$gcb = $db->execute($sql)[0];
+	$gcb = $db->execute($sql, [])[0];
 	$total_count = $gcb['total_count'];
 	$pass_count = $gcb['pass_count'];
 	$total_rate = ($total_count != 0) ? round($total_count/$total_count*100,2)."%" : 0; 
 	$pass_rate = ($total_count != 0) ? round($pass_count/$total_count*100,2)."%" : 0; 
 	
 	$sql = "SELECT COUNT(TargetID) as total_count,SUM(CASE WHEN Failed LIKE '0' THEN 1 ELSE 0 END) as pass_count FROM wsus_computer_status";
-	$wsus = $db->execute($sql)[0];
+	$wsus = $db->execute($sql, [])[0];
 	$total_wsus_num = $wsus['total_count'];
 	$pass_wsus_num = $wsus['pass_count'];
 	$table = "wsus_computer_status"; // 設定你想查詢資料的資料表
-	$db->query($table, $condition = "LastSyncTime > ADDDATE(NOW(), INTERVAL -1 WEEK)", $order_by = "1", $fields = "*", $limit = "");
+	$db->query($table, $condition = "LastSyncTime > ADDDATE(NOW(), ?)", $order_by = "1", $fields = "*", $limit = "", ['INTERVAL -1 WEEK']);
 	$sync_wsus_num = $db->getLastNumRows();
 	$total_wsus_rate = round($total_wsus_num/$total_wsus_num*100,2)."%"; 
 	$pass_wsus_rate = round($pass_wsus_num/$total_wsus_num*100,2)."%"; 
 	$sync_wsus_rate = round($sync_wsus_num/$total_wsus_num*100,2)."%"; 
 	
 	$table = "antivirus_client_list"; // 設定你想查詢資料的資料表
-	$db->query($table, $condition = "1", $order_by = "1", $fields = "*", $limit = "");
+	$db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "*", $limit = "", [1]);
 	$total_antivirus_num = $db->getLastNumRows();
-	$db->query($table, $condition = "DLPState IN ('已停止','需要重新啟動','執行')", $order_by = "1", $fields = "*", $limit = "");
+	$db->query($table, $condition = "DLPState IN (?,?,?)", $order_by = "1", $fields = "*", $limit = "", ['已停止','需要重新啟動','執行']);
 	$dlp_num = $db->getLastNumRows();
 	$total_antivirus_rate = round($total_antivirus_num/$total_antivirus_num*100,2)."%"; 
 	$dlp_rate = round($dlp_num/$total_antivirus_num*100,2)."%"; 

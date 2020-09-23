@@ -1,6 +1,6 @@
 <?php
 require '../login/function.php';
-require '../libraries/Database.php';
+require '../libraries/DatabasePDO.php';
 
 if((empty($_GET['key']) || empty($_GET['keyword']) || empty($_GET['type']) ) && count(json_decode($_GET['jsonObj'],true)) == 0){
 	echo "沒有輸入";
@@ -10,11 +10,7 @@ if((empty($_GET['key']) || empty($_GET['keyword']) || empty($_GET['type']) ) && 
 $db = Database::get();
 
 foreach($_GET as $getkey => $val){
-	if($getkey == 'jsonStatus' || $getkey == 'jsonObj'){ //filter out type == jsonString
-		$$getkey = $val;
-	}else {
-		$$getkey = $db->getEscapedString($val);
-	}	
+	$$getkey = $val;
 }
 
 $page = isset($page) ? $page : 1;
@@ -73,33 +69,41 @@ $status_map = [	//overdue_and_unfinish + non_overdue_and_unfinish + finish
 
 $status_condition = $status_map[$arr_jsonStatus['overdue_and_unfinish']][$arr_jsonStatus['non_overdue_and_unfinish']][$arr_jsonStatus['finish']];
 
+//retrieve condition
+$data_array = [];
 if(count($arr_jsonObj) != 0) {
 	$condition = "";
 	foreach($arr_jsonObj as $val){
-		$val['key']	= $db->getEscapedString($val['key']);
-		$val['keyword'] = $db->getEscapedString($val['keyword']);
 		if($val['keyword'] == "all"){
-			$one_condition = "(".getFullTextSearchSQL2($db,$table,$val['key']).") "; 
+			$res = $db->getFullTextSearchCondition($table, $val['key']);
+			$one_condition = "(".$res['condition'].") "; 
+			$data_array = array_merge($data_array, $res['data']);
 		}else{
-			$one_condition = $val['keyword']." LIKE '%".$val['key']."%' ";
+			$one_condition = $val['keyword']." LIKE ?";
+			$data_array[] = "%".$val['key']."%"; 
 		}
 		$condition = $condition." AND ".$one_condition;
 	}
-	$condition = substr($condition,4).$status_condition;
+	$condition = substr($condition,4)." ".$status_condition;
 }else{
-	$key = $db->getEscapedString($key);
-	$keyword = $db->getEscapedString($keyword);
 	if($keyword == "all"){
-		$condition = "(".getFullTextSearchSQL2($db,$table,$key).") ".$status_condition; 
+		$res = $db->getFullTextSearchCondition($table, $key);
+		$condition = "(".$res['condition'].") "; 
+		$data_array = $res['data'];
 	}else{
-		$condition = $keyword." LIKE '%".$key."%' ".$status_condition;
+		$condition = $keyword." LIKE ? ".$status_condition;
+		$data_array[] = "%".$key."%"; 
 	}
 }
 //echo $condition."<br>";
 $table = $table; // 設定你想查詢資料的資料表
 $order_by = "scan_no DESC,ou DESC,system_name DESC,status DESC";
-$total_vuls = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+$total_vuls = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", $data_array);
 $last_num_rows = $db->getLastNumRows();
+//print_r($db->getLastSql());
+//echo "<br>";
+//print_r($data_array);
+//echo "<br>";
 
 if($ap=='html'){
 	if ($last_num_rows == 0){
@@ -107,10 +111,11 @@ if($ap=='html'){
 	}
 	else{
 		echo "該分類共搜尋到".$last_num_rows."筆資料！";
+
 		$pageParm = getPaginationParameter($page, $last_num_rows);
 		$limit = "limit ".($start = $pageParm['start']).",".($offset = $pageParm['offset']);
-		$vuls = $db->query($table, $condition, $order_by, $fields = "*", $limit);
-	   
+		$vuls = $db->query($table, $condition, $order_by, $fields = "*", $limit, $data_array);
+		
 		echo "<div class='ui relaxed divided list'>";
 		foreach($vuls as $vul) {
 			echo "<div class='item'>";
@@ -124,7 +129,7 @@ if($ap=='html'){
 				echo "<span style='background:#DDDDDD'>".$vul['vitem_name']."</span>&nbsp&nbsp";
 				echo $vul['scan_no']."&nbsp&nbsp";
 		
-				echo "<i class='angle double down icon'></i>";
+				echo "<i class='angle down icon'></i>";
 				echo "</a>";
 				echo "<div class='description'>";
 					echo "<ol>";
@@ -157,7 +162,7 @@ if($ap=='html'){
 		$pageAttr['type'] = $type;	
 		$pageAttr['jsonStatus'] = $jsonStatus;	
 		$pageAttr['jsonObj'] = $jsonObj;	
-		echo createPagination($pageParm, $page, $pageAttr);
+		echo createPaginationElement($pageParm, $page, $pageAttr);
 	}
 }elseif($ap='csv'){
 	$arrs=array();

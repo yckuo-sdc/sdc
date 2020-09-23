@@ -1,12 +1,13 @@
 <?php
-require '../libraries/Database.php';
-require '../config/ChtSecurityAPI.php';
+require '../libraries/DatabasePDO.php';
+require '../vendor/autoload.php';
+
 $db = Database::get();
 $key = ChtSecurityAPI::KEY;
 
 $table = "api_list"; // 設定你想查詢資料的資料表
-$condition = "class LIKE '弱掃平台' ";
-$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "");
+$condition = "class LIKE :class";
+$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'弱掃平台']);
 
 foreach($apis as $api) {
 	$nowTime = date("Y-m-d H:i:s");
@@ -30,22 +31,22 @@ foreach($apis as $api) {
 				$id = "1"; 
 				$db->delete($table, $key_column, $id); 
 				foreach($data as $ipscan){
-					$scan['vitem_id']= $db->getEscapedString($ipscan['vitem_id']);
-					$scan['OID']= $db->getEscapedString($ipscan['oid']);
-					$scan['ou']= $db->getEscapedString($ipscan['ou']);
-					$scan['status']= $db->getEscapedString($ipscan['status']);
-					$scan['ip']= $db->getEscapedString($ipscan['ip']);
-					$scan['system_name']= $db->getEscapedString($ipscan['system_name']);
-					$scan['flow_id']= $db->getEscapedString($ipscan['flow_id']);
-					$scan['scan_no']= $db->getEscapedString($ipscan['scan_no']);
-					$scan['manager']= $db->getEscapedString($ipscan['manager']);
-					$scan['email']= $db->getEscapedString($ipscan['email']);
-					$scan['vitem_name']= $db->getEscapedString($ipscan['vitem_name']);
-					$scan['url']= $db->getEscapedString($ipscan['url']);
-					$scan['category']= $db->getEscapedString($ipscan['category']);
-					$scan['severity']= $db->getEscapedString($ipscan['severity']);
-					$scan['scan_date']= $db->getEscapedString($ipscan['scan_date']);
-					$scan['is_duplicated']= $db->getEscapedString($ipscan['is_duplicated']);
+					$scan['vitem_id']= $ipscan['vitem_id'];
+					$scan['OID']= $ipscan['oid'];
+					$scan['ou']= $ipscan['ou'];
+					$scan['status']= $ipscan['status'];
+					$scan['ip']= $ipscan['ip'];
+					$scan['system_name']= $ipscan['system_name'];
+					$scan['flow_id']= $ipscan['flow_id'];
+					$scan['scan_no']= $ipscan['scan_no'];
+					$scan['manager']= $ipscan['manager'];
+					$scan['email']= $ipscan['email'];
+					$scan['vitem_name']= $ipscan['vitem_name'];
+					$scan['url']= $ipscan['url'];
+					$scan['category']= $ipscan['category'];
+					$scan['severity']= $ipscan['severity'];
+					$scan['scan_date']= $ipscan['scan_date'];
+					$scan['is_duplicated']= $ipscan['is_duplicated'];
 					
 					$db->insert($table, $scan);
 					$count = $count + 1;							
@@ -75,23 +76,23 @@ foreach($apis as $api) {
 				$id = "1"; 
 				$db->delete($table, $key_column, $id); 
 				foreach($data as $urlscan){
-					$scan['vitem_id']= $db->getEscapedString($urlscan['vitem_id']);
-					$scan['OID']= $db->getEscapedString($urlscan['oid']);
-					$scan['ou']= $db->getEscapedString($urlscan['ou']);
-					$scan['status']= $db->getEscapedString($urlscan['status']);
-					$scan['ip']= $db->getEscapedString($urlscan['ip']);
-					$scan['system_name']= $db->getEscapedString($urlscan['system_name']);
-					$scan['flow_id']= $db->getEscapedString($urlscan['flow_id']);
-					$scan['affect_url']= $db->getEscapedString($urlscan['affect_url']);
-					$scan['scan_no']= $db->getEscapedString($urlscan['scan_no']);
-					$scan['manager']= $db->getEscapedString($urlscan['manager']);
-					$scan['email']= $db->getEscapedString($urlscan['email']);
-					$scan['vitem_name']= $db->getEscapedString($urlscan['vitem_name']);
-					$scan['url']= $db->getEscapedString($urlscan['url']);
-					$scan['category']= $db->getEscapedString($urlscan['category']);
-					$scan['severity']= $db->getEscapedString($urlscan['severity']);
-					$scan['scan_date']= $db->getEscapedString($urlscan['scan_date']);
-					$scan['is_duplicated']= $db->getEscapedString($urlscan['is_duplicated']);
+					$scan['vitem_id']= $urlscan['vitem_id'];
+					$scan['OID']= $urlscan['oid'];
+					$scan['ou']= $urlscan['ou'];
+					$scan['status']= $urlscan['status'];
+					$scan['ip']= $urlscan['ip'];
+					$scan['system_name']= $urlscan['system_name'];
+					$scan['flow_id']= $urlscan['flow_id'];
+					$scan['affect_url']= $urlscan['affect_url'];
+					$scan['scan_no']= $urlscan['scan_no'];
+					$scan['manager']= $urlscan['manager'];
+					$scan['email']= $urlscan['email'];
+					$scan['vitem_name']= $urlscan['vitem_name'];
+					$scan['url']= $urlscan['url'];
+					$scan['category']= $urlscan['category'];
+					$scan['severity']= $urlscan['severity'];
+					$scan['scan_date']= $urlscan['scan_date'];
+					$scan['is_duplicated']= $urlscan['is_duplicated'];
 
 					//print_r($scan);		
 					$db->insert($table, $scan);
@@ -122,14 +123,14 @@ foreach($apis as $api) {
 				$id = "1"; 
 				$db->delete($table, $key_column, $id); 
 				foreach($data as $scanTarget){
-					$scanTarget['oid']= $db->getEscapedString($scanTarget['oid']);
-					$scanTarget['ou']= $db->getEscapedString($scanTarget['ou']);
-					$scanTarget['system_name']= $db->getEscapedString($scanTarget['system_name']);
-					$scanTarget['hostname']= $db->getEscapedString($scanTarget['hostname']);
-					$scanTarget['ip']= $db->getEscapedString($scanTarget['ip']);
-					$scanTarget['domain']= $db->getEscapedString($scanTarget['domain']);
-					$scanTarget['manager']= $db->getEscapedString($scanTarget['manager']);
-					$scanTarget['email']= $db->getEscapedString($scanTarget['email']);
+					$scanTarget['oid']= $scanTarget['oid'];
+					$scanTarget['ou']= $scanTarget['ou'];
+					$scanTarget['system_name']= $scanTarget['system_name'];
+					$scanTarget['hostname']= $scanTarget['hostname'];
+					$scanTarget['ip']= $scanTarget['ip'];
+					$scanTarget['domain']= $scanTarget['domain'];
+					$scanTarget['manager']= $scanTarget['manager'];
+					$scanTarget['email']= $scanTarget['email'];
 					
 					$db->insert($table, $scanTarget);
 					$count = $count + 1;							
@@ -157,7 +158,7 @@ foreach($apis as $api) {
 			UNION ALL
 			SELECT '網站弱點' AS type,vitem_id, OID, ou, status, ip, system_name, flow_id, scan_no, affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated
 			FROM urlscanResult";
-	$db->execute($sql);
+	$db->execute($sql, []);
 
 	$table = "api_status"; // 設定你想新增資料的資料表
 	$data_array['api_id'] = $api['id'];

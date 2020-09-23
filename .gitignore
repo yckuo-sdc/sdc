@@ -16,3 +16,5 @@ doc/**/*.txt
 # ignore all .csv files
 *.csv
 
+
+/vendor/

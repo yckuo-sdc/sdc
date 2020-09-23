@@ -1,9 +1,10 @@
 ﻿<?php 
 require_once("function.php");
-require_once("../mysql_connect.inc.php");
+require '../libraries/DatabasePDO.php';
+
+$db = Database::get();
 session_start();
-storeUserLogs($conn, 'logout', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], $_SERVER['REQUEST_URI'], date('Y-m-d h:i:s'));
-$conn->close();
+storeUserLogs2($db, 'logout', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], $_SERVER['REQUEST_URI']);
 $duration = 3600*24*30; //3600sec*24hour*30day
 //將session清空
 unset($_SESSION['account']);

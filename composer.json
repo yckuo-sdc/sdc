@@ -1,0 +1,17 @@
+{
+    "name": "yckuo/sdc",
+    "authors": [
+        {
+            "name": "YuChieh Kuo",
+            "email": "yckuo@mail.tainan.gov.tw"
+        }
+    ],
+    "require": {
+		"google/apiclient": "^2.7"
+	},
+	"autoload": {
+		"classmap": [
+			"config"
+		]
+	}
+}

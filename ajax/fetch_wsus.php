@@ -1,5 +1,6 @@
 <?php
-require '../libraries/Database.php';
+require '../libraries/DatabasePDO.php';
+
 $db = Database::get();
 
 $file_path = "/var/www/html/sdc/upload/upload_wsus/GetComputerStatus.csv";
@@ -16,24 +17,24 @@ if (($handle = fopen($file_path, "r")) !== FALSE) {
 		if($num > 1){
 			//echo "$num fields in line $row:\n";
 			$row++;
-			$status['TargetID']= $db->getEscapedString(trim($data[0]));
-			$status['LastSyncTime']= $db->getEscapedString(trim($data[1]));
-			$status['LastReportedStatusTime']= $db->getEscapedString(trim($data[2]));
-			$status['LastReportedRebootTime']= $db->getEscapedString(trim($data[3]));
-			$status['IPAddress']= $db->getEscapedString(trim($data[4]));
-			$status['FullDomainName']= $db->getEscapedString(trim(mb_convert_encoding($data[5],"utf-8","big5")));
-			$status['EffectiveLastDetectionTime']= $db->getEscapedString(trim($data[6]));
-			$status['LastSyncResult']= $db->getEscapedString(trim($data[7]));
-			$status['Unknown']= $db->getEscapedString(trim($data[8]));
-			$status['NotInstalled']= $db->getEscapedString(trim($data[9]));
-			$status['Downloaded']= $db->getEscapedString(trim($data[10]));
-			$status['Installed']= $db->getEscapedString(trim($data[11]));
-			$status['Failed']= $db->getEscapedString(trim($data[12]));
-			$status['InstalledPendingReboot']= $db->getEscapedString(trim($data[13]));
-			$status['LastChangeTime']= $db->getEscapedString(trim($data[14]));
-			$status['ComputerMake']= $db->getEscapedString(trim($data[15]));
-			$status['ComputerModel']= $db->getEscapedString(trim($data[16]));
-			$status['OSDescription']= $db->getEscapedString(trim($data[17]));
+			$status['TargetID']= trim($data[0]);
+			$status['LastSyncTime']= trim($data[1]);
+			$status['LastReportedStatusTime']= trim($data[2]);
+			$status['LastReportedRebootTime']= trim($data[3]);
+			$status['IPAddress']= trim($data[4]);
+			$status['FullDomainName']= trim(mb_convert_encoding($data[5],"utf-8","big5"));
+			$status['EffectiveLastDetectionTime']= trim($data[6]);
+			$status['LastSyncResult']= trim($data[7]);
+			$status['Unknown']= trim($data[8]);
+			$status['NotInstalled']= trim($data[9]);
+			$status['Downloaded']= trim($data[10]);
+			$status['Installed']= trim($data[11]);
+			$status['Failed']= trim($data[12]);
+			$status['InstalledPendingReboot']= trim($data[13]);
+			$status['LastChangeTime']= trim($data[14]);
+			$status['ComputerMake']= trim($data[15]);
+			$status['ComputerModel']= trim($data[16]);
+			$status['OSDescription']= trim($data[17]);
 			
 			$db->insert($table, $status);
 			$count = $count + 1;							
@@ -48,8 +49,8 @@ if (($handle = fopen($file_path, "r")) !== FALSE) {
 	$status = 400;
 }
 $table = "api_list"; // 設定你想查詢資料的資料表
-$condition = "class LIKE 'WSUS' and name LIKE '用戶端清單' ";
-$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "");
+$condition = "class LIKE :class and name LIKE :name";
+$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'WSUS', ':name'=>'用戶端清單']);
 $table = "api_status"; // 設定你想新增資料的資料表
 $data_array['api_id'] = $api_list[0]['id'];
 $data_array['url'] = "";
@@ -72,9 +73,9 @@ if (($handle = fopen($file_path, "r")) !== FALSE) {
 		if($num > 1){
 			//echo "$num fields in line $row:\n";
 			$row++;
-			$status['TargetID']= $db->getEscapedString(trim($data[0]));
-			$status['KBArticleID']= $db->getEscapedString(trim($data[1]));
-			$status['UpdateState']= $db->getEscapedString(trim($data[2]));
+			$status['TargetID']= trim($data[0]);
+			$status['KBArticleID']= trim($data[1]);
+			$status['UpdateState']= trim($data[2]);
 			
 			$db->insert($table, $status);
 			$count = $count + 1;							
@@ -89,8 +90,8 @@ if (($handle = fopen($file_path, "r")) !== FALSE) {
 	$status = 400;
 }
 $table = "api_list"; // 設定你想查詢資料的資料表
-$condition = "class LIKE 'WSUS' and name LIKE '更新資訊' ";
-$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "");
+$condition = "class LIKE :class and name LIKE :name";
+$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'WSUS', ':name'=>'更新資訊']);
 $table = "api_status"; // 設定你想新增資料的資料表
 $data_array['api_id'] = $api_list[0]['id'];
 $data_array['url'] = "";

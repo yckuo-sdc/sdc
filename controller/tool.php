@@ -8,6 +8,10 @@ switch($subpage){
 	case 'hydra': load_tool_hydra(); 		break;
 }
 function load_tool_nmap(){
+	$db = Database::get();
+	$table = "application_system"; // 設定你想查詢資料的資料表
+	$condition = "1 = ?";
+	$systems = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [1]);
 ?>
 <div id="page" class="container">
 	<div id="content">
@@ -46,12 +50,6 @@ function load_tool_nmap(){
 						</div> <!-- end of .tabular-->
 						<div class="tab-content portscan">
 						 <?php //select data form database
-							require("mysql_connect.inc.php");
-							 //select row_number,and other field value
-							$sql = "SELECT * FROM application_system";
-							$result = mysqli_query($conn,$sql);
-							$num_total_entry = mysqli_num_rows($result);
-							
 							echo "<table class='ui celled table'>";
 							echo "<thead>";	
 							echo "<tr>";
@@ -65,15 +63,16 @@ function load_tool_nmap(){
 							echo "</tr>";
 							echo "</thead>";	
 							echo "<tbody>";	
-							while($row = mysqli_fetch_assoc($result)) {
-								$SID 			= $row['SID'];
-								$Name 			= $row['Name'];
-								$IP 			= $row['IP'];
-								$URL 			= $row['URL'];
-								$Scan_Result 	= $row['Scan_Result'];
-								$sql 	= "SELECT * FROM portscanResult WHERE ScanTime = (SELECT MAX(ScanTime) FROM portscanResult WHERE SID =".$SID.") AND SID =".$SID;
-								$res 	= mysqli_query($conn,$sql);
-								$size 	= mysqli_num_rows($res);
+							foreach($systems as $system){
+								$SID = $system['SID'];
+								$Name = $system['Name'];
+								$IP = $system['IP'];
+								$URL = $system['URL'];
+								$Scan_Result = $system['Scan_Result'];
+								$table = "portscanResult"; // 設定你想查詢資料的資料表
+								$condition = "ScanTime = (SELECT MAX(ScanTime) FROM portscanResult WHERE SID = :SID) AND SID = :SID";
+								$ports = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':SID'=>$SID]);
+								$size = $db->getLastNumRows();
 								if($size == 0 ){
 									echo "<tr>";
 										echo "<td><a href='".$URL."' target='_blank'>".$Name."</a></td>";
@@ -85,17 +84,12 @@ function load_tool_nmap(){
 										echo "<td>".$Scan_Result."</td>";
 									echo "</tr>";
 								}else{
-									$ports = array();
-									while($port = mysqli_fetch_assoc($res)) {
-										$ports[] = $port;
-									}
 									foreach ($ports as $key=>$port){
 										if($key == 0){
 											echo "<tr>";
 												echo "<td rowspan=".$size."><a href='".$URL."' target='_blank'>".$Name."</a></td>";
 												echo "<td rowspan=".$size.">".$IP."</td>";
 												echo "<td rowspan=".$size.">tcp</td>";
-												//echo "<td>".$port['Protocol']."</td>";
 												echo "<td>".$port['PortNumber']."</td>";
 												echo "<td>".$port['Service']."</td>";
 												echo "<td>".$port['Status']."</td>";
@@ -103,7 +97,6 @@ function load_tool_nmap(){
 											echo "</tr>";
 										}else{
 											echo "<tr>";
-												//echo "<td>".$port['Protocol']."</td>";
 												echo "<td>".$port['PortNumber']."</td>";
 												echo "<td>".$port['Service']."</td>";
 												echo "<td>".$port['Status']."</td>";
@@ -114,7 +107,6 @@ function load_tool_nmap(){
 							}
 							echo "</tbody>";
 							echo "</table>";
-							$conn->close();
 						?>
 						</div> <!-- end of .tabular-->
 					</div> <!-- end of .attached.segment-->
@@ -159,40 +151,6 @@ function load_tool_ldap(){
 				<div class="record_content"></div>
 			</div> <!-- end of .post_cell-->
 			</div>
-			<!--<div class="post">
-				<div class="post_title">OU不同</div>
-				<div class="post_cell">
-					 <?php //select data form database
-						/*require("mysql_connect.inc.php");
-						 //select row_number,and other field value
-						$sql = "SELECT * FROM gcb_client_list WHERE Owner NOT IN('-') AND OrgName NOT IN('-')";
-						$result = mysqli_query($conn,$sql);
-						$num_total_entry = mysqli_num_rows($result);
-						
-						echo "<table class='ui celled table'>";
-						echo "<thead>";	
-						echo "<tr>";
-							echo "<th>Name</th>";
-							echo "<th>OrgName</th>";
-							echo "<th>UserName</th>";
-							echo "<th>Owner</th>";
-						echo "</tr>";
-						echo "</thead>";	
-						echo "<tbody>";	
-						while($row = mysqli_fetch_assoc($result)) {
-							echo "<tr>";
-								echo "<td>".$row['Name']."</td>";
-								echo "<td>".$row['OrgName']."</td>";
-								echo "<td>".$row['UserName']."</td>";
-								echo "<td>".$row['Owner']."</td>";
-							echo "</tr>";
-						}
-						echo "</tbody>";
-						echo "</table>";
-						$conn->close();*/
-					?>
-				</div>
-			</div>-->
 			<div class="post ldap_computer_tree">
 				<div class="post_title">AD-Computer tree</div>
 				<div class="post_cell">

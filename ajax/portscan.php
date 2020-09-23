@@ -1,11 +1,10 @@
 <?php
 require '../login/function.php';
-require '../libraries/Database.php';
-header('Content-type: text/html; charset=utf-8');
+require '../libraries/DatabasePDO.php';
 
 $db = Database::get();
 $table = "application_system"; // 設定你想查詢資料的資料表
-$aps = $db->query($table, $condition = "1", $order_by = "1", $fields = "*", $limit = "");
+$aps = $db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "*", $limit = "", [1]);
 
 foreach($aps as $ap) {
 	$SubnetName = $ap['Name'];

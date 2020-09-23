@@ -1,11 +1,11 @@
 <?php
-require	'../ldap_admin_config.inc.php';
+require	'../config/ldap_admin_config.inc.php';
 require '../login/function.php';
-require '../libraries/Database.php';
+require '../libraries/DatabasePDO.php';
+
 $db = Database::get();
 
-$host_ip = "172.16.10.101";
-$ldapconn = ldap_connect("ldap://".$host_ip) or die("Could not connect to LDAP server.");
+$ldapconn = ldap_connect($host_ip) or die("Could not connect to LDAP server.");
 $set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 if($ldapconn){
 	$ldap_bd = ldap_bind($ldapconn,$account."@".$host_dn,$password);
@@ -27,31 +27,31 @@ if($ldapconn){
 				$output = shell_exec("/usr/bin/dig +short ".$data[$i]['dnshostname'][0]);
 				$ips = explode(PHP_EOL,$output);
 				$size = sizeof($ips);
-				$status['DnsHostname']= $db->getEscapedString(trim($data[$i]['dnshostname'][0]));
+				$status['DnsHostname']= trim($data[$i]['dnshostname'][0]);
 			}else{
 				$status['DnsHostname']= "";
 				$status['IP']= "";
 			}	
 			if(isset($data[$i]['OperatingSystem'][0])){
-				$status['OperatingSystem']= $db->getEscapedString(trim($data[$i]['operatingsystem'][0]));
+				$status['OperatingSystem']= trim($data[$i]['operatingsystem'][0]);
 			}else{
 				$status['OperatingSystem']= "";
 			}
 			if(isset($data[$i]['OperatingSystemVersion'][0])){
-				$status['OperatingSystemVersion']= $db->getEscapedString(trim($data[$i]['operatingsystemversion'][0]));
+				$status['OperatingSystemVersion']= trim($data[$i]['operatingsystemversion'][0]);
 			}else{
 				$status['OperatingSystemVersion']= "";
 			}
-			$status['CommonName']= $db->getEscapedString(trim($data[$i]['cn'][0]));
-			$status['DistinguishedName']= $db->getEscapedString(trim($data[$i]['distinguishedname'][0]));
-			$status['OrgName']= $db->getEscapedString(trim($desc));
+			$status['CommonName']= trim($data[$i]['cn'][0]);
+			$status['DistinguishedName']= trim($data[$i]['distinguishedname'][0]);
+			$status['OrgName']= trim($desc);
 			if(!isset($size) || $size==1){
 				$status['IP']= "";
 				$db->insert($table, $status);
 				$count = $count + 1;
 			}else{
 				for($j=0;$j<$size-1;$j++){
-					$status['IP']= $db->getEscapedString(trim($ips[$j]));
+					$status['IP']= trim($ips[$j]);
 					$db->insert($table, $status);
 					$count = $count + 1;
 				}
@@ -68,8 +68,8 @@ if($ldapconn){
 ldap_close($ldapconn);
 
 $table = "api_list"; // 設定你想查詢資料的資料表
-$condition = "class LIKE 'AD' and name LIKE '個人電腦清單' ";
-$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "");
+$condition = "class LIKE :class and name LIKE :name";
+$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'AD', ':name'=>'個人電腦清單']);
 $table = "api_status"; // 設定你想新增資料的資料表
 $data_array['api_id'] = $api_list[0]['id'];
 $data_array['url'] = "";

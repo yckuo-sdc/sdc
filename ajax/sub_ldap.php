@@ -1,20 +1,22 @@
 <?php
 include("../login/function.php");
-header('Content-type: text/html; charset=utf-8');
+
 session_start(); 
 if(!verifyBySession_Cookie("account")){
-	return 0;
+	return ;
 }
 if(empty($_GET['target']) || empty($_GET['type'])){
-	return 0;
+	return ;
 }
 
-$target = $_GET['target'];
-$type = $_GET['type'];
+foreach($_GET as $getkey => $val){
+	$$getkey = escapeshellcmd($val);
+}
+
 switch($type){
 	case "search":
 		// connect to AD server
-		require_once("../ldap_admin_config.inc.php");
+		require_once("../config/ldap_admin_config.inc.php");
 		$ldapconn = ldap_connect($host_ip) or die("Could not connect to LDAP server.");
 		$set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		
@@ -174,7 +176,7 @@ switch($type){
 		ldap_close($ldapconn);
 		break;
 	case "newuser":
-		require_once("../ldap_admin_config.inc.php");
+		require_once("../config/ldap_admin_config.inc.php");
 		$ldapconn = ldap_connect($host_ip) or die("Could not connect to LDAP server.");
 		$set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		if($ldapconn){

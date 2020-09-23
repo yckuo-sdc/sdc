@@ -1,6 +1,6 @@
 <?php
 require '../login/function.php';
-require '../libraries/Database.php';
+require '../libraries/DatabasePDO.php';
 
 if((empty($_GET['key']) || empty($_GET['keyword']) || empty($_GET['type']) ) && count(json_decode($_GET['jsonObj'],true)) == 0){
 	echo "沒有輸入";
@@ -10,11 +10,7 @@ if((empty($_GET['key']) || empty($_GET['keyword']) || empty($_GET['type']) ) && 
 $db = Database::get();
 
 foreach($_GET as $getkey => $val){
-	if($getkey == 'jsonObj'){     //filter out type == jsonString
-		$$getkey = $val;
-	}else {
-		$$getkey = $db->getEscapedString($val);
-	}	
+	$$getkey = $val;
 }
 
 $page = isset($page) ? $page : 1;
@@ -64,33 +60,39 @@ switch(true){
 }
 
 //retrieve condition
+$data_array = [];
 if( count($arr_jsonObj) !=0 ){
 	$condition = "";
 	foreach($arr_jsonObj as $val){
-		$val['key']		= $db->getEscapedString($val['key']);
-		$val['keyword'] = $db->getEscapedString($val['keyword']);
 		if($val['keyword'] == "all"){
-			$one_condition = "(".getFullTextSearchSQL2($db,$condition_table,$val['key']).") "; 
+			$res = $db->getFullTextSearchCondition($condition_table, $val['key']);
+			$one_condition = "(".$res['condition'].") "; 
+			$data_array = array_merge($data_array, $res['data']);
 		}else{
-			$one_condition = $val['keyword']." LIKE '%".$val['key']."%' ";
+			$one_condition = $val['keyword']." LIKE ?";
+			$data_array[] = "%".$val['key']."%"; 
 		}
 		$condition = $condition." AND ".$one_condition;
 	}
 	$condition = substr($condition,4);
 }else{
-	$key			 = $db->getEscapedString($key);
-	$keyword	 = $db->getEscapedString($keyword);
 	if($keyword == "all"){
-		//FullText Seach
-		$condition = "(".getFullTextSearchSQL2($db,$condition_table,$key).") "; 
+		$res = $db->getFullTextSearchCondition($condition_table, $key);
+		$condition = "(".$res['condition'].") "; 
+		$data_array = $res['data'];
 	}else{
-		$condition = $keyword." LIKE '%".$key."%' ";
+		$condition = $keyword." LIKE ?";
+		$data_array[] = "%".$key."%"; 
 	}
 }
 //echo $condition."<br>";
 $table = $table; // 設定你想查詢資料的資料表
-$total_entries = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+$total_entries = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", $data_array);
 $last_num_rows = $db->getLastNumRows();
+//print_r($db->getLastSql());
+//echo "<br>";
+//print_r($data_array);
+//echo "<br>";
 
 if($ap=='html'){
 	if ($last_num_rows == 0){
@@ -99,7 +101,7 @@ if($ap=='html'){
 		echo "該分類共搜尋到".$last_num_rows."筆資料！";
 		$pageParm = getPaginationParameter($page, $last_num_rows);
 		$limit = "limit ".($start = $pageParm['start']).",".($offset = $pageParm['offset']);
-		$entries = $db->query($table, $condition, $order_by, $fields = "*", $limit);
+		$entries = $db->query($table, $condition, $order_by, $fields = "*", $limit, $data_array);
 		
 		switch($type){
 			case "security_event": 
@@ -123,7 +125,7 @@ if($ap=='html'){
 							echo "<span style='background:#DDDDDD'>".$entry['IP']."</span>&nbsp&nbsp";
 							echo $entry['DeviceOwnerName']."&nbsp&nbsp";
 							echo $entry['DeviceOwnerPhone']."&nbsp&nbsp";
-							echo "<i class='angle double down icon'></i>";
+							echo "<i class='angle down icon'></i>";
 							echo "</a>";
 							echo "<div class='description'>";
 								echo "<ol>";
@@ -171,7 +173,7 @@ if($ap=='html'){
 							echo $entry['Classification']."&nbsp&nbsp";
 							echo "<span style='background:#fde087'>".$entry['PublicIP']."</span>&nbsp&nbsp";
 							echo $entry['OrganizationName'];
-							echo "<i class='angle double down icon'></i>";
+							echo "<i class='angle down icon'></i>";
 							echo "</a>";
 							
 							echo "<div class='description'>";
@@ -214,6 +216,12 @@ if($ap=='html'){
 				echo "</div>";
 				break;
 			case "security_contact":
+			$condition = $condition." GROUP BY OID";
+			$fields = "OID";
+			$db->query($table, $condition, $order_by = "1", $fields, $limit = "", $data_array);
+			$oid_num = $db->getLastNumRows();
+		
+			echo "該分類共搜尋到".$oid_num."個機關！";
 			echo "<div class='ui relaxed divided list'>";
 				echo "<div class='item'>";
 					echo "<div class='content'>";
@@ -232,7 +240,7 @@ if($ap=='html'){
 						echo "<span style='background:#fde087'>".$entry['person_type']."</span>&nbsp&nbsp";
 						echo $entry['email']."&nbsp&nbsp";
 						echo "<span style='background:#DDDDDD'>".$entry['tel']."#".$entry['ext']."</span>&nbsp&nbsp";
-						echo "<i class='angle double down icon'></i>";
+						echo "<i class='angle down icon'></i>";
 						echo "</a>";
 						echo "<div class='description'>";
 							echo "<ol>";
@@ -299,7 +307,7 @@ if($ap=='html'){
 					echo $entry['Owner']."&nbsp&nbsp";
 					echo "<span style='background:#DDDDDD'>".long2ip($entry['InternalIP'])."</span>&nbsp&nbsp";
 					echo $entry['os_name']."&nbsp&nbsp";
-					echo "<i class='angle double down icon'></i>";
+					echo "<i class='angle down icon'></i>";
 					echo "</a>";
 					echo "<div class='description'>";
 						echo "<ol>";
@@ -333,11 +341,12 @@ if($ap=='html'){
 				echo "<div class='ui relaxed divided list'>";
 			foreach($entries as $entry) {
 				$table = "wsus_computer_updatestatus_kbid";
-				$condition = "TargetID = ".$entry['TargetID']." AND UpdateState = 'NotInstalled'";
 				$order_by = "ID";
-				$notinstalled_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
-				$condition = "TargetID = ".$entry['TargetID']." AND UpdateState = 'Failed'";
-				$failed_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+				$condition = "TargetID = :TargetID AND UpdateState = :UpdateState";
+				$data_array = [':TargetID'=>$entry['TargetID'],':UpdateState'=>'NotInstalled'];
+				$notinstalled_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "",$data_array);
+				$data_array = [':TargetID'=>$entry['TargetID'],':UpdateState'=>'Failed'];
+				$failed_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", $data_array);
 				echo "<div class='item'>";
 				echo "<div class='content'>";
 					echo "<a>";
@@ -346,7 +355,7 @@ if($ap=='html'){
 					echo "<span style='background:#DDDDDD'>".$entry['NotInstalled']."</span>&nbsp&nbsp";
 					echo "<span style='background:#fbc5c5'>".$entry['Failed']."</span>&nbsp&nbsp";
 					echo $entry['OSDescription'];
-					echo "<i class='angle double down icon'></i>";
+					echo "<i class='angle down icon'></i>";
 					echo "</a>";
 					echo "<div class='description'>";
 						echo "<ol>";
@@ -396,7 +405,7 @@ if($ap=='html'){
 					echo $entry['SpywareNum']."&nbsp&nbsp";
 					echo "<span style='background:#DDDDDD'>".$entry['VirusPatternVersion']."</span>&nbsp&nbsp";
 					echo $entry['LogonUser']."&nbsp&nbsp";
-					echo "<i class='angle double down icon'></i>";
+					echo "<i class='angle down icon'></i>";
 					echo "</a>";
 				echo "<div class='description'>";
 					echo "<ol>";
@@ -442,7 +451,7 @@ if($ap=='html'){
 					echo "<span style='background:#fbc5c5'>".$entry['OrgName']."</span>&nbsp&nbsp";
 					echo $entry['Owner']."&nbsp&nbsp";
 					echo $entry['UserName']."&nbsp&nbsp";
-					echo "<i class='angle double down icon'></i>";
+					echo "<i class='angle down icon'></i>";
 					echo "</a>";
 				echo "<div class='description'>";
 					echo "<ol>";
@@ -482,7 +491,7 @@ if($ap=='html'){
 		$pageAttr['keyword'] = $keyword;	
 		$pageAttr['type'] = $type;	
 		$pageAttr['jsonObj'] = $jsonObj;	
-		echo createPagination($pageParm, $page, $pageAttr);
+		echo createPaginationElement($pageParm, $page, $pageAttr);
 	}
 }elseif($ap='csv'){
 	$arrs=array();
