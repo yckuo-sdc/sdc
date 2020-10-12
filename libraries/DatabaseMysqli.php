@@ -1,9 +1,9 @@
 <?php
 if(!defined("SITE_ROOT"))	define("SITE_ROOT", "/var/www/html/sdc");
-require SITE_ROOT.'/libraries/DatabaseAccessObject.php';
+require SITE_ROOT.'/libraries/DatabaseAccessObjectMysqli.php';
 require SITE_ROOT.'/config/MySQL.php';
 
-class Database {
+class DatabaseMysqli {
   
     private static $instance;
     private function __construct() {
@@ -12,7 +12,7 @@ class Database {
 
     private static function getInstance() {
         if (!isset(self::$instance)) {
-            self::$instance = new DatabaseAccessObject(
+            self::$instance = new DatabaseAccessObjectMysqli(
               MySQL::ADDRESS,
               MySQL::USERNAME,
               MySQL::PASSWORD,

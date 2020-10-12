@@ -1,6 +1,5 @@
 <?php
 require '../vendor/autoload.php';  // include your composer dependencies(google api library) 
-require '../libraries/DatabasePDO.php';
 
 $db = Database::get();
 $client = new Google_Client();  // 載入 google api library

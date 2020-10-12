@@ -1,8 +1,5 @@
 <?php
-$path = "/var/www/html/utility/google-api-php-client-2.2.2/";
-require $path.'vendor/autoload.php';  // include your composer dependencies(google api library) 
-require '../libraries/DatabasePDO.php';
-require '../libraries/PaloAltoAPI.php';
+require '../vendor/autoload.php';  // include your composer dependencies(google api library) 
 
 $host_map = ['yonghua' => '172.16.254.209', 'minjhih' => '10.6.2.102', 'idc' => '10.7.11.241', 'intrayonghua' => '172.16.254.205'];
 $host ='idc';
@@ -17,7 +14,7 @@ $client->useApplicationDefaultCredentials();
 //使用 google sheets apii
 $client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
 $client->setAccessType('offline');
-$client->setAuthConfig($path.'My Project for google sheet-3d2d6667b843.json');
+$client->setAuthConfig('../config/My Project for google sheet-3d2d6667b843.json');
 
 //以下是建立存取 google sheets 的範
 

@@ -1,13 +1,10 @@
 <?php
-require("../login/function.php");
-header('Content-type: text/html; charset=utf-8');
-
-if(empty($_GET['target']) || empty($_GET['account']) || empty($_GET['protocol']) ){
-	phpAlert("沒有輸入");
-	return 0;	
-}	
-
+// input validation
 foreach($_GET as $getkey => $val){
+	if(empty($val)){
+		echo "沒有輸入";
+		return 0;
+	}
 	$$getkey = escapeshellcmd($val);
 }
 

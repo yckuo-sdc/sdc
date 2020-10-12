@@ -1,7 +1,7 @@
 <?php
 use gcb\api as gcb;
 require 'gcb_api.php';
-require '../libraries/DatabasePDO.php';
+require '../vendor/autoload.php';
 
 $api_key = "u3mOZuf8lvZYps210BD5vA";  // the api key of sdc-iss
 $token = gcb\get_access_token($api_key);

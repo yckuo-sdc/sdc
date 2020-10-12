@@ -1,6 +1,5 @@
 <?php
 namespace gcb\api;
-include("../login/function.php");
 
 //get token from API
 function get_access_token($key){

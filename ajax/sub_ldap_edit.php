@@ -1,12 +1,11 @@
 <?php
 use ad\api as ad;
-require_once("ad_api.php");
-require '../libraries/DatabasePDO.php';
-require_once("../config/ldap_admin_config.inc.php");
+require 'ad_api.php';
+require '../vendor/autoload.php';
 
 session_start(); 
 if(!verifyBySession_Cookie("account")){
-	return 0;
+	return ;
 }
 $db = Database::get();
 
@@ -24,12 +23,12 @@ foreach ($_GET as $key => $value) {
 }
 echo "</tbody></table>";
 //check if active is exist 
-if($isActive !== "undefined") $type ="changestate";
+if($isActive !== "") $type ="changestate";
 switch($type){
 	case "edituser":
 		if($new_password!=$confirm_password){
 			echo "failed:兩次輸入密碼不同!<br>";
-			return 0;
+			return ;
 		}
 		$res = ad\edit_user($cn,$new_password,$confirm_password,$displayname,$title,$telephonenumber,$physicaldeliveryofficename,$mail);
 		echo "edituser 執行結果：".$res;
@@ -59,9 +58,13 @@ switch($type){
 		storeUserLogs2($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_state(account='.$cn.')res='.$res);
 		break;
 	case "changecomputer":
+		if(empty($organizationalUnit)){
+			echo "failed:ou未輸入!<br>";
+			return ;
+		}
 		$ou = explode("(", $organizationalUnit);
 		$ou = $ou[0];	
-		$res = ad\change_computer_ou($cn,$ou);
+		$res = ad\change_computer_ou($cn,$ou,$isYonghua);
 		echo "changecomputer 執行結果：".$res;
 		storeUserLogs2($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_computer_ou(account='.$cn.')res='.$res);
 		break;

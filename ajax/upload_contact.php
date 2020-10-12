@@ -1,6 +1,5 @@
 <?php
-require '../login/function.php';
-require '../libraries/DatabasePDO.php';
+require '../vendor/autoload.php';
  
 session_start(); 
 if( !issetBySession("Level") || $_SESSION['Level'] != 2){

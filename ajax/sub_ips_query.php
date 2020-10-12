@@ -1,16 +1,23 @@
 <?php
-require '../login/function.php';
-require '../libraries/PaloAltoAPI.php';
+require '../vendor/autoload.php';
 
-if( (empty($_GET['key']) ||  empty($_GET['keyword']) ||  empty($_GET['operator']) ) && count(json_decode($_GET['jsonObj'],true)) == 0  ){
-	echo "沒有輸入";
-	return;
+// input validation
+$v1 = 0;
+$v2 = 0;
+foreach($_GET as $getkey => $val){
+	$$getkey = $val;
+	if($getkey == "jsonObj" && $val == "[]"){
+		$v1 = 1;	
+	}elseif($getkey != "jsonObj" && $val == ""){
+		$v2 = 1;	
+	}
 }
-$key = $_GET['key'];
-$keyword = $_GET['keyword'];
-$operator = $_GET['operator'];
-$jsonObj = $_GET['jsonObj']; 
-$type = $_GET['type']; 
+
+if($v1 && $v2){
+	echo "沒有輸入";
+	return 0;
+}
+
 $page = isset($_GET['page']) ? $_GET['page'] : 1;	
 
 $prev_page = ($page == 1) ? 1 : ($page-1);

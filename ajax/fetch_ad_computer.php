@@ -1,16 +1,14 @@
 <?php
-require	'../config/ldap_admin_config.inc.php';
-require '../login/function.php';
-require '../libraries/DatabasePDO.php';
+require '../vendor/autoload.php';
 
 $db = Database::get();
 
-$ldapconn = ldap_connect($host_ip) or die("Could not connect to LDAP server.");
+$ldapconn = ldap_connect(LDAP::ADDRESS) or die("Could not connect to LDAP server.");
 $set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 if($ldapconn){
-	$ldap_bd = ldap_bind($ldapconn,$account."@".$host_dn,$password);
+	$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME."@".LDAP::DOMAIN, LDAP::PASSWORD);
 	$keyword = "(objectClass=computer)";
-	echo "host_ip=".$host_ip."<br>\n";
+	echo "host_ip=".LDAP::ADDRESS."<br>\n";
 	$ou = ["TainanLocalUser","TainanComputer"];
 	$result = ldap_search($ldapconn,"OU=TainanComputer,dc=tainan,dc=gov,dc=tw",$keyword) or die ("Error in query");
 	$data = ldap_get_entries($ldapconn,$result);
@@ -45,6 +43,8 @@ if($ldapconn){
 			$status['CommonName']= trim($data[$i]['cn'][0]);
 			$status['DistinguishedName']= trim($data[$i]['distinguishedname'][0]);
 			$status['OrgName']= trim($desc);
+			$status['LastLogonTime']= trim($data[$i]['lastlogon'][0]);
+			$status['PwdLastSetTime']= trim($data[$i]['pwdlastset'][0]);
 			if(!isset($size) || $size==1){
 				$status['IP']= "";
 				$db->insert($table, $status);

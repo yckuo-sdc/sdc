@@ -83,7 +83,7 @@ function load_vul_search(){
 							</div>
 						</div>
 						<div class="field">
-							<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+							<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 						</div>
 						 <div class="field">
 							<button id="show_all_btn" class="ui button" onclick="window.location.href='/vul/search/'">顯示全部</button>

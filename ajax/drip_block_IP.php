@@ -1,5 +1,5 @@
 <?php
-include("../login/function.php");
+require '../vendor/autoload.php';
 
 if(!empty($_GET['ip']) && !empty($_GET['type'])){
 	$ip  		   = rawurldecode($_GET['ip']);

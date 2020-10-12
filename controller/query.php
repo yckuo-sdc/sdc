@@ -53,7 +53,7 @@ function load_query_event(){
 						</div>
 					</div>
 					<div class="field">
-						<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+						<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 					</div>
 					 <div class="field">
 						<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/event/'">顯示全部</button>
@@ -135,7 +135,7 @@ function load_query_ncert(){
 <div id="page" class="container">
 <div id="content">
 		<div class="sub-content show">
-			<div class="post tainangov_security_Incident">
+			<div class="post ncert">
 				<div class="post_title">技服資安通報查詢</div>
 				<div class="post_cell">
 					<form class="ui form" action="javascript:void(0)">
@@ -159,7 +159,7 @@ function load_query_ncert(){
 							</div>
 						</div>
 						<div class="field">
-							<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+							<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 						</div>
 						 <div class="field">
 							<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/ncert/'">顯示全部</button>
@@ -280,7 +280,7 @@ function load_query_contact(){
 							</div>
 						</div>
 						<div class="field">
-							<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+							<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 						</div>
 						 <div class="field">
 							<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/contact/'">顯示全部</button>
@@ -397,7 +397,7 @@ function load_query_client(){
 								<i class="large square icon plus"></i>
 							</div>
 							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
 								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/client/?tab=1'">顯示全部</button>
@@ -516,7 +516,7 @@ function load_query_client(){
 								</div>
 							</div>
 							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
 								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/client/?tab=2'">顯示全部</button>
@@ -632,7 +632,7 @@ function load_query_client(){
 								</div>
 							</div>
 							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
 								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/client/?tab=3'">顯示全部</button>
@@ -746,7 +746,7 @@ function load_query_client(){
 								</div>
 							</div>
 							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
 								<button id="show_all_btn" class="ui button" onclick="window.location.href='/query/client/?tab=4'">顯示全部</button>

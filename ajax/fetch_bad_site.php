@@ -1,7 +1,5 @@
 <?php
 require '../vendor/autoload.php';  // include your composer dependencies(google api library) 
-require '../libraries/DatabasePDO.php';
-require '../libraries/PaloAltoAPI.php';
 
 $db = Database::get();
 $pa = new PaloAltoAPI();
@@ -69,7 +67,7 @@ $nowTime = date('Y-m-d H:i:s');
 $url ="https://docs.google.com/spreadsheets/d/1bb9zyNHfuwQanSdutcyh2fj1JsddsXmG9JCUC5NwPNE/edit#gid=2001135399";
 
 $table = "api_list";
-$condition = "class LIKE :class and name :name '本府資安事件' ";
+$condition = "class LIKE :class and name LIKE :name";
 $api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'惡意中繼站', ':name'=>'Domain']);
 $table = "api_status";
 $data_array['api_id'] = $api_list[0]['id'];

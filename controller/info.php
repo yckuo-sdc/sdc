@@ -334,7 +334,7 @@ function load_info_client(){
 	$total_wsus_num = $wsus['total_count'];
 	$pass_wsus_num = $wsus['pass_count'];
 	$table = "wsus_computer_status"; // 設定你想查詢資料的資料表
-	$db->query($table, $condition = "LastSyncTime > ADDDATE(NOW(), ?)", $order_by = "1", $fields = "*", $limit = "", ['INTERVAL -1 WEEK']);
+	$db->query($table, $condition = "LastSyncTime > ADDDATE(NOW(), INTERVAL -1 WEEK) AND 1 = ?", $order_by = "1", $fields = "*", $limit = "", [1]);
 	$sync_wsus_num = $db->getLastNumRows();
 	$total_wsus_rate = round($total_wsus_num/$total_wsus_num*100,2)."%"; 
 	$pass_wsus_rate = round($pass_wsus_num/$total_wsus_num*100,2)."%"; 

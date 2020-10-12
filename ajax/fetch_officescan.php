@@ -1,9 +1,9 @@
 <?php
-require '../libraries/DatabasePDO.php';
+require '../vendor/autoload.php';
 
 $db = Database::get();
 
-$file = "/var/www/html/sdc/upload/upload_antivirus/OfficeScan_agent_listing.csv";
+$file = "/var/www/html/sdc/upload/antivirus/OfficeScan_agent_listing.csv";
 $count = 0;
 if (($handle = fopen($file, "r")) !== FALSE) {
 	$table = "antivirus_client_list";
@@ -35,6 +35,7 @@ if (($handle = fopen($file, "r")) !== FALSE) {
     }
     fclose($handle);
 	$nowTime = date("Y-m-d H:i:s");
+	$nowTime = date("Y-m-d H:i:s", filemtime($file));
 	echo "The ".$count." records have been inserted or updated into the antivirus_clinet_list on ".$nowTime."\n\r<br>";
 	$status = 200;
 }else{

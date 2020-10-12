@@ -10,25 +10,6 @@ switch($subpage){
 }
 
 function load_network_search(){
-	require 'libraries/PaloAltoAPI.php';
-	$pa = new PaloAltoAPI();
-	$db = Database::get();
-	$table = "maliciousSite"; // 設定你想查詢資料的資料表
-	$db->query($table, $condition = "Type LIKE 'domain'", $order_by ="1", $fields ="*", $limit = "");
-	$total_dn_query_num = $db->getLastNumRows();
-	$condition = "Type LIKE 'domain' and Action LIKE 'allow'";
-	$order_by = "1";
-	$DNs = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
-	$allow_dn_query_num = $db->getLastNumRows();
-	$last_dn_update = $db->query($table, $condition = "Type LIKE 'domain'", $order_by ="1", $fields ="*", $limit = "LIMIT 1")[0]['LastUpdate'];
-
-	$db->query($table, $condition = "Type LIKE 'ip'", $order_by ="1", $fields ="*", $limit = "");
-	$total_ip_query_num = $db->getLastNumRows();
-	$condition = "Type LIKE 'ip' and Action LIKE 'allow'";
-	$order_by = "1";
-	$IPs = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
-	$allow_ip_query_num = $db->getLastNumRows();
-	$last_ip_update = $db->query($table, $condition = "Type LIKE 'ip'", $order_by ="1", $fields ="*", $limit = "LIMIT 1")[0]['LastUpdate'];
 ?>	
 <div id="page" class="container">
 <div id="content">
@@ -76,7 +57,7 @@ function load_network_search(){
 								<i class="large square icon plus"></i>
 							</div>
 							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
 								<button id="show_all_btn" class="ui button" onclick="window.location.href='/network/search/'">顯示全部</button>
@@ -119,7 +100,7 @@ function load_network_search(){
 								<i class="large square icon plus"></i>
 							</div>
 							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
 								<button id="show_all_btn" class="ui button" onclick="window.location.href='/network/search/'">顯示全部</button>
@@ -162,7 +143,7 @@ function load_network_search(){
 								<i class="large square icon plus"></i>
 							</div>
 							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
 								<button id="show_all_btn" class="ui button" onclick="window.location.href='/network/search/'">顯示全部</button>
@@ -205,7 +186,7 @@ function load_network_search(){
 								<i class="large square icon plus"></i>
 							</div>
 							<div class="field">
-								<button id="search_btn" name="search_btn" class="ui button">搜尋</button>
+								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
 								<button id="show_all_btn" class="ui button" onclick="window.location.href='/network/search/'">顯示全部</button>
@@ -223,25 +204,25 @@ function load_network_search(){
 	</div>
 <?php } 
 function load_network_malware(){
-	require 'libraries/PaloAltoAPI.php';
 	$pa = new PaloAltoAPI();
 	$db = Database::get();
 	$table = "maliciousSite"; // 設定你想查詢資料的資料表
-	$db->query($table, $condition = "Type LIKE 'domain'", $order_by ="1", $fields ="*", $limit = "");
+	
+	$db->query($table, $condition = "Type LIKE :Type", $order_by ="1", $fields ="*", $limit = "", [':Type'=>'domain']);
 	$total_dn_query_num = $db->getLastNumRows();
-	$condition = "Type LIKE 'domain' and Action LIKE 'allow'";
+	$condition = "Type LIKE :Type and Action LIKE :Action";
 	$order_by = "1";
-	$DNs = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$DNs = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", [':Type'=>'domain', ':Action'=>'allow']);
 	$allow_dn_query_num = $db->getLastNumRows();
-	$last_dn_update = $db->query($table, $condition = "Type LIKE 'domain'", $order_by ="1", $fields ="*", $limit = "LIMIT 1")[0]['LastUpdate'];
+	$last_dn_update = $db->query($table, $condition = "Type LIKE :Type", $order_by ="1", $fields ="*", $limit = "LIMIT 1", [':Type'=>'domain'])[0]['LastUpdate'];
 
-	$db->query($table, $condition = "Type LIKE 'ip'", $order_by ="1", $fields ="*", $limit = "");
+	$db->query($table, $condition = "Type LIKE :Type", $order_by ="1", $fields ="*", $limit = "", [':Type'=>'ip']);
 	$total_ip_query_num = $db->getLastNumRows();
-	$condition = "Type LIKE 'ip' and Action LIKE 'allow'";
+	$condition = "Type LIKE :Type and Action LIKE :Action";
 	$order_by = "1";
-	$IPs = $db->query($table, $condition, $order_by, $fields = "*", $limit = "");
+	$IPs = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", [':Type'=>'ip', ':Action'=>'allow']);
 	$allow_ip_query_num = $db->getLastNumRows();
-	$last_ip_update = $db->query($table, $condition = "Type LIKE 'ip'", $order_by ="1", $fields ="*", $limit = "LIMIT 1")[0]['LastUpdate'];
+	$last_ip_update = $db->query($table, $condition = "Type LIKE :Type", $order_by ="1", $fields ="*", $limit = "LIMIT 1", [':Type'=>'ip'])[0]['LastUpdate'];
 ?>	
 <div id="page" class="container">
 <div id="content">

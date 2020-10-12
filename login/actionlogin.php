@@ -3,11 +3,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\POP3;
 use PHPMailer\PHPMailer\SMTP;
-//Load composer's autoloader
-$local_path = "/var/www/html/utility/PHPMailer-master/";
-require_once $local_path.'vendor/autoload.php';
-require_once 'function.php';
-require '../libraries/DatabasePDO.php';
+require '../vendor/autoload.php';
 
 $db = Database::get();
 
@@ -27,7 +23,7 @@ switch($verification){
 			$_SESSION['account'] = $account;
 			$_SESSION['UserName'] = $user['UserName'];
 			$_SESSION['Level'] = $user['Level'];
-			storeUserLogs($db,'login', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
+			storeUserLogs2($db,'login', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
 			if(!empty($remember)){
 				$SECRET_KEY = "security";
 				$token = GenerateRandomToken(); // generate a token, should be 128 - 256 bit
@@ -52,7 +48,7 @@ switch($verification){
 			$_SESSION['account'] = $account;
 			$_SESSION['UserName'] = $user['UserName'];
 			$_SESSION['Level'] = $user['Level'];
-			storeUserLogs($db,'login', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
+			storeUserLogs2($db,'login', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
 			if(!empty($remember)){
 				$SECRET_KEY = "security";
 				$token = GenerateRandomToken(); // generate a token, should be 128 - 256 bit

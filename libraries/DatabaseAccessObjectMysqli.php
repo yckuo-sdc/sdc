@@ -1,5 +1,5 @@
 <?php
-class DatabaseAccessObject {
+class DatabaseAccessObjectMysqli {
     private $mysql_address = "";
     private $mysql_username = "";
     private $mysql_password = "";

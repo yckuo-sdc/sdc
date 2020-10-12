@@ -1,17 +1,24 @@
 <?php
-require '../login/function.php';
-require '../libraries/DatabasePDO.php';
+require '../vendor/autoload.php';
 
-if((empty($_GET['key']) || empty($_GET['keyword']) || empty($_GET['type']) ) && count(json_decode($_GET['jsonObj'],true)) == 0){
+// input validation
+$v1 = 0;
+$v2 = 0;
+foreach($_GET as $getkey => $val){
+	$$getkey = $val;
+	if($getkey == "jsonObj" && $val == "[]"){
+		$v1 = 1;	
+	}elseif($getkey != "jsonObj" && $val == ""){
+		$v2 = 1;	
+	}
+}
+
+if($v1 && $v2){
 	echo "沒有輸入";
 	return 0;
 }
 
 $db = Database::get();
-
-foreach($_GET as $getkey => $val){
-	$$getkey = $val;
-}
 
 $page = isset($page) ? $page : 1;
 $ap = isset($ap) ? $ap : 'html';
@@ -25,7 +32,7 @@ switch(true){
 		$table = "security_event";
 		$order_by = "EventID DESC, OccurrenceTime DESC";	
 		break;
-	case ($type == 'tainangov_security_Incident'):
+	case ($type == 'ncert'):
 		$condition_table = "tainangov_security_Incident";
 		$table = "tainangov_security_Incident";
 		$order_by = "IncidentID DESC, OccurrenceTime DESC";	
@@ -85,14 +92,11 @@ if( count($arr_jsonObj) !=0 ){
 		$data_array[] = "%".$key."%"; 
 	}
 }
+
 //echo $condition."<br>";
 $table = $table; // 設定你想查詢資料的資料表
 $total_entries = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", $data_array);
 $last_num_rows = $db->getLastNumRows();
-//print_r($db->getLastSql());
-//echo "<br>";
-//print_r($data_array);
-//echo "<br>";
 
 if($ap=='html'){
 	if ($last_num_rows == 0){
@@ -154,7 +158,7 @@ if($ap=='html'){
 					}
 				echo "</div>";
 				break;
-			case "tainangov_security_Incident": 
+			case "ncert": 
 				echo "<div class='ui relaxed divided list'>";
 					echo "<div class='item'>";
 						echo "<div class='content'>";
@@ -498,7 +502,7 @@ if($ap=='html'){
 	switch($type){
 		case 'security_event': 
 			break;
-		case 'tainangov_security_Incident': 
+		case 'ncert': 
 			break;
 		case 'security_contact': 
 			break;

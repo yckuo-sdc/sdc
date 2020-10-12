@@ -1,5 +1,5 @@
 <?php
-include("../login/function.php");
+require '../vendor/autoload.php';
 
 session_start(); 
 if(!verifyBySession_Cookie("account")){
@@ -16,13 +16,12 @@ foreach($_GET as $getkey => $val){
 switch($type){
 	case "search":
 		// connect to AD server
-		require_once("../config/ldap_admin_config.inc.php");
-		$ldapconn = ldap_connect($host_ip) or die("Could not connect to LDAP server.");
+		$ldapconn = ldap_connect(LDAP::ADDRESS) or die("Could not connect to LDAP server.");
 		$set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		
 		if($ldapconn){
 			//bind user
-			$ldap_bd = ldap_bind($ldapconn,$account."@".$host_dn,$password);
+			$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME."@".LDAP::DOMAIN, LDAP::PASSWORD);
 			$ou = ["TainanLocalUser","TainanComputer"];
 			$keyword_type = ["CN","CN"];
 			//Search CN Object From LocalUser and Local Computer
@@ -36,6 +35,7 @@ switch($type){
 						echo "<h4 class='ui dividing header'>Entry Information</h4>";
 						echo "<div class='fields'>";
 							echo "<div class='two wide field'>";
+
 						if($k==0){ //user
 							if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
 								echo "<i class='user icon'></i>";
@@ -57,13 +57,14 @@ switch($type){
 						}
 							echo "</div>";
 							echo "<div class='ten wide field'>";
-							if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
-								$isActive = "true";
-								echo "<button class='ui blue button' onclick='ldap_edit(".$isActive.")'>Enable</button>";
-							}else{
-								$isActive = "false";
-								echo "<button class='ui red button' onclick='ldap_edit(".$isActive.")'>Disable</button>";
-							}
+								echo "<div class='ui toggle checkbox'>";
+									if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
+										echo "<input type='checkbox' name='stateSwitch' onclick='ldap_edit()' >";
+									}else{
+										echo "<input type='checkbox' name='stateSwitch' onclick='ldap_edit()' checked>";
+									}
+									echo "<label>是否啟用</label>";
+								echo "</div>";
 							echo "</div>";
 							echo "<div class='two wide field'>";
 								echo "<button class='ui button' onclick='ldap_clear()'>Cancel</button>";
@@ -113,6 +114,19 @@ switch($type){
 									echo "</div>";
 								}
 							}elseif($k==1){
+
+								echo "<div class='inline fields'>";
+									echo "<label for='isYonghua'>市政中心</label>";
+									echo "<div class='field'>";
+										echo "<input type='radio' name='isYonghua' value='true' checked='checked' tabindex='0' class='hidden'>";
+										echo "<label>永華</label>";
+									echo "</div>";
+									echo "<div class='field'>";
+										echo "<input type='radio' name='isYonghua' value='false' tabindex='0' class='hidden'>";
+										echo "<label>民治</label>";
+									echo "</div>";
+								echo "</div>";
+
 								//select all OUs in TainanComputer
 								$keyword_ou = "(objectClass=organizationalUnit)";
 								$result_ou = ldap_search($ldapconn,"OU=TainanComputer,dc=tainan,dc=gov,dc=tw",$keyword_ou) or die ("Error in query");
@@ -176,12 +190,11 @@ switch($type){
 		ldap_close($ldapconn);
 		break;
 	case "newuser":
-		require_once("../config/ldap_admin_config.inc.php");
-		$ldapconn = ldap_connect($host_ip) or die("Could not connect to LDAP server.");
+		$ldapconn = ldap_connect(LDAP::ADDRESS) or die("Could not connect to LDAP server.");
 		$set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		if($ldapconn){
 			//bind user
-			$ldap_bd = ldap_bind($ldapconn,$account."@".$host_dn,$password);
+			$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME."@".LDAP::DOMAIN, LDAP::PASSWORD);
 			$keyword = "(objectClass=organizationalUnit)";
 			$result = ldap_search($ldapconn,"OU=395000000A,OU=TainanLocalUser,dc=tainan,dc=gov,dc=tw",$keyword) or die ("Error in query");
 			$data = ldap_get_entries($ldapconn,$result);

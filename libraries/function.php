@@ -16,7 +16,7 @@ function verifyBySession_Cookie($var){
 				$_SESSION['UserName'] = $UserName;
 				$_SESSION['Level'] = $Level;
 				$db = Database::get();
-				storeUserLogs($db,'rememberLogin',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],$_SERVER['REQUEST_URI']);
+				storeUserLogs2($db,'rememberLogin',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],$_SERVER['REQUEST_URI']);
 				//echo "a";	
 				return true;	
 			}else{
@@ -272,10 +272,11 @@ function WindowsTime2DateTime($WindowsTime){
 
 // check the disabled ad account
 function dateConvert($str){
+	$GMT = 8;	// Time zones with GMT+8
 	if($str=='NULL' || $str ==''){
 		return $str;
 	}else{
-		return date_format(date_create($str),'Y-m-d H:i:s');
+		return date('Y-m-d H:i:s', strtotime($str) + $GMT * 3600);
 	}
 }
 
@@ -345,6 +346,7 @@ function array_to_csv_download($array, $filename, $delimiter) {
 	// open the "output" stream
 	$f = fopen('php://output', 'w');
 	fputs($f, "\xEF\xBB\xBF" ); // UTF-8 BOM !!!!!
+	fputcsv($f, array_keys($array[0]));
 	foreach ($array as $line) {
 		fputcsv($f, $line);
 	}

@@ -1,7 +1,5 @@
 <?php
-require '../libraries/DatabasePDO.php';
-require '../libraries/PaloAltoAPI.php';
-
+require '../vendor/autoload.php';
 
 if(empty($_GET['chartID'])){
 	return 0;

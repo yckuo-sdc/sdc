@@ -52,23 +52,28 @@ $(document).ready(function(){
 
 	/*query.php's component action*/
 	$('.post.network .record_content').on('click', '.ui.pagination.menu > .item', function() {
-		var key = $(this).attr('key');
-		var keyword = $(this).attr('keyword');
-		var operator = $(this).attr('operator');
-		var page = $(this).attr('page');
-		var jsonObj = $(this).attr('jsonObj');
-		var type = $(this).attr('type');
-		sub_ips_query_pagination_ajax(key,keyword,operator,page,jsonObj,type);
+		var data_array = [	
+			{name : "page", value: $(this).attr('page')},
+			{name : "key", value: $(this).attr('key')},
+			{name : "keyword", value: $(this).attr('keyword')},
+			{name : "operator", value: $(this).attr('operator')},
+			{name : "type", value: $(this).attr('type')},
+			{name : "jsonObj", value: $(this).attr('jsonObj')}
+		];
+		sub_ips_query_pagination_ajax(data_array);
 	});
 
 	/*query.php's component action*/
-	$('.post.security_event .record_content, .post.tainangov_security_Incident .record_content, .post.security_contact .record_content, .post.is_client_list .tab-content.gcb_client_list .record_content, .post.is_client_list .tab-content.wsus_client_list .record_content, .post.is_client_list .tab-content.antivirus_client_list .record_content, .post.is_client_list .tab-content.drip_client_list .record_content').on('click', '.ui.pagination.menu > .item', function() {
-		var page = $(this).attr('page');
-		var key = $(this).attr('key');
-		var keyword = $(this).attr('keyword');
-		var type = $(this).attr('type');
-		var jsonObj = $(this).attr('jsonObj');
-		sub_query_pagination_ajax(page,key,keyword,type,jsonObj);
+	$('.post.security_event .record_content, .post.ncert .record_content, .post.security_contact .record_content, .post.is_client_list .tab-content.gcb_client_list .record_content, .post.is_client_list .tab-content.wsus_client_list .record_content, .post.is_client_list .tab-content.antivirus_client_list .record_content, .post.is_client_list .tab-content.drip_client_list .record_content').on('click', '.ui.pagination.menu > .item', function() {
+		var data_array = [	
+			{name : "page", value: $(this).attr('page')},
+			{name : "key", value: $(this).attr('key')},
+			{name : "keyword", value: $(this).attr('keyword')},
+			{name : "type", value: $(this).attr('type')},
+			{name : "jsonObj", value: $(this).attr('jsonObj')}
+		];
+
+		sub_query_pagination_ajax(data_array);
 	});
 	
 	/*query.php & vul_query's component action*/
@@ -232,117 +237,33 @@ $(document).ready(function(){
 		span.remove();
 	});
 
-	//bind key_press
-	 $('.post.security_event #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_query_ajax('security_event','html'); 
-		}
-	 });
+	/*bind form submit*/
 
-	 $('.post.tainangov_security_Incident #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_query_ajax('tainangov_security_Incident','html'); 
-		}
-	 });
-	
-	 $('.post.security_contact #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_query_ajax('security_contact','html'); 
-		}
-	 });
-	
-	 $('.post.is_client_list .tab-content.gcb_client_list #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_query_ajax('gcb_client_list','html'); 
-		}
-	 });
-
-	 $('.post.is_client_list .tab-content.wsus_client #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_query_ajax('wsus_client_list','html'); 
-		}
-	 });
-	
-	 $('.post.is_client_list .tab-content.antivirus_client #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_query_ajax('antivirus_client_list','html'); 
-		}
-	 });
-
-	 $('.post.is_client_list .tab-content.drip_client #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_query_ajax('drip_client_list','html'); 
-		}
-	 });
-	
-	 $('.post.network .tab-content.yonghua #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_ips_query_ajax('yonghua'); 
-		}
-	 });
-	 
-	 $('.post.network .tab-content.minjhih #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_ips_query_ajax('minjhih'); 
-		}
-	 });
-	
-	 $('.post.network .tab-content.idc #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_ips_query_ajax('idc'); 
-		}
-	 });
-	
-	 $('.post.network .tab-content.intrayonghua #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_ips_query_ajax('intrayonghua'); 
-		}
-	 });
-	
-	 $('.post.ip_and_url_scanResult #key').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			sub_vul_query_ajax('ip_and_url_scanResult','html'); 
-		}
-	 });
-
-	 $('.post.nmap #target').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			retrieve_nmap_ajax('nmap');	
-		}
-	 });
-
-	 $('.post.ldap #target').keyup(function(event) {
-		 if(event.keyCode == 13 ) {
-			retrieve_ldap_ajax('search');	
-		}
-	 });
-
-	//bind serach_btn
-	$('.post.security_event #search_btn').click(function (){
+	$('.post.security_event form').on('submit', function(){
 		sub_query_ajax('security_event','html');
 	});
 
-	$('.post.tainangov_security_Incident #search_btn').click(function (){
-		sub_query_ajax('tainangov_security_Incident','html');
+	$('.post.ncert form').on('submit', function(){
+		sub_query_ajax('ncert','html');
 	});
 
-	$('.post.security_contact #search_btn').click(function (){
+	$('.post.security_contact form').on('submit', function(){
 		sub_query_ajax('security_contact','html');
 	});
 	
-	$('.post.is_client_list .tab-content.gcb_client_list #search_btn').click(function (){
+	$('.post.is_client_list .tab-content.gcb_client_list form').on('submit', function(){
 		sub_query_ajax('gcb_client_list','html');
 	});
 	
-	$('.post.is_client_list .tab-content.wsus_client_list #search_btn').click(function (){
+	$('.post.is_client_list .tab-content.wsus_client_list form').on('submit', function(){
 		sub_query_ajax('wsus_client_list','html');
 	});
 	
-	$('.post.is_client_list .tab-content.antivirus_client_list #search_btn').click(function (){
+	$('.post.is_client_list .tab-content.antivirus_client_list form').on('submit', function(){
 		sub_query_ajax('antivirus_client_list','html');
 	});
 	
-	$('.post.is_client_list .tab-content.drip_client_list #search_btn').click(function (){
+	$('.post.is_client_list .tab-content.drip_client_list form').on('submit', function(){
 		sub_query_ajax('drip_client_list','html');
 	});
 	
@@ -350,23 +271,23 @@ $(document).ready(function(){
 		sub_query_ajax('drip_client_list','csv');
 	});
 
-	$('.post.network .tab-content.yonghua #search_btn').click(function (){
+	$('.post.network .tab-content.yonghua form').on('submit', function(){
 		sub_ips_query_ajax('yonghua');
 	});
 	
-	$('.post.network .tab-content.minjhih #search_btn').click(function (){
+	$('.post.network .tab-content.minjhih form').on('submit', function(){
 		sub_ips_query_ajax('minjhih');
 	});
 	
-	$('.post.network .tab-content.idc #search_btn').click(function (){
+	$('.post.network .tab-content.idc form').on('submit', function(){
 		sub_ips_query_ajax('idc');
 	});
 	
-	$('.post.network .tab-content.intrayonghua #search_btn').click(function (){
+	$('.post.network .tab-content.intrayonghua form').on('submit', function(){
 		sub_ips_query_ajax('intrayonghua');
 	});
 	
-	$('.post.ip_and_url_scanResult #search_btn').click(function (){
+	$('.post.ip_and_url_scanResult form').on('submit', function(){
 		sub_vul_query_ajax('ip_and_url_scanResult','html');
 	});
 
@@ -430,6 +351,12 @@ $(document).ready(function(){
 		var name = e.target.files[0].name;
 		$('input:text', $(e.target).parent()).val(name);
 	});	
+	
+	//semantic modal display
+	$("#modal_btn").on('click', function(){
+		$('.ui.modal').modal('show');
+    });	
+
 	$("#upload_Form").on('submit',(function(e){
 		e.preventDefault();
 		$.ajax({
@@ -464,39 +391,70 @@ $(document).ready(function(){
 
 /******Custom Functions*******/
 
+//change hydra's password mode between single and mutiple input
+function hydra_pwd_mode(type){
+	var input = $('.post.hydra input[name=self_password]');
+	if(type == 'yes'){
+		input.prop('disabled', false);
+	}else{
+		input.prop('disabled', true);
+	}
+}
+
 //ldap_edit
-function ldap_edit(isActive) {
-	console.log('ldap edit'+isActive);
-	var type = $('#form-ldap input[name=type]').val();
-	if(type == 'search'){
-		var displayname = $('#form-ldap input[name=displayname]').val();
-		var title = $('#form-ldap input[name=title]').val();
-		var mail = $('#form-ldap input[name=mail]').val();
-		if(displayname=='' || title =='' || mail ==''){
-			alert('您有必填欄位未輸入');
-			return 0;
-		}
-	}else if(type == 'newuser'){
-		var organizationalUnit = $('#form-ldap input[name=organizationalUnit]').val();
-		var cn = $('#form-ldap input[name=cn]').val();
-		var new_password = $('#form-ldap input[name=new_password]').val();
-		var confirm_password = $('#form-ldap input[name=confirm_password]').val();
-		var displayname = $('#form-ldap input[name=displayname]').val();
-		var title = $('#form-ldap input[name=title]').val();
-		var mail = $('#form-ldap input[name=mail]').val();
-		if(organizationalUnit=='' || cn=='' || new_password=='' || confirm_password=='' ||  displayname=='' || title =='' || mail ==''){
-			alert('您有必填欄位未輸入');
-			return 0;
-		}
+//function ldap_edit(isActive) {
+function ldap_edit() {
+	var selector = ".post.ldap ";
+	var isActive = $(selector+'form input[name=stateSwitch]').prop("checked");
+	var type = $(selector+'form input[name=type]').val();
+	var input = $(selector+'form').serializeArray();
+	var obj = [	{name : "isActive", value: isActive} ];
+    input = input.concat(obj);
+
+	// input validation
+	switch(type){
+		case 'edituser':
+			var requirement = ['displayname', 'title', 'mail'];
+			console.log(requirement);
+			var v = 0;
+			input.forEach(function(item, index, array) {
+				if(requirement.indexOf(item.name) >= 0 && item.value == ""){
+					v = 1;
+				}
+			});
+			
+			if(v == 1){		
+				alert('您有必填欄位未輸入');
+				return ;
+			}
+			break;
+		case 'newuser':
+			var requirement = ['organizationalUnit', 'cn', 'new_password', 'confirm_password', 'displayname', 'title', 'mail'];
+			console.log(requirement);
+			var v = 0;
+			input.forEach(function(item, index, array) {
+				if(requirement.indexOf(item.name) >= 0 && item.value == ""){
+					v = 1;
+				}
+			});
+			
+			if(v == 1){		
+				alert('您有必填欄位未輸入');
+				return ;
+			}
+			break;
+		default:
+			break;
 	}
 
-	var selector = ".post.ldap ";
+	// end of input validation
+
 	$.ajax({
 		 url: '/ajax/sub_ldap_edit.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data:$('#form-ldap').serialize()+'&isActive='+isActive,
+		 data:input,
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -534,11 +492,11 @@ function drip_block_IP_ajax(type,ip,response){
 	return 0;
  }
 
-function sub_query_ajax(type,ap){
+function sub_query_ajax(type, ap){
 	var selector = ".post."+type+" ";
 	if(type == 'gcb_client_list' || type == 'wsus_client_list' || type == 'antivirus_client_list' || type == 'drip_client_list'){
 		 selector = ".post.is_client_list .tab-content."+type+" ";
-	 }
+	}
 	var jsonObj = [];
 	$(selector + 'span.query_label').each(function () {
 		var item = {}
@@ -547,48 +505,64 @@ function sub_query_ajax(type,ap){
 		jsonObj.push(item);
 	});
 	jsonObj = JSON.stringify(jsonObj);
-	var key = $(selector + '#key').val();
-	var keyword = $(selector + '#keyword').val();
-	if ( (typeof key != 'undefined' && key !='' && keyword !=''  && type !='') || jsonObj !='[]') {
-		//ap='csv'
-		if(ap=='csv'){
-			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_query.php?key="+encodeURI(key)+"&keyword="+encodeURI(keyword)+"&type="+type+"&ap="+ap+"&jsonObj="+encodeURIComponent(jsonObj));
-		}else{
-			//ap='html'
-			$.ajax({
-				 url: '/ajax/sub_query.php',
-				 cache: false,
-				 dataType:'html',
-				 type:'GET',
-				 data: {key:key,keyword:keyword,type:type,ap:ap,jsonObj:jsonObj},
-				 error: function(xhr) {
-					 alert('Ajax failed');
-				 },success: function(data) {
-					 $(selector + '.record_content').html(data);
-				 }
-			});
+	
+	// Encode a set of form elements as an array of names and values
+	var input = $(selector+'form').serializeArray();
+	var obj = [	{name : "jsonObj", value: jsonObj},
+				{name : "type", value: type},
+				{name : "ap", value: ap}		];
+    input = input.concat(obj);
+
+	// input validation
+	var v1 = 0, v2 = 0;
+	input.forEach(function(item, index, array) {
+		if(item.name == "jsonObj" && item.value == "[]"){
+			v1 = 1;	
+		}else if(item.name != "jsonObj" && item.value == ""){
+			v2 = 1;	
 		}
-	}else{
+	});
+	if(v1 && v2){
 		alert("沒有輸入");
+        return;
 	}
+
+	//ap='csv'
+	if(ap=='csv'){
+		window.location.assign("/ajax/sub_query.php?"+$.param(input));
+	}else{
+	//ap='html'
+		$.ajax({
+			 url: '/ajax/sub_query.php',
+			 cache: false,
+			 dataType:'html',
+			 type:'GET',
+			 data: input,
+			 error: function(xhr) {
+				 alert('Ajax failed');
+			 },success: function(data) {
+				 $(selector + '.record_content').html(data);
+			 }
+		});
+	}
+	
 	return 0;
  }
 
-function sub_query_pagination_ajax(page,key,keyword,type,jsonObj){
-	 var selector = ".post."+type+" ";
+function sub_query_pagination_ajax(data_array){
+	var type = data_array[3].value;
+	var selector = ".post."+type+" ";
 	 if(type == 'gcb_client_list' || type == 'wsus_client_list' || type == 'antivirus_client_list' || type == 'drip_client_list')  selector = ".post.is_client_list .tab-content."+type+" ";
 	 $.ajax({
 		 url: '/ajax/sub_query.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {page:page,key:key,keyword:keyword,type:type,jsonObj:jsonObj},
+		 data: data_array,
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 //console.log("success");
 			 $(selector + '.record_content').html(data);
-			 //console.log("done");
 		 }
 	});
 	return 0;
@@ -596,10 +570,8 @@ function sub_query_pagination_ajax(page,key,keyword,type,jsonObj){
 
 function sub_ips_query_ajax(type){
 	var selector = ".post.network .tab-content."+type+" ";
-	var key = $(selector + '#key').val();
-	var keyword = $(selector + '#keyword').val();
-	var operator = $(selector + '#operator').val();
 	var jsonObj = [];
+	
 	$(selector + 'span.query_label').each(function () {
 		var item = {}
 		item["keyword"] = $(this).attr("keyword");
@@ -608,65 +580,101 @@ function sub_ips_query_ajax(type){
 		jsonObj.push(item);
 	});
 	jsonObj = JSON.stringify(jsonObj);
-	if ( (typeof key != 'undefined' && key !='' && keyword !='' && operator !='') || jsonObj !='[]' ) {
-		//ap='html'
-		$(selector + '.ui.inline.loader').addClass('active');
-		$.ajax({
-			 url: '/ajax/sub_ips_query.php',
-			 cache: false,
-			 dataType:'html',
-			 type:'GET',
-			 data: {key:key,keyword:keyword,operator:operator,jsonObj:jsonObj,type:type},
-			 error: function(xhr) {
-				 alert('Ajax failed');
-			 },success: function(data) {
-				 $(selector + '.ui.inline.loader').removeClass('active');
-				 $(selector + '.record_content').html(data);
-			 }
-		});
-	}else{
-			alert("沒有輸入");
+	
+	// Encode a set of form elements as an array of names and values
+	var input = $(selector+'form').serializeArray();
+	var obj = [	{name : "jsonObj", value: jsonObj},
+				{name : "type", value: type}		];
+    input = input.concat(obj);
+
+	// input validation
+	var v1 = 0, v2 = 0;
+	input.forEach(function(item, index, array) {
+		if(item.name == "jsonObj" && item.value == "[]"){
+			v1 = 1;	
+		}else if(item.name != "jsonObj" && item.value == ""){
+			v2 = 1;	
+		}
+	});
+	if(v1 && v2){
+		alert("沒有輸入");
+        return;
 	}
+		
+	//ap='html'
+	$(selector + '.ui.inline.loader').addClass('active');
+	$.ajax({
+		 url: '/ajax/sub_ips_query.php',
+		 cache: false,
+		 dataType: 'html',
+		 type: 'GET',
+		 data: input,
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 $(selector + '.ui.inline.loader').removeClass('active');
+			 $(selector + '.record_content').html(data);
+		 }
+	});
+	
 	return 0;
 }
 
 function load_ips_query_ajax(type){
 	var selector = ".post.network .tab-content."+type+" ";
-	var key = 'any';
-	var keyword = 'all';
-	var operator = '=';
 	var jsonObj =[];
 	jsonObj = JSON.stringify(jsonObj);
-	if ( (typeof key != 'undefined' && key !='' && keyword !='' && operator !='') || jsonObj !='[]' ) {
-		//ap='html'
-		$(selector + '.ui.inline.loader').addClass('active');
-		$.ajax({
-			 url: '/ajax/sub_ips_query.php',
-			 cache: false,
-			 dataType:'html',
-			 type:'GET',
-			 data: {key:key,keyword:keyword,operator:operator,jsonObj:jsonObj,type:type},
-			 error: function(xhr) {
-				 alert('Ajax failed');
-			 },success: function(data) {
-				 $(selector + '.ui.inline.loader').removeClass('active');
-				 $(selector + '.record_content').html(data);
-			 }
-		});
-	}else{
-			alert("沒有輸入");
+	
+	var input = [		
+		{name : "key", value: "any"},
+		{name : "keyword", value: "all"},
+		{name : "operator", value: "="},
+		{name : "jsonObj", value: jsonObj},
+		{name : "type", value: type}		
+	];
+
+	// input validation
+	var v1 = 0, v2 = 0;
+	input.forEach(function(item, index, array) {
+		if(item.name == "jsonObj" && item.value == "[]"){
+			v1 = 1;	
+		}else if(item.name != "jsonObj" && item.value == ""){
+			v2 = 1;	
+		}
+	});
+	if(v1 && v2){
+		alert("沒有輸入");
+        return;
 	}
+	
+	//ap='html'
+	$(selector + '.ui.inline.loader').addClass('active');
+	$.ajax({
+		 url: '/ajax/sub_ips_query.php',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 data: input,
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+			 $(selector + '.ui.inline.loader').removeClass('active');
+			 $(selector + '.record_content').html(data);
+		 }
+	});
+	
 	return 0;
 }
 
-function sub_ips_query_pagination_ajax(key,keyword,operator,page,jsonObj,type){
+function sub_ips_query_pagination_ajax(data_array){
+	 var type = data_array[4].value;
 	 var selector = ".post.network .tab-content."+type+" ";
 	 $.ajax({
 		 url: '/ajax/sub_ips_query.php',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:key,keyword:keyword,operator:operator,page:page,jsonObj:jsonObj,type:type},
+		 data: data_array,
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -677,6 +685,8 @@ function sub_ips_query_pagination_ajax(key,keyword,operator,page,jsonObj,type){
  }
 
 function sub_vul_query_ajax(type,ap){
+	var selector = ".post."+type+" ";
+	
 	var jsonObj = [];
 	$('.post.ip_and_url_scanResult span.query_label').each(function () {
 		var id = $(this).attr("title");
@@ -687,7 +697,7 @@ function sub_vul_query_ajax(type,ap){
 		jsonObj.push(item);
 	});
 	jsonObj = JSON.stringify(jsonObj);
-	var selector = ".post."+type+" ";
+	
 	var obj = $(selector + "input[name='status[]']");
 	var jsonStatus = {};
 	jsonStatus ["overdue_and_unfinish"] = obj[0].checked;
@@ -695,12 +705,15 @@ function sub_vul_query_ajax(type,ap){
 	jsonStatus ["finish"] = obj[2].checked;
 	jsonStatus = JSON.stringify(jsonStatus);
 
+	// Encode a set of form elements as an array of names and values
+	var input = $(selector+'form').serializeArray();
+	
 	var key 	= $(selector + '#key').val();
 	var keyword = $(selector + '#keyword').val();
 	if ( (typeof key != 'undefined' && key !='' && keyword !=''  && type !='') || jsonObj !='[]') {
 		//ap='csv'
 		if(ap=='csv'){
-			window.location.assign("https://sdc-iss.tainan.gov.tw/ajax/sub_vul_query.php?key="+encodeURI(key)+"&keyword="+encodeURI(keyword)+"&type="+type+"&ap="+ap+"&jsonStatus="+encodeURIComponent(jsonStatus)+"&jsonObj="+encodeURIComponent(jsonObj));
+			window.location.assign("/ajax/sub_vul_query.php?key="+encodeURI(key)+"&keyword="+encodeURI(keyword)+"&type="+type+"&ap="+ap+"&jsonStatus="+encodeURIComponent(jsonStatus)+"&jsonObj="+encodeURIComponent(jsonObj));
 		}else{
 		//ap='html'
 			$.ajax({
@@ -867,7 +880,7 @@ function retrieve_hydra_ajax(type){
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {target:$(selector + '.target').val(),protocol:$(selector + '#protocol').val(),account:$(selector + '#account').val(),one_pwd_mode:$(selector + "input[name='one_pwd_mode']:checked").val(),self_password:$(selector + '#self_password').val()},
+		 data: $(selector + 'form').serializeArray(),
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -886,7 +899,7 @@ function retrieve_nmap_ajax(type){
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {target:$(selector + '.target').val()},
+		 data: $(selector + 'form').serializeArray(),
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {

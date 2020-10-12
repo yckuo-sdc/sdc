@@ -49,7 +49,8 @@ class DatabaseAccessObject {
             $stmt = $this->db->prepare($sql);
             $stmt->execute($data_array);
     		$this->last_num_rows = $stmt->rowCount();
-            return $stmt->fetchAll(); 
+            //return $stmt->fetchAll(); 
+            return $stmt->fetchAll(PDO::FETCH_ASSOC); 
 		} catch(PDOException $e) {
 		    $this->error_message = "<div class='ui red message'>".$e->getMessage()."</div>";
 		}
@@ -70,7 +71,8 @@ class DatabaseAccessObject {
 			$stmt = $this->db->prepare($this->last_sql);
 			$stmt->execute($data_array);
     		$this->last_num_rows = $stmt->rowCount();
-			return $stmt->fetchAll();
+			//return $stmt->fetchAll();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC); 
 		} catch(PDOException $e) {
 		    $this->error_message = "<div class='ui red message'>".$e->getMessage()."</div>";
 		}

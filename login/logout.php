@@ -1,6 +1,5 @@
 ﻿<?php 
-require_once("function.php");
-require '../libraries/DatabasePDO.php';
+require '../vendor/autoload.php';
 
 $db = Database::get();
 session_start();

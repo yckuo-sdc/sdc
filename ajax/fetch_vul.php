@@ -1,5 +1,4 @@
 <?php
-require '../libraries/DatabasePDO.php';
 require '../vendor/autoload.php';
 
 $db = Database::get();

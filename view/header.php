@@ -34,7 +34,7 @@
 	<link href="/css/add.css" rel="stylesheet"/>
 
 	<!-- add my JS-->
-	<script src="/js/add.js"></script>
+	<script src="/js/app.js"></script>
 	<script src='/js/showchart.js'></script>
 
 </head>

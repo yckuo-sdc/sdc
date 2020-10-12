@@ -1,7 +1,7 @@
 <?php
-require 'Database.php';
+require 'DatabaseMysqli.php';
 
-$db = Database::get();
+$db = DatabaseMysqli::get();
 
 // insert
 $table = "logs"; // 設定你想新增資料的資料表

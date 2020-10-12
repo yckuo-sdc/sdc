@@ -1,7 +1,6 @@
 <!--index-->
 <?php 
-require_once 'login/function.php';
-require 'libraries/DatabasePDO.php';
+require 'vendor/autoload.php';
 
 if(isset($_GET['sid']))	session_id($_GET['sid']);	# fetch and update Session ID with sso_verify_vision.php
 
@@ -17,7 +16,6 @@ $controller_array = scandir('controller');
 $controller_array = array_change_key_case($controller_array, CASE_LOWER);
 
 $db = Database::get();
-//storeUserLogs($db, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], $_SERVER['REQUEST_URI']);
 storeUserLogs2($db, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], $_SERVER['REQUEST_URI']);
 
 require 'view/header.php'; 
@@ -48,4 +46,3 @@ require 'view/header.php';
 	</div>
 </body>
 </html>
-

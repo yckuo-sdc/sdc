@@ -1,6 +1,5 @@
 <?php
-require '../login/function.php';
-require '../libraries/DatabasePDO.php';
+require '../vendor/autoload.php';
 
 $db = Database::get();
 $table = "application_system"; // 設定你想查詢資料的資料表

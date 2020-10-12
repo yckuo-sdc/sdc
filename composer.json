@@ -11,7 +11,11 @@
 	},
 	"autoload": {
 		"classmap": [
-			"config"
+			"config",
+			"libraries"
+		],
+		"files": [
+			"libraries/function.php"
 		]
 	}
 }

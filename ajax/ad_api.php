@@ -1,6 +1,6 @@
 <?php
 namespace ad\api;
-include("../login/function.php");
+require '../vendor/autoload.php';
 
 //edit user of AD
 function edit_user($cn,$newpass,$confirmpass,$displayname,$title,$telephonenumber,$physicaldeliveryofficename,$mail){
@@ -75,7 +75,7 @@ function change_user_state($cn,$PasswordChangeNextTime,$isActive,$isLocked){
 }
 
 // change computer's OU
-function change_computer_ou($cn,$ou){
+function change_computer_ou($cn,$ou,$isYonghua){
 	$host = "172.16.254.2";
 	$url = "http://".$host."/api/ChangeComputerOU";
 	$curl = curl_init();
@@ -90,7 +90,7 @@ function change_computer_ou($cn,$ou){
 	  CURLOPT_FOLLOWLOCATION => true,
 	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 	  CURLOPT_CUSTOMREQUEST => "POST",
-	  CURLOPT_POSTFIELDS =>"{\"Username\":\"$cn\",\"ComputerName\":\"$cn\",\"UpperOU\":\"$ou\"}",
+	  CURLOPT_POSTFIELDS =>"{\"Username\":\"$cn\",\"ComputerName\":\"$cn\",\"UpperOU\":\"$ou\",\"IsYongHua\":$isYonghua}",
 	  CURLOPT_HTTPHEADER => array("Content-Type: application/json")
 	));
 	$response = curl_exec($curl);

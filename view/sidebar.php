@@ -58,7 +58,7 @@
   <div class=" header">相關連結</div>
   <div class="menu">
 	<a class="item" href="http://vision.tainan.gov.tw" target="_blank">推動友善資訊服務平台</a>
-	<a class="item" href="https://tndev.tainan.gov.tw/tndev/" target="_blank">MIS網管系統</a>
+	<a class="item" href="http://tndev.tainan.gov.tw" target="_blank">MIS網管系統</a>
 	<a class="item" href="https://sdc-mrbs.tainan.gov.tw" target="_blank">SDC會議室預約系統</a>
 	<a class="item" href="https://sdc-mrbs.tainan.gov.tw/callcenter/login.php" target="_blank">Call Center預約</a>
 	<a class="item" href="https://tainan-vsms.chtsecurity.com/cgi-bin/login.pl" target="_blank">弱點掃描管理平台</a>	

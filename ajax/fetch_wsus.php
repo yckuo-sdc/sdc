@@ -1,13 +1,13 @@
 <?php
-require '../libraries/DatabasePDO.php';
+require '../vendor/autoload.php';
 
 $db = Database::get();
 
-$file_path = "/var/www/html/sdc/upload/upload_wsus/GetComputerStatus.csv";
+$file = "/var/www/html/sdc/upload/wsus/GetComputerStatus.csv";
 $row = 1;
 $count = 0;
 $status = array();
-if (($handle = fopen($file_path, "r")) !== FALSE) {
+if (($handle = fopen($file, "r")) !== FALSE) {
 	$table = "wsus_computer_status";
 	$key_column = "1";
 	$id = "1"; 
@@ -42,12 +42,14 @@ if (($handle = fopen($file_path, "r")) !== FALSE) {
     }
     fclose($handle);
 	$nowTime = date("Y-m-d H:i:s");
+	$nowTime = date("Y-m-d H:i:s", filemtime($file));
 	echo "The ".$count." records have been inserted or updated into the wsus_computer_status on ".$nowTime."\n\r<br>";
 	$status = 200;
 }else{
 	echo "No target-data \n\r<br>";
 	$status = 400;
 }
+
 $table = "api_list"; // 設定你想查詢資料的資料表
 $condition = "class LIKE :class and name LIKE :name";
 $api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'WSUS', ':name'=>'用戶端清單']);
@@ -59,11 +61,11 @@ $data_array['data_number'] = $count;
 $data_array['last_update'] = $nowTime;
 $db->insert($table, $data_array);
 
-$file_path = "/var/www/html/sdc/upload/upload_wsus/GetUpdateStatusKBID.csv";
+$file = "/var/www/html/sdc/upload/wsus/GetUpdateStatusKBID.csv";
 $row = 1;
 $count = 0;
 $status = array();
-if (($handle = fopen($file_path, "r")) !== FALSE) {
+if (($handle = fopen($file, "r")) !== FALSE) {
 	$table = "wsus_computer_updatestatus_kbid";
 	$key_column = "1";
 	$id = "1"; 
@@ -83,12 +85,14 @@ if (($handle = fopen($file_path, "r")) !== FALSE) {
     }
     fclose($handle);
 	$nowTime = date("Y-m-d H:i:s");
+	$nowTime = date("Y-m-d H:i:s", filemtime($file));
 	echo "The ".$count." records have been inserted or updated into the wsus_computer_status on ".$nowTime."\n\r<br>";
 	$status = 200;
 }else{
 	echo "No target-data \n\r<br>";
 	$status = 400;
 }
+
 $table = "api_list"; // 設定你想查詢資料的資料表
 $condition = "class LIKE :class and name LIKE :name";
 $api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'WSUS', ':name'=>'更新資訊']);

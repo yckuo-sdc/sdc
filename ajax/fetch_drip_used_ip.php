@@ -1,9 +1,9 @@
 <?php
-require '../libraries/DatabasePDO.php';
+require '../vendor/autoload.php';
 
 $db = Database::get();
 
-$file = "/var/www/html/sdc/upload/upload_drip/IP_MAC_USED_IP_List.csv";
+$file = "/var/www/html/sdc/upload/drip/IP_MAC_USED_IP_List.csv";
 $row = 1;
 $count = 0;
 if (($handle = fopen($file, "r")) !== FALSE) {
@@ -45,6 +45,7 @@ if (($handle = fopen($file, "r")) !== FALSE) {
     }
     fclose($handle);
 	$nowTime = date("Y-m-d H:i:s");
+	$nowTime = date("Y-m-d H:i:s", filemtime($file));
 	echo "The ".$count." records have been inserted or updated into the drip_clinet_list on ".$nowTime."\n\r<br>";
 	$status = 200;
 }else{
