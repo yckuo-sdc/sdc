@@ -90,9 +90,9 @@ $(document).ready(function(){
 	});
 
 	/*query.php's component action*/
-	$('.ou_vs_content').on('click', '.ou_block > a', function() {
+	$('.ou_vs_content').on('click', '.ou_block a', function() {
 		var icon = $(this).find('i.icon');
-		var detail = $(this).parent().find('.description');
+		var detail = $(this).closest('.ou_block').find('.description');
 		if(detail.hasClass('show')){
 			icon.removeClass('up').addClass('down');
 			detail.removeClass('show');
@@ -341,6 +341,7 @@ $(document).ready(function(){
 	});
 	
 	//semantic progress bar
+	//$('.yckuo.progress').progress().removeClass('active');
 	$('.yckuo.progress').progress();
 
 	//semantic file input
@@ -402,7 +403,6 @@ function hydra_pwd_mode(type){
 }
 
 //ldap_edit
-//function ldap_edit(isActive) {
 function ldap_edit() {
 	var selector = ".post.ldap ";
 	var isActive = $(selector+'form input[name=stateSwitch]').prop("checked");

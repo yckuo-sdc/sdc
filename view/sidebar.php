@@ -17,6 +17,7 @@
       <a class="item" href="/info/vul/">VUL Bar</a>
       <a class="item" href="/info/client/">Client</a>
       <a class="item" href="/info/network/">Network</a>
+      <a class="item" href="/info/directory/">Directory</a>
   </div>
 </div>
 <div class="item">
@@ -58,15 +59,15 @@
   <div class=" header">相關連結</div>
   <div class="menu">
 	<a class="item" href="http://vision.tainan.gov.tw" target="_blank">推動友善資訊服務平台</a>
-	<a class="item" href="http://tndev.tainan.gov.tw" target="_blank">MIS網管系統</a>
+	<a class="item" href="https://tndev.tainan.gov.tw" target="_blank">MIS網管系統</a>
 	<a class="item" href="https://sdc-mrbs.tainan.gov.tw" target="_blank">SDC會議室預約系統</a>
 	<a class="item" href="https://sdc-mrbs.tainan.gov.tw/callcenter/login.php" target="_blank">Call Center預約</a>
 	<a class="item" href="https://tainan-vsms.chtsecurity.com/cgi-bin/login.pl" target="_blank">弱點掃描管理平台</a>	
 	<a class="item" href="http://webad2019.tainan.gov.tw" target="_blank">WebAD</a>
 	<a class="item" href="http://eisms.tainan.gov.tw" target="_blank">E-ISMS</a>
 	<a class="item" href="https://sdc-iss.tainan.gov.tw:4000/" target="_blank">OpenVas(開源漏洞掃描工具)</a>	
-    
   </div>
 </div>
-	<a class="item" href="/login/logout.php"><b><?php echo $_SESSION['UserName']."(登出)";?></b></a>
+
+<a class="item" href="/logout"><b><?php echo $_SESSION['UserName']."(登出)";?></b></a>
 

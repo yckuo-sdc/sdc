@@ -1,12 +1,19 @@
 <!--query-->
 <?php 
-if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-else						$subpage = 'search';
+if(!verifyBySession_Cookie("account")){
+	return ;
+}
+$account = $_SESSION['account'];
+storeUserLogs2($db, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
+require 'view/header.php'; 
+
+$subpage = strtolower($route->getParameter(2));
 
 switch($subpage){
 	case 'search': load_network_search(); break;
 	case 'malware': load_network_malware(); break;
 	case 'allowlist': load_network_allowlist(); break;
+	default: load_network_search(); break;
 }
 
 function load_network_search(){
@@ -201,7 +208,8 @@ function load_network_search(){
 			</div>
 		</div>
 		<div style="clear: both;"></div>
-	</div>
+	</div><!-- end #content -->
+</div> <!--end #page-->
 <?php } 
 function load_network_malware(){
 	$pa = new PaloAltoAPI();
@@ -318,11 +326,20 @@ function load_network_malware(){
 			</div>
 		</div>
 		<div style="clear: both;"></div>
-	</div>
+	</div><!-- end #content -->
+</div> <!--end #page-->
 <?php } 
 function load_network_allowlist(){
 	require 'libraries/PaloAltoAPI.php';
 	$pa = new PaloAltoAPI();
+	$object_type = 'ApplicationGroups'; 
+	$name = '';
+	$res = $pa->GetObjectList($object_type, $name);
+	$res = json_decode($res);
+	if($res->{'@status'} != 'success'){
+		echo "很抱歉，該分類目前沒有資料！";
+		return ;
+	}
 ?>	
 <div id="page" class="container">
 <div id="content">
@@ -330,50 +347,42 @@ function load_network_allowlist(){
 			<div class="post">
 				<div class="post_title">Client應用程式核可清單</div>
 				<div class="post_cell">
-				<?php
-				$object_type = 'ApplicationGroups'; 
-				$name = '';
-				$res = $pa->GetObjectList($object_type, $name);
-				$res = json_decode($res);
-				if($res->{'@status'} != 'success'){
-					echo "很抱歉，該分類目前沒有資料！";
-					return ;
-				}
-				echo "<table class='ui celled table'>";
-				echo "<thead>";
-					echo "<tr>";
-						echo "<th>群組名稱</th>";
-						echo "<th>成員</th>";
-						echo "<th>應用程式</th>";
-					echo "</tr>";
-				echo "</thead>";
-				echo "<tbody>";
-				foreach($res->result->entry as $key => $entry){
-					$size = count($entry->members->member);
-					$name = $entry->{'@name'};
-					foreach($entry->members->member as $key => $val){
-						echo "<tr>";
-						if($key == 0){
-							echo "<td rowspan=".$size.">".$name."</td>";
-							echo "<td rowspan=".$size.">".$size."</td>";
-							echo "<td>".$val."</td>";	
-						}else{
-							echo "<td>".$val."</td>";	
+					<table class='ui celled table'>
+					<thead>
+						<tr>
+							<th>群組名稱</th>
+							<th>成員</th>
+							<th>應用程式</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php
+					foreach($res->result->entry as $key => $entry){
+						$size = count($entry->members->member);
+						$name = $entry->{'@name'};
+						foreach($entry->members->member as $key => $val){
+							echo "<tr>";
+							if($key == 0){
+								echo "<td rowspan=".$size.">".$name."</td>";
+								echo "<td rowspan=".$size.">".$size."</td>";
+								echo "<td>".$val."</td>";	
+							}else{
+								echo "<td>".$val."</td>";	
+							}
+							echo "</tr>";
 						}
-						echo "</tr>";
 					}
-				}
-				echo "</tbody>";
-				echo "</table>";
-				?>
+					?>
+					</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
 		<div style="clear: both;"></div>
-	</div>
-<?php } 
-?>	
-<!-- end #content -->
+	</div><!-- end #content -->
 </div> <!--end #page-->
+<?php } 
+require 'view/footer.php'; 
+?>	
 
 

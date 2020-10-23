@@ -1,12 +1,21 @@
 <!--tool-->
 <?php 
-if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-else						$subpage = 'nmap';
-switch($subpage){
-	case 'nmap': load_tool_nmap(); 		break;
-	case 'ldap': load_tool_ldap(); 		break;
-	case 'hydra': load_tool_hydra(); 		break;
+if(!verifyBySession_Cookie("account")){
+	return ;
 }
+$account = $_SESSION['account'];
+storeUserLogs2($db, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
+require 'view/header.php'; 
+
+$subpage = strtolower($route->getParameter(2));
+
+switch($subpage){
+	case 'nmap': load_tool_nmap(); 	break;
+	case 'ldap': load_tool_ldap(); 	break;
+	case 'hydra': load_tool_hydra(); break;
+	default: load_tool_nmap(); break;
+}
+
 function load_tool_nmap(){
 	$db = Database::get();
 	$table = "application_system"; // 設定你想查詢資料的資料表
@@ -49,20 +58,20 @@ function load_tool_nmap(){
 							<div class="record_content"></div>
 						</div> <!-- end of .tabular-->
 						<div class="tab-content portscan">
-						 <?php //select data form database
-							echo "<table class='ui celled table'>";
-							echo "<thead>";	
-							echo "<tr>";
-								echo "<th>系統名稱</th>";
-								echo "<th>IP</th>";
-								echo "<th>協定</th>";
-								echo "<th>Port</th>";
-								echo "<th>服務</th>";
-								echo "<th>狀態</th>";
-								echo "<th>Nmap結果</th>";
-							echo "</tr>";
-							echo "</thead>";	
-							echo "<tbody>";	
+							<table class='ui celled table'>
+							<thead>	
+							<tr>
+								<th>系統名稱</th>
+								<th>IP</th>
+								<th>協定</th>
+								<th>Port</th>
+								<th>服務</th>
+								<th>狀態</th>
+								<th>Nmap結果</th>
+							</tr>
+							</thead>
+							<tbody>	
+							<?php 
 							foreach($systems as $system){
 								$SID = $system['SID'];
 								$Name = $system['Name'];
@@ -105,16 +114,17 @@ function load_tool_nmap(){
 									}
 								}
 							}
-							echo "</tbody>";
-							echo "</table>";
-						?>
-						</div> <!-- end of .tabular-->
-					</div> <!-- end of .attached.segment-->
-				</div> <!-- end of .post_cell-->
-			</div> <!-- end of .post-->
-		</div> <!-- end of .sub-content-->
+							?>
+							</tbody>
+							</table>
+						</div> <!-- end .tabular-->
+					</div> <!-- end .attached.segment-->
+				</div> <!-- end .post_cell-->
+			</div> <!-- end .post-->
+		</div> <!-- end .sub-content-->
 		<div style="clear: both;">&nbsp;</div>
-	</div>
+	</div><!-- end #content -->
+</div> <!--end #page-->
 <?php }							
 function load_tool_ldap(){
 ?>
@@ -122,7 +132,7 @@ function load_tool_ldap(){
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post ldap">
-				<div class="post_title">LDAP-Search</div>
+				<div class="post_title">LDAP Search</div>
 				<div class="post_cell">
 					<form class="ui form" action="javascript:void(0)">
 					<!--<div class="fields">-->
@@ -152,7 +162,7 @@ function load_tool_ldap(){
 			</div> <!-- end of .post_cell-->
 			</div>
 			<div class="post ldap_computer_tree">
-				<div class="post_title">AD-Computer tree</div>
+				<div class="post_title">AD Computer Tree</div>
 				<div class="post_cell">
 					<div class="ui centered inline loader"></div>
 					<div class="ldap_tree_content"></div>
@@ -160,7 +170,8 @@ function load_tool_ldap(){
 			</div>
 		</div>
 		<div style="clear: both;">&nbsp;</div>
-	</div>
+	</div><!-- end #content -->
+</div> <!--end #page-->
 <?php }	
 function load_tool_hydra(){
 ?>
@@ -180,7 +191,7 @@ function load_tool_hydra(){
 						</div>
 					</div>
 			    	<div class="field">
-						<label>Protocol(ssh,rdp,ftp,smb,http-post-form,...)</label>
+						<label>Protocol(ssh, rdp, ftp, smb, http-post-form, etc.)</label>
 						<div class="ui input">
 							<?php $target = "ssh";?>
 							<input type="text" name="protocol" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
@@ -248,10 +259,9 @@ function load_tool_hydra(){
 			</div>
 		</div>
 		<div style="clear: both;">&nbsp;</div>
-	</div>
-<?php } 
-?>	
-	
-	<!-- end #content -->
-
+	</div><!-- end #content -->
 </div> <!--end #page-->
+<?php } 
+require 'view/footer.php'; 
+?>
+

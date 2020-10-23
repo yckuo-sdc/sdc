@@ -3,7 +3,7 @@ namespace ad\api;
 require '../vendor/autoload.php';
 
 //edit user of AD
-function edit_user($cn,$newpass,$confirmpass,$displayname,$title,$telephonenumber,$physicaldeliveryofficename,$mail){
+function edit_user($cn,$newpass,$confirmpass,$displayname,$title,$telephonenumber,$physicaldeliveryofficename,$mail,$isActive){
 	$host = "172.16.254.2";
 	$url = "http://".$host."/api/EditUser";
 	$curl = curl_init();
@@ -18,7 +18,7 @@ function edit_user($cn,$newpass,$confirmpass,$displayname,$title,$telephonenumbe
 	  CURLOPT_FOLLOWLOCATION => true,
 	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 	  CURLOPT_CUSTOMREQUEST => "POST",
-	  CURLOPT_POSTFIELDS =>"{\"Username\":\"$cn\",\"Password\":\"$newpass\",\"NewPassword\":\"$confirmpass\",\"Name\":\"$displayname\",\"JobTitle\":\"$title\",\"Tel\":\"$telephonenumber\",\"Tel_Extension\":\"$physicaldeliveryofficename\",\"Email\":\"$mail\"}",
+	  CURLOPT_POSTFIELDS =>"{\"Username\":\"$cn\",\"Password\":\"$newpass\",\"NewPassword\":\"$confirmpass\",\"Name\":\"$displayname\",\"JobTitle\":\"$title\",\"Tel\":\"$telephonenumber\",\"Tel_Extension\":\"$physicaldeliveryofficename\",\"Email\":\"$mail\",\"IsActive\":$isActive}",
 	  CURLOPT_HTTPHEADER => array("Content-Type: application/json")
 	));
 	$response = curl_exec($curl);

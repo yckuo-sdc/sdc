@@ -1,13 +1,20 @@
 <!--vul-->
 <?php 
-if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-else						$subpage = 'overview';
+if(!verifyBySession_Cookie("account")){
+	return ;
+}
+$account = $_SESSION['account'];
+storeUserLogs2($db, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
+require 'view/header.php'; 
+
+$subpage = strtolower($route->getParameter(2));
 
 switch($subpage){
 	case 'overview': load_vul_overview(); break;
 	case 'search': load_vul_search(); break;
 	case 'target': load_vul_target(); break;
 	case 'fetch': load_vul_fetch(); break;
+	default: load_vul_overview(); break;
 }
 
 function load_vul_overview(){
@@ -23,6 +30,7 @@ function load_vul_overview(){
 		</div>
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
+</div> <!--end #page-->
 <?php } 
 function load_vul_search(){
 	$db = Database::get();
@@ -152,6 +160,7 @@ function load_vul_search(){
 		</div>
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
+</div> <!--end #page-->
 <?php } 
 function load_vul_target(){
 	$db = Database::get();
@@ -223,6 +232,7 @@ function load_vul_target(){
 		</div>
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
+</div> <!--end #page-->
 <?php } 
 function load_vul_fetch(){
 	require 'vendor/autoload.php';
@@ -278,7 +288,8 @@ function load_vul_fetch(){
 		</div>
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
-<?php } ?>	
 </div> <!--end #page-->
-
+<?php } 	
+require 'view/footer.php'; 
+?>
 

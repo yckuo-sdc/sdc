@@ -1,4 +1,4 @@
-<!--menu.php-->
+<!--nav.php-->
 	<div class="ui fixed inverted main menu">
 	  <div class="ui container">
 		<a class="launch icon item">

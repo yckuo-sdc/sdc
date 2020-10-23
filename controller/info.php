@@ -1,7 +1,14 @@
 <!--info-->
 <?php 
-if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-else						$subpage = 'enews';
+if(!verifyBySession_Cookie("account")){
+	return ;
+}
+$account = $_SESSION['account'];
+storeUserLogs2($db, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
+
+require 'view/header.php'; 
+
+$subpage = strtolower($route->getParameter(2));
 
 switch($subpage){
 	case 'enews': load_info_enews(); break;
@@ -9,7 +16,10 @@ switch($subpage){
 	case 'vul': load_info_vul(); break;
 	case 'client': load_info_client(); break;
 	case 'network': load_info_network(); break;
+	case 'directory': load_info_directory(); break;
+	default: load_info_enews(); break;
 }
+
 function load_info_enews(){
 	$db = Database::get();
 	$table = "tainangov_security_Incident"; // 設定你想查詢資料的資料表
@@ -145,6 +155,12 @@ function load_info_enews(){
 				<div class="post_title">資安事件SOP</div>
 				<div class="post_cell">
 					<img class="image" src="/images/sop.png">
+				</div>
+			</div>
+			<div class="post">
+				<div class="post_title">市府拋送SOC設備</div>
+				<div class="post_cell">
+					<img class="image" src="/images/soc.png">
 				</div>
 			</div>
 		</div>
@@ -517,6 +533,16 @@ function load_info_client(){
 </div> <!--end #page-->
 <?php } 
 function load_info_network(){
+	require_once 'libraries/PaloAltoAPI.php';
+	$pa = new PaloAltoAPI();
+	$res = $pa->GetLogList($log_type = 'threat', $dir = 'backward', $nlogs = 10, $skip = 0, $query ='');
+	$xml = simplexml_load_string($res) or die("Error: Cannot create object");
+	$job = $xml->result->job;
+	$xml_type = "op";
+	$cmd = "<show><query><result><id>".$job."</id></result></query></show>";
+	$res = $pa->GetXmlCmdResponse($xml_type, $cmd);
+	$xml = simplexml_load_string($res) or die("Error: Cannot create object");
+	$count = 0;
 ?>	
 <div id="page" class="container">
 	<div id="content">
@@ -543,43 +569,33 @@ function load_info_network(){
 				<div class="post_title">威脅日誌(最近10筆)</div>
 				<div class="post_cell">
 					<table class="ui very basic table">
+					<thead>	
+					<tr>
+						<th>接收時間</th>
+						<th>名稱</th>
+						<th>類型</th>
+						<th>來源IP</th>
+						<th>目的IP</th>
+						<th>目的port</th>
+						<th>應用程式</th>
+					</tr>
+					</thead>	
+					<tbody>	
 					<?php 
-						require_once 'libraries/PaloAltoAPI.php';
-						$pa = new PaloAltoAPI();
-						$res = $pa->GetLogList($log_type = 'threat', $dir = 'backward', $nlogs = 10, $skip = 0, $query ='');
-						$xml = simplexml_load_string($res) or die("Error: Cannot create object");
-						$job = $xml->result->job;
-						$xml_type = "op";
-						$cmd = "<show><query><result><id>".$job."</id></result></query></show>";
-						$res = $pa->GetXmlCmdResponse($xml_type, $cmd);
-						$xml = simplexml_load_string($res) or die("Error: Cannot create object");
-						$count = 0;
-						echo "<thead>";	
+					foreach($xml->result->log->logs->entry as $log){
 						echo "<tr>";
-							echo "<th>接收時間</th>";
-							echo "<th>名稱</th>";
-							echo "<th>類型</th>";
-							echo "<th>來源IP</th>";
-							echo "<th>目的IP</th>";
-							echo "<th>目的port</th>";
-							echo "<th>應用程式</th>";
+							echo "<td>".$log->receive_time."</td>";
+							echo "<td>".$log->threatid."</td>";
+							echo "<td>".$log->subtype."</td>";
+							echo "<td>".$log->src."</td>";
+							echo "<td>".$log->dst."</td>";
+							echo "<td>".$log->dport."</td>";
+							echo "<td>".$log->app."</td>";
 						echo "</tr>";
-						echo "</thead>";	
-						echo "<tbody>";	
-						foreach($xml->result->log->logs->entry as $log){
-							echo "<tr>";
-								echo "<td>".$log->receive_time."</td>";
-                        		echo "<td>".$log->threatid."</td>";
-								echo "<td>".$log->subtype."</td>";
-                        		echo "<td>".$log->src."</td>";
-								echo "<td>".$log->dst."</td>";
-								echo "<td>".$log->dport."</td>";
-								echo "<td>".$log->app."</td>";
-							echo "</tr>";
-						}
-						echo "</tbody>";
-						echo "</table>";
+					}
 					?>
+					</tbody>
+					</table>
 					<div class="see_more" style="text-align:right">
 						<a href="/query/network/">See More...</a>
 					</div>
@@ -648,8 +664,28 @@ function load_info_network(){
 					<img class="image" src="/images/network.png">
 				</div>
 			</div>
+			<div class="post">
+				<div class="post_title">ISAC平台更新防火牆範圍</div>
+				<div class="post_cell">
+					<object type="application/pdf" data="/upload/info/ISACFirewall.pdf" width="100%" height="700"></object>
+				</div>
+			</div>
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
-<?php } ?>	
-		
-		
+<?php } 
+function load_info_directory(){
+?>	
+<div id="page" class="container">
+	<div id="content">
+		<div class="sub-content show">
+			<div class="post">
+				<div class="post_title">Directory Service + Web Portal</div>
+				<div class="post_cell">
+					<img class="image" src="/images/directory.png">
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+	</div><!-- end #content -->
+<?php } 	
+require 'view/footer.php'; 
+?>		

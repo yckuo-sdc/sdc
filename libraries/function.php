@@ -17,34 +17,20 @@ function verifyBySession_Cookie($var){
 				$_SESSION['Level'] = $Level;
 				$db = Database::get();
 				storeUserLogs2($db,'rememberLogin',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],$_SERVER['REQUEST_URI']);
-				//echo "a";	
 				return true;	
 			}else{
-				//echo "b";	
 				echo 'You Do Not Have Permission To Access!';
-				header("Location: /login/"); 
+				header("Location: /logout"); 
 				return false;
 			}
 		}else{  //如果session為空，並且使用者沒有選擇記錄登入狀 
-			//echo "c";	
 			echo 'You Do Not Have Permission To Access!';
-			header("Location: /login/"); 
+			header("Location: /logout"); 
 			return false;
 		} 
 	}else{
-		//echo "d";	
 		return true;
 	}	
-}	
-
-function verifyBySession($var){
-	if(isset($_SESSION[$var])){
-		return true;
-	}
-	else{
-		echo 'You Do Not Have Permission To Access!';
-		header("Location:login/"); 
-	}
 }	
 
 function issetBySession($var){
@@ -57,11 +43,20 @@ function issetBySession($var){
 }	
 	
 function checkAccountByLDAP($user, $ldappass){
+
+	$ldapconn = ldap_connect(LDAP::ADDRESS);
+	$ldaprdn = $user . "@" . LDAP::DOMAIN;
+	ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+	ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
+
+	/*
 	$ldaphost = "tainan.gov.tw";
 	$ldapconn = ldap_connect($ldaphost);
 	$ldaprdn = $user . "@" . $ldaphost;
 	ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
+	*/
+
 	if ($ldapconn){
 		@$ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
 		// verify binding

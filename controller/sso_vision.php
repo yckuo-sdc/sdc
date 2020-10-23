@@ -1,14 +1,16 @@
 <?php
-require '../vendor/autoload.php';
-
 if(empty($_GET)){
 	return;
 }	
 
 $db = Database::get();
 $apcode = 'sdc-iss';
-if(!isset($_GET["action"]))	$action = "";
-else				$action = $_GET["action"];
+
+if(!isset($_GET["action"])){
+	$action = "";
+}else{				
+	$action = $_GET["action"];
+}
 
 switch($action){
 	case "logout":
@@ -36,7 +38,7 @@ switch($action){
 		curl_close($ch);
 		
 		if(empty($account)){
-			header("Location: error.html"); 
+			header("Location: /error"); 
 		    return ;	
 		}
 
@@ -45,7 +47,7 @@ switch($action){
 		$user = $db->query($table, $condition, $order_by = 1, $fields = "*", $limit = "", [':SSOID'=>$account])[0];
 			
 		if($user['SSOID'] != $account){
-			header("Location: error.html");
+			header("Location: /error");
 		    return ;	
 		}
 
@@ -64,7 +66,7 @@ switch($action){
 		if( !empty($mainpage) && !empty($subpage) ){
 			header("Location: /".$mainpage."/".$subpage."/?sid=".$sid); 
 		}else{	
-			header("Location: ../?sid=".$sid); 
+			header("Location: /?sid=".$sid); 
 		}	
 		
 		break;

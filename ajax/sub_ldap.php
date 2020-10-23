@@ -15,53 +15,50 @@ foreach($_GET as $getkey => $val){
 
 switch($type){
 	case "search":
-		// connect to AD server
-		$ldapconn = ldap_connect(LDAP::ADDRESS) or die("Could not connect to LDAP server.");
+		$ldapconn = ldap_connect(LDAP::ADDRESS) or die("Could not connect to LDAP server.");	// connect to AD server
 		$set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		
 		if($ldapconn){
-			//bind user
-			$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME."@".LDAP::DOMAIN, LDAP::PASSWORD);
+			$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME."@".LDAP::DOMAIN, LDAP::PASSWORD);	//bind user
 			$ou = ["TainanLocalUser","TainanComputer"];
-			$keyword_type = ["CN","CN"];
-			//Search CN Object From LocalUser and Local Computer
+			$keyword_type = ["CN","CN"];	//Search CN Object From LocalUser and Local Computer
 			for($k=0;$k<count($ou);$k++){
 				$result = @ldap_search($ldapconn,"ou=".$ou[$k].",dc=tainan,dc=gov,dc=tw","(".$keyword_type[$k]."=".$target."*)") or die ("Error in query");
 				$data = @ldap_get_entries($ldapconn,$result);
-				echo $data["count"]. " entries returned from ".$ou[$k]."<br><br>\n\n";
+				echo $data["count"]. " entries returned from ".$ou[$k]."<br><br>";
 				if($data["count"]!=0){
 					for($i=0; $i<$data["count"];$i++){
 						echo "<form id='form-ldap' class='ui form' action='javascript:void(0)'>";
 						echo "<h4 class='ui dividing header'>Entry Information</h4>";
 						echo "<div class='fields'>";
 							echo "<div class='two wide field'>";
-
-						if($k==0){ //user
-							if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
-								echo "<i class='user icon'></i>";
-								echo $data[$i]['cn'][0]."_已停用";
-							}else{
-								echo "<i class='user blue icon'></i>";
-								echo $data[$i]['cn'][0];
+							if($k==0){ //user
+								if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
+									echo "<i class='user icon'></i>";
+									echo $data[$i]['cn'][0]."_已停用";
+								}else{
+									echo "<i class='user blue icon'></i>";
+									echo $data[$i]['cn'][0];
+								}
+								echo "<input type='hidden' name='type' value='edituser' >";
+							}elseif($k==1){	//computer
+								if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
+									echo "<i class='desktop icon'></i>";
+									echo $data[$i]['cn'][0]."_已停用";
+								}else{
+									echo "<i class='desktop blue icon'></i>";
+									echo $data[$i]['cn'][0];
+								}
+								echo "<input type='hidden' name='type' value='changecomputer' >";
 							}
-							echo "<input type='hidden' name='type' value='edituser' >";
-						}elseif($k==1){	//computer
-							if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
-								echo "<i class='desktop icon'></i>";
-								echo $data[$i]['cn'][0]."_已停用";
-							}else{
-								echo "<i class='desktop blue icon'></i>";
-								echo $data[$i]['cn'][0];
-							}
-							echo "<input type='hidden' name='type' value='changecomputer' >";
-						}
 							echo "</div>";
+							//common setting
 							echo "<div class='ten wide field'>";
 								echo "<div class='ui toggle checkbox'>";
 									if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
-										echo "<input type='checkbox' name='stateSwitch' onclick='ldap_edit()' >";
+										echo "<input type='checkbox' name='stateSwitch'>";
 									}else{
-										echo "<input type='checkbox' name='stateSwitch' onclick='ldap_edit()' checked>";
+										echo "<input type='checkbox' name='stateSwitch' checked>";
 									}
 									echo "<label>是否啟用</label>";
 								echo "</div>";
@@ -74,11 +71,11 @@ switch($type){
 							echo "</div>";
 						echo "</div>";
 						echo "<div class='description'>";
-							if($k==0){
-								//select all OUs in TainanLocalUser
+							if($k==0){	//user
 								$keyword_ou = "(objectClass=organizationalUnit)";
 								$result_ou = ldap_search($ldapconn,"OU=TainanLocalUser,dc=tainan,dc=gov,dc=tw",$keyword_ou) or die ("Error in query");
 								$data_ou = ldap_get_entries($ldapconn,$result_ou);
+							
 								echo "<div class='field'>";
 									echo "<label>移動單位</label>";
 								
@@ -113,8 +110,11 @@ switch($type){
 										}
 									echo "</div>";
 								}
-							}elseif($k==1){
-
+							}elseif($k==1){	//computer
+								$keyword_ou = "(objectClass=organizationalUnit)";
+								$result_ou = ldap_search($ldapconn,"OU=TainanComputer,dc=tainan,dc=gov,dc=tw",$keyword_ou) or die ("Error in query");
+								$data_ou = ldap_get_entries($ldapconn,$result_ou);
+					
 								echo "<div class='inline fields'>";
 									echo "<label for='isYonghua'>市政中心</label>";
 									echo "<div class='field'>";
@@ -126,11 +126,6 @@ switch($type){
 										echo "<label>民治</label>";
 									echo "</div>";
 								echo "</div>";
-
-								//select all OUs in TainanComputer
-								$keyword_ou = "(objectClass=organizationalUnit)";
-								$result_ou = ldap_search($ldapconn,"OU=TainanComputer,dc=tainan,dc=gov,dc=tw",$keyword_ou) or die ("Error in query");
-								$data_ou = ldap_get_entries($ldapconn,$result_ou);
 								echo "<div class='field'>";
 									echo "<label>移動單位</label>";
 								

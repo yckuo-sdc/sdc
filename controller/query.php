@@ -1,7 +1,13 @@
 <!--query-->
 <?php 
-if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-else						$subpage = 'event';
+if(!verifyBySession_Cookie("account")){
+	return ;
+}
+$account = $_SESSION['account'];
+storeUserLogs2($db, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
+require 'view/header.php'; 
+
+$subpage = strtolower($route->getParameter(2));
 
 switch($subpage){
 	case 'event': load_query_event(); break;
@@ -10,6 +16,7 @@ switch($subpage){
 	case 'client': load_query_client(); break;
 	case 'network': load_query_ips(); break;
 	case 'fetch': load_query_fetch(); break;
+	default: load_query_event(); break;
 }
 
 function load_query_event(){
@@ -116,7 +123,8 @@ function load_query_event(){
 			</div>
 		</div>
 		<div style="clear: both;"></div>
-	</div>
+	</div><!-- end #content -->
+</div> <!--end #page-->
 <?php } 
 function load_query_ncert(){
 	$db = Database::get();
@@ -233,7 +241,8 @@ function load_query_ncert(){
 			</div><!--End of post-->
 		</div><!--End of sub-content-->
 		<div style="clear: both;"></div>
-	</div>
+	</div><!-- end #content -->
+</div> <!--end #page-->
 <?php } 
 function load_query_contact(){
 	$db = Database::get();
@@ -339,7 +348,8 @@ function load_query_contact(){
 			</div><!--End of post-->
 		</div><!--End of sub-content-->
 		<div style="clear: both;"></div>
-	</div>
+	</div><!-- end #content -->
+</div> <!--end #page-->
 <?php } 
 function load_query_client(){
 	$db = Database::get();
@@ -809,7 +819,8 @@ function load_query_client(){
 			</div><!--End of post-->
 		</div><!--End of sub-content-->
 		<div style="clear: both;"></div>
-	</div>
+	</div><!-- end #content -->
+</div> <!--end #page-->
 <?php } 
 function load_query_fetch(){
 ?>	
@@ -850,10 +861,10 @@ function load_query_fetch(){
 			<?php } ?>
 		</div>
 		<div style="clear: both;"></div>
-	</div>
-<?php } 
-?>	
-<!-- end #content -->
+	</div><!-- end #content -->
 </div> <!--end #page-->
+<?php } 
+require 'view/footer.php'; 
+?>	
 
 

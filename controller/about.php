@@ -1,10 +1,17 @@
 <!--about-->
 <?php 
-if(isset($_GET['subpage'])) $subpage = $_GET['subpage'];
-else 						$subpage = 'data';
+if(!verifyBySession_Cookie("account")){
+	return ;
+}
+$account = $_SESSION['account'];
+storeUserLogs2($db, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
+require 'view/header.php'; 
+
+$subpage = strtolower($route->getParameter(2));
 
 switch($subpage){
 	case 'data': load_about_data(); break;
+	default: load_about_data(); break;
 }
 
 function load_about_data(){
@@ -20,18 +27,18 @@ function load_about_data(){
 				<div class="post_title">Data-Stream Status</div>
 					<div class="post_cell">
 						<table class="ui celled table">
+						<thead>
+							<tr>
+							<th>種類</th>
+							<th>名稱</th>
+							<th>資料格式</th>
+							<th>擷取數量</th>
+							<th>更新時間</th>
+							<th>網址</th>
+						</tr>
+						</thead>	
+						<tbody>	
 						 <?php
-						echo "<thead>";	
-						echo "<tr>";
-							echo "<th>種類</th>";
-							echo "<th>名稱</th>";
-							echo "<th>資料格式</th>";
-							echo "<th>擷取數量</th>";
-							echo "<th>更新時間</th>";
-							echo "<th>網址</th>";
-						echo "</tr>";
-						echo "</thead>";	
-						echo "<tbody>";	
 						foreach($api_list as $api){
 							echo "<tr>";
 								echo "<td>".$api['class']."</td>";
@@ -42,15 +49,17 @@ function load_about_data(){
 								echo "<td><a href='".$api['url']."' target='_blank'>".$api['url']."</a></td>";
 							echo "</tr>";
 						 }
-						echo "</tbody>";
-						echo "</table>";
 						?>
+						</tbody>
+						</table>
 				</div>
 			</div>
 		</div>
 		<div style="clear: both;">&nbsp;</div>
 	</div>
 </div> <!--end #page-->
-<?php } ?>	
-	<!-- end #content -->
+<?php } 
+require 'view/footer.php'; 
+?>	
+<!-- end #content -->
 
