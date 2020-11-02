@@ -5,4 +5,5 @@ since 2019-10-5
 ## code structure
 dir name | usage
 --- | ---
-init | initialize
+init | initialization
+controller | page controller
