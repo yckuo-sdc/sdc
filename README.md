@@ -6,4 +6,5 @@ since 2019-10-5
 - about
   - data
   - structure
-
+- info
+  - enews
