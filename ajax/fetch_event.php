@@ -47,7 +47,7 @@ if (isset($rows['values'])) {
 	$id = "1"; 
 	$db->delete($table, $key_column, $id); 
 	foreach ($rows['values'] as $row){
-	// If first column is empty, consider it an empty row and skip (this is just for example)
+		// If first column is empty, consider it an empty row and skip (this is just for example)
 		if (empty($row[0])){
 			break;						
 		}
@@ -80,6 +80,11 @@ if (isset($rows['values'])) {
 		$db->insert($table, $event);
 		$count = $count + 1;							
 	}	
+
+	$error = $db->getErrorMessageArray();
+	if(@count($error) > 0) {
+		return;
+	}
 
 	$nowTime = date("Y-m-d H:i:s");
 	$status = 200;	

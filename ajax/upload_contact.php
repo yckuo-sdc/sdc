@@ -1,8 +1,7 @@
 <?php
 require '../vendor/autoload.php';
- 
 session_start(); 
-if( !issetBySession("Level") || $_SESSION['Level'] != 2){
+if(!isLogin() || $_SESSION['Level'] != 2){
 	return;
 }
 

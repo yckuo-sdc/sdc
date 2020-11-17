@@ -41,7 +41,7 @@ foreach($ou_vuls as $ou_vul) {
 				if($detail['total_VUL'] == 0) echo "<span style='color:#BBBBBB'>".$detail['system_name']."(".$detail['total_VUL']."/".$detail['fixed_VUL'].")</span><br>";
 				else echo "<span>".$detail['system_name']."(".$detail['total_VUL']."/".$detail['fixed_VUL'].")</span><br>";
 			}
-			echo "<a><div style='text-align:right;cursor:pointer;'>Scan Target...<i class='angle double down icon'></i></div></a>";
+			echo "<a><div style='cursor:pointer;'><i class='icon caret right'></i>掃描資產</div></a>";
 			echo "<div class='description'>";
 				echo "<ol>";
 					foreach($targets as $target) {

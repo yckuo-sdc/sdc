@@ -102,11 +102,17 @@ if(count($arr_jsonObj) != 0) {
 		$data_array[] = "%".$key."%"; 
 	}
 }
+
 //echo $condition."<br>";
-$table = $table; // 設定你想查詢資料的資料表
 $order_by = "scan_no DESC,ou DESC,system_name DESC,status DESC";
-$total_vuls = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", $data_array);
-$last_num_rows = $db->getLastNumRows();
+
+$limit = 10;
+$links = 4;
+$query = "SELECT * FROM {$table} WHERE {$condition} ORDER BY {$order_by}";
+
+$Paginator = new Paginator($query, $data_array);
+$vuls = $Paginator->getData($limit, $page, $data_array);
+$last_num_rows = $Paginator->getTotal();
 
 if($ap=='html'){
 	if ($last_num_rows == 0){
@@ -114,13 +120,8 @@ if($ap=='html'){
 	}
 	else{
 		echo "該分類共搜尋到".$last_num_rows."筆資料！";
-
-		$pageParm = getPaginationParameter($page, $last_num_rows);
-		$limit = "limit ".($start = $pageParm['start']).",".($offset = $pageParm['offset']);
-		$vuls = $db->query($table, $condition, $order_by, $fields = "*", $limit, $data_array);
-		
 		echo "<div class='ui relaxed divided list'>";
-		foreach($vuls as $vul) {
+		foreach($vuls->data as $vul) {
 			echo "<div class='item'>";
 			echo "<div class='content'>";
 				echo "<a>";
@@ -165,7 +166,8 @@ if($ap=='html'){
 		$pageAttr['type'] = $type;	
 		$pageAttr['jsonStatus'] = $jsonStatus;	
 		$pageAttr['jsonObj'] = $jsonObj;	
-		echo createPaginationElement($pageParm, $page, $pageAttr);
+
+		echo $Paginator->createLinks($links, 'ui pagination menu', $pageAttr, $method='ajax');
 	}
 }elseif($ap='csv'){
 	$arrs=array();

@@ -399,8 +399,8 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 .ui.list > .item .content .description{
 	display:none;
 	word-break: break-all;
-    overflow-x: hidden;
-	white-space: pre-wrap;
+    white-space:normal;
+	overflow-x: hidden;
 	background-color: #efefef;
 	padding: 3vw;
 	border-radius: 1vw;
@@ -408,8 +408,8 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 .ui.list > .item .content .description.show{
 	display:block;
 	word-break: break-word;
+    white-space:normal;
     overflow-x: hidden;
-	white-space: pre-wrap;
 	background-color: #efefef;
 	padding: 2vmin;
 	border-radius: 1vw;

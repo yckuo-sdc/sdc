@@ -4,6 +4,7 @@ require '../vendor/autoload.php';
 // input validation
 $v1 = 0;
 $v2 = 0;
+
 foreach($_GET as $getkey => $val){
 	$$getkey = $val;
 	if($getkey == "jsonObj" && $val == "[]"){
@@ -19,7 +20,6 @@ if($v1 && $v2){
 }
 
 $page = isset($_GET['page']) ? $_GET['page'] : 1;	
-
 $prev_page = ($page == 1) ? 1 : ($page-1);
 $next_page = $page + 1;
 $max_page = 10;
@@ -61,87 +61,72 @@ if( count($arr_jsonObj) !=0 ){  // retrieve query
 		$query = "( ".$keyword." ".$query_map[$operator][$keyword]." '".$key."' )";
 	}
 }
+
 //echo $query."<br>";
 $nlogs = $max_item;
 $dir = 'backward';
 $skip = ($page-1)*$nlogs;
-
-$host_map = ['yonghua' => '172.16.254.209', 'minjhih' => '10.6.2.102', 'idc' => '10.7.11.241', 'intrayonghua' => '172.16.254.205'];
-$host = $host_map[$type];
+$host = PaloAltoAPI::HOSTMAP[$type];
 
 $pa = new PaloAltoAPI($host);
 $log_type_map = ['traffic','threat','data'];
 
-for($lt=0; $lt<count($log_type_map); $lt++){
-	$log_type = $log_type_map[$lt];
-	$res = $pa->GetLogList($log_type, $dir, $nlogs, $skip, $query);
-	$xml = simplexml_load_string($res) or die("Error: Cannot create object");
-	$job = $xml->result->job;
+for($i=0; $i<count($log_type_map); $i++){
+	if(!$data = $pa->GetLogList($log_type = $log_type_map[$i], $dir, $nlogs, $skip, $query)){
+        echo "很抱歉，該分類分頁目前沒有資料！";
+        return;
+    }
+?>
+    該分類分頁共搜尋到<?=$data['log_count']?>筆資料！
+	<div class='ui relaxed divided list'>
+		 <div class='item'>
+			<div class='content'>
+			<a class='header'><?=$log_type_map[$i]?></a>
+			</div>
+		</div>
+		<?php foreach($data['logs'] as $log){ ?>
+			<div class='item'>
+			<div class='content'>
+			<a>
+			<?=$log->receive_time?>&nbsp&nbsp
+			<span style='background:#fde087'><?=$log->rule?></span>&nbsp&nbsp
+			<?=$log->src?>&nbsp&nbsp
+			<span style='background:#dddddd'><?=$log->dst?></span>&nbsp&nbsp
+			<?=$log->dport?>&nbsp&nbsp
+			<?=$log->app?>&nbsp&nbsp
+			<span style='background:#fbc5c5'><?=$log->subtype?></span>&nbsp&nbsp
+			<?=$log->action?>&nbsp&nbsp
+			<i class='angle down icon'></i>
+			</a>
+			<div class='description'>
+				<ol>
+				<?php foreach($log as $keyindex => $val){ ?>
+					<li><?=$keyindex?>:&nbsp<?=$val?></li>
+				<?php } ?>
+				</ol>
+			</div>
+			</div>
+			</div>
+		 <?php } ?>
+	</div>	
+<?php } ?>
 
-	$xml_type = "op";
-	$cmd = "<show><query><result><id>".$job."</id></result></query></show>";
-	$res = $pa->GetXmlCmdResponse($xml_type, $cmd);
-	$xml = simplexml_load_string($res) or die("Error: Cannot create object");
+<!--The desktop href-link of bottom pages-->
+<div class='ui pagination menu'>
+    <a class='item' href='javascript: void(0)' page='<?=$prev_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>'> ← </a>
+    <?php for ($p = $lb; $p <= $ub ;$p++){
+        if($p == $page){ ?>
+            <a class='active item bold' href='javascript: void(0)' page='<?=$p?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' ><?=$p?></a>
+        <?php }else{ ?>
+            <a class='item' href='javascript: void(0)' page='<?=$p?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' ><?=$p?></a>
+        <?php } 
+        } ?>
+    <a class='item' href='javascript: void(0)' page='<?=$next_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' > → </a>
+</div>
 
-	if($xml['status'] != 'success'){
-		echo "很抱歉，該分類分頁目前沒有資料！";
-		return ;
-	}
-	$log_count = $xml->result->log->logs['count'];
-	echo "該分類分頁共搜尋到".$log_count."筆資料！";
-	echo "<div class='ui relaxed divided list'>";
-		echo "<div class='item'>";
-			echo "<div class='content'>";
-			echo "<a class='header'>".$log_type_map[$lt]."</a>";
-			echo "</div>";
-		echo "</div>";
-		$count = 0;
-		foreach($xml->result->log->logs->entry as $log){
-			if($count >= $max_item){
-				break;
-			}
-			echo "<div class='item'>";
-			echo "<div class='content'>";
-			echo "<a>";
-			echo $log->receive_time."&nbsp&nbsp";
-			echo "<span style='background:#fde087'>".$log->rule."</span>&nbsp&nbsp";
-			echo $log->src."&nbsp&nbsp";
-			echo "<span style='background:#dddddd'>".$log->dst."</span>&nbsp&nbsp";
-			echo $log->dport."&nbsp&nbsp";
-			echo $log->app."&nbsp&nbsp";
-			echo "<span style='background:#fbc5c5'>".$log->subtype."</span>&nbsp&nbsp";
-			echo $log->action."&nbsp&nbsp";
-			echo "<i class='angle down icon'></i>";
-			echo "</a>";
-			echo "<div class='description'>";
-				echo "<ol>";
-				foreach($log as $keyindex => $val){
-					echo "<li>$keyindex:&nbsp$val</li>";
-				}
-				echo "</ol>";
-			echo "</div>";
-			echo "</div>";
-			echo "</div>";
-			$count = $count + 1;
-		}	
-	echo "</div>";	
-}
-
-//The href-link of bottom pages
-echo "<div class='ui pagination menu'>";	
-echo "<a class='item' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."'> ← </a>";
-for ($p = $lb; $p <= $ub ;$p++){
-	if($p == $page){
-		echo"<a class='active item bold' href='javascript: void(0)' page='".$p."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' >".$p."</a>";
-	}else{
-		echo"<a class='item' href='javascript: void(0)' page='".$p."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' >".$p."</a>";
-	}
-}
-echo"<a class='item' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' > → </a>";		   echo "</div>";
-
-//The mobile href-link of bottom pages
-echo "<div class='ui pagination menu mobile'>";	
-echo "<a class='item' href='javascript: void(0)' page='".$prev_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' > ← </a>";
-echo"<a class='active item bold' href='javascript: void(0)' page='".$page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' >".$page."</a>";
-echo"<a class='item' href='javascript: void(0)' page='".$next_page."' key='".$key."' keyword ='".$keyword."' operator='".$operator."' jsonObj='".$jsonObj."' type='".$type."' > → </a>";		
-echo "</div>";
+<!--The mobile href-link of bottom pages-->
+<div class='ui pagination menu mobile'>	
+    <a class='item' href='javascript: void(0)' page='<?=$prev_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' > ← </a>
+    <a class='active item bold' href='javascript: void(0)' page='<?=$page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' ><?=$page?></a>";
+    <a class='item' href='javascript: void(0)' page='<?=$next_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' > → </a>
+</div>

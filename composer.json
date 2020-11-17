@@ -3,13 +3,16 @@
     "authors": [
         {
             "name": "YuChieh Kuo",
-            "email": "yckuo@mail.tainan.gov.tw"
+            "email": "yckuo@mail.tainan.gov.tw",
+            "role": "Developer"
         }
     ],
+	"description": "A simple web console for information security.",
     "require": {
 		"google/apiclient": "^2.7",
         "wixel/gump": "^1.2",
-		"phpmailer/phpmailer": "~6.1"
+		"phpmailer/phpmailer": "~6.1",
+		"tamtamchik/simple-flash": "2.*"
 	},
 	"autoload": {
 		"classmap": [
@@ -17,7 +20,7 @@
 			"libraries"
 		],
 		"files": [
-			"libraries/function.php"
+			"libraries/functions.php"
 		]
 	}
 }

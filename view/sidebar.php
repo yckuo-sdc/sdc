@@ -6,7 +6,8 @@
 <div class="item">
   <div class="header">About</div>
   <div class="menu">
-	  <a class="item" href="/about/data/">Data Status</a>
+	  <a class="item" href="/about/data/">Data</a>
+	  <a class="item" href="/about/structure/">Structure</a>
   </div>
 </div>
 <div class="item">
@@ -23,7 +24,7 @@
 <div class="item">
   <div class=" header">資安查詢</div>
   <div class="menu">
-		<a class="item" href="/query/event/">本府資安事件</a> 
+		<a class="item" href="/query/event/">市府資安事件</a> 
 		<a class="item" href="/query/ncert/">技服資安通報</a> 
 		<a class="item" href="/query/contact/">資安聯絡人</a> 
 		<a class="item" href="/query/client/">用戶端資安清單</a> 
@@ -51,6 +52,7 @@
   <div class=" header">工具</div>
   <div class="menu">
       <a class="item" href="/tool/nmap/">Nmap</a>
+      <a class="item" href="/tool/nslookup/">Nslookup</a>
       <a class="item" href="/tool/ldap/">LDAP</a>
       <a class="item" href="/tool/hydra/">Hydra</a>
   </div>

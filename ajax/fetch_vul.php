@@ -8,6 +8,13 @@ $table = "api_list"; // 設定你想查詢資料的資料表
 $condition = "class LIKE :class";
 $apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'弱掃平台']);
 
+$Options = array(
+	"ssl"=>array(
+		"verify_peer"=>false,
+		"verify_peer_name"=>false,
+	),
+);  	
+
 foreach($apis as $api) {
 	$nowTime = date("Y-m-d H:i:s");
 	switch($api['label']){
@@ -15,9 +22,8 @@ foreach($apis as $api) {
 			$type = "ipscanResult";
 			$auth = hash("sha256",$type.$key.$nowTime);
 			$url = "https://tainan-vsms.chtsecurity.com/cgi-bin/api/portal.pl?type=".$type."&nowTime=".$nowTime."&auth=".$auth;
-			//replace all instances of spaces in urls with %20
-			$preg_url = preg_replace("/ /", "%20", $url);
-			$json = file_get_contents($preg_url);		
+			$preg_url = preg_replace("/ /", "%20", $url);  //replace all instances of spaces in urls with %20
+            $json = file_get_contents($preg_url, false, stream_context_create($Options));
 			// filter out the non-json content
 			$pos1 = strpos($json, '[');
 			$pos2 = strrpos($json, ']');
@@ -50,6 +56,7 @@ foreach($apis as $api) {
 					$db->insert($table, $scan);
 					$count = $count + 1;							
 				}
+				$nowTime = date("Y-m-d H:i:s");
 				echo "The ".$count." records have been inserted or updated into the ipscanResult on ".$nowTime."\n\r<br>";
 				$status = 200;
 			}else{
@@ -62,7 +69,7 @@ foreach($apis as $api) {
 			$auth = hash("sha256",$type.$key.$nowTime);
 			$url = "https://tainan-vsms.chtsecurity.com/cgi-bin/api/portal.pl?type=".$type."&nowTime=".$nowTime."&auth=".$auth;
 			$preg_url = preg_replace("/ /", "%20", $url);
-			$json = file_get_contents($preg_url);		
+            $json = file_get_contents($preg_url, false, stream_context_create($Options));
 			// filter out the non-json content
 			$pos1 = strpos($json, '[');
 			$pos2 = strrpos($json, ']');
@@ -97,6 +104,7 @@ foreach($apis as $api) {
 					$db->insert($table, $scan);
 					$count = $count + 1;							
 				}
+				$nowTime = date("Y-m-d H:i:s");
 				echo "The ".$count." records have been inserted or updated into the urlscanResult on ".$nowTime."\n\r<br>";
 				$status = 200;
 			}else{
@@ -109,7 +117,7 @@ foreach($apis as $api) {
 			$auth = hash("sha256",$type.$key.$nowTime);
 			$url = "https://tainan-vsms.chtsecurity.com/cgi-bin/api/portal.pl?type=".$type."&nowTime=".$nowTime."&auth=".$auth;
 			$preg_url = preg_replace("/ /", "%20", $url);
-			$json = file_get_contents($preg_url);		
+            $json = file_get_contents($preg_url, false, stream_context_create($Options));
 			// filter out the non-json content
 			$pos1 = strpos($json, '[');
 			$pos2 = strrpos($json, ']');
@@ -134,7 +142,7 @@ foreach($apis as $api) {
 					$db->insert($table, $scanTarget);
 					$count = $count + 1;							
 				}
-
+				$nowTime = date("Y-m-d H:i:s");
 				echo "The ".$count." records have been inserted or updated into the scanTarget on ".$nowTime."\n\r<br>";
 				$status = 200;
 			}else{
@@ -144,20 +152,10 @@ foreach($apis as $api) {
 			break;
 	}
 		
-	//truncate the table 'ip_and_url_scanResult'
-	$table = "ip_and_url_scanResult";
-	$key_column = "1";
-	$id = "1"; 
-	$db->delete($table, $key_column, $id); 
-	
-	//insert the table 'ip_and_url_scanResult' from two tables 
-	$sql = "INSERT INTO ip_and_url_scanResult(type, vitem_id, OID, ou, status, ip,system_name, flow_id, scan_no, affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated)
-			SELECT '主機弱點' AS type, vitem_id, OID, ou, status, ip, system_name, flow_id, scan_no, 'null' AS affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated
-			FROM ipscanResult
-			UNION ALL
-			SELECT '網站弱點' AS type,vitem_id, OID, ou, status, ip, system_name, flow_id, scan_no, affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated
-			FROM urlscanResult";
-	$db->execute($sql, []);
+	$error = $db->getErrorMessageArray();
+	if(@count($error) > 0) {
+		return;
+	}
 
 	$table = "api_status"; // 設定你想新增資料的資料表
 	$data_array['api_id'] = $api['id'];
@@ -168,4 +166,17 @@ foreach($apis as $api) {
 	$db->insert($table, $data_array);
 }
 
+//truncate the table 'ip_and_url_scanResult'
+$table = "ip_and_url_scanResult";
+$key_column = "1";
+$id = "1"; 
+$db->delete($table, $key_column, $id); 
 
+//insert the table 'ip_and_url_scanResult' from two tables 
+$sql = "INSERT INTO ip_and_url_scanResult(type, vitem_id, OID, ou, status, ip,system_name, flow_id, scan_no, affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated)
+		SELECT '主機弱點' AS type, vitem_id, OID, ou, status, ip, system_name, flow_id, scan_no, 'null' AS affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated
+		FROM ipscanResult
+		UNION ALL
+		SELECT '網站弱點' AS type,vitem_id, OID, ou, status, ip, system_name, flow_id, scan_no, affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated
+		FROM urlscanResult";
+$db->execute($sql, []);

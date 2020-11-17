@@ -43,6 +43,11 @@ if (($handle = fopen($file, "r")) !== FALSE) {
 	$status = 400;
 }
 
+$error = $db->getErrorMessageArray();
+if(@count($error) > 0) {
+	return;
+}
+
 $table = "api_list"; // 設定你想查詢資料的資料表
 $condition = "class LIKE :class and name LIKE :name";
 $api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'防毒軟體', ':name'=>'用戶端清單']);

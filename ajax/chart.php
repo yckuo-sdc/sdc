@@ -34,8 +34,8 @@ switch($chartID){
 		$LastYear = $NowYear-1;
 		$LastYearsql = "SELECT MONTH(OccurrenceTime) as month,COUNT(*) as count FROM security_event WHERE YEAR(OccurrenceTime) LIKE '".$LastYear."' GROUP BY MONTH(OccurrenceTime)";
 		$ThisYearsql = "SELECT MONTH(OccurrenceTime) as month,COUNT(*) as count FROM security_event WHERE YEAR(OccurrenceTime) LIKE '".$NowYear."' GROUP BY MONTH(OccurrenceTime)";
-		$ThisYearEvent = $db->execute($LastYearsql, []);
-		$LastYearEvent = $db->execute($ThisYearsql, []);
+		$LastYearEvent = $db->execute($LastYearsql, []);
+		$ThisYearEvent = $db->execute($ThisYearsql, []);
 		$sql = "SELECT EventTypeName as name,COUNT(EventTypeName) as count FROM security_event GROUP BY EventTypeName ORDER by count desc";
 		$EventType = $db->execute($sql, []);
 		$sql = "SELECT AgencyName,COUNT(AgencyName) as count FROM security_event WHERE NOT AgencyName LIKE '' GROUP BY AgencyName ORDER by count desc LIMIT 10";

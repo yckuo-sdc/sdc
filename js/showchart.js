@@ -91,17 +91,17 @@ function c3_chart_ranking_ajax(url){
 			tmp_data = data.LastYearEvent;
 			len = tmp_data.length;
 			for(var i=0; i<len; i++){
-				var name = tmp_data[i].name;
+				var month = tmp_data[i].month;
 				var count = tmp_data[i].count;
-				lastyearnameArray.push(name);
+				lastyearnameArray.push(month);
 				lastyearcountArray.push(count);
 			}
 			tmp_data = data.ThisYearEvent;
 			len = tmp_data.length;
 			for(var i=0; i<len; i++){
-				var name = tmp_data[i].name;
+				var name = tmp_data[i].month;
 				var count = tmp_data[i].count;
-				thisyearnameArray.push(name);
+				thisyearnameArray.push(month);
 				thisyearcountArray.push(count);
 			}
 			tmp_data = data.EventType;
@@ -160,7 +160,12 @@ function c3_chart_ranking_ajax(url){
 				},axis: {
 					x: {
 						type: 'category',
-						categories: lastyearnameArray
+						categories: lastyearnameArray,
+						tick: {
+				        	format: function (x) { 
+								return (x+1)+'月'; 
+							}
+						}
 					}
 				},bar: {
 					width: {

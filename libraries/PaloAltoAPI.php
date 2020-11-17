@@ -4,7 +4,7 @@ if(!defined("SITE_ROOT"))	define("SITE_ROOT", "/var/www/html/sdc");
 require SITE_ROOT.'/config/PaloAlto.php';
 
 Class PaloAltoAPI {
-
+	const HOSTMAP = ['yonghua' => '172.16.254.209', 'minjhih' => '10.6.2.102', 'idc' => '10.7.11.241', 'intrayonghua' => '172.16.254.205'];
 	private $host;
 	private $apikey;
 
@@ -35,7 +35,18 @@ Class PaloAltoAPI {
 		$args = array('type' => 'log', 'log-type' => $log_type, 'dir' => $dir, 'nlogs' => $nlogs, 'skip' => $skip, 'query' => $query, 'async' => 'yes', 'uniq' => 'yes');
 		$url = "https://$host/api/?".http_build_query($args)."&key=$apikey";
 		$res = $this->CurlRequest($url);
-		return $res;
+
+        $xml = simplexml_load_string($res) or die("Error: Cannot create object");
+        $job_id = $xml->result->job;
+        usleep(500000);
+        $res = $this->RetriveLogs($job_id);
+        $xml = simplexml_load_string($res) or die("Error: Cannot create object");
+        if($xml['status'] != 'success'){
+            return false;
+        }
+        $data['log_count'] = $xml->result->log->logs['count'];
+		$data['logs'] = $xml->result->log->logs->entry;
+        return $data;
 	}
 
 	public function GetReportList($report_type, $report_name){
@@ -43,6 +54,15 @@ Class PaloAltoAPI {
 		$apikey = $this->apikey;
 		$args = array('type' => 'report', 'reporttype' => $report_type, 'reportname' => $report_name, 'async' => 'yes', 'uniq' => 'yes');
 		$url = "https://$host/api/?".http_build_query($args)."&key=$apikey";
+		$res = $this->CurlRequest($url);
+		return $res;
+	}
+
+	public function RetriveLogs($job_id, $type="log", $action="get"){
+		$host = $this->host;
+		$apikey = $this->apikey;
+		$args = array('type' => $type, 'action' => $action, );
+		$url = "https://$host/api/?".http_build_query($args)."&job-id=$job_id&key=$apikey";
 		$res = $this->CurlRequest($url);
 		return $res;
 	}

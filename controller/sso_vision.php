@@ -20,10 +20,10 @@ switch($action){
 		break;
 	default:
 		$srcToken = $_GET["token"];
-		if(!isset($_GET["mainpage"]))	$mainpage 	= "";
-		else							$mainpage 	= $_GET["mainpage"];
-		if(!isset($_GET["subpage"]))	$subpage	= "";
-		else							$subpage 	= $_GET["subpage"];
+		
+		$mainpage = strtolower($route->getParameter(2));
+		$subpage = strtolower($route->getParameter(3));
+
 		$encryToken = hash_hmac('sha256', $srcToken, $apcode);
 		$url = "https://vision.tainan.gov.tw/common/sso_verify.php";
 		$ch = curl_init();
@@ -52,17 +52,12 @@ switch($action){
 		}
 
 		# fetch the present Session ID
-		session_start();
 		$sid = session_id();
 		$_SESSION['account'] = $account;
 		$_SESSION['UserName'] = $user['UserName'];
 		$_SESSION['Level'] = $user['Level'];
-		storeUserLogs2($db,'ssoLogin',$_SERVER['REMOTE_ADDR'],$account,$_SERVER['REQUEST_URI']);
-		$args = array(
-			'mainpage' => $mainpage,
-			'subpage' => $subpage,
-			'sid'	=> $sid
-		);
+		saveAction($db,'ssoLogin',$_SERVER['REMOTE_ADDR'],$account,$_SERVER['REQUEST_URI']);
+		
 		if( !empty($mainpage) && !empty($subpage) ){
 			header("Location: /".$mainpage."/".$subpage."/?sid=".$sid); 
 		}else{	

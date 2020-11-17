@@ -62,6 +62,11 @@ foreach ($rows['values'] as $row){
 	$dn_count = $dn_count + 1;
 }		
 
+$error = $db->getErrorMessageArray();
+if(@count($error) > 0) {
+	return;
+}
+
 $status = 200;	
 $nowTime = date('Y-m-d H:i:s'); 
 $url ="https://docs.google.com/spreadsheets/d/1bb9zyNHfuwQanSdutcyh2fj1JsddsXmG9JCUC5NwPNE/edit#gid=2001135399";
@@ -142,6 +147,11 @@ foreach ($rows['values'] as $row){
 	$table = "maliciousSite";
 	$db->insert($table, $scan);
 	$ip_count = $ip_count + 1;
+}
+
+$error = $db->getErrorMessageArray();
+if(@count($error) > 0) {
+	return;
 }
 
 $status = 200;	

@@ -8,7 +8,7 @@ class DatabaseAccessObject {
 	private $last_sql = "";
     private $last_id = 0;
     private $last_num_rows = 0;
-    private $error_message = "";
+    private $error_message;
 
   	/**
      * 這段是『建構式』會在物件被 new 時自動執行，裡面主要是建立跟資料庫的連接，並設定語系是萬國語言以支援中文
@@ -29,7 +29,8 @@ class DatabaseAccessObject {
         
         } catch(PDOException $e) {
             //show error
-		    echo "<div class='ui red message'>".$e->getMessage()."</div>";
+		    $this->error_message[] = $e->getMessage();
+		    echo "<div class='ui error message'>".$e->getMessage()."</div>";
             exit;
         } 
     }
@@ -45,6 +46,7 @@ class DatabaseAccessObject {
      * 這段用來執行 MYSQL 資料庫的語法，可以靈活使用
      */
     public function execute($sql = null, $data_array) {
+        $this->last_sql = $sql;
         try {
             $stmt = $this->db->prepare($sql);
             $stmt->execute($data_array);
@@ -52,7 +54,8 @@ class DatabaseAccessObject {
             //return $stmt->fetchAll(); 
             return $stmt->fetchAll(PDO::FETCH_ASSOC); 
 		} catch(PDOException $e) {
-		    $this->error_message = "<div class='ui red message'>".$e->getMessage()."</div>";
+		    $this->error_message[] = $e->getMessage();
+		    echo "<div class='ui error message'>".$e->getMessage()."</div>";
 		}
     }
 
@@ -74,7 +77,8 @@ class DatabaseAccessObject {
 			//return $stmt->fetchAll();
             return $stmt->fetchAll(PDO::FETCH_ASSOC); 
 		} catch(PDOException $e) {
-		    $this->error_message = "<div class='ui red message'>".$e->getMessage()."</div>";
+		    $this->error_message[] = $e->getMessage();
+		    echo "<div class='ui error message'>".$e->getMessage()."</div>";
 		}
     }
 
@@ -97,10 +101,15 @@ class DatabaseAccessObject {
         $data = join(",", $tmp_dat);
 
         $this->last_sql = "INSERT INTO " . $table . "(" . $columns . ")VALUES(" . $data . ")";
-        $stmt = $this->db->prepare($this->last_sql);
-        $stmt->execute($prepare_array);
-		$this->last_num_rows = $stmt->rowCount();
-        $this->last_id = $this->db->lastInsertId();
+        try {
+			$stmt = $this->db->prepare($this->last_sql);
+			$stmt->execute($prepare_array);
+			$this->last_num_rows = $stmt->rowCount();
+			$this->last_id = $this->db->lastInsertId();
+		} catch(PDOException $e) {
+		    $this->error_message[] = $e->getMessage();
+		    echo "<div class='ui error message'>".$e->getMessage()."</div>";
+		}
     }
 
     /**
@@ -122,11 +131,17 @@ class DatabaseAccessObject {
         }
         $data_array[$key_column] = $id;
         $this->last_sql = "UPDATE " . $table . " SET " . $setting_list . " WHERE " . $key_column . " = " . ":".$key_column;
-        $stmt = $this->db->prepare($this->last_sql);                       
-        $stmt->execute($data_array);
-		$this->last_num_rows = $stmt->rowCount();
+        try {
+			$stmt = $this->db->prepare($this->last_sql);                       
+			$stmt->execute($data_array);
+			$this->last_num_rows = $stmt->rowCount();
+		} catch(PDOException $e) {
+		    $this->error_message[] = $e->getMessage();
+		    echo "<div class='ui error message'>".$e->getMessage()."</div>";
+		}
     }
-    /**
+
+	/**
      * 這段可以刪除資料庫中的資料
      */
     public function delete($table = null, $key_column = null, $id = null) {
@@ -135,9 +150,14 @@ class DatabaseAccessObject {
         if($key_column===null) return false;
 
         $this->last_sql = "DELETE FROM $table WHERE " . $key_column . " = " . ':'.$key_column;
-        $stmt = $this->db->prepare($this->last_sql);
-        $stmt->execute(array( ':'.$key_column => $id));
-		$this->last_num_rows = $stmt->rowCount();
+        try {
+			$stmt = $this->db->prepare($this->last_sql);
+			$stmt->execute(array( ':'.$key_column => $id));
+			$this->last_num_rows = $stmt->rowCount();
+		} catch(PDOException $e) {
+		    $this->error_message[] = $e->getMessage();
+		    echo "<div class='ui error message'>".$e->getMessage()."</div>";
+		}
     }
 
     /**
@@ -190,8 +210,7 @@ class DatabaseAccessObject {
      * @return string
      * 取出物件內的錯誤訊息
      */
-    public function getErrorMessage()
-    {
+    public function getErrorMessageArray() {
         return $this->error_message;
     }
 
@@ -199,8 +218,7 @@ class DatabaseAccessObject {
      * @param string $error_message
      * 記下錯誤訊息到物件變數內
      */
-    private function setErrorMessage($error_message)
-    {
+    private function setErrorMessageArray($error_message) {
         $this->error_message = $error_message;
     }
 
@@ -231,5 +249,5 @@ class DatabaseAccessObject {
 
 		return $res;
     }
-	
+
 }

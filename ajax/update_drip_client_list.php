@@ -52,6 +52,13 @@ ON A.IP = B.IP
 SET A.antivirus = 1;";
 $db->execute($sql, []);
 
+//update the column 'edr' from table 'edr_endpoints'
+$sql = "UPDATE drip_client_list AS A
+JOIN edr_endpoints AS B 
+ON A.IP = SUBSTRING_INDEX(SUBSTRING_INDEX(B.ip, ', ', 1), ', ', -1) AND B.hidden_state LIKE '顯示中' 
+SET A.edr = 1;";
+$db->execute($sql, []);
+
 //update the column 'OrgName' from table 'ad_computer_list'
 $sql = "UPDATE drip_client_list AS A
 JOIN ad_comupter_list AS B 

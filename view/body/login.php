@@ -39,26 +39,27 @@
 			<i class="shield icon"></i>Log-in to your account
 		  </div>
 		</h2>
+		<?= flash() ?>
 		<?php
-		if(isset($_SESSION["error"])){
+		/*if(isset($_SESSION["error"])){
 			foreach($_SESSION["error"] as $error){
-				echo "<div class='ui error message' style='display:block'>".$error."</div>";
+				echo "<div class='ui error message'><i class='close icon'></i>".$error."</div>";
 			}
-		}
+		}*/
 		?>
 		<form class="ui large form" method="post" action="/do_login">
 		  <div class="ui stacked segment">
 			<div class="inline fields">
-    			<label for="verification">Auth</label>
+    			<label for="authentication">Auth</label>
 				<div class="field">
 				  <div class="ui radio checkbox">
-					<input type="radio" name="verification" value="ad" checked="" tabindex="0" class="hidden">
+					<input type="radio" name="authentication" value="ad" checked="checked" >
 					<label>ad</label>
 				  </div>
 				</div>
 				<div class="field">
 				  <div class="ui radio checkbox">
-					<input type="radio" name="verification" value="mail" tabindex="0" class="hidden">
+					<input type="radio" name="authentication" value="mail" >
 					<label>mail</label>
 				  </div>
 				</div>
@@ -81,9 +82,9 @@
 				<label>Remember Me</label>
 			  </div>
 			</div>
-				<button name="submit" class="ui sdc-blue fluid large button" type="submit">Login</button>
-				<input type="hidden" name="refer" value="<?php echo (isset($_GET['refer'])) ? $_GET['refer'] : 'login.php'; ?>">	
-		  	</div>
+			<input type="hidden" name="refurl" value="<?=base64_encode($_SERVER['HTTP_REFERER'])?>"/>
+			<button name="submit" class="ui sdc-blue fluid large button" type="submit">Login</button>
+		 </div>
 		</form>
 		<div class="ui message">
 			SDC-ISS System
@@ -91,4 +92,3 @@
 	  </div>
 	</div>
 	<?php unset($_SESSION["error"]); ?>
-

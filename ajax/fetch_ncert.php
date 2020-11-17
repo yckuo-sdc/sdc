@@ -82,6 +82,11 @@ if (isset($rows['values'])) {
 		$count = $count + 1;
 	}	
 
+	$error = $db->getErrorMessageArray();
+	if(@count($error) > 0) {
+		return;
+	}
+	
 	$nowTime = date("Y-m-d H:i:s");
 	$status = 200;	
 	$url = "https://docs.google.com/spreadsheets/d/1lr_EHFxJp0KGErFt7L1oh7n7HIIh_YZtVWH4QBZhhME/edit#gid=1460646588";

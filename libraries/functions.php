@@ -3,45 +3,28 @@ function GenerateRandomToken(){
 	return md5(uniqid(rand(), true));
 }
 
-function verifyBySession_Cookie($var){
-	//檢查session是不是為空 
-	if(!isset($_SESSION[$var])){ 
-		//使用者選擇了記住登入狀態
-		if(isset($_COOKIE['rememberme'])){
-			$SECRET_KEY = "security";
-			list ($user, $token, $UserName, $Level, $mac) = explode(':', $_COOKIE['rememberme']);
-			if (hash_equals(hash_hmac('sha256', $user . ':' . $token .':'. $UserName . ':' . $Level, $SECRET_KEY), $mac)) {
-				//使用者名稱和密碼對了，把使用者的個人資料放到session裡面 
-				$_SESSION['account'] = $user;   
-				$_SESSION['UserName'] = $UserName;
-				$_SESSION['Level'] = $Level;
-				$db = Database::get();
-				storeUserLogs2($db,'rememberLogin',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],$_SERVER['REQUEST_URI']);
-				return true;	
-			}else{
-				echo 'You Do Not Have Permission To Access!';
-				header("Location: /logout"); 
-				return false;
-			}
-		}else{  //如果session為空，並且使用者沒有選擇記錄登入狀 
-			echo 'You Do Not Have Permission To Access!';
-			header("Location: /logout"); 
-			return false;
-		} 
-	}else{
+function isLogin(){
+	if(isset($_SESSION['account'])) { 	//檢查session是否有值
 		return true;
-	}	
+	}
+	
+	if(isset($_COOKIE['rememberme'])){	//使用者選擇記住登入狀態
+		$SECRET_KEY = "security";
+		list ($user, $token, $UserName, $Level, $mac) = explode(':', $_COOKIE['rememberme']);
+		if (hash_equals(hash_hmac('sha256', $user . ':' . $token .':'. $UserName . ':' . $Level, $SECRET_KEY), $mac)) {	//使用者名稱和密碼對了，把使用者的個人資料放到session裡面 
+			$_SESSION['account'] = $user;   
+			$_SESSION['UserName'] = $UserName;
+			$_SESSION['Level'] = $Level;
+			$db = Database::get();
+			saveAction($db,'rememberLogin',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],$_SERVER['REQUEST_URI']);
+			return true;	
+		}
+	}		
+	
+	//header("Location: /logout"); 
+	return false;
 }	
 
-function issetBySession($var){
-	if(isset($_SESSION[$var])){
-		return true;
-	}
-	else{
-		return false;
-	}
-}	
-	
 function checkAccountByLDAP($user, $ldappass){
 
 	$ldapconn = ldap_connect(LDAP::ADDRESS);
@@ -49,51 +32,20 @@ function checkAccountByLDAP($user, $ldappass){
 	ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
 
-	/*
-	$ldaphost = "tainan.gov.tw";
-	$ldapconn = ldap_connect($ldaphost);
-	$ldaprdn = $user . "@" . $ldaphost;
-	ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
-	ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
-	*/
-
 	if ($ldapconn){
-		@$ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
-		// verify binding
+		$ldapbind = @ldap_bind($ldapconn, $ldaprdn, $ldappass);	// verify binding
 		if ($ldapbind) {
-			//echo "LDAP bind successful...";
 			ldap_close($ldapconn);
 			return true;
-		} else {
-			//echo "LDAP bind failed...";														
-			ldap_close($ldapconn);
-			return false;	
-		}
-	}else{
-		ldap_close($ldapconn);
-		return false;	
-	}	
+		}		
+	}
+
+	ldap_close($ldapconn);
+	return false;	
 }
 
 //store user's action to DB's log table	
-function storeUserLogs($db, $type, $ip, $user, $msg){
-	$type = $db->getEscapedString($type);
-	$ip = $db->getEscapedString($ip);
-	$user = $db->getEscapedString($user);
-	$msg = $db->getEscapedString($msg);
-	$time = date('Y-m-d H:i:s');
-	
-	$table = "logs"; // 設定你想新增資料的資料表
-	$data_array['type'] = $type;
-	$data_array['ip'] = $ip;
-	$data_array['user'] = $user;
-	$data_array['msg'] = $msg;
-	$data_array['time'] = $time;
-	$db->insert($table, $data_array);
-}	
-
-//store user's action to DB's log table	
-function storeUserLogs2($db, $type, $ip, $user, $msg){
+function saveAction($db, $type, $ip, $user, $msg){
 	$time = date('Y-m-d H:i:s');
 	
 	$table = "logs"; // 設定你想新增資料的資料表
@@ -159,101 +111,6 @@ function phpAlert($msg) {
 	echo '<script type="text/javascript">alert("' . $msg . '")</script>';
 }
 
-function getPaginationParameter($page, $last_num_rows) {
-	$per = 10;
-	$max_page = 10;
-	$total_page = ceil($last_num_rows / $per); 
-	$lower_bound = ($page <= $max_page) ? 1 : $page - $max_page + 1;
-	$upper_bound = ($page <= $max_page) ? min($max_page,$total_page) : $page;					
-	$start = ($page -1)*$per; //計算資料庫取資料範圍的開始值。
-	if($page == 1)					$offset = ($last_num_rows < $per) ? $last_num_rows : $per;
-	elseif($page == $total_page)	$offset = $last_num_rows - $start;
-	else							$offset = $per;
-				
-	$prev_page  = ($page > 1) ? $page -1 : 1;
-	$next_page  = ($page < $total_page) ? $page +1 : $total_page;	
-	
-	return array('prev_page' => $prev_page, 'next_page' => $next_page, 'lower_bound' => $lower_bound, 'upper_bound' => $upper_bound, 'total_page' => $total_page, 'start' => $start, 'offset' => $offset);
-}
-
-function createPaginationElement($pageParm, $page, $pageAttr) {
-	$res ="";
-	$attr = "";
-	$prev_page = $pageParm['prev_page'];
-	$next_page = $pageParm['next_page'];
-	$lb = $pageParm['lower_bound'];
-	$ub = $pageParm['upper_bound'];
-	$Totalpages = $pageParm['total_page'];
-	
-	foreach($pageAttr as $key => $val) {
-		$attr = $attr.$key."='".$val."' ";
-	}
-
-	$res .="<div class='ui pagination menu'>";	
-	$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='1'>首頁</a>";
-	$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$prev_page."'> ← </a>";
-	for ($j = $lb; $j <= $ub ;$j++){
-		if($j == $page){
-			$res .="<a class='active item bold' href='javascript:void(0)' ".$attr." page='".$j."'>".$j."</a>";
-		}else{
-			$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$j."'>".$j."</a>";
-		}
-	}
-	$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$next_page."'> → </a>";		
-	$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$Totalpages."'>末頁 </a>";		
-	$res .="</div>";
-   
-	$res .="<div class='ui pagination menu mobile'>";	
-		$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$prev_page."'> ← </a>";
-		$res .="<a class='active item bold' href='javascript:void(0)' ".$attr." page='".$page."'>(".$page."/".$Totalpages.")</a>";
-		$res .="<a class='item ' href='javascript:void(0)' ".$attr." page='".$next_page."'> → </a>";		
-	$res .="</div>";
-	return $res;
-}
-
-function pagination($prev_page,$next_page,$lower_bound,$upper_bound,$Totalpages,$mainpage,$subpage,$tab,$pages,$sort) {
-	$href = "/".$mainpage."/".$subpage."/?";
-	switch(true){
-		case ($tab == 0 && $sort == ""):
-			$href =  $href ."page=";
-			break;
-		case ($tab != 0 && $sort == ""):
-			$href =  $href ."tab=".$tab."&page=";
-			break;
-		case ($tab == 0 && $sort != ""):
-			$href =  $href ."sort=".$sort."&page=";
-			break;
-		case ($tab != 0 && $sort != ""):
-			$href =  $href ."tab=".$tab."&sort=".$sort."&page=";
-			break;
-	}
-	$result ="";
-
-	//The href-link of bottom pages
-	$result .="<div class='ui pagination menu'>";	
-	$result .="<a class='item test' href='".$href."1'>首頁</a>";
-	$result .="<a class='item test' href='".$href.$prev_page."'> ← </a>";
-	for ($j = $lower_bound; $j <= $upper_bound ;$j++){
-		if($j == $pages){
-			$result .="<a class='active item bold' href='".$href.$j."'>".$j."</a>";
-		}else{
-			$result .="<a class='item test' href='".$href.$j."'>".$j."</a>";
-		}
-	}
-	$result .="<a class='item test' href='".$href.$next_page."'> → </a>";		
-	//last page
-	$result .="<a class='item test' href='".$href.$Totalpages."'>末頁 </a>";		
-	$result .="</div>";
-   
-	//The mobile href-link of bottom pages
-	$result .="<div class='ui pagination menu mobile'>";	
-		$result .="<a class='item test' href='".$href.$prev_page."'> ← </a>";
-		$result .="<a class='active item bold' href='".$href.$pages."'>(".$pages."/".$Totalpages.")</a>";
-		$result .="<a class='item test' href='".$href.$next_page."'> → </a>";		
-	$result .="</div>";
-	return $result;
-}
-
 // For Windows NT Time convert to UnixTimestamp
 function WindowsTime2UnixTime($WindowsTime){
 	$UnixTime = $WindowsTime/10000000-11644473600;
@@ -296,6 +153,7 @@ function NmapParser($input){
 	}
 	return $stack;
 } 
+
 // convert json to csv file
 function jsonToCSV($json, $cfilename){
 	//if (($json = file_get_contents($jfilename)) == false)

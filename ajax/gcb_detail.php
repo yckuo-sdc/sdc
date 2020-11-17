@@ -2,11 +2,9 @@
 use gcb\api as gcb;
 require 'gcb_api.php';
 require '../vendor/autoload.php';
-
 session_start(); 
-if(!verifyBySession_Cookie("account")){
-	return 0;
-}
+if(!isLogin()) return;
+
 if( isset($_GET['action']) && isset($_GET['id']) ){
 	$action = $_GET["action"];
 	$id = $_GET["id"];

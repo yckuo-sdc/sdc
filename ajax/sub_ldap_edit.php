@@ -2,11 +2,8 @@
 use ad\api as ad;
 require 'ad_api.php';
 require '../vendor/autoload.php';
-
 session_start(); 
-if(!verifyBySession_Cookie("account")){
-	return ;
-}
+if(!isLogin()) return;
 
 $db = Database::get();
 
@@ -27,14 +24,14 @@ switch($type){
 		if(!empty($isActive)){
 			$res = ad\change_user_state($cn,'false',$isActive,'false');
 			echo "changestate 執行結果：".$res."<br>";
-			storeUserLogs2($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_state(account='.$cn.')res='.$res);
+			saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_state(account='.$cn.')res='.$res);
 		}
 		if(!empty($organizationalUnit)){
 			$ou = explode("(", $organizationalUnit);
 			$ou = $ou[0];	
 			$res = ad\change_user_ou($cn,$ou);
 			echo "change_user_ou 執行結果：".$res."<br>";
-			storeUserLogs2($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_ou(account='.$cn.')res='.$res);
+			saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_ou(account='.$cn.')res='.$res);
 		}
 		if($new_password!=$confirm_password){
 			echo "failed:兩次輸入密碼不同!<br>";
@@ -42,7 +39,7 @@ switch($type){
 		}
 		$res = ad\edit_user($cn,$new_password,$confirm_password,$displayname,$title,$telephonenumber,$physicaldeliveryofficename,$mail,$isActive);
 		echo "edituser 執行結果：".$res."<br>";
-		storeUserLogs2($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/edit_user(account='.$cn.')res='.$res);
+		saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/edit_user(account='.$cn.')res='.$res);
 		break;
 	case "newuser":
 		if($new_password!=$confirm_password){
@@ -53,20 +50,20 @@ switch($type){
 		$ou = $ou[0];	
 		$res = ad\new_user($cn,$new_password,$confirm_password,$displayname,$title,$telephonenumber,$physicaldeliveryofficename,$mail,$ou);
 		echo "newuser 執行結果：".$res."<br>";
-		storeUserLogs2($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/new_user(account='.$cn.')res='.$res);
+		saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/new_user(account='.$cn.')res='.$res);
 		break;
 	case "changecomputer":
 		if(!empty($isActive)){
 			$res = ad\change_user_state($cn,'false',$isActive,'false');
 			echo "changestate 執行結果：".$res."<br>";
-			storeUserLogs2($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_state(account='.$cn.')res='.$res);
+			saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_state(account='.$cn.')res='.$res);
 		}
 		if(!empty($organizationalUnit)){
 			$ou = explode("(", $organizationalUnit);
 			$ou = $ou[0];	
 			$res = ad\change_computer_ou($cn,$ou,$isYonghua);
 			echo "changecomputer 執行結果：".$res."<br>";
-			storeUserLogs2($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_computer_ou(account='.$cn.')res='.$res);
+			saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_computer_ou(account='.$cn.')res='.$res);
 		}
 		break;
 }

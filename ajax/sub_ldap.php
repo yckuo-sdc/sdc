@@ -1,10 +1,8 @@
 <?php
 require '../vendor/autoload.php';
-
 session_start(); 
-if(!verifyBySession_Cookie("account")){
-	return ;
-}
+if(!isLogin()) return;
+
 if(empty($_GET['target']) || empty($_GET['type'])){
 	return ;
 }
@@ -25,7 +23,7 @@ switch($type){
 			for($k=0;$k<count($ou);$k++){
 				$result = @ldap_search($ldapconn,"ou=".$ou[$k].",dc=tainan,dc=gov,dc=tw","(".$keyword_type[$k]."=".$target."*)") or die ("Error in query");
 				$data = @ldap_get_entries($ldapconn,$result);
-				echo $data["count"]. " entries returned from ".$ou[$k]."<br><br>";
+				echo "<p>".$data["count"]. " entries returned from ".$ou[$k]."</p>";
 				if($data["count"]!=0){
 					for($i=0; $i<$data["count"];$i++){
 						echo "<form id='form-ldap' class='ui form' action='javascript:void(0)'>";
@@ -64,13 +62,13 @@ switch($type){
 								echo "</div>";
 							echo "</div>";
 							echo "<div class='two wide field'>";
-								echo "<button class='ui button' onclick='ldap_clear()'>Cancel</button>";
+								echo "<button id='ldap_clear_btn' class='ui button'>Cancel</button>";
 							echo "</div>";
 							echo "<div class='two wide field'>";
-								echo "<button class='ui button' onclick='ldap_edit()' >Save</button>";
+								echo "<button id='ldap_edit_btn' class='ui button'>Save</button>";
 							echo "</div>";
 						echo "</div>";
-						echo "<div class='description'>";
+						echo "<div>";
 							if($k==0){	//user
 								$keyword_ou = "(objectClass=organizationalUnit)";
 								$result_ou = ldap_search($ldapconn,"OU=TainanLocalUser,dc=tainan,dc=gov,dc=tw",$keyword_ou) or die ("Error in query");
@@ -118,12 +116,16 @@ switch($type){
 								echo "<div class='inline fields'>";
 									echo "<label for='isYonghua'>市政中心</label>";
 									echo "<div class='field'>";
-										echo "<input type='radio' name='isYonghua' value='true' checked='checked' tabindex='0' class='hidden'>";
-										echo "<label>永華</label>";
+										echo "<div class='ui radio checkbox'>";
+											echo "<input type='radio' name='isYonghua' value='true' checked='checked'>";
+											echo "<label>永華</label>";
+										echo "</div>";
 									echo "</div>";
 									echo "<div class='field'>";
-										echo "<input type='radio' name='isYonghua' value='false' tabindex='0' class='hidden'>";
-										echo "<label>民治</label>";
+										echo "<div class='ui radio checkbox'>";
+											echo "<input type='radio' name='isYonghua' value='false'>";
+											echo "<label>民治</label>";
+										echo "</div>";
 									echo "</div>";
 								echo "</div>";
 								echo "<div class='field'>";
@@ -143,7 +145,7 @@ switch($type){
 									echo "</datalist>";
 								echo "</div>";
 							}
-						echo "<ol>";
+						echo "<ol class='ui list'>";
 						for ($j=0;$j<$data[$i]["count"];$j++){
 							if($data[$i][$j] == "cn"){
 								echo "<li>".$data[$i][$j].": ";
@@ -175,6 +177,7 @@ switch($type){
 							}
 						}
 						echo "</ol>";
+						echo "<p></p>";
 						echo "</div>";
 					echo "</form>";
 					
@@ -201,13 +204,13 @@ switch($type){
 				echo "<input type='hidden' name='type' value='newuser' >";
 				echo "</div>";
 				echo "<div class='two wide field'>";
-					echo "<button class='ui button' onclick='ldap_clear()'>Cancel</button>";
+					echo "<button id='ldap_clear_btn' class='ui button'>Cancel</button>";
 				echo "</div>";
 				echo "<div class='two wide field'>";
-					echo "<button class='ui button' onclick='ldap_edit()' >Save</button>";
+					echo "<button id='ldap_edit_btn' class='ui button'>Save</button>";
 				echo "</div>";
 			echo "</div>";
-			echo "<div class='description'>";
+			echo "<div>";
 			echo "<div class='field'>";
 				echo "<label>單位<font color='red'>*</font></label>";
 			

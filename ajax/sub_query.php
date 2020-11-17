@@ -27,7 +27,7 @@ $arr_jsonObj = json_decode($jsonObj,true);
 
 //table switch
 switch(true){
-	case ($type == 'security_event'):
+	case ($type == 'event'):
 		$condition_table = "security_event";
 		$table = "security_event";
 		$order_by = "EventID DESC, OccurrenceTime DESC";	
@@ -37,29 +37,29 @@ switch(true){
 		$table = "tainangov_security_Incident";
 		$order_by = "IncidentID DESC, OccurrenceTime DESC";	
 		break;
-	case ($type == 'security_contact'):
+	case ($type == 'contact'):
 		$condition_table = "security_contact";
 		$table = "(select * from security_contact union select * from security_contact_extra)a";
 		$table = "(SELECT a.*, b.rank FROM( SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by OID asc,person_type asc )a LEFT JOIN security_rank AS b ON a.OID = b.OID)v";
 		$order_by = "oid, person_type";	
 		break;
-	case ($type == 'gcb_client_list'):
+	case ($type == 'gcb'):
 		$condition_table = "gcb_client_list";
 		$table = "(SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id)A";
 		if($keyword == 'ExternalIP' or $keyword == 'InternalIP') $key = ip2long($key);
 		$order_by = "ID";	
 		break;
-	case ($type == 'wsus_client_list'):
+	case ($type == 'wsus'):
 		$condition_table = "wsus_computer_status";
 		$table = "wsus_computer_status";
 		$order_by = "TargetID";	
 		break;
-	case ($type == 'antivirus_client_list'):
+	case ($type == 'antivirus'):
 		$condition_table = "antivirus_client_list";
 		$table = "antivirus_client_list";
 		$order_by = "GUID";	
 		break;
-	case ($type == 'drip_client_list'):
+	case ($type == 'drip'):
 		$condition_table = "drip_client_list";
 		$table = "drip_client_list";
 		$order_by = "DetectorName ,IP";	
@@ -94,21 +94,30 @@ if( count($arr_jsonObj) !=0 ){
 }
 
 //echo $condition."<br>";
-$table = $table; // 設定你想查詢資料的資料表
-$total_entries = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", $data_array);
-$last_num_rows = $db->getLastNumRows();
+
+$limit = 10;
+$links = 4;
+$query = "SELECT * FROM {$table} WHERE {$condition} ORDER BY {$order_by}";
+
+$Paginator = new Paginator($query, $data_array);
+$entries = $Paginator->getData($limit, $page, $data_array);
+$last_num_rows = $Paginator->getTotal();
 
 if($ap=='html'){
 	if ($last_num_rows == 0){
 		echo "很抱歉，該分類目前沒有資料！";
 	}else{
 		echo "該分類共搜尋到".$last_num_rows."筆資料！";
-		$pageParm = getPaginationParameter($page, $last_num_rows);
-		$limit = "limit ".($start = $pageParm['start']).",".($offset = $pageParm['offset']);
-		$entries = $db->query($table, $condition, $order_by, $fields = "*", $limit, $data_array);
+
+		$limit = 10;
+		$links = 4;
+        $query = "SELECT * FROM {$table} WHERE {$condition} ORDER BY {$order_by}";
+
+		$Paginator = new Paginator($query, $data_array);
+		$entries = $Paginator->getData($limit, $page, $data_array);
 		
 		switch($type){
-			case "security_event": 
+			case "event": 
 			echo "<div class='ui relaxed divided list'>";
 				echo "<div class='item'>";
 					echo "<div class='content'>";
@@ -116,7 +125,7 @@ if($ap=='html'){
 						echo "<a>";
 					echo "</div>";
 				echo "</div>";
-					foreach($entries as $entry) {
+					foreach($entries->data as $entry) {
 						echo "<div class='item'>";
 						echo "<div class='content'>";
 							echo "<a>";
@@ -151,6 +160,8 @@ if($ap=='html'){
 								echo "<li>未能處理之原因及因應方式:".$entry['UnprocessedReason']."</li>";
 								echo "<li>備註:".$entry['Remarks']."</li>";
 								echo "</ol>";
+								echo "<button type='button' class='ui button edit' key='".$entry['EventID']."'>Edit</button>";
+								echo "<button type='button' class='ui button delete' key='".$entry['EventID']."'>Delete</button>";
 							echo "</div>";
 							echo "</div>";
 						echo "</div>";
@@ -167,7 +178,7 @@ if($ap=='html'){
 						echo "</div>";
 					echo "</div>";
 
-					foreach($entries as $entry) {
+					foreach($entries->data as $entry) {
 						echo "<div class='item'>";
 						echo "<div class='content'>";
 							echo "<a>";
@@ -219,7 +230,7 @@ if($ap=='html'){
 					}
 				echo "</div>";
 				break;
-			case "security_contact":
+			case "contact":
 			$condition = $condition." GROUP BY OID";
 			$fields = "OID";
 			$db->query($table, $condition, $order_by = "1", $fields, $limit = "", $data_array);
@@ -234,7 +245,7 @@ if($ap=='html'){
 					echo "</div>";
 				echo "</div>";
 
-				foreach($entries as $entry) {
+				foreach($entries->data as $entry) {
 					echo "<div class='item'>";
 					echo "<div class='content'>";
 						echo "<a>";
@@ -268,7 +279,7 @@ if($ap=='html'){
 				}
 			echo "</div>";
 			break;
-			case "gcb_client_list":
+			case "gcb":
 				echo "<div class='ui relaxed divided list'>";
 					echo "<div class='item'>";
 						echo "<div class='content'>";
@@ -281,7 +292,7 @@ if($ap=='html'){
 							echo "<a>";
 						echo "</div>";
 					echo "</div>";
-			foreach($entries as $entry) {
+			foreach($entries->data as $entry) {
 				echo "<div class='item'>";
 				echo "<div class='content'>";
 					echo "<a>";
@@ -315,7 +326,7 @@ if($ap=='html'){
 					echo "</a>";
 					echo "<div class='description'>";
 						echo "<ol>";
-						echo "<li><a href='ajax/gcb_detail.php?action=detail&id=".$entry['ID']."' target='_blank'>序號:".$entry['ID']."&nbsp<i class='external alternate icon'></i></a></li>";
+						echo "<li><a href='/ajax/gcb_detail.php?action=detail&id=".$entry['ID']."' target='_blank'>序號:".$entry['ID']."&nbsp<i class='external alternate icon'></i></a></li>";
 						echo "<li>外部IP:".long2ip($entry['ExternalIP'])."</li>";
 						echo "<li>內部IP:".long2ip($entry['InternalIP'])."</li>";
 						echo "<li>電腦名稱:".$entry['Name']."</li>";
@@ -329,7 +340,7 @@ if($ap=='html'){
 						echo "<li>Gcb總通過數[包含例外]:".$entry['GsAll_1']."</li>";
 						echo "<li>Gcb總通過數[總數]:".$entry['GsAll_2']."</li>";
 						echo "<li>Gcb例外數量:".$entry['GsExcTot']."</li>";
-						echo "<li><a href='ajax/gcb_detail.php?action=gscan&id=".$entry['GsID']."' target='_blank'>Gcb掃描編號:".$entry['GsID']."&nbsp<i class='external alternate icon'></i></a></li>";
+						echo "<li><a href='/ajax/gcb_detail.php?action=gscan&id=".$entry['GsID']."' target='_blank'>Gcb掃描編號:".$entry['GsID']."&nbsp<i class='external alternate icon'></i></a></li>";
 						echo "<li>Gcb派送編號:".$entry['GsSetDeployID']."</li>";
 						echo "<li>Gcb狀態:".$GsStat_str."</li>";
 						echo "<li>Gcb回報時間:".$entry['GsUpdatedAt']."</li>";
@@ -341,9 +352,9 @@ if($ap=='html'){
 			
 			echo "</div>";
 			break;
-			case "wsus_client_list":
+			case "wsus":
 				echo "<div class='ui relaxed divided list'>";
-			foreach($entries as $entry) {
+			foreach($entries->data as $entry) {
 				$table = "wsus_computer_updatestatus_kbid";
 				$order_by = "ID";
 				$condition = "TargetID = :TargetID AND UpdateState = :UpdateState";
@@ -394,9 +405,9 @@ if($ap=='html'){
 			}
 			echo "</div>";
 			break;
-			case "antivirus_client_list":
+			case "antivirus":
 			echo "<div class='ui relaxed divided list'>";
-			foreach($entries as $entry) {
+			foreach($entries->data as $entry) {
 				echo "<div class='item'>";
 				echo "<div class='content'>";
 					echo "<a>";
@@ -435,9 +446,9 @@ if($ap=='html'){
 			}		
 			echo "</div>";
 			break;
-			case "drip_client_list":
+			case "drip":
 			echo "<div class='ui relaxed divided list'>";
-			foreach($entries as $entry) {
+			foreach($entries->data as $entry) {
 				echo "<div class='item'>";
 				echo "<div class='content'>";
 					echo "<a>";
@@ -448,6 +459,8 @@ if($ap=='html'){
 					if($entry['wsus']==1) echo "<i class='circle red icon'></i>";
 					else echo "<i class='circle outline icon'></i>";
 					if($entry['antivirus']==1) echo "<i class='circle blue icon'></i>";
+					else echo "<i class='circle outline icon'></i>";
+					if($entry['edr']==1) echo "<i class='circle black icon'></i>";
 					else echo "<i class='circle outline icon'></i>";
 					echo $entry['DetectorName']."&nbsp&nbsp";
 					echo "<span style='background:#fde087'>".$entry['IP']."</span>&nbsp&nbsp";
@@ -479,6 +492,7 @@ if($ap=='html'){
 					echo "<li>gcb安裝:".$entry['gcb']."</li>";
 					echo "<li>wsus安裝:".$entry['wsus']."</li>";
 					echo "<li>antivirus安裝:".$entry['antivirus']."</li>";
+					echo "<li>edr安裝:".$entry['edr']."</li>";
 					echo "<li>OrgName:".$entry['OrgName']."</li>";
 					echo "<li>Owner:".$entry['Owner']."</li>";
 					echo "<li>UserName:".$entry['UserName']."</li>";
@@ -495,24 +509,25 @@ if($ap=='html'){
 		$pageAttr['keyword'] = $keyword;	
 		$pageAttr['type'] = $type;	
 		$pageAttr['jsonObj'] = $jsonObj;	
-		echo createPaginationElement($pageParm, $page, $pageAttr);
+
+		echo $Paginator->createLinks($links, 'ui pagination menu', $pageAttr, $method='ajax');
 	}
 }elseif($ap='csv'){
 	$arrs=array();
 	switch($type){
-		case 'security_event': 
+		case 'event': 
 			break;
 		case 'ncert': 
 			break;
-		case 'security_contact': 
+		case 'contact': 
 			break;
-		case 'gcb_client_list': 
+		case 'gcb': 
 			break;
-		case 'wsus_client_list': 
+		case 'wsus': 
 			break;
-		case 'antivirus_client_list': 
+		case 'antivirus': 
 			break;
-		case 'drip_client_list': 
+		case 'drip': 
 			foreach($total_entries as $entry) {
 				foreach($entry as $key => $val){
 					$arr[$key] = $val;
