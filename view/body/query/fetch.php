@@ -5,9 +5,9 @@
 		<div class="post">
 			<div class="post_title">Fetch Google Sheets and GCB</div>
 			<div class="post_cell">
-				<button id="gs_event_btn" class="ui button self-btn">Fetch Event GS</button>
-				<button id="gs_ncert_event_btn" class="ui button self-btn">Fetch Ncert GS</button>
-				<button id="gcb_api_btn" class="ui button self-btn">Fetch GCB</button>
+				<button id="gs_event_btn" class="ui button">Fetch Event GS</button>
+				<button id="gs_ncert_btn" class="ui button">Fetch Ncert GS</button>
+				<button id="gcb_api_btn" class="ui button">Fetch GCB</button>
 				<div class="retrieve_info"></div>
 			</div>
 		</div>
@@ -29,10 +29,10 @@
 				<p><input type="submit" value="Submit" class="ui button" name="submit" style="margin-top:1em"/></p>
 				</form>
 				<div class="retrieve_ncert"></div>
-			</div>
-		</div>
+            </div><!--End of post_cell-->
+        </div><!--End of post-->
 		<?php } ?>
-	</div>
+    </div><!--End of sub-content-->
 	<div style="clear: both;"></div>
 </div><!-- end #content -->
 </div> <!--end #page-->

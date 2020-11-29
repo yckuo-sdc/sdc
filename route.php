@@ -1,4 +1,3 @@
-<!--route-->
 <?php 
 $mainpage = strtolower($route->getParameter(1));	// 用參數決定載入某頁並讀取需要的資料
 $controller_array = scandir('controller');

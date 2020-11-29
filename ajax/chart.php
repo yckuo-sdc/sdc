@@ -71,7 +71,7 @@ switch($chartID){
 		echo "<data>";
 		foreach($report_map as $report_name){	
 			$report_type = 'predefined';
-			$res = $pa->GetReportList($report_type, $report_name);
+			$res = $pa->getReportList($report_type, $report_name);
 			$xml = simplexml_load_string($res) or die("Error: Cannot create object");
 			$max_count = 10;
 			$count = 0;
@@ -85,6 +85,26 @@ switch($chartID){
 					}
 				echo "</".$report_name.">";
 				$count = $count + 1;
+			}
+		}
+		echo "</data>";
+		break;
+	case "app":
+		$pa = new PaloAltoAPI();
+		$report_map = ['top-applications'];
+		echo "<h3></h3>"; 
+		echo "<?xml version=\"1.0\"?>";
+		echo "<data>";
+		foreach($report_map as $report_name){	
+			$report_type = 'predefined';
+			$res = $pa->getReportList($report_type, $report_name);
+			$xml = simplexml_load_string($res) or die("Error: Cannot create object");
+			foreach($xml->result->entry as $log){
+				echo "<".$report_name.">";
+					foreach($log as $key => $val){
+						echo "<".$key.">".$val."</".$key.">";
+					}
+				echo "</".$report_name.">";
 			}
 		}
 		echo "</data>";

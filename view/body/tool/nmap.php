@@ -5,17 +5,17 @@
 			<div class="post nmap">
 				<div class="post_title">Nmap</div>
 				<div class="post_cell">
-					<div class="ui top attached tabular menu">
+					<div class="ui secondary pointing menu">
 						<a class="active item">Nmap</a>
 						<a class="item">Portscan Result</a>
 					</div>
-					<div class="ui bottom attached segment">
+					<div class="ui noborder bottom attached segment">
 						<div class="tab-content nmap show">
 							<form class="ui form" action="javascript:void(0)">
 								<div class="field">
 									<label>Host(IP or Domain name)</label>
 									<div class="ui input">
-										<?php $target = "localhost vision.tainan.gov.tw 10.7.102.4";?>
+										<?php $target = "localhost vision.tainan.gov.tw 10.7.102.4"; ?>
 										<input type="text" name="target" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
 									</div>
 								</div>
@@ -48,50 +48,39 @@
 							</tr>
 							</thead>
 							<tbody>	
-							<?php 
-							foreach($systems as $system){
-								$SID = $system['SID'];
-								$Name = $system['Name'];
-								$IP = $system['IP'];
-								$URL = $system['URL'];
-								$Scan_Result = $system['Scan_Result'];
-								$table = "portscanResult"; // 設定你想查詢資料的資料表
-								$condition = "ScanTime = (SELECT MAX(ScanTime) FROM portscanResult WHERE SID = :SID_1) AND SID = :SID_2";
-								$ports = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':SID_1'=>$SID, ':SID_2'=>$SID]);
-								$size = $db->getLastNumRows();
-								if($size == 0 ){
-									echo "<tr>";
-										echo "<td><a href='".$URL."' target='_blank'>".$Name."</a></td>";
-										echo "<td>".$IP."</td>";
-										echo "<td></td>";
-										echo "<td></td>";
-										echo "<td></td>";
-										echo "<td></td>";
-										echo "<td>".$Scan_Result."</td>";
-									echo "</tr>";
-								}else{
-									foreach ($ports as $key=>$port){
-										if($key == 0){
-											echo "<tr>";
-												echo "<td rowspan=".$size."><a href='".$URL."' target='_blank'>".$Name."</a></td>";
-												echo "<td rowspan=".$size.">".$IP."</td>";
-												echo "<td rowspan=".$size.">tcp</td>";
-												echo "<td>".$port['PortNumber']."</td>";
-												echo "<td>".$port['Service']."</td>";
-												echo "<td>".$port['Status']."</td>";
-												echo "<td rowspan=".$size.">".$Scan_Result."</td>";
-											echo "</tr>";
-										}else{
-											echo "<tr>";
-												echo "<td>".$port['PortNumber']."</td>";
-												echo "<td>".$port['Service']."</td>";
-												echo "<td>".$port['Status']."</td>";
-											echo "</tr>";
-										}	
+							<?php foreach($systems as $system){
+								if($system['size'] == 0 ){ ?>
+									<tr>
+										<td><a href='<?=$system['URL']?>' target='_blank'><?=$system['Name']?></a></td>
+										<td><?=$system['IP']?></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td><?=$system['Scan_Result']?></td>
+									</tr>
+								<?php }else{
+									foreach ($system['ports'] as $index => $port){
+										if($index == 0){ ?>
+											<tr>
+												<td rowspan=<?=$system['size']?>><a href='<?=$system['URL']?>' target='_blank'><?=$system['Name']?></a></td>
+												<td rowspan=<?=$system['size']?>><?=$system['IP']?></td>
+												<td rowspan=<?=$system['size']?>>tcp</td>
+												<td><?=$port['PortNumber']?></td>
+												<td><?=$port['Service']?></td>
+												<td><?=$port['Status']?></td>
+												<td rowspan=<?=$system['size']?>><?=$system['Scan_Result']?></td>
+											</tr>
+										<?php }else{ ?>
+											<tr>
+                                                <td><?=$port['PortNumber']?></td>
+                                                <td><?=$port['Service']?></td>
+                                                <td><?=$port['Status']?></td>
+											</tr>
+										<?php }	
 									}
 								}
-							}
-							?>
+							} ?>
 							</tbody>
 							</table>
 						</div> <!-- end .tabular-->

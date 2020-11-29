@@ -95,9 +95,9 @@
 						<div class="ui approve button">OK</div>
 					  </div>
 					</div>
-				</div>
-			</div>
-		</div>
+				</div><!--end of .post_cell-->
+			</div><!--end of .post-->
+		</div><!--end of .sub-content-->
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
 </div> <!--end #page-->

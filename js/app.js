@@ -23,10 +23,10 @@ $(document).ready(function(){
 	});
 	
 	//tabular tab switch
-	$('.tabular.menu .item').click(function(){
+	$('.tabular.menu .item, .pointing.menu .item').click(function(){
 		var num = $(this).index();
 		var content = $('.ui.attached.segment').find('.tab-content')[num];
-		$('.tabular.menu .item').removeClass("active");
+		$('.tabular.menu .item, .pointing.menu .item').removeClass("active");
 		$(this).addClass('active');
 		$('.ui.attached.segment .tab-content').removeClass('show').hide();
 		$(content).addClass('show').show();
@@ -310,9 +310,9 @@ $(document).ready(function(){
 	$('#gs_event_btn').click(function(){
 		retrieve_gs_ajax();	
 	});
-	//Google Sheets of Ncert security incidents
-	$('#gs_ncert_event_btn').click(function(){
-		retrieve_ncert_event_gs_ajax();
+	//Google Sheets of security ncerts
+	$('#gs_ncert_btn').click(function(){
+		retrieve_ncert_gs_ajax();
 	});
 	//GCB API
 	$('#gcb_api_btn').click(function(){
@@ -374,6 +374,9 @@ $(document).ready(function(){
 		$('input:text', $(e.target).parent()).val(name);
 	});	
 	
+	//semantic accordion
+    $('.ui.accordion').accordion();
+
 	//semantic modal display
 	$('#modal_btn').on('click', function(){
 		$('.ui.modal').modal('show');
@@ -399,7 +402,7 @@ $(document).ready(function(){
 	$("#upload_Form").on('submit',(function(e){
 		e.preventDefault();
 		$.ajax({
-			url: "/ajax/upload_contact.php",
+			url: "/ajax/upload_contact/",
 			type: "POST",
 			data:  new FormData(this),
 			contentType: false,
@@ -488,7 +491,7 @@ function ldap_edit_ajax(form) {
 	// end of input validation
 
 	$.ajax({
-		 url: '/ajax/sub_ldap_edit.php',
+		 url: '/ajax/ldap_edit/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -558,11 +561,11 @@ function sub_query_ajax(type, ap){
 
 	//ap='csv'
 	if(ap=='csv'){
-		window.location.assign("/ajax/sub_query.php?"+$.param(input));
+		window.location.assign("/ajax/query/?"+$.param(input));
 	}else{
 	//ap='html'
 		$.ajax({
-			 url: '/ajax/sub_query.php',
+			 url: '/ajax/query/',
 			 cache: false,
 			 dataType:'html',
 			 type:'GET',
@@ -583,7 +586,7 @@ function sub_query_pagination_ajax(data_array){
 		selector = ".tab-content."+type+" ";
 	}
 	$.ajax({
-		 url: '/ajax/sub_query.php',
+		 url: '/ajax/query/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -632,7 +635,7 @@ function sub_ips_query_ajax(type){
 	//ap='html'
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: '/ajax/sub_ips_query.php',
+		 url: '/ajax/ips_query/',
 		 cache: false,
 		 dataType: 'html',
 		 type: 'GET',
@@ -676,7 +679,7 @@ function load_ips_query_ajax(type){
 	//ap='html'
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: '/ajax/sub_ips_query.php',
+		 url: '/ajax/ips_query/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -695,7 +698,7 @@ function sub_ips_query_pagination_ajax(data_array){
 	 var selector = ".post.network .tab-content."+type+" ";
 	 $(selector + '.ui.inline.loader').addClass('active');
 	 $.ajax({
-		 url: '/ajax/sub_ips_query.php',
+		 url: '/ajax/ips_query/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -738,11 +741,11 @@ function sub_vul_query_ajax(type,ap){
 	if ( (typeof key != 'undefined' && key !='' && keyword !=''  && type !='') || jsonObj !='[]') {
 		//ap='csv'
 		if(ap=='csv'){
-			window.location.assign("/ajax/sub_vul_query.php?key="+encodeURI(key)+"&keyword="+encodeURI(keyword)+"&type="+type+"&ap="+ap+"&jsonStatus="+encodeURIComponent(jsonStatus)+"&jsonObj="+encodeURIComponent(jsonObj));
+			window.location.assign("/ajax/vul_query/?key="+encodeURI(key)+"&keyword="+encodeURI(keyword)+"&type="+type+"&ap="+ap+"&jsonStatus="+encodeURIComponent(jsonStatus)+"&jsonObj="+encodeURIComponent(jsonObj));
 		}else{
 		//ap='html'
 			$.ajax({
-				 url: '/ajax/sub_vul_query.php',
+				 url: '/ajax/vul_query/',
 				 cache: false,
 				 dataType:'html',
 				 type:'GET',
@@ -762,7 +765,7 @@ function sub_vul_query_ajax(type,ap){
 function sub_vul_query_pagination_ajax(page,key,keyword,type,jsonStatus,jsonObj){
 	 var selector = ".post."+type+" ";
 	 $.ajax({
-		 url: '/ajax/sub_vul_query.php',
+		 url: '/ajax/vul_query/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -792,11 +795,10 @@ function retrieve_ou_vul_ajax(){
 	var selector = ".post.vul_overview ";
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: url+'ajax/fetch_ou_vul.php',
+		 url: url+'ajax/ou_vul/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:1,keyword:2},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -808,11 +810,10 @@ function retrieve_ou_vul_ajax(){
 
 function retrieve_gs_ajax(){
 	$.ajax({
-		 url: '/ajax/fetch_event.php',
+		 url: '/ajax/fetch_event/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:1,keyword:2},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(response) {
@@ -821,13 +822,12 @@ function retrieve_gs_ajax(){
 	});
 }
 
-function retrieve_ncert_event_gs_ajax(){
+function retrieve_ncert_gs_ajax(){
 	$.ajax({
-		 url: '/ajax/fetch_ncert.php',
+		 url: '/ajax/fetch_ncert/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:1,keyword:2},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(response) {
@@ -838,11 +838,10 @@ function retrieve_ncert_event_gs_ajax(){
 
 function retrieve_gcb_ajax(){
 	$.ajax({
-		 url: '/ajax/fetch_gcb.php',
+		 url: '/ajax/fetch_gcb/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:1,keyword:2},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(response) {
@@ -854,11 +853,10 @@ function retrieve_gcb_ajax(){
 function retrieve_vul_ajax(){
 	$('.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: '/ajax/fetch_vul.php',
+		 url: '/ajax/fetch_vul/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {key:1,keyword:2},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(response) {
@@ -875,11 +873,10 @@ function retrieve_ldap_tree_ajax(){
 	else							   url='http://' + location.hostname + '/';
     $(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: url+'ajax/ldap_computer_tree.php',
+		 url: url+'ajax/ldap_computer/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 data: {},
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
@@ -893,7 +890,7 @@ function retrieve_hydra_ajax(type){
 	var selector = ".post."+type+" ";
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: '/ajax/sub_hydra.php',
+		 url: '/ajax/hydra/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -911,7 +908,7 @@ function retrieve_nmap_ajax(type){
 	var selector = ".post."+type+" ";
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: '/ajax/sub_nmap.php',
+		 url: '/ajax/nmap/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -929,7 +926,7 @@ function retrieve_nslookup_ajax(type){
 	var selector = ".post."+type+" ";
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: '/ajax/sub_nslookup.php',
+		 url: '/ajax/nslookup/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -947,7 +944,7 @@ function retrieve_ldap_ajax(type){
 	var selector = ".post.ldap ";
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: '/ajax/sub_ldap.php',
+		 url: '/ajax/ldap/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -968,10 +965,11 @@ function modal_form_action_ajax(id, action){
 	switch(action){
 		case 'edit':
 			$.ajax({
-				 url: '/ajax/modal_form_action.php',
+				 url: '/ajax/modal_form_action/',
+				 //url: '/ajax/modal_form_action.php',
 				 cache: false,
 				 dataType:'json',
-				 type:'GET',
+				 type:'get',
 				 data: {id:id,action:action},
 				 error: function(xhr) {
 					 alert('Ajax failed');
@@ -1003,7 +1001,7 @@ function modal_form_action_ajax(id, action){
 			break;
 		case 'delete':
 			$.ajax({
-				 url: '/ajax/modal_form_action.php',
+				 url: '/ajax/modal_form_action/',
 				 cache: false,
 				 dataType:'html',
 				 type:'GET',
@@ -1011,7 +1009,7 @@ function modal_form_action_ajax(id, action){
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
-					 location.reload();
+			        history.go(0);
 				 }
 			});
 			break;
@@ -1022,14 +1020,11 @@ function modal_form_action_ajax(id, action){
 function pageSwitch(){
 	var url=location.href;
 	var page=location.pathname.split("/");
-	console.log(page[1]+page[2]);
 	var mainpage = (typeof page[1] != 'undefined')? page[1]:'info';	
 	var subpage = (typeof page[2] != 'undefined')?page[2]:'enews';	
-
-	//var mainpage = (getParameterByName('mainpage',url)!= null)?getParameterByName('mainpage',url):'info';	
-	//var subpage = (getParameterByName('subpage',url)!= null)?getParameterByName('subpage',url):1;	
-	
 	var tab = (getParameterByName('tab',url)!= null)?getParameterByName('tab',url):1;	
+	console.log(page[1]+page[2]);
+
     switch(true){
 		//load ips_query
       	case (mainpage == 'network' && subpage == 'search' ):
@@ -1042,17 +1037,18 @@ function pageSwitch(){
       	case (mainpage == 'tool' && subpage == 'ldap' ):
 			retrieve_ldap_tree_ajax();
         	break;
-	 	//load ou_vs_content
+	 	//load ou_vul
      	case (mainpage == 'vul' && subpage == 'overview' ):
 			retrieve_ou_vul_ajax();
         	break;
       	default:
         	break;
     }	
+
 	var num = tab-1;
-	var title   = $('.tabular.menu').find('.item')[num];
+	var title   = $('.tabular.menu, .pointing.menu').find('.item')[num];
 	var content = $('.ui.attached.segment').find('.tab-content')[num];
-	$('.tabular.menu .item').removeClass("active");
+	$('.tabular.menu .item, .pointing.menu .item').removeClass("active");
 	$(title).addClass('active');
 	$('.ui.attached.segment .tab-content').removeClass('show').hide();
 	$(content).addClass('show').show();

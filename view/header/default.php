@@ -1,4 +1,3 @@
-<!--header-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -20,6 +19,7 @@
 	<script src="/node_modules/d3js/d3.min.js" charset="utf-8"></script>
 	<link href="/node_modules/c3js/c3.css" rel="stylesheet" type="text/css">
 	<script src="/node_modules/c3js/c3.min.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 	<!-- semantic ui -->
 	<link rel="stylesheet" type="text/css" href="/node_modules/semantic/semantic.css">
@@ -34,7 +34,8 @@
 
 	<!-- add my JS-->
 	<script src="/js/app.js"></script>
-	<script src='/js/showchart.js'></script>
+	<script src='/js/c3chart.js'></script>
+	<script src='/js/gchart.js'></script>
 
 </head>
 <body id="example">

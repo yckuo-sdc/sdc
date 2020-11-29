@@ -1,4 +1,3 @@
-<!--info_ranking-->
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
@@ -28,7 +27,13 @@
 					<div id="chartC-3" class="chart"></div>	
 			    </div>		
 			</div>
-		</div>
+			<div class="post">
+				<div class="post_title">G Chart</div>
+				<div class="post_cell">
+                    <div id="pie_chart_div" class="chart"></div>
+				</div><!--end of .post_cell-->
+			</div><!--end of .post-->
+		</div><!--end of .sub-content-->
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
 </div> <!--end #page-->

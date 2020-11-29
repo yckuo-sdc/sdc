@@ -2,7 +2,7 @@
 $limit = 10;
 $links = 4;
 $page = isset( $_GET['page']) ? $_GET['page'] : 1;
-$query = "SELECT * FROM tainangov_security_Incident ORDER BY IncidentID DESC";
+$query = "SELECT * FROM security_ncert ORDER BY IncidentID DESC";
 
 $Paginator = new Paginator($query);
 $incidents = $Paginator->getData($limit, $page);

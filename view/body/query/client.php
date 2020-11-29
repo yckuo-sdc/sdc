@@ -201,7 +201,7 @@
 						</a>
 						<div class='description'>
 							<ol>
-							<li><a href='/ajax/gcb_detail.php?action=detail&id=<?=$client['ID']?>' target='_blank'>序號:<?=$client['ID']?>(用戶端資訊)&nbsp<i class='external alternate icon'></i></a></li>
+							<li><a href='/ajax/gcb_detail/?action=detail&id=<?=$client['ID']?>' target='_blank'>序號:<?=$client['ID']?>(用戶端資訊)&nbsp<i class='external alternate icon'></i></a></li>
 							<li>外部IP:<?=long2ip($client['ExternalIP'])?></li>
 							<li>內部IP:<?=long2ip($client['InternalIP'])?></li>
 							<li>電腦名稱:<?=$client['Name']?></li>
@@ -215,7 +215,7 @@
 							<li>Gcb總通過數[包含例外]:<?=$client['GsAll_1']?></li>
 							<li>Gcb總通過數[總數]:<?=$client['GsAll_2']?></li>
 							<li>Gcb例外數量:<?=$client['GsExcTot']?></li>
-							<li><a href='/ajax/gcb_detail.php?action=gscan&id=<?=$client['GsID']?>' target='_blank'>Gcb掃描編號:<?=$client['GsID']?>(掃描結果資訊)&nbsp<i class='external alternate icon'></i></a></li>
+							<li><a href='/ajax/gcb_detail/?action=gscan&id=<?=$client['GsID']?>' target='_blank'>Gcb掃描編號:<?=$client['GsID']?>(掃描結果資訊)&nbsp<i class='external alternate icon'></i></a></li>
 							<li>Gcb派送編號:<?=$client['GsSetDeployID']?></li>
 							<li>Gcb狀態:<?=$GsStat_str?></li>
 							<li>Gcb回報時間:<?=$client['GsUpdatedAt']?></li>

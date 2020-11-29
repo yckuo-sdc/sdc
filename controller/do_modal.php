@@ -19,7 +19,7 @@ if(!empty($id)){
 	$table = "security_event";
 	$key_column = "EventID"; 
 	$db->update($table, $data_array, $key_column, $id);
-	$flash->info("編輯成功");
+	$flash->success("編輯成功");
 }else{
 	$flash->error("編輯失敗");
 }

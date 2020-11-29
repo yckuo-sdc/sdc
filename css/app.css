@@ -382,10 +382,10 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 */
 /* semantic + mystyle.css*/
 .ui.list{
-	font-size: 2vmin;
+	/*font-size: 2vmin;*/
 }
 .ui.list > .item{
-	font-size: 2vmin;
+	/*font-size: 2vmin;*/
 }
 .ui.list > .item div.header,.ui.list > .item div.header a{
 	color: #4183C4 !important;
@@ -411,9 +411,9 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
     white-space:normal;
     overflow-x: hidden;
 	background-color: #efefef;
-	padding: 2vmin;
-	border-radius: 1vw;
-	font-size: 2vmin;
+	padding: 1vmin;
+	border-radius: 1vmin;
+	/*font-size: 2vmin;*/
 }
 
 .ou_block .description{
@@ -430,6 +430,10 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 	white-space: pre-wrap;
 	background-color: #efefef;
 	padding: 1vmin;
+}
+
+.noborder{
+    border:none !important;
 }
 
 .ui.cards > .remaining.card{
@@ -461,7 +465,7 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 	
 	html,body{
 		max-width:100%;
-		font-size:4vmin;
+		/*font-size:4vmin;*/
 	}
 
 	#page{
@@ -566,13 +570,13 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 		height:50vh !important;
 	}
 
-	.post_title{
-		font-size:5vmin !important;
+	/*.post_title{
+	    font-size:5vmin !important;
 		line-height: normal;
-	}
+	}*/
 	
 	.post_cell{
-		font-size:4vmin !important;
+		/*font-size:4vmin !important;*/
 		line-height: normal;
 	}
 
@@ -595,10 +599,10 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 	}
 
 	.ui.list > .item {
-		font-size:4vmin;
+		/*font-size:4vmin;*/
 	}
 	.ui.list > .item .content .description.show{
-		font-size:4vmin;
+		/*font-size:4vmin;*/
 	}
 	.ui.list > .item .content{
 		white-space: normal;

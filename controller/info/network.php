@@ -1,26 +1,32 @@
 <?php 
 $pa = new PaloAltoAPI();
-$data = $pa->GetLogList($log_type = 'threat', $dir = 'backward', $nlogs = 10, $skip = 0, $query = '');
+$data = $pa->getLogList($log_type = 'threat', $dir = 'backward', $nlogs = 10, $skip = 0, $query = '');
 
 $report_type = 'predefined';
 $report_name = 'top-destination-countries';	
-$res = $pa->GetReportList($report_type, $report_name);
+$res = $pa->getReportList($report_type, $report_name);
 $country_xml = simplexml_load_string($res) or die("Error: Cannot create object");
+
 $max_count = 10;
-$max_bytes = 0;
-$max_sessions = 0;
 $count = 0;
+$entries = array();
+$bytes_array = array();
+$sessions_array = array();
+
 foreach($country_xml->result->entry as $log){
 	if($count >= $max_count){
 		break;
-	}elseif($count == 0){
-		$max_sessions = $log->sessions;
-	}	
-	if( ($log->bytes - $max_bytes) > 0){
-		$max_bytes = $log->bytes;
 	}
+    $entries[$count]['dstloc'] = strval($log->dstloc); 
+    $entries[$count]['bytes'] = intval($log->bytes); 
+    $entries[$count]['sessions'] = intval($log->sessions); 
+    $bytes_array[$count] = intval($log->bytes);
+    $sessions_array[$count] = intval($log->sessions);
 	$count = $count + 1;
 }
+
+$max_bytes = max($bytes_array);
+$max_sessions = max($sessions_array);
 
 require 'view/header/default.php'; 
 require 'view/body/info/network.php';

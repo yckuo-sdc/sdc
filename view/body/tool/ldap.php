@@ -37,9 +37,9 @@
 				<div class="post_cell">
 					<div class="ui centered inline loader"></div>
 					<div class="ldap_tree_content"></div>
-				</div>
-			</div>
-		</div>
+				</div><!--end of .post_cell-->
+			</div><!--end of .post-->
+		</div><!--end of .sub-content-->
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
 </div> <!--end #page-->

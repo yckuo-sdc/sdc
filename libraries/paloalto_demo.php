@@ -7,6 +7,6 @@ foreach($host_map as $key => $host){
 	$pa = new PaloAltoAPI($host);
 	$xml_type = "op";
 	$cmd = "<show><system><info></info></system></show>";
-	$res = $pa->GetXmlCmdResponse($xml_type, $cmd);
+	$res = $pa->getXmlCmdResponse($xml_type, $cmd);
 	print_r($res);
 }

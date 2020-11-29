@@ -46,6 +46,7 @@
       <a class="item" href="/network/search/">網路流量日誌</a>
       <a class="item" href="/network/malware/">惡意中繼站</a>
       <a class="item" href="/network/allowlist/">應用程式核可清單</a>
+      <a class="item" href="/network/top100/">Top 100流量排名</a>
   </div>
 </div>
 <div class="item">

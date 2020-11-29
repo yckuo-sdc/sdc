@@ -68,7 +68,7 @@ function myRecursiveFunction($ldapconn,$base_dn,$ou_name,$ou_des) {
 	}else{
 		echo "<li><i class='minus square outline icon'></i><i class='folder open icon'></i>".$ou_name."(".$ou_des.")";	
 		// list all computers of base_dn
-		$filter ="(&(objectClass=computer)(cn=*PC*))";
+        $filter ="(&(objectClass=computer)(cn=*PC*))";
 		$filter ="(objectClass=computer)";
 		$result = @ldap_list($ldapconn,$base_dn,$filter) or die ("Error in query");
 		$data 	= @ldap_get_entries($ldapconn,$result);
@@ -246,4 +246,22 @@ function get_ou_desc_recursive($dn,$ldapconn){
 	}
 	return $desc;
 }
+
+function formatBytes($bytes, $precision = 1) { 
+    $units = array('B', 'KB', 'MB', 'GB', 'TB'); 
+    $bytes = max($bytes, 0); 
+    $pow = floor(($bytes ? log($bytes) : 0) / log(1024)); 
+    $pow = min($pow, count($units) - 1); 
+	$bytes /= pow(1024, $pow);
+	return round($bytes, $precision) . ' ' . $units[$pow]; 
+}
+
+function formatNumbers($num, $precision = 1) { 
+    $units = array('', 'K', 'M', 'G', 'T'); 
+    $num = max($num, 0); 
+    $pow = floor(($num ? log($num) : 0) / log(1000)); 
+    $pow = min($pow, count($units) - 1); 
+	$num /= pow(1024, $pow);
+	return round($num, $precision) . ' ' . $units[$pow]; 
+} 
 

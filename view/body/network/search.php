@@ -185,9 +185,9 @@
 						<div class="record_content"></div>
 						</div> <!-- end of .tabular-->
 					</div> <!-- end of .attached.segment-->
-				</div>
-			</div>
-		</div>
+				</div><!--end of .post_cell-->
+			</div><!--end of .post-->
+		</div><!--end of .sub-content-->
 		<div style="clear: both;"></div>
 	</div><!-- end #content -->
 </div> <!--end #page-->

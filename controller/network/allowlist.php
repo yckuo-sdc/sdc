@@ -2,7 +2,7 @@
 $pa = new PaloAltoAPI();
 $object_type = 'ApplicationGroups'; 
 $name = '';
-$res = $pa->GetObjectList($object_type, $name);
+$res = $pa->getObjectList($object_type, $name);
 $res = json_decode($res);
 
 $status = $res->{'@status'};

@@ -1,17 +1,18 @@
 <?php 
-$table = "security_event"; // 設定你想查詢資料的資料表
+$table = "security_ncert"; // 設定你想查詢資料的資料表
 $db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "*", $limit = "", [1]);
 $ncert_num = $db->getLastNumRows();
 $db->query($table, $condition = "Status LIKE :Status", $order_by = "1", $fields = "*", $limit = "", [':Status'=>'已結案']);
 $done_ncert_num = $db->getLastNumRows();
 				
+$table = "security_event"; // 設定你想查詢資料的資料表
 $db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "*", $limit = "", [1]);
 $event_num = $db->getLastNumRows();
 $db->query($table, $condition = "Status LIKE :Status", $order_by = "1", $fields = "*", $limit = "", [':Status'=>'已結案']);
 $done_event_num = $db->getLastNumRows();
 $db->query($table, $condition = "Status LIKE :Status", $order_by = "1", $fields = "*", $limit = "", [':Status'=>'未完成']);
 $undone_event_num = $db->getLastNumRows();
-$db->query($table, $condition = "Status LIKE :Status AND NOT(UnprocessedReason LIKE :UnprocessedReason)", $order_by = "1", $fields = "*", $limit = "", [':Status'=>'已結案', 'UnprocessedReason'=>'']);
+$db->query($table, $condition = "Status LIKE :Status AND UnprocessedReason IS NOT NULL AND UnprocessedReason != :Reason", $order_by = "1", $fields = "*", $limit = "", [':Status' => '未完成', ':Reason'=>'']);
 $excepted_event_num = $db->getLastNumRows();
 
 $date_from_week = date('Y-m-d',strtotime('monday this week'));  

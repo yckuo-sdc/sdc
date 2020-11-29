@@ -1,4 +1,3 @@
-<!--header-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -34,7 +33,6 @@
 
 	<!-- add my JS-->
 	<script src="/js/app.js"></script>
-	<script src='/js/showchart.js'></script>
 
 </head>
 <body id="example">

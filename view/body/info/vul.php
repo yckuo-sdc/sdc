@@ -93,9 +93,9 @@
 				<div class="post_title">SDC Assignment</div>
 				<div class="post_cell">
 					<object type="application/pdf" data="/upload/info/VULAssignment.pdf" width="100%" height="500"></object>
-				</div>
-			</div>
-		</div>
+				</div><!--end of .post_cell-->
+			</div><!--end of .post-->
+		</div><!--end of .sub-content-->
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
 </div> <!--end #page-->

@@ -1,11 +1,10 @@
-<!--info_network-->
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">Top 10 對外應用程式</div>
+				<div class="post_title">Top 對外應用程式</div>
 				<div class="post_cell">
-					<div id="chartF" class="chart"></div>	
+					<div id="treemap_chart_div" class="chart"></div>
 			    </div>		
 			</div>
 			<div class="post">
@@ -23,7 +22,7 @@
 			<div class="post">
 				<div class="post_title">威脅日誌(最近10筆)</div>
 				<div class="post_cell">
-                    <?php if($data == 'false') {
+                    <?php if(!isset($data)) {
                         echo "很抱歉，該分類目前沒有資料！";
                     } else{ ?>
 					<table class="ui very basic table">
@@ -67,29 +66,19 @@
 						<th>位元組</th>
 						<th>同時連線數</th>
 					</tr>
-					<?php 
-                    $count = 0;
-                    foreach($country_xml->result->entry as $log){
-                    if($count >= $max_count){
-                        break;
-                    }
-                    $bytes_ratio = round($log->bytes*100/$max_bytes,0);
-                    $sessions_ratio = round($log->sessions*100/$max_sessions,0);
-                    $bytes_ratio = ($bytes_ratio != 0)? $bytes_ratio : 1;
-                    $sessions_ratio = ($sessions_ratio != 0)? $sessions_ratio : 1;
-                    $Gbytes = round($log->bytes/1024/1024/1024,1);
-                    $Ksessions = round($log->sessions/1000,1);
-                    $count = $count + 1;
+					<?php foreach($entries as $entry){
+                        $bytes_ratio = round($entry['bytes'] / $max_bytes, 2)*100 ;
+                        $sessions_ratio = round($entry['sessions'] / $max_sessions, 2)*100;
 					?>
 						<tr>
-							<td><?php echo $log->dstloc ?></td>
+							<td><?=$entry['dstloc']?></td>
 							<td>
-								<div style='width:<?php echo $bytes_ratio ?>%; background:#78838c'>&nbsp</div>
-								<?php echo $Gbytes."G"; ?>
+								<div style='width:<?=$bytes_ratio?>%; background:#78838c'>&nbsp</div>
+                                <?=formatBytes($entry['bytes'])?>
 							</td>
 							<td>
-								<div style='width:<?php echo $sessions_ratio ?>%; background:#78838c'>&nbsp</div>
-								<?php echo $Ksessions."k"; ?>
+								<div style='width:<?=$sessions_ratio?>%; background:#78838c'>&nbsp</div>
+                                <?=formatNumbers($entry['sessions'])?>
 							</td>
 						</tr>
 					<?php } ?>
@@ -106,8 +95,9 @@
 				<div class="post_title">ISAC平台更新防火牆範圍</div>
 				<div class="post_cell">
 					<object type="application/pdf" data="/upload/info/ISACFirewall.pdf" width="100%" height="700"></object>
-				</div>
-			</div>
+				</div><!--end of .post_cell-->
+			</div><!--end of .post-->
+		</div><!--end of .sub-content-->
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
 </div> <!--end #page-->

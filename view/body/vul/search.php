@@ -103,9 +103,9 @@
 					<?php echo $Paginator->createLinks($links, 'ui pagination menu'); ?>
 					<?php } ?>
 					</div> <!-- end of #record_content-->
-				</div> <!-- end of post_cell -->
-			</div>
-		</div>
+				</div><!--end of .post_cell-->
+			</div><!--end of .post-->
+		</div><!--end of .sub-content-->
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
 </div> <!--end #page-->

@@ -106,9 +106,9 @@
 				<div class="post_title">市府拋送SOC設備</div>
 				<div class="post_cell">
 					<img class="image" src="/images/soc.png">
-				</div>
-			</div>
-		</div>
+				</div><!--end of .post_cell-->
+			</div><!--end of .post-->
+		</div><!--end of .sub-content-->
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->
 </div> <!--end #page-->
