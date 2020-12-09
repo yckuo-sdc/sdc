@@ -4,11 +4,12 @@ if(!defined("SITE_ROOT"))	define("SITE_ROOT", "/var/www/html/sdc");
 require SITE_ROOT.'/config/paloalto.php';
 
 Class PaloAltoAPI {
-	const HOSTMAP = ['yonghua' => '172.16.254.209', 'minjhih' => '10.6.2.102', 'idc' => '10.7.11.241', 'intrayonghua' => '172.16.254.205'];
+	const HOSTMAP = [
+        'yonghua' => '172.16.254.209', 'minjhih' => '10.6.2.102', 'idc' => '10.7.11.241', 'intrayonghua' => '172.16.254.205'];
 	private $host;
 	private $apikey;
 
-	public function __construct($host = null){  // a public function (default)
+	public function __construct($host = null) {  // a public function (default)
 		if($host == null){	
 			$this->host = PaloAlto::ADDRESS;
 		}else{
@@ -17,19 +18,19 @@ Class PaloAltoAPI {
 		$this->apikey = $this->getAPIKey("keygen", PaloAlto::USERNAME, PaloAlto::PASSWORD);
 	}
 
-	public function getProperty(){  // a public function (default)
+	public function getProperty() {  // a public function (default)
 		$item['host'] = $this->host;
 		$item['apikey'] = $this->apikey;
 		return $item;
 	}
 	
-	public function setProperty($host,$apikey){  // a public function (default)
+	public function setProperty($host,$apikey) {  // a public function (default)
 		$this->host = $host;
 		$this->apikey = $apikey;
 	}
 	
 	//XML API
-	public function getLogList($log_type, $dir, $nlogs, $skip, $query){
+	public function getLogList($log_type, $dir, $nlogs, $skip, $query) {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$args = array('type' => 'log', 'log-type' => $log_type, 'dir' => $dir, 'nlogs' => $nlogs, 'skip' => $skip, 'query' => $query, 'async' => 'yes', 'uniq' => 'yes');
@@ -49,7 +50,7 @@ Class PaloAltoAPI {
         return $data;
 	}
 
-	public function getReportList($report_type, $report_name){
+	public function getReportList($report_type, $report_name) {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$args = array('type' => 'report', 'reporttype' => $report_type, 'reportname' => $report_name, 'async' => 'yes', 'uniq' => 'yes');
@@ -58,7 +59,7 @@ Class PaloAltoAPI {
 		return $res;
 	}
 
-	public function retrieveLogs($job_id, $type="log", $action="get"){
+	public function retrieveLogs($job_id, $type="log", $action="get") {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$args = array('type' => $type, 'action' => $action, );
@@ -67,7 +68,7 @@ Class PaloAltoAPI {
 		return $res;
 	}
 
-	public function getXmlCmdResponse($type, $cmd){
+	public function getXmlCmdResponse($type, $cmd) {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://".$host."/api/?type=$type&cmd=$cmd&key=$apikey";
@@ -84,7 +85,7 @@ Class PaloAltoAPI {
 		return $res;
 	}
 
-	public function getPoliciesList($policy_type, $name){
+	public function getPoliciesList($policy_type, $name) {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://$host/restapi/9.0/Policies/$policy_type?name=$name&location=vsys&vsys=vsys1&output-format=json&key=".$apikey;
@@ -94,7 +95,7 @@ Class PaloAltoAPI {
 
 
 	//Private Function
-	private function getAPIKey($type, $username, $password){
+	private function getAPIKey($type, $username, $password) {
 		$host = $this->host;
 		$url = "https://".$host."/api/?type=$type&user=$username&password=$password";
 		$res = $this->sendCurlRequest($url);
@@ -104,7 +105,7 @@ Class PaloAltoAPI {
 	}
 	
 	//Curl Request with options
-	private function sendCurlRequest($url){
+	private function sendCurlRequest($url) {
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
 		  CURLOPT_URL => $url,
@@ -124,4 +125,3 @@ Class PaloAltoAPI {
 	}
 
 }
-

@@ -58,7 +58,7 @@ $(document).ready(function(){
              type:'GET',
              data: {chartID:'app'},
              error: function(xhr) {
-                 alert('Ajax failed');
+                 console.log('Ajax failed');
              },success: function(data) {
                 var appArray = [];
                 $(data).find("top-applications").each(function(){
@@ -72,7 +72,7 @@ $(document).ready(function(){
                 appArray.unshift(['Location', 'Parent', 'Sessions(size)', 'Bytes(color)']);
                     	
                 var gdata = google.visualization.arrayToDataTable(appArray);
-                var div = document.getElementById('treemap_chart_div'); 
+                var div = document.getElementById('topApp_chart'); 
 
                 if(div != null){
                     var tree = new google.visualization.TreeMap(div);

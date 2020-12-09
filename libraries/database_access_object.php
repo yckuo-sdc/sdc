@@ -45,18 +45,23 @@ class DatabaseAccessObject {
     /**
      * 這段用來執行 MYSQL 資料庫的語法，可以靈活使用
      */
-    public function execute($sql = null, $data_array) {
+    public function execute($sql = null, $data_array = array()) {
         $this->last_sql = $sql;
         try {
             $stmt = $this->db->prepare($sql);
             $stmt->execute($data_array);
-    		$this->last_num_rows = $stmt->rowCount();
-            //return $stmt->fetchAll(); 
+            $this->last_num_rows = $stmt->rowCount();
             return $stmt->fetchAll(PDO::FETCH_ASSOC); 
-		} catch(PDOException $e) {
-		    $this->error_message[] = $e->getMessage();
-		    echo "<div class='ui error message'>".$e->getMessage()."</div>";
-		}
+        } catch(PDOException $e) {
+            /**
+            *avoid fetch bug after insert or update FROM select 
+            *[REF]https://bugs.php.net/bug.php?id=80458&edit=2
+            */             
+            if($e->getCode() == 'HY000') return;
+
+            $this->error_message[] = $e->getMessage();
+            echo "<div class='ui error message'>".$e->getMessage()."</div>";
+        }
     }
 
     /**

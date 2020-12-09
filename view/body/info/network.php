@@ -1,25 +1,25 @@
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
-			<div class="post">
+			<div id="topApp_post" class="post">
 				<div class="post_title">Top 對外應用程式</div>
 				<div class="post_cell">
-					<div id="treemap_chart_div" class="chart"></div>
+					<div id="topApp_chart" class="chart"></div>
 			    </div>		
 			</div>
-			<div class="post">
+			<div id="topAttack_post" class="post">
 				<div class="post_title">Top 10 攻擊方式</div>
 				<div class="post_cell">
-					<div id="chartF-2" class="chart"></div>	
+					<div id="topAttack_chart" class="chart"></div>	
 			    </div>		
 			</div>
-			<div class="post">
+			<div id="topDeny_post" class="post">
 				<div class="post_title">Top 10 被阻擋應用程式</div>
 				<div class="post_cell">
-					<div id="chartF-3" class="chart"></div>	
+					<div id="topDeny_chart" class="chart"></div>	
 			    </div>		
 			</div>
-			<div class="post">
+			<div id="topThreat_post" class="post">
 				<div class="post_title">威脅日誌(最近10筆)</div>
 				<div class="post_cell">
                     <?php if(!isset($data)) {
@@ -57,7 +57,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="post">
+			<div id="topCountry_post" class="post">
 				<div class="post_title">Top 10 目的地國家</div>
 				<div class="post_cell">
 					<table class="ui very basic single line table">

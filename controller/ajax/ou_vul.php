@@ -41,8 +41,16 @@ foreach($ou_vuls as $ou_vul) {
 			echo "<div class='description'>";
 				echo "<ol>";
 					foreach($targets as $target) {
-						echo "<li>".$target['system_name']." | ".$target['ip']." | "."<a href='".$target['domain']."' target='_blank'>".$target['domain']."</a> |  ".$target['manager']." | ".$target['email']."</li>";
-					}
+                        $system_names = explode(";",$target['system_name']);
+                        $domains = explode(";",$target['domain']);
+                        $size = count($domains);
+                        echo "<li>".$target['hostname']." | ".$target['ip']." | ";
+                        for($i=0;$i<$size;$i++){
+                            echo "<a href='".$domains[$i]."' target='_blank'>".$system_names[$i]."</a> ";
+                        }
+                        echo " | ".$target['manager']." | ".$target['email']."</li>";
+				        echo "<div class='ui divider'></div>";
+                   }
 						echo "</ol>";
 			echo "</div>";
 		echo "</div>";

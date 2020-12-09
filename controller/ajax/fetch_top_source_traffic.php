@@ -4,14 +4,20 @@ require_once 'vendor/autoload.php';
 $db = Database::get();
 
 //fetch client and server lists
-$table = "client_and_server_lists";
+$table = "client_server_lists";
 $key_column = "1";
 $id = "1"; 
 $db->delete($table, $key_column, $id); 
 
-$sql = "INSERT INTO client_and_server_lists(type, ip, ou, name)
+$sql = "INSERT INTO client_server_lists(type, ip, ou, name)
 SELECT 'client' as type, IP, OrgName, Owner FROM drip_client_list";
-$db->execute($sql, []);
+$db->execute($sql);
+
+$sql = "UPDATE client_server_lists AS A
+JOIN drip_client_list AS B
+ON A.ip = B.IP AND (A.name IN('', '-') OR A.name IS NULL) AND B.MemoByMAC NOT LIKE ''  
+SET A.name = CONCAT('(ByMAC)', B.MemoByMAC)";
+$db->execute($sql);
 
 $url = "https://tndev.tainan.gov.tw/api/values/4";
 $curl = curl_init();
@@ -33,7 +39,7 @@ curl_close($curl);
 $servers = json_decode($res, true);
 
 foreach($servers as $server){
-    $table = "client_and_server_lists";
+    $table = "client_server_lists";
     $data_array = array();
     $data_array['type'] = "server";
     $data_array['ip'] = $server['ipv4'];
@@ -110,12 +116,12 @@ if(!isset($job_id)){
     }
 }
 
-//update the column 'ou','name','type' from table 'client_and_server_lists'
+//update the column 'ou','name','type' from table 'client_server_lists'
 $sql = "UPDATE top_source_traffic AS A
-JOIN client_and_server_lists AS B 
+JOIN client_server_lists AS B 
 ON A.src_ip = B.ip
 SET A.ou = B.ou, A.name = B.name, A.type = B.type";
-$db->execute($sql, []);
+$db->execute($sql);
 
 $error = $db->getErrorMessageArray();
 if(@count($error) > 0) {

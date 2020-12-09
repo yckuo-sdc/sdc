@@ -23,13 +23,13 @@ $(document).ready(function(){
 
 function c3_chart_enews_ajax(url){
 	$.ajax({
-		 url: url+'/ajax/chart.php',
+		 url: url+'/ajax/chart/',
 		 cache: false,
 		 dataType:'json',
 		 type:'GET',
 		 data: {chartID:'enews'},
 		 error: function(xhr) {
-			 alert('Ajax failed');
+			 console.log('Ajax failed');
 		 },success: function(data) {
 			 //console.log(data);
 			 var countArray = [], timeArray = [], donecountArray = [];
@@ -82,7 +82,7 @@ function c3_chart_ranking_ajax(url){
 		type:'GET',
 		data: {chartID:'ranking'},
 		error: function(xhr) {
-			alert('Ajax failed');
+			console.log('Ajax failed');
 		},success: function(data) {	 
 			//console.log(data);
 			var tmp_data, len;
@@ -179,7 +179,7 @@ function c3_chart_ranking_ajax(url){
 			});
 		
 			var chart = c3.generate({
-				bindto: '#chartC',
+				bindto: '#eventType_chart',
 				data: {
 				columns:
 					eventtypeArray,
@@ -194,7 +194,7 @@ function c3_chart_ranking_ajax(url){
 			});
 			
 			var chart = c3.generate({
-				bindto: '#chartC-2',
+				bindto: '#topEvent_chart',
 				data:{ 
 					columns: [agencycountArray,agencyipArray],
 					type: 'bar',
@@ -225,7 +225,7 @@ function c3_chart_ranking_ajax(url){
 			});
 			
 			var chart = c3.generate({
-				bindto: '#chartC-3',
+				bindto: '#topDestIP_chart',
 				data:{ 
 					columns: [destipcountArray],
 					type: 'bar'
@@ -266,7 +266,7 @@ function c3_chart_client_ajax(url){
 		 type:'GET',
 		 data: {chartID:'client'},
 		 error: function(xhr) {
-			 alert('Ajax failed');
+			 console.log('Ajax failed');
 		 },success: function(data) {
 			//console.log(data);	
 			var tmp_data, len;
@@ -310,7 +310,7 @@ function c3_chart_client_ajax(url){
 			var cht_height = cht_width * 0.4205;	//default height
 
 			var chart = c3.generate({
-				bindto: '#chartE-3',
+				bindto: '#gcbOS_chart',
 				data: {
 				columns:
 					osArray,
@@ -331,7 +331,7 @@ function c3_chart_client_ajax(url){
 			});
 			
 			var chart = c3.generate({
-				bindto: '#chartE-1',
+				bindto: '#drip_chart',
 				data: {
 				columns:
 					dripArray,
@@ -355,15 +355,15 @@ function c3_chart_client_ajax(url){
 			});
 			
 			var chart = c3.generate({
-				bindto: '#chartE-2',
+				bindto: '#gcbPass_chart',
 				data: {
 					columns: [
 						gcbpassArray
 					],
 					type: 'gauge',
-					onclick: function (d, i) { console.log("onclick", d, i); },
-					onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-					onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+					onclick: function (d, i) { /*console.log("onclick", d, i);*/ },
+					onmouseover: function (d, i) { /*console.log("onmouseover", d, i);*/ },
+					onmouseout: function (d, i) { /*console.log("onmouseout", d, i);*/ }
 				},
 				gauge: {
 				},
@@ -391,17 +391,10 @@ function c3_chart_network_ajax(url){
 		 type:'GET',
 		 data: {chartID:'network'},
 		 error: function(xhr) {
-			 alert('Ajax failed');
+			 console.log('Ajax failed');
 		 },success: function(data) {
-			 var appName=[],appCount=[];
-			 var attackName=[],attackCount=[];
-			 var deniedappName=[],deniedappCount=[];
-			$(data).find("top-applications").each(function(){
-				 var name=$(this).children("name").text();
-				 var count=$(this).children("nsess").text();
-				 appName.push(name);
-				 appCount.push(count);
-			});
+		    var attackName=[],attackCount=[];
+			var deniedappName=[],deniedappCount=[];
 			
 			$(data).find("top-attacks").each(function(){
 				 var name=$(this).children("threatid").text();
@@ -418,40 +411,11 @@ function c3_chart_network_ajax(url){
 			});
 	
 			//add the label of chart
-			appCount.unshift('同時連線數');
 			attackCount.unshift('觸發數');
 			deniedappCount.unshift('repeat count');
 			
 			var chart = c3.generate({
-				bindto: '#chartF',
-				data:{ 
-					columns: [appCount],
-					type: 'bar'
-				},axis: {
-					rotated: true,
-					x: {
-						type: 'category',
-						categories: appName,
-						rotated: true
-					}
-				},bar: {
-					width: {
-						ratio: 0.5 // this makes bar width 50% of length between ticks	
-					}
-				},size:{
-					height: '100%'
-				},grid: {
-					x: {
-						show: true
-					},
-					y: {
-						show: true
-					}
-				}
-			});
-
-			var chart = c3.generate({
-				bindto: '#chartF-2',
+				bindto: '#topAttack_chart',
 				data:{ 
 					columns: [attackCount],
 					type: 'bar'
@@ -479,7 +443,7 @@ function c3_chart_network_ajax(url){
 			});
 
 			var chart = c3.generate({
-				bindto: '#chartF-3',
+				bindto: '#topDeny_chart',
 				data:{ 
 					columns: [deniedappCount],
 					type: 'bar'

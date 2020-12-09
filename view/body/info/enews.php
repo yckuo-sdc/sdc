@@ -1,8 +1,7 @@
-<!--info_enews-->
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
-			<div class="post">
+			<div id="actionItem_post" class="post">
 				<div class="post_title">資安事件列管(已結案/總數)</div>
 				<div class="post_cell">
 					<center>
@@ -18,7 +17,7 @@
 					</center>
 			    </div>		
 			</div>
-			<div class="post">
+			<div id="enews_post" class="post">
 				<div class="post_title">Enews</div>
 					<div class="post_cell">
 					<div class="post_table">
@@ -58,13 +57,13 @@
 					</div>
 					</div>
 			</div>
-			<div class="post">
+			<div id="timeSeries_post" class="post">
 				<div class="post_title">資安事件趨勢圖(最近3個月)</div>
 				<div class="post_cell">
 					<div id="chartA" class="chart"></div>	
 				</div>
 			</div>
-			<div class="post">
+			<div id="lastEvent_post" class="post">
 				<div class="post_title">資安事件清單(最近10筆)</div>
 				<div class="post_cell">
 					<table class="ui very basic single line table">

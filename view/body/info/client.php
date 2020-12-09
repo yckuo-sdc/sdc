@@ -2,7 +2,7 @@
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
-			<div class="post">
+			<div id="client_post" class="post">
 				<div class="post_title">用戶端資安總表</div>
 					<div class="post_cell">
 					<div class="post_table">
@@ -60,13 +60,13 @@
 					</div>
 				</div>
 			</div> 
-			<div class="post">
+			<div id="drip_post" class="post">
 				<div class="post_title">網段使用IP統計圖</div>
 				<div class="post_cell">
-					<div id="chartE-1" class="chart"></div>	
+					<div id="drip_chart" class="chart"></div>	
 				</div>
 			</div> 
-			<div class="post">
+			<div id="ad_post" class="post">
 				<div class="post_title">AD統計</div>
 				<div class="post_cell">
 					<center>
@@ -77,7 +77,7 @@
 					</center>
 			    </div>		
 			</div>
-			<div class="post">
+			<div id="gcbPass_post" class="post">
 				<div class="post_title">GCB總通過率</div>
 				<div class="post_cell">
 					<center>
@@ -86,16 +86,16 @@
 						  <div class="label">通過數 / 總安裝數</div>
 						</div>
 					</center>
-					<div id="chartE-2" class="chart"></div>	
+					<div id="gcbPass_chart" class="chart"></div>	
 				</div>
 			</div>
-			<div class="post">
+			<div id="gcbOS_post" class="post">
 				<div class="post_title">GCB作業系統統計圖</div>
 				<div class="post_cell">
-					<div id="chartE-3" class="chart"></div>	
+					<div id="gcbOS_chart" class="chart"></div>	
 			    </div>		
 			</div>
-			<div class="post">
+			<div id="wsusPass_post" class="post">
 				<div class="post_title">WSUS總通過率</div>
 					<div class="post_cell">
 					<div class="post_table">
@@ -124,7 +124,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="post">
+			<div id="avPass_post" class="post">
 				<div class="post_title">AntiVirus總通過率</div>
 					<div class="post_cell">
 					<div class="post_table">

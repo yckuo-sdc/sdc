@@ -1,4 +1,3 @@
-<!--vul_fetch-->
 <div id="page" class="container">
 <div id="content">
 		<div class="sub-content show">
@@ -11,15 +10,15 @@
                             <?php echo $nowTime; ?>
                         </div>
                         <div class="field">
-                            <label>host json-url</label>
+                            <label>host json</label>
                             <?php echo "<a href='".$host_url."' target='_blank'>".$host_url."</a>"; ?>
                         </div>
                         <div class="field">
-                            <label>web json-url</label>
+                            <label>web json</label>
                             <?php echo "<a href='".$web_url."' target='_blank'>".$web_url."</a>"; ?>
                         </div>
                         <div class="field">
-                            <label>target json-url</label>
+                            <label>target json</label>
                             <?php echo "<a href='".$target_url."' target='_blank'>".$target_url."</a>"; ?>
                         </div>
                     </form>

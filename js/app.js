@@ -377,7 +377,10 @@ $(document).ready(function(){
 	//semantic accordion
     $('.ui.accordion').accordion();
 
-	//semantic modal display
+	//semantic table
+    $('table.sortable').tablesort() 
+	
+    //semantic modal display
 	$('#modal_btn').on('click', function(){
 		$('.ui.modal').modal('show');
     });
