@@ -3,7 +3,7 @@
 <div id="content">
 		<div class="sub-content show">
 			<div class="post contact">
-				<div class="post_title">資安聯絡人</div>
+                <h2 class="ui dividing header">資安聯絡人</h2>
 				<div class="post_cell">
 					<form class="ui form" action="javascript:void(0)">
 					<div class="fields">

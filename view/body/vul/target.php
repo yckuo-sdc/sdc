@@ -3,7 +3,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">掃描資產</div>
+                <h2 class="ui dividing header">掃描資產</h2>
 				<div class="post_cell">
 				<?php 
 				if($last_num_rows==0){

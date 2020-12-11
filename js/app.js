@@ -331,20 +331,20 @@ $(document).ready(function(){
 		retrieve_nslookup_ajax('nslookup');	
 	});
 	//LDAP search
-	$('.post.ldap #ldap_search_btn').click(function(){
+	$('.post_cell.ldap #ldap_search_btn').click(function(){
 		retrieve_ldap_ajax('search');	
 	});
 	//LDAP newuser
-	$('.post.ldap #ldap_newuser_btn').click(function(){
+	$('.post_cell.ldap #ldap_newuser_btn').click(function(){
 		retrieve_ldap_ajax('newuser');	
 	});
 	//LDAP edit
-	$('.post.ldap').on( 'click', '#ldap_edit_btn' ,function(){
+	$('.post_cell.ldap').on( 'click', '#ldap_edit_btn' ,function(){
 		var form = $(this).closest('#form-ldap');
 		ldap_edit_ajax(form);	
 	});
 	//LDAP clear
-	$('.post.ldap').on( 'click', '#ldap_clear_btn' ,function(){
+	$('.post_cell.ldap').on( 'click', '#ldap_clear_btn' ,function(){
 		var form = $(this).closest('#form-ldap').remove();
 	});
 	//Hydra
@@ -448,7 +448,7 @@ function hydra_pwd_mode(type){
 
 //ldap_edit
 function ldap_edit_ajax(form) {
-	var selector = ".post.ldap ";
+	var selector = ".post_cell.ldap ";
 	var isActive = form.find('input[name=stateSwitch]').prop("checked");
 	var type = form.find('input[name=type]').val();
 	var input = form.serializeArray();
@@ -870,7 +870,7 @@ function retrieve_vul_ajax(){
 }
 
 function retrieve_ldap_tree_ajax(){
-	var selector = ".post.ldap_computer_tree ";
+	var selector = ".post_cell.ldap_computer_tree ";
 	var url;
 	if (location.protocol == 'https:') url='https://' + location.hostname +'/';
 	else							   url='http://' + location.hostname + '/';
@@ -944,7 +944,7 @@ function retrieve_nslookup_ajax(type){
 }
 
 function retrieve_ldap_ajax(type){
-	var selector = ".post.ldap ";
+	var selector = ".post_cell.ldap ";
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
 		 url: '/ajax/ldap/',

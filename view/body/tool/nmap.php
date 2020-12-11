@@ -3,7 +3,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post nmap">
-				<div class="post_title">Nmap</div>
+                <h2 class="ui dividing header">Nmap</h2>
 				<div class="post_cell">
 					<div class="ui secondary pointing menu">
 						<a class="active item">Nmap</a>

@@ -1,26 +1,21 @@
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
-			<div id="topApp_post" class="post">
-				<div class="post_title">Top 對外應用程式</div>
+			<div class="post">
+                <h2 class="ui dividing header">Network</h2>
+				<div id="topApp_post" class="post_title">Top 對外應用程式</div>
 				<div class="post_cell">
 					<div id="topApp_chart" class="chart"></div>
 			    </div>		
-			</div>
-			<div id="topAttack_post" class="post">
-				<div class="post_title">Top 10 攻擊方式</div>
+				<div id="topAttack_post" class="post_title">Top 10 攻擊方式</div>
 				<div class="post_cell">
 					<div id="topAttack_chart" class="chart"></div>	
 			    </div>		
-			</div>
-			<div id="topDeny_post" class="post">
-				<div class="post_title">Top 10 被阻擋應用程式</div>
+				<div id="topDeny_post" class="post_title">Top 10 被阻擋應用程式</div>
 				<div class="post_cell">
 					<div id="topDeny_chart" class="chart"></div>	
 			    </div>		
-			</div>
-			<div id="topThreat_post" class="post">
-				<div class="post_title">威脅日誌(最近10筆)</div>
+				<div id="topThreat_post" class="post_title">威脅日誌(最近10筆)</div>
 				<div class="post_cell">
                     <?php if(!isset($data)) {
                         echo "很抱歉，該分類目前沒有資料！";
@@ -56,15 +51,13 @@
 						<a href="/network/search/">See More...</a>
 					</div>
 				</div>
-			</div>
-			<div id="topCountry_post" class="post">
-				<div class="post_title">Top 10 目的地國家</div>
+				<div id="topCountry_post" class="post_title">Top 10 目的地國家</div>
 				<div class="post_cell">
 					<table class="ui very basic single line table">
 					<tr>
 						<th>目的地國家</th>
-						<th>位元組</th>
 						<th>同時連線數</th>
+						<th>位元組</th>
 					</tr>
 					<?php foreach($entries as $entry){
                         $bytes_ratio = round($entry['bytes'] / $max_bytes, 2)*100 ;
@@ -73,25 +66,21 @@
 						<tr>
 							<td><?=$entry['dstloc']?></td>
 							<td>
-								<div style='width:<?=$bytes_ratio?>%; background:#78838c'>&nbsp</div>
-                                <?=formatBytes($entry['bytes'])?>
-							</td>
-							<td>
 								<div style='width:<?=$sessions_ratio?>%; background:#78838c'>&nbsp</div>
                                 <?=formatNumbers($entry['sessions'])?>
+							</td>
+							<td>
+								<div style='width:<?=$bytes_ratio?>%; background:#78838c'>&nbsp</div>
+                                <?=formatBytes($entry['bytes'])?>
 							</td>
 						</tr>
 					<?php } ?>
 					</table>
 			    </div>		
-			</div>
-			<div class="post">
 				<div class="post_title">市府網段區隔</div>
 				<div class="post_cell">
 					<img class="image" src="/images/network.png">
 				</div>
-			</div>
-			<div class="post">
 				<div class="post_title">ISAC平台更新防火牆範圍</div>
 				<div class="post_cell">
 					<object type="application/pdf" data="/upload/info/ISACFirewall.pdf" width="100%" height="700"></object>

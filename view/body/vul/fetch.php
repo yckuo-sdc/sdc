@@ -2,7 +2,7 @@
 <div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">Fetch VUL</div>
+                <h2 class="ui dividing header">Fetch VUL</h2>
 				<div class="post_cell">
                     <form class="ui form" action="javascript:void(0)">
                         <div class="field">

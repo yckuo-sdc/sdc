@@ -3,6 +3,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post hydra">
+                <h2 class="ui dividing header">Hydra</h2>
 				<div class="post_title">Hydra Passowrd Cracker</div>
 				<div class="post_cell">
 				<form class="ui form" action="javascript:void(0)">
@@ -61,8 +62,6 @@
 					<div class="record_content"></div>
 			
 				</div>
-			</div>
-			<div class="post ldap">
 				<div class="post_title">Modal Test</div>
 				<div class="post_cell">
 					<button type="input" id="modal_btn" class="ui button">Modal Show</button>

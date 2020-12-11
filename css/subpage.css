@@ -11,8 +11,7 @@
     font-size: 1.28571429rem;
     font-weight: bold;
 	/*padding-bottom: 3%;*/
-	color:#117692;
-
+    color: rgba(0,0,0,.87);
 }
 
 .post_title:first-child {

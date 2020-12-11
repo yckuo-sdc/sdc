@@ -82,7 +82,6 @@
 				<label>Remember Me</label>
 			  </div>
 			</div>
-			<input type="hidden" name="refurl" value="<?=base64_encode($_SERVER['HTTP_REFERER'])?>"/>
 			<button name="submit" class="ui sdc-blue fluid large button" type="submit">Login</button>
 		 </div>
 		</form>

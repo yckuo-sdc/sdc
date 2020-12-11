@@ -2,8 +2,9 @@
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
-			<div id="client_post" class="post">
-				<div class="post_title">用戶端資安總表</div>
+			<div class="post">
+                <h2 class="ui dividing header">Client</h2>
+				<div id="client_post" class="post_title">用戶端資安總表</div>
 					<div class="post_cell">
 					<div class="post_table">
 					<table>
@@ -59,15 +60,11 @@
 					</table>
 					</div>
 				</div>
-			</div> 
-			<div id="drip_post" class="post">
-				<div class="post_title">網段使用IP統計圖</div>
+				<div id="drip_post" class="post_title">網段使用IP統計圖</div>
 				<div class="post_cell">
 					<div id="drip_chart" class="chart"></div>	
 				</div>
-			</div> 
-			<div id="ad_post" class="post">
-				<div class="post_title">AD統計</div>
+				<div id="ad_post" class="post_title">AD統計</div>
 				<div class="post_cell">
 					<center>
 						<div class="ui statistic">
@@ -76,9 +73,7 @@
 						</div>
 					</center>
 			    </div>		
-			</div>
-			<div id="gcbPass_post" class="post">
-				<div class="post_title">GCB總通過率</div>
+				<div id="gcbPass_post" class="post_title">GCB總通過率</div>
 				<div class="post_cell">
 					<center>
 						<div class="ui statistic">
@@ -88,15 +83,11 @@
 					</center>
 					<div id="gcbPass_chart" class="chart"></div>	
 				</div>
-			</div>
-			<div id="gcbOS_post" class="post">
-				<div class="post_title">GCB作業系統統計圖</div>
+				<div id="gcbOS_post" class="post_title">GCB作業系統統計圖</div>
 				<div class="post_cell">
 					<div id="gcbOS_chart" class="chart"></div>	
 			    </div>		
-			</div>
-			<div id="wsusPass_post" class="post">
-				<div class="post_title">WSUS總通過率</div>
+				<div id="wsusPass_post" class="post_title">WSUS總通過率</div>
 					<div class="post_cell">
 					<div class="post_table">
 					<table>
@@ -123,9 +114,7 @@
 					</table>
 					</div>
 				</div>
-			</div>
-			<div id="avPass_post" class="post">
-				<div class="post_title">AntiVirus總通過率</div>
+				<div id="avPass_post" class="post_title">AntiVirus總通過率</div>
 					<div class="post_cell">
 					<div class="post_table">
 					<table>
@@ -157,7 +146,7 @@
 					</table>
 					</div>
 				</div><!--end of .post_cell-->
-			</div><!--end of .post-->
+			</div> 
 		</div><!--end of .sub-content-->
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->

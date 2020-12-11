@@ -3,7 +3,7 @@
 <div id="content">
 		<div class="sub-content show">
 			<div class="post event">
-				<div class="post_title">市府資安事件</div>
+                <h2 class="ui dividing header">市府資安事件</h2>
 				<div class="post_cell">
 				<form class="ui form" action="javascript:void(0)">
  				<div class="fields">

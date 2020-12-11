@@ -3,10 +3,10 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post ldap">
+                <h2 class="ui dividing header">LDAP</h2>
 				<div class="post_title">LDAP Search</div>
-				<div class="post_cell">
+				<div class="post_cell ldap">
 					<form class="ui form" action="javascript:void(0)">
-					<!--<div class="fields">-->
 						<div class="field">
 							<label>CN(=User account or PC name)</label>
 							<div class="ui input">
@@ -30,11 +30,9 @@
 					</form>
 
 				<div class="record_content"></div>
-			</div> <!-- end of .post_cell-->
-			</div>
-			<div class="post ldap_computer_tree">
+                </div> <!-- end of .post_cell-->
 				<div class="post_title">AD Computer Tree</div>
-				<div class="post_cell">
+				<div class="post_cell ldap_computer_tree">
 					<div class="ui centered inline loader"></div>
 					<div class="ldap_tree_content"></div>
 				</div><!--end of .post_cell-->

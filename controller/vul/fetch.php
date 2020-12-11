@@ -1,5 +1,8 @@
 <?php 
-$sql = "SELECT api_status.*,api_list.name,api_list.data_type FROM api_status,api_list WHERE api_status.id IN(SELECT MAX(id) FROM api_status WHERE api_id IN(SELECT id FROM api_list WHERE class ='弱掃平台') AND api_status.status=200 AND api_status.api_id = api_list.id GROUP BY api_id)";
+$sql = "SELECT a.*, b.name FROM api_status AS a INNER JOIN api_list AS b ON a.api_id = b.id 
+    WHERE a.id IN(SELECT max(id) FROM api_status WHERE api_id IN (SELECT id FROM api_list WHERE class='弱掃平台') 
+    GROUP BY api_id)";
+
 $vul_api = $db->execute($sql);
 
 $key = ChtSecurityAPI::KEY;

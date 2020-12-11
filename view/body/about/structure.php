@@ -3,7 +3,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">Structure Diagram</div>
+                <h2 class="ui dividing header">Structure</h2>
 				<div class="post_cell">
 					<div class='ui cards'>
 						<div class="card">

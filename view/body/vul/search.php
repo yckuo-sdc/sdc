@@ -3,7 +3,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post ip_and_url_scanResult">
-				<div class="post_title">弱點查詢</div>
+                <h2 class="ui dividing header">弱點查詢</h2>
 				<div class="post_cell">
 					<form class="ui form" action="javascript:void(0)">
 					<div class="query_content"></div>

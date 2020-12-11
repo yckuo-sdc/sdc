@@ -3,7 +3,7 @@
 <div id="content">
 		<div class="sub-content show">
 			<div class="post network">
-				<div class="post_title">網路流量日誌(IPS)</div>
+                <h2 class="ui dividing header">網路流量日誌(IPS)</h2>
 				<div class="post_cell">
 					<div class="ui top attached tabular menu">
 						<a class="active item">Yonghua</a>

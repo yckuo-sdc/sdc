@@ -2,8 +2,9 @@
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
-			<div id="highRisk_post" class="post">
-				<div class="post_title">High Severity VUL</div>
+			<div class="post">
+                <h2 class="ui dividing header">VUL</h2>
+				<div id="highRisk_post" class="post_title">High Severity VUL</div>
 				<div class="post_cell">
 					<center>
 					  <div class="ui small statistic">
@@ -22,8 +23,6 @@
 					  </div>
 					</center>
 				</div>
-			</div>
-			<div class="post">
 				<div class="post_title">VUL Bar</div>
                 <div class="post_cell">
                     臺南市政府弱掃平台各單位弱點數量，高風險應於<font color="red">1</font>個月內修補完成，中風險應於<font color="red">2</font>個月內修補完成。<br>
@@ -86,13 +85,11 @@
                         </tbody>
                     </table>	
                 </div>
-			</div>
-			<div class="post">
 				<div class="post_title">SDC Assignment</div>
 				<div class="post_cell">
 					<object type="application/pdf" data="/upload/info/VULAssignment.pdf" width="100%" height="500"></object>
 				</div><!--end of .post_cell-->
-			</div><!--end of .post-->
+			</div>
 		</div><!--end of .sub-content-->
 		<div style="clear: both;">&nbsp;</div>
 	</div><!-- end #content -->

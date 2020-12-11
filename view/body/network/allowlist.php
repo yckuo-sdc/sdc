@@ -3,7 +3,7 @@
 <div id="content">
 		<div class="sub-content show">
 			<div class="post">
-				<div class="post_title">Client應用程式核可清單</div>
+                <h2 class="ui dividing header">應用程式核可清單(Client)</h2>
 				<div class="post_cell">
                 <?php if($status != 'success'){ ?>
                     很抱歉，該分類目前沒有資料！

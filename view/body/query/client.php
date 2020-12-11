@@ -3,7 +3,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post is_client_list">
-				<div class="post_title">用戶端資安清單</div>
+                <h2 class="ui dividing header">用戶端資安清單</h2>
 				<div class="post_cell">
 					<div class="ui top attached tabular menu">
 						<a class="active item">DrIP</a>

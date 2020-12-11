@@ -55,7 +55,7 @@ $db->execute($sql);
 //update the column 'edr' from table 'edr_endpoints'
 $sql = "UPDATE drip_client_list AS A
 JOIN edr_endpoints AS B 
-ON A.IP = SUBSTRING_INDEX(SUBSTRING_INDEX(B.ip, ', ', 1), ', ', -1) AND B.hidden_state LIKE '顯示中' 
+ON A.IP = SUBSTRING_INDEX(SUBSTRING_INDEX(B.ip, ', ', 1), ', ', -1)
 SET A.edr = 1;";
 $db->execute($sql);
 
