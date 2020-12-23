@@ -74,7 +74,6 @@
 								<label>處理日期(京稘或中華SOC)</label>
 								<textarea rows="2" name="AntivirusProcessContent"></textarea>
 							 </div>	
-							<!--<button class="ui button" type="submit" name="mysubmit">Submit</button>-->
 						</form>
 				  	</div>
 				  	<div class="actions">

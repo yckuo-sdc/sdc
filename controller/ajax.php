@@ -1,6 +1,7 @@
 <?php 
 if(!isLogin()){
-	return;
+	echo "401 Unauthorized";
+    return;
 }	
 
 $account = $_SESSION['account'];

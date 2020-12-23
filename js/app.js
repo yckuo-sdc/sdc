@@ -412,7 +412,9 @@ $(document).ready(function(){
 			cache: false,
 			processData:false,
 			success: function(data){
-				$(".retrieve_ncert").html(data);
+                if(ajax_check_user_logged_in(data)){
+                    $(".retrieve_ncert").html(data);
+                }
 			},
 			error: function(){
 			}               
@@ -502,8 +504,10 @@ function ldap_edit_ajax(form) {
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			form.html(data);
-		 }
+            if(ajax_check_user_logged_in(data)){
+                form.html(data);
+		    }
+         }
 	});
 }
 
@@ -519,10 +523,10 @@ function drip_block_IP_ajax(type,ip,response){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $('.ui.inline.loader').removeClass('active');
-			 console.log("success");
-			 response.html(data);
-			 console.log("done");
+            $('.ui.inline.loader').removeClass('active');
+            if(ajax_check_user_logged_in(data)){
+                 response.html(data);
+            }
 		 }
 	});
  }
@@ -576,8 +580,10 @@ function sub_query_ajax(type, ap){
 			 error: function(xhr) {
 				 alert('Ajax failed');
 			 },success: function(data) {
-				 $(selector + '.record_content').html(data);
-			 }
+                if(ajax_check_user_logged_in(data)){
+				    $(selector + '.record_content').html(data);
+			    }
+            }
 		});
 	}
  }
@@ -597,7 +603,9 @@ function sub_query_pagination_ajax(data_array){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $(selector + '.record_content').html(data);
+            if(ajax_check_user_logged_in(data)){
+                $(selector + '.record_content').html(data);
+            }
 		 }
 	});
  }
@@ -646,8 +654,10 @@ function sub_ips_query_ajax(type){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.record_content').html(data);
+			$(selector + '.ui.inline.loader').removeClass('active');
+            if(ajax_check_user_logged_in(data)){
+                $(selector + '.record_content').html(data);
+            }
 		 }
 	});
 }
@@ -691,7 +701,9 @@ function load_ips_query_ajax(type){
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.record_content').html(data);
+            if(ajax_check_user_logged_in(data)){
+			    $(selector + '.record_content').html(data);
+            }
 		 }
 	});
 }
@@ -710,7 +722,9 @@ function sub_ips_query_pagination_ajax(data_array){
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.record_content').html(data);
+             if(ajax_check_user_logged_in(data)){
+			    $(selector + '.record_content').html(data);
+             }
 		 }
 	});
  }
@@ -756,7 +770,9 @@ function sub_vul_query_ajax(type,ap){
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
-					 $(selector + '.record_content').html(data);
+                    if(ajax_check_user_logged_in(data)){
+                        $(selector + '.record_content').html(data);
+                    }
 				 }
 			});
 		}
@@ -776,7 +792,9 @@ function sub_vul_query_pagination_ajax(page,key,keyword,type,jsonStatus,jsonObj)
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $(selector + '.record_content').html(data);
+            if(ajax_check_user_logged_in(data)){
+			    $(selector + '.record_content').html(data);
+            }
 		 }
 	});
 }
@@ -806,7 +824,9 @@ function retrieve_ou_vul_ajax(){
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.ou_vs_content').html(data);
+             if(ajax_check_user_logged_in(data)){
+			    $(selector + '.ou_vs_content').html(data);
+             }
 		 }
 	});
  }
@@ -819,8 +839,10 @@ function retrieve_gs_ajax(){
 		 type:'GET',
 		 error: function(xhr) {
 			 alert('Ajax failed');
-		 },success: function(response) {
-			 $('.retrieve_info').html(response);
+		 },success: function(data) {
+            if(ajax_check_user_logged_in(data)){
+			    $('.retrieve_info').html(data);
+            }
 		 }
 	});
 }
@@ -833,9 +855,11 @@ function retrieve_ncert_gs_ajax(){
 		 type:'GET',
 		 error: function(xhr) {
 			 alert('Ajax failed');
-		 },success: function(response) {
-			 $('.retrieve_info').html(response);
-		 }
+		 },success: function(data) {
+            if(ajax_check_user_logged_in(data)){
+			    $('.retrieve_info').html(data);
+		    }
+         }
 	});
 }
 
@@ -847,9 +871,11 @@ function retrieve_gcb_ajax(){
 		 type:'GET',
 		 error: function(xhr) {
 			 alert('Ajax failed');
-		 },success: function(response) {
-			 $('.retrieve_info').html(response);
-		 }
+		 },success: function(data) {
+            if(ajax_check_user_logged_in(data)){
+			    $('.retrieve_info').html(data);
+		    }
+         }
 	});
 }
 
@@ -862,10 +888,12 @@ function retrieve_vul_ajax(){
 		 type:'GET',
 		 error: function(xhr) {
 			 alert('Ajax failed');
-		 },success: function(response) {
-			 $('.ui.inline.loader').removeClass('active');
-			 $('.retrieve_vul').html(response);
-		 }
+		 },success: function(data) {
+			$('.ui.inline.loader').removeClass('active');
+            if(ajax_check_user_logged_in(data)){
+			    $('.retrieve_vul').html(data);
+		    }
+         }
 	});
 }
 
@@ -883,9 +911,11 @@ function retrieve_ldap_tree_ajax(){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-             $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.ldap_tree_content').html(data);
-		 }
+            $(selector + '.ui.inline.loader').removeClass('active');
+            if(ajax_check_user_logged_in(data)){
+			    $(selector + '.ldap_tree_content').html(data);
+		    }
+         }
 	});
 }
 
@@ -901,8 +931,10 @@ function retrieve_hydra_ajax(type){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.record_content').html(data);
+			$(selector + '.ui.inline.loader').removeClass('active');
+            if(ajax_check_user_logged_in(data)){
+			    $(selector + '.record_content').html(data);
+            }
 		 }
 	});
 }
@@ -919,9 +951,11 @@ function retrieve_nmap_ajax(type){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.record_content').html(data);
-		 }
+	        $(selector + '.ui.inline.loader').removeClass('active');
+            if(ajax_check_user_logged_in(data)){
+			    $(selector + '.record_content').html(data);
+		    }
+         }
 	});
 }
 
@@ -937,9 +971,11 @@ function retrieve_nslookup_ajax(type){
 		 error: function(xhr) {
 			 alert('Ajax failed');
 		 },success: function(data) {
-			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.record_content').html(data);
-		 }
+		    $(selector + '.ui.inline.loader').removeClass('active');
+            if(ajax_check_user_logged_in(data)){
+			    $(selector + '.record_content').html(data);
+		    }
+         }
 	});
 }
 
@@ -956,8 +992,10 @@ function retrieve_ldap_ajax(type){
 			 alert('Ajax failed');
 		 },success: function(data) {
 			 $(selector + '.ui.inline.loader').removeClass('active');
-			 $(selector + '.record_content').html(data);
-		 }
+             if(ajax_check_user_logged_in(data)){
+			    $(selector + '.record_content').html(data);
+		     }
+         }
 	});
 }
 
@@ -969,7 +1007,6 @@ function modal_form_action_ajax(id, action){
 		case 'edit':
 			$.ajax({
 				 url: '/ajax/modal_form_action/',
-				 //url: '/ajax/modal_form_action.php',
 				 cache: false,
 				 dataType:'json',
 				 type:'get',
@@ -977,16 +1014,18 @@ function modal_form_action_ajax(id, action){
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
-					 console.log(data);
-					 var inputs = $(selector + 'form').find(':input');
-					 var len = inputs.length;
-					 for (var i = 0; i < len; i++) {
-						  var name = inputs[i].name;
-						  var localName = inputs[i].localName;
-						  if(name != 'submit'){
-							 $(selector + localName + '[name='+name+']').val(data[name]);
-						  }
-					 }
+                    if(ajax_check_user_logged_in(data)){
+                         console.log(data);
+                         var inputs = $(selector + 'form').find(':input');
+                         var len = inputs.length;
+                         for (var i = 0; i < len; i++) {
+                              var name = inputs[i].name;
+                              var localName = inputs[i].localName;
+                              if(name != 'submit'){
+                                 $(selector + localName + '[name='+name+']').val(data[name]);
+                              }
+                         }
+                    }
 				 }
 			});
 
@@ -1012,11 +1051,22 @@ function modal_form_action_ajax(id, action){
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
-			        history.go(0);
-				 }
+                    if(ajax_check_user_logged_in(data)){
+			            history.go(0);
+				    }
+                 }
 			});
 			break;
 	}
+}
+
+function ajax_check_user_logged_in(data) {
+    if(data === '401 Unauthorized'){
+        alert('已逾時 請重新登入!');
+        return false;
+    }else{
+        return true;
+    }
 }
 
 //change mainpage and subpage

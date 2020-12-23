@@ -57,11 +57,11 @@ if(@count($error) > 0) {
 	return;
 }
 
-$table = "api_list"; // 設定你想查詢資料的資料表
+$table = "apis"; // 設定你想查詢資料的資料表
 $condition = "class LIKE :class and name LIKE :name";
-$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'GCB', ':name'=>'用戶端清單']);
+$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'gcb', ':name'=>'用戶端清單']);
 $table = "api_status"; // 設定你想新增資料的資料表
-$data_array['api_id'] = $api_list[0]['id'];
+$data_array['api_id'] = $apis[0]['id'];
 $data_array['url'] = "";
 $data_array['status'] = $status;
 $data_array['data_number'] = $count;

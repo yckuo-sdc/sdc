@@ -22,8 +22,8 @@ $(document).ready(function(){
 });
 
 function c3_chart_enews_ajax(url){
-	$.ajax({
-		 url: url+'/ajax/chart/',
+	$.ajax({    
+         url: url+'/ajax/chart.php',
 		 cache: false,
 		 dataType:'json',
 		 type:'GET',
@@ -338,7 +338,7 @@ function c3_chart_client_ajax(url){
 				type : 'donut'
 				},
 				donut:{
-					title: "IP總數:"+total_ip,
+					//title: "IP總數:"+total_ip,
 					label: {
 					}
 				},
@@ -351,6 +351,13 @@ function c3_chart_client_ajax(url){
 							return Math.round(ratio * 1000)/10+'% | '+value;
 						} 
 					} 
+				},
+				onrendered: function () {
+					var data = this.api.data.shown.call (this.api);
+					var total = data.reduce (function (subtotal, t) {
+						return subtotal + t.values.reduce (function (subsubtotal,b) { return subsubtotal + b.value; }, 0);
+					}, 0);
+					d3.select(this.config.bindto + " .c3-chart-arcs-title").text("IP總數: "+total);
 				}
 			});
 			

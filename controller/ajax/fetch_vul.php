@@ -2,9 +2,9 @@
 require_once 'vendor/autoload.php';
 
 $db = Database::get();
-$key = ChtSecurityAPI::KEY;
+$key = ChtsecurityAPI::KEY;
 
-$table = "api_list"; // 設定你想查詢資料的資料表
+$table = "apis"; // 設定你想查詢資料的資料表
 $condition = "class LIKE :class";
 $apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'弱掃平台']);
 

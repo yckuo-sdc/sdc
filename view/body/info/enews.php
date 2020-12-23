@@ -12,7 +12,7 @@
 						</div>
 						<br>
 						<div class="ui small statistic <?=$blink_color_class?>">
-						  <div class="value <?=$blink_class?>"><?=$done_ncert_num." / ".$ncert_num?></div>
+						  <div class="value"><?=$done_ncert_num." / ".$ncert_num." ".$blink_label?></div>
 						  <div class="label">技服通報</div>
 						</div>
 					</center>

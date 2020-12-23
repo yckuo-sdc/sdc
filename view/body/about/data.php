@@ -18,7 +18,7 @@
                     </tr>
                     </thead>	
                     <tbody>	
-                    <?php foreach($api_list as $api){ ?>
+                    <?php foreach($apis as $api){ ?>
                         <tr>
                             <td><?=$api['class']?></td>
                             <td><?=$api['name']?></td>

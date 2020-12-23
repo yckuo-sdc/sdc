@@ -4,7 +4,7 @@
 			<div class="post">
                 <h2 class="ui dividing header">Top 100流量排名(最近24小時)</h2>
 				<div class="post_cell">
-                    上次更新：<?=$api['last_update']?>，更新頻率：1小時<br>
+                    上次更新：<?=$apis['last_update']?>，更新頻率：1小時<br>
 					<div class="ui secondary pointing menu">
 						<a class="active item">Yonghua</a>
 						<a class="item">Minjhih</a>

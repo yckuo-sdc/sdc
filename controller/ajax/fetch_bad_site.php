@@ -30,7 +30,7 @@ echo "DNS query on $time \n";
 
 $dn_count = 0;
 	
-$table = "maliciousSite";
+$table = "malicious_site";
 $key_column = "Type";
 $type = "domain"; 
 $db->delete($table, $key_column, $type);
@@ -57,7 +57,7 @@ foreach ($rows['values'] as $row){
 	$scan['Action'] = $action;
 	$scan['LastUpdate'] = date('Y-m-d H:i:s');	
 
-	$table = "maliciousSite";
+	$table = "malicious_site";
 	$db->insert($table, $scan);
 	$dn_count = $dn_count + 1;
 }		
@@ -69,14 +69,13 @@ if(@count($error) > 0) {
 
 $status = 200;	
 $nowTime = date('Y-m-d H:i:s'); 
-$url ="https://docs.google.com/spreadsheets/d/1bb9zyNHfuwQanSdutcyh2fj1JsddsXmG9JCUC5NwPNE/edit#gid=2001135399";
 
-$table = "api_list";
+$table = "apis";
 $condition = "class LIKE :class and name LIKE :name";
-$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'惡意中繼站', ':name'=>'Domain']);
+$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'惡意中繼站', ':name'=>'domain']);
 $table = "api_status";
-$data_array['api_id'] = $api_list[0]['id'];
-$data_array['url'] = $url;
+$data_array['api_id'] = $apis[0]['id'];
+$data_array['url'] = $apis[0]['url'];
 $data_array['status'] = $status;
 $data_array['data_number'] = $dn_count;
 $data_array['last_update'] = $nowTime;
@@ -117,7 +116,7 @@ echo "IP test on $time\n";
 
 $ip_count = 0;
 	
-$table = "maliciousSite";
+$table = "malicious_site";
 $key_column = "Type";
 $type = "ip"; 
 $db->delete($table, $key_column, $type);
@@ -144,7 +143,7 @@ foreach ($rows['values'] as $row){
 	$scan['Action'] = $action;
 	$scan['LastUpdate'] = date('Y-m-d H:i:s');	
 
-	$table = "maliciousSite";
+	$table = "malicious_site";
 	$db->insert($table, $scan);
 	$ip_count = $ip_count + 1;
 }
@@ -156,14 +155,13 @@ if(@count($error) > 0) {
 
 $status = 200;	
 $nowTime = date('Y-m-d H:i:s'); 
-$url ="https://docs.google.com/spreadsheets/d/1bb9zyNHfuwQanSdutcyh2fj1JsddsXmG9JCUC5NwPNE/edit#gid=1810016953";
 
-$table = "api_list";
+$table = "apis";
 $condition = "class LIKE :class and name LIKE :name";
-$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'惡意中繼站', ':name'=>'IP']);
+$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'惡意中繼站', ':name'=>'ip']);
 $table = "api_status";
-$data_array['api_id'] = $api_list[0]['id'];
-$data_array['url'] = $url;
+$data_array['api_id'] = $apis[0]['id'];
+$data_array['url'] = $apis[0]['url'];
 $data_array['status'] = $status;
 $data_array['data_number'] = $ip_count;
 $data_array['last_update'] = $nowTime;

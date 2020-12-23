@@ -31,7 +31,7 @@ switch(true){
 	case ($type == 'ncert'):
 		$condition_table = "security_ncert";
 		$table = "security_ncert";
-		$order_by = "IncidentID DESC, OccurrenceTime DESC";	
+		$order_by = "IncidentID DESC, DiscoveryTime DESC";	
 		break;
 	case ($type == 'contact'):
 		$condition_table = "security_contact";
@@ -41,7 +41,7 @@ switch(true){
 		break;
 	case ($type == 'gcb'):
 		$condition_table = "gcb_client_list";
-		$table = "(SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id)A";
+		$table = "(SELECT a.*,b.name as os_name,c.name as ie_name,ROUND(a.GsAll_1/a.GsAll_2*100,1) as GsPass FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id)A";
 		if($keyword == 'ExternalIP' or $keyword == 'InternalIP') $key = ip2long($key);
 		$order_by = "ID";	
 		break;
@@ -178,7 +178,9 @@ if($ap=='html'){
 						echo "<div class='item'>";
 						echo "<div class='content'>";
 							echo "<a>";
-							echo date_format(new DateTime($entry['OccurrenceTime']),'Y-m-d')."&nbsp&nbsp";
+							if($entry['Status']=="已結案")echo "<i class='check circle icon' style='color:green'></i>";
+							else echo "<i class='exclamation circle icon'></i>";
+							echo date_format(new DateTime($entry['DiscoveryTime']),'Y-m-d')."&nbsp&nbsp";
 							echo $entry['Status']."&nbsp&nbsp";
 							echo "<span style='background:#DDDDDD'>".$entry['ImpactLevel']."</span>&nbsp&nbsp";
 							echo $entry['Classification']."&nbsp&nbsp";
@@ -209,7 +211,7 @@ if($ap=='html'){
 								echo "<li>影響評估:".$entry['Evaluation']."</li>";
 								echo "<li>應變措施:".$entry['Response']."</li>";
 								echo "<li>解決辦法/結報內容:".$entry['Solution']."</li>";
-								echo "<li>發生時間:".$entry['OccurrenceTime']."</li>";
+								echo "<li>發現時間:".$entry['DiscoveryTime']."</li>";
 								echo "<li>通報時間:".$entry['InformTime']."</li>";	
 								echo "<li>修復時間:".$entry['RepairTime']."</li>";
 								echo "<li>審核機關審核時間:".$entry['TainanGovVerificationTime']."</li>";
@@ -277,17 +279,6 @@ if($ap=='html'){
 			break;
 			case "gcb":
 				echo "<div class='ui relaxed divided list'>";
-					echo "<div class='item'>";
-						echo "<div class='content'>";
-							echo "<a class='header'>";
-							echo "電腦名稱&nbsp&nbsp";
-							echo "單位名稱&nbsp&nbsp";
-							echo "使用者帳號&nbsp&nbsp";
-							echo "內網IP&nbsp&nbsp";
-							echo "作業系統&nbsp&nbsp";
-							echo "<a>";
-						echo "</div>";
-					echo "</div>";
 			foreach($entries->data as $entry) {
 				echo "<div class='item'>";
 				echo "<div class='content'>";
@@ -318,7 +309,8 @@ if($ap=='html'){
 					echo $entry['Owner']."&nbsp&nbsp";
 					echo "<span style='background:#DDDDDD'>".long2ip($entry['InternalIP'])."</span>&nbsp&nbsp";
 					echo $entry['os_name']."&nbsp&nbsp";
-					echo "<i class='angle down icon'></i>";
+                    echo "<span style='background:#fbc5c5'>".$entry['GsPass']."%</span>&nbsp&nbsp";
+                    echo "<i class='angle down icon'></i>";
 					echo "</a>";
 					echo "<div class='description'>";
 						echo "<ol>";
@@ -332,14 +324,15 @@ if($ap=='html'){
 						echo "<li>OS:".$entry['os_name']."</li>";
 						echo "<li>IE:".$entry['ie_name']."</li>";
 						echo "<li>是否上線:".$entry['IsOnline']."</li>";
-						echo "<li>Gcb總通過數[未包含例外]:".$entry['GsAll_0']."</li>";
-						echo "<li>Gcb總通過數[包含例外]:".$entry['GsAll_1']."</li>";
-						echo "<li>Gcb總通過數[總數]:".$entry['GsAll_2']."</li>";
-						echo "<li>Gcb例外數量:".$entry['GsExcTot']."</li>";
-						echo "<li><a href='/ajax/gcb_detail/?action=gscan&id=".$entry['GsID']."' target='_blank'>Gcb掃描編號:".$entry['GsID']."&nbsp<i class='external alternate icon'></i></a></li>";
-						echo "<li>Gcb派送編號:".$entry['GsSetDeployID']."</li>";
-						echo "<li>Gcb狀態:".$GsStat_str."</li>";
-						echo "<li>Gcb回報時間:".$entry['GsUpdatedAt']."</li>";
+						echo "<li>gcb總掃描數:".$entry['GsAll_2']."</li>";
+						echo "<li>gcb總通過數[包含例外]:".$entry['GsAll_1']."</li>";
+						echo "<li>gcb總通過數[未包含例外]:".$entry['GsAll_0']."</li>";
+						echo "<li>gcb例外數量:".$entry['GsExcTot']."</li>";
+						echo "<li>gcb通過率:".$entry['GsPass']."%</li>";
+						echo "<li><a href='/ajax/gcb_detail/?action=gscan&id=".$entry['GsID']."' target='_blank'>gcb掃描編號:".$entry['GsID']."&nbsp<i class='external alternate icon'></i></a></li>";
+						echo "<li>gcb派送編號:".$entry['GsSetDeployID']."</li>";
+						echo "<li>gcb狀態:".$GsStat_str."</li>";
+						echo "<li>gcb回報時間:".$entry['GsUpdatedAt']."</li>";
 						echo "</ol>";
 					echo "</div>";
 					echo "</div>";

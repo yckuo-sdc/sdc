@@ -1,4 +1,3 @@
-<!--tool_nmap-->
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
@@ -51,31 +50,31 @@
 							<?php foreach($systems as $system){
 								if($system['size'] == 0 ){ ?>
 									<tr>
-										<td><a href='<?=$system['URL']?>' target='_blank'><?=$system['Name']?></a></td>
-										<td><?=$system['IP']?></td>
+										<td><a href='<?=$system['url']?>' target='_blank'><?=$system['name']?></a></td>
+										<td><?=$system['ip']?></td>
 										<td></td>
 										<td></td>
 										<td></td>
 										<td></td>
-										<td><?=$system['Scan_Result']?></td>
+										<td><?=$system['scan_result']?></td>
 									</tr>
 								<?php }else{
 									foreach ($system['ports'] as $index => $port){
 										if($index == 0){ ?>
 											<tr>
-												<td rowspan=<?=$system['size']?>><a href='<?=$system['URL']?>' target='_blank'><?=$system['Name']?></a></td>
-												<td rowspan=<?=$system['size']?>><?=$system['IP']?></td>
+												<td rowspan=<?=$system['size']?>><a href='<?=$system['url']?>' target='_blank'><?=$system['name']?></a></td>
+												<td rowspan=<?=$system['size']?>><?=$system['ip']?></td>
 												<td rowspan=<?=$system['size']?>>tcp</td>
-												<td><?=$port['PortNumber']?></td>
-												<td><?=$port['Service']?></td>
-												<td><?=$port['Status']?></td>
-												<td rowspan=<?=$system['size']?>><?=$system['Scan_Result']?></td>
+												<td><?=$port['port_number']?></td>
+												<td><?=$port['service']?></td>
+												<td><?=$port['status']?></td>
+												<td rowspan=<?=$system['size']?>><?=$system['scan_result']?></td>
 											</tr>
 										<?php }else{ ?>
 											<tr>
-                                                <td><?=$port['PortNumber']?></td>
-                                                <td><?=$port['Service']?></td>
-                                                <td><?=$port['Status']?></td>
+                                                <td><?=$port['port_number']?></td>
+                                                <td><?=$port['service']?></td>
+                                                <td><?=$port['status']?></td>
 											</tr>
 										<?php }	
 									}

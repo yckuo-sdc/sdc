@@ -1,11 +1,10 @@
 <?php 
-$sql = "SELECT a.*, b.name FROM api_status AS a INNER JOIN api_list AS b ON a.api_id = b.id 
-    WHERE a.id IN(SELECT max(id) FROM api_status WHERE api_id IN (SELECT id FROM api_list WHERE class='弱掃平台') 
+$sql = "SELECT a.*, b.name FROM api_status AS a INNER JOIN apis AS b ON a.api_id = b.id 
+    WHERE a.id IN(SELECT max(id) FROM api_status WHERE api_id IN (SELECT id FROM apis WHERE class='弱掃平台') 
     GROUP BY api_id)";
-
 $vul_api = $db->execute($sql);
 
-$key = ChtSecurityAPI::KEY;
+$key = ChtsecurityAPI::KEY;
 $nowTime = date("Y-m-d H:i:s");
 $host_type = "ipscanResult";
 $web_type = "urlscanResult";

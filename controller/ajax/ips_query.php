@@ -64,16 +64,12 @@ if( count($arr_jsonObj) !=0 ){  // retrieve query
 $nlogs = $max_item;
 $dir = 'backward';
 $skip = ($page-1)*$nlogs;
-$host = PaloAltoAPI::HOSTMAP[$type];
 
-$pa = new PaloAltoAPI($host);
-$log_type_map = ['traffic','threat','data'];
+$pa = new PaloAltoAPI($type);
+$log_type_map = ['traffic', 'threat', 'data'];
 
 for($i=0; $i<count($log_type_map); $i++){
-	if(!$data = $pa->getLogList($log_type = $log_type_map[$i], $dir, $nlogs, $skip, $query)){
-        echo "很抱歉，該分類分頁目前沒有資料！";
-        return;
-    }
+	$data = $pa->getLogList($log_type = $log_type_map[$i], $dir, $nlogs, $skip, $query);
 ?>
     該分類分頁共搜尋到<?=$data['log_count']?>筆資料！
 	<div class='ui relaxed divided list'>

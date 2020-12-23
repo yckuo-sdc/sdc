@@ -88,15 +88,14 @@ if (isset($rows['values'])) {
 
 	$nowTime = date("Y-m-d H:i:s");
 	$status = 200;	
-	$url ="https://docs.google.com/spreadsheets/d/1bb9zyNHfuwQanSdutcyh2fj1JsddsXmG9JCUC5NwPNE/edit#gid=451325607";
 	echo "update ".$count." records on ".$nowTime."<br>";
 
-	$table = "api_list"; // 設定你想查詢資料的資料表
+	$table = "apis"; // 設定你想查詢資料的資料表
 	$condition = "class LIKE :class and name LIKE :name";
-	$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'資安事件', ':name'=>'本府資安事件']);
+	$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'資安事件', ':name'=>'市府資安事件']);
 	$table = "api_status"; // 設定你想新增資料的資料表
-	$data_array['api_id'] = $api_list[0]['id'];
-	$data_array['url'] = $url;
+	$data_array['api_id'] = $apis[0]['id'];
+	$data_array['url'] = $apis[0]['url'];
 	$data_array['status'] = $status;
 	$data_array['data_number'] = $count;
 	$data_array['last_update'] = $nowTime;

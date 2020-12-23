@@ -92,6 +92,4 @@ if(isset($error) AND count($error) > 0){
 	}
 }
 
-//$_SESSION["error"] = $error;
-//header("Location: /login"); 
 header("Location: ".$_SERVER['HTTP_REFERER']); 

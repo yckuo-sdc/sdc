@@ -10,7 +10,7 @@
 						<div class="field">
 							<label>種類</label>
 							<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-							<option value="PublicIP"  selected>IP(網址)</option>
+							<option value="PublicIP"  selected>IP/URL</option>
 							<option value="Status" >結案狀態</option>
 							<option value="Classification" >事故類型</option>
 							<option value="OrganizationName" >機關名稱</option>
@@ -45,7 +45,9 @@
 							<div class='item'>
 							<div class='content'>
 								<a>
-								<?=date_format(new DateTime($incident['OccurrenceTime']),'Y-m-d') ?>&nbsp&nbsp
+                                <?php if($incident['Status']=="已結案") { ?><i class='check circle icon' style='color:green'></i>
+                                <?php }else { ?><i class='exclamation circle icon'></i> <?php } ?>
+								<?=date_format(new DateTime($incident['DiscoveryTime']),'Y-m-d') ?>&nbsp&nbsp
 								<?=$incident['Status'] ?>&nbsp&nbsp
 								<span style='background:#DDDDDD'><?=$incident['ImpactLevel'] ?></span>&nbsp&nbsp
 								<?=$incident['Classification'] ?>&nbsp&nbsp
@@ -75,7 +77,7 @@
 									<li>影響評估:<?=$incident['Evaluation'] ?></li>
 									<li>應變措施:<?=$incident['Response'] ?></li>
 									<li>解決辦法/結報內容:<?=$incident['Solution'] ?></li>
-									<li>發生時間:<?=$incident['OccurrenceTime'] ?></li>
+									<li>發現時間:<?=$incident['DiscoveryTime'] ?></li>
 									<li>通報時間:<?=$incident['InformTime'] ?></li>
 									<li>修復時間:<?=$incident['RepairTime'] ?></li>
 									<li>審核機關審核時間:<?=$incident['TainanGovVerificationTime'] ?></li>

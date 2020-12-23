@@ -19,6 +19,7 @@
 	<script src="/node_modules/d3js/d3.min.js" charset="utf-8"></script>
 	<link href="/node_modules/c3js/c3.css" rel="stylesheet" type="text/css">
 	<script src="/node_modules/c3js/c3.min.js"></script>
+	<script src="/node_modules/tablesort.js"></script>
 
 	<!-- semantic ui -->
 	<link rel="stylesheet" type="text/css" href="/node_modules/semantic/semantic.css">

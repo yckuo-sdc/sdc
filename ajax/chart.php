@@ -65,27 +65,25 @@ switch($chartID){
 		break;
 	case "network":
 		$pa = new PaloAltoAPI();
-		$report_map = ['top-applications', 'top-attacks', 'top-denied-applications'];
+		$report_map = ['top-attacks', 'top-denied-applications'];
 		echo "<h3></h3>"; 
 		echo "<?xml version=\"1.0\"?>";
 		echo "<data>";
 		foreach($report_map as $report_name){	
-			$report_type = 'predefined';
-			$res = $pa->getReportList($report_type, $report_name);
-			$xml = simplexml_load_string($res) or die("Error: Cannot create object");
-			$max_count = 10;
-			$count = 0;
-			foreach($xml->result->entry as $log){
-				if($count >= $max_count){
-					break;
-				}
+			$data = $pa->getSyncReport($report_type = 'predefined', $report_name);
+            $max_count = 10;
+            $count = 0;
+            foreach($data['logs'] as $log){
+                if($count >= $max_count){
+                    break;
+                }
 				echo "<".$report_name.">";
-					foreach($log as $key => $val){
+                    foreach($log as $key => $val){
 						echo "<".$key.">".$val."</".$key.">";
-					}
+                    }
 				echo "</".$report_name.">";
-				$count = $count + 1;
-			}
+                $count = $count + 1;
+            }
 		}
 		echo "</data>";
 		break;
@@ -96,16 +94,14 @@ switch($chartID){
 		echo "<?xml version=\"1.0\"?>";
 		echo "<data>";
 		foreach($report_map as $report_name){	
-			$report_type = 'predefined';
-			$res = $pa->getReportList($report_type, $report_name);
-			$xml = simplexml_load_string($res) or die("Error: Cannot create object");
-			foreach($xml->result->entry as $log){
+			$data = $pa->getSyncReport($report_type = 'predefined', $report_name);
+            foreach($data['logs'] as $log){
 				echo "<".$report_name.">";
-					foreach($log as $key => $val){
+                    foreach($log as $key => $val){
 						echo "<".$key.">".$val."</".$key.">";
-					}
+                    }
 				echo "</".$report_name.">";
-			}
+            }
 		}
 		echo "</data>";
 		break;

@@ -51,7 +51,9 @@ class DatabaseAccessObject {
             $stmt = $this->db->prepare($sql);
             $stmt->execute($data_array);
             $this->last_num_rows = $stmt->rowCount();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+			$response = $stmt->fetchAll(PDO::FETCH_ASSOC);			
+			array_walk_recursive($response, "filterHtml");
+            return $response; 
         } catch(PDOException $e) {
             /**
             *avoid fetch bug after insert or update FROM select 
@@ -79,8 +81,9 @@ class DatabaseAccessObject {
 			$stmt = $this->db->prepare($this->last_sql);
 			$stmt->execute($data_array);
     		$this->last_num_rows = $stmt->rowCount();
-			//return $stmt->fetchAll();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+            $response = $stmt->fetchAll(PDO::FETCH_ASSOC);  //response =  $stmt->fetchAll();
+			array_walk_recursive($response, "filterHtml");
+            return $response; 
 		} catch(PDOException $e) {
 		    $this->error_message[] = $e->getMessage();
 		    echo "<div class='ui error message'>".$e->getMessage()."</div>";

@@ -37,8 +37,8 @@ function checkAccountByLDAP($user, $ldappass){
 		if ($ldapbind) {
 			ldap_close($ldapconn);
 			return true;
-		}		
-	}
+	    }
+    }
 
 	ldap_close($ldapconn);
 	return false;	
@@ -263,5 +263,9 @@ function formatNumbers($num, $precision = 1) {
     $pow = min($pow, count($units) - 1); 
 	$num /= pow(1024, $pow);
 	return round($num, $precision) . ' ' . $units[$pow]; 
+} 
+
+function filterHtml(&$value) {
+    $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 } 
 

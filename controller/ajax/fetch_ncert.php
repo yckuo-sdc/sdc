@@ -67,7 +67,7 @@ if (isset($rows['values'])) {
 		$event['Evaluation'] = $row[17];
 		$event['Response'] = $row[18];
 		$event['Solution'] = $row[19];
-		$event['OccurrenceTime'] = $row[20];
+		$event['DiscoveryTime'] = $row[20];
 		$event['InformTime'] = $row[21];
 		$event['RepairTime'] = $row[22];
 		$event['TainanGovVerificationTime'] = $row[23];
@@ -89,15 +89,14 @@ if (isset($rows['values'])) {
 	
 	$nowTime = date("Y-m-d H:i:s");
 	$status = 200;	
-	$url = "https://docs.google.com/spreadsheets/d/1lr_EHFxJp0KGErFt7L1oh7n7HIIh_YZtVWH4QBZhhME/edit#gid=1460646588";
 	echo "update ".$count." records on ".$nowTime."<br>";
 	
-	$table = "api_list"; // 設定你想查詢資料的資料表
+	$table = "apis"; // 設定你想查詢資料的資料表
 	$condition = "class LIKE :class and name LIKE :name";
-	$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'資安事件', ':name'=>'技服資安通報']);
+	$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'資安事件', ':name'=>'技服資安通報']);
 	$table = "api_status"; // 設定你想新增資料的資料表
-	$data_array['api_id'] = $api_list[0]['id'];
-	$data_array['url'] = $url;
+	$data_array['api_id'] = $apis[0]['id'];
+	$data_array['url'] = $apis[0]['url'];
 	$data_array['status'] = $status;
 	$data_array['data_number'] = $count;
 	$data_array['last_update'] = $nowTime;

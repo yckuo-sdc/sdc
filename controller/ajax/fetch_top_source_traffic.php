@@ -55,65 +55,41 @@ $id = "1";
 $db->delete($table, $key_column, $id); 
 
 //fetch traffic report of yonghua Paloalto
-$pa = new PaloAltoAPI(PaloAltoAPI::HOSTMAP['yonghua']);
-$report_type = 'custom';
-$report_name = 'Traffic_Top100_last_24hour';	
-$res = $pa->getReportList($report_type, $report_name);
-$xml = simplexml_load_string($res) or die("Error: Cannot create object");
-$job_id = $xml->result->job;
+$pa = new PaloAltoAPI('yonghua');
+$data = $pa->getAsyncReport($report_type = 'custom', $report_name = 'Traffic_Top100_last_24hour');
 
 $count1 = 0;
-if(!isset($job_id)){
-    echo "no job_id";
-    return;
-}else{
-    $res = $pa->retrieveLogs($job_id, $type="report", $action="get");
-    $xml = simplexml_load_string($res) or die("Error: Cannot create object");
-
-    foreach($xml->result->report->entry as $entry){
-        $data_array = array();
-        $data_array['id'] = ($count1 + 1);
-        $data_array['location'] = 'yonghua';
-        $data_array['src_ip'] = strval($entry->src);
-        $data_array['bytes'] = intval($entry->bytes);
-        $data_array['sessions'] = intval($entry->sessions);
-        $data_array['app'] = strval($entry->app);
-        $data_array['bytes_sent'] = intval($entry->bytes_sent);
-        $data_array['bytes_received'] = intval($entry->bytes_received);
-        $db->insert($table, $data_array);
-        $count1 = $count1 + 1;
-    }
+foreach($data['logs'] as $entry){
+    $data_array = array();
+    $data_array['id'] = ($count1 + 1);
+    $data_array['location'] = 'yonghua';
+    $data_array['src_ip'] = $entry['src'];
+    $data_array['bytes'] = $entry['bytes'];
+    $data_array['sessions'] = $entry['sessions'];
+    $data_array['app'] = $entry['app'];
+    $data_array['bytes_sent'] = $entry['bytes_sent'];
+    $data_array['bytes_received'] = $entry['bytes_received'];
+    $db->insert($table, $data_array);
+    $count1 = $count1 + 1;
 }
 
 //fetch traffic report of minjhih Paloalto
-$pa = new PaloAltoAPI(PaloAltoAPI::HOSTMAP['minjhih']);
-$report_type = 'custom';
-$report_name = 'Traffic_Top100_last_24hour';	
-$res = $pa->getReportList($report_type, $report_name);
-$xml = simplexml_load_string($res) or die("Error: Cannot create object");
-$job_id = $xml->result->job;
+$pa = new PaloAltoAPI('minjhih');
+$data = $pa->getAsyncReport($report_type = 'custom', $report_name = 'Traffic_Top100_last_24hour');
 
 $count2 = 0;
-if(!isset($job_id)){
-    echo "no job_id";
-    return;
-}else{
-    $res = $pa->retrieveLogs($job_id, $type="report", $action="get");
-    $xml = simplexml_load_string($res) or die("Error: Cannot create object");
-
-    foreach($xml->result->report->entry as $entry){
-        $data_array = array();
-        $data_array['id'] = ($count2 + 1);
-        $data_array['location'] = 'minjhih';
-        $data_array['src_ip'] = strval($entry->src);
-        $data_array['bytes'] = intval($entry->bytes);
-        $data_array['sessions'] = intval($entry->sessions);
-        $data_array['app'] = strval($entry->app);
-        $data_array['bytes_sent'] = intval($entry->bytes_sent);
-        $data_array['bytes_received'] = intval($entry->bytes_received);
-        $db->insert($table, $data_array);
-        $count2 = $count2 + 1;
-    }
+foreach($data['logs'] as $entry){
+    $data_array = array();
+    $data_array['id'] = ($count2 + 1);
+    $data_array['location'] = 'minjhih';
+    $data_array['src_ip'] = $entry['src'];
+    $data_array['bytes'] = $entry['bytes'];
+    $data_array['sessions'] = $entry['sessions'];
+    $data_array['app'] = $entry['app'];
+    $data_array['bytes_sent'] = $entry['bytes_sent'];
+    $data_array['bytes_received'] = $entry['bytes_received'];
+    $db->insert($table, $data_array);
+    $count2 = $count2 + 1;
 }
 
 //update the column 'ou','name','type' from table 'client_server_lists'
@@ -133,12 +109,12 @@ $status = 200;
 $count = $count1 + $count2;
 echo "The ".$count." records have been inserted or updated into the top_source_traffic on ".$nowTime."\n\r<br>";
 
-$table = "api_list";
+$table = "apis";
 $condition = "class LIKE :class and name LIKE :name";
-$api_list = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'網路流量', ':name'=>'流量來源排名']);
+$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'網路流量', ':name'=>'流量來源排名']);
 $table = "api_status";
 $data_array = array();
-$data_array['api_id'] = $api_list[0]['id'];
+$data_array['api_id'] = $apis[0]['id'];
 $data_array['url'] = "";
 $data_array['status'] = $status;
 $data_array['data_number'] = $count;

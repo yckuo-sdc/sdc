@@ -5,13 +5,13 @@ $page = isset( $_GET['page']) ? $_GET['page'] : 1;
 $sort = isset($_GET['sort'])?$_GET['sort']:'TargetID';	
 
 //drip
-$query = "SELECT * FROM drip_client_list ORDER BY DetectorName,IP";
+$query = "SELECT * FROM drip_client_list ORDER BY DetectorName, IP";
 $drip_paginator = new Paginator($query);
 $drip = $drip_paginator->getData($limit, $page);
 $drip_num_rows = $drip_paginator->getTotal();
 
 //gcb
-$query = "SELECT a.*,b.name as os_name,c.name as ie_name FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id ORDER by a.ID asc,a.InternalIP asc";
+$query = "SELECT a.*, b.name AS os_name, c.name AS ie_name, ROUND(a.GsAll_1 / a.GsAll_2 * 100, 1) AS GsPass FROM gcb_client_list AS a LEFT JOIN gcb_os AS b ON a.OSEnvID = b.id LEFT JOIN gcb_ie AS c ON a.IEEnvID = c.id ORDER BY a.ID ASC, a.InternalIP ASC";
 $gcb_paginator = new Paginator($query);
 $gcb = $gcb_paginator->getData($limit, $page);
 $gcb_num_rows = $gcb_paginator->getTotal();
@@ -28,7 +28,7 @@ foreach($wsus->data as $client) {
     $table = "wsus_computer_updatestatus_kbid";
     $order_by = "ID";
     $condition = "TargetID = :TargetID AND UpdateState = :UpdateState";
-    $data_array = [':TargetID'=>$client['TargetID'],':UpdateState'=>'NotInstalled'];
+    $data_array = [':TargetID'=>$client['TargetID'], ':UpdateState'=>'NotInstalled'];
     $notinstalled_kb[] = $db->query($table, $condition, $order_by, $fields = "*", $kb_limit = "",$data_array);
     $data_array = [':TargetID'=>$client['TargetID'],':UpdateState'=>'Failed'];
     $failed_kb[] = $db->query($table, $condition, $order_by, $fields = "*", $kb_limit = "", $data_array);

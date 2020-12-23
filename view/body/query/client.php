@@ -1,4 +1,3 @@
-<!--query_client-->
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
@@ -197,6 +196,7 @@
 						<?=$client['Owner']?>&nbsp&nbsp
 						<span style='background:#DDDDDD'><?=long2ip($client['InternalIP'])?></span>&nbsp&nbsp
 						<?=$client['os_name']?>&nbsp&nbsp
+						<span style='background:#fbc5c5'><?=$client['GsPass']?>%</span>&nbsp&nbsp
 						<i class='angle down icon'></i>
 						</a>
 						<div class='description'>
@@ -211,14 +211,15 @@
 							<li>OS:<?=$client['os_name']?></li>
 							<li>IE:<?=$client['ie_name']?></li>
 							<li>是否上線:<?=$client['IsOnline']?></li>
-							<li>Gcb總通過數[未包含例外]:<?=$client['GsAll_0']?></li>
-							<li>Gcb總通過數[包含例外]:<?=$client['GsAll_1']?></li>
-							<li>Gcb總通過數[總數]:<?=$client['GsAll_2']?></li>
-							<li>Gcb例外數量:<?=$client['GsExcTot']?></li>
-							<li><a href='/ajax/gcb_detail/?action=gscan&id=<?=$client['GsID']?>' target='_blank'>Gcb掃描編號:<?=$client['GsID']?>(掃描結果資訊)&nbsp<i class='external alternate icon'></i></a></li>
-							<li>Gcb派送編號:<?=$client['GsSetDeployID']?></li>
-							<li>Gcb狀態:<?=$GsStat_str?></li>
-							<li>Gcb回報時間:<?=$client['GsUpdatedAt']?></li>
+							<li>gcb總掃描數:<?=$client['GsAll_2']?></li>
+							<li>gcb總通過數[包含例外]:<?=$client['GsAll_1']?></li>
+							<li>gcb總通過數[未包含例外]:<?=$client['GsAll_0']?></li>
+							<li>gcb例外數量:<?=$client['GsExcTot']?></li>
+							<li>gcb通過率:<?=$client['GsPass']?>%</li>
+							<li><a href='/ajax/gcb_detail/?action=gscan&id=<?=$client['GsID']?>' target='_blank'>gcb掃描編號:<?=$client['GsID']?>(掃描結果資訊)&nbsp<i class='external alternate icon'></i></a></li>
+							<li>gcb派送編號:<?=$client['GsSetDeployID']?></li>
+							<li>gcb狀態:<?=$GsStat_str?></li>
+							<li>gcb回報時間:<?=$client['GsUpdatedAt']?></li>
 							</ol>
 						</div>
 					</div>

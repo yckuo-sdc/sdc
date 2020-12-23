@@ -12,7 +12,7 @@ $gcb_rate = round($gcb_num/$total_num*100,2)."%";
 $wsus_rate = round($wsus_num/$total_num*100,2)."%"; 
 $antivirus_rate = round($antivirus_num/$total_num*100,2)."%"; 
 
-$table = "ad_comupter_list"; // 設定你想查詢資料的資料表
+$table = "ad_comupter_list";
 $db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "DISTINCT(CommonName)", $limit = "", [1]);
 $ad_computer_num = $db->getLastNumRows();
 
@@ -34,7 +34,7 @@ $total_wsus_rate = round($total_wsus_num/$total_wsus_num*100,2)."%";
 $pass_wsus_rate = round($pass_wsus_num/$total_wsus_num*100,2)."%"; 
 $sync_wsus_rate = round($sync_wsus_num/$total_wsus_num*100,2)."%"; 
 
-$table = "antivirus_client_list"; // 設定你想查詢資料的資料表
+$table = "antivirus_client_list"; 
 $db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "*", $limit = "", [1]);
 $total_antivirus_num = $db->getLastNumRows();
 $db->query($table, $condition = "DLPState IN (?,?,?)", $order_by = "1", $fields = "*", $limit = "", ['已停止','需要重新啟動','執行']);

@@ -17,9 +17,6 @@
 			    </div>		
 				<div id="topThreat_post" class="post_title">威脅日誌(最近10筆)</div>
 				<div class="post_cell">
-                    <?php if(!isset($data)) {
-                        echo "很抱歉，該分類目前沒有資料！";
-                    } else{ ?>
 					<table class="ui very basic table">
 					<thead>	
 					<tr>
@@ -46,7 +43,6 @@
 					<?php } ?>
 					</tbody>
 					</table>
-				    <?php } ?>
                     <div class="see_more" style="text-align:right">
 						<a href="/network/search/">See More...</a>
 					</div>
