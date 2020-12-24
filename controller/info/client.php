@@ -1,5 +1,5 @@
 <?php 
-$sql = "SELECT COUNT(*) AS total_num,SUM(ad) AS ad_num,SUM(gcb) AS gcb_num,SUM(wsus) AS wsus_num,SUM(antivirus) AS antivirus_num FROM drip_client_list";
+$sql = "SELECT COUNT(*) AS total_num, SUM(ad) AS ad_num, SUM(gcb) AS gcb_num, SUM(wsus) AS wsus_num, SUM(antivirus) AS antivirus_num FROM drip_client_list";
 $device_num = $db->execute($sql, [])[0];
 $total_num = $device_num['total_num'];
 $ad_num = $device_num['ad_num'];
@@ -16,7 +16,7 @@ $table = "ad_comupter_list";
 $db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "DISTINCT(CommonName)", $limit = "", [1]);
 $ad_computer_num = $db->getLastNumRows();
 
-$sql = "SELECT COUNT(ID) as total_count,SUM(CASE WHEN GsAll_2 = GsAll_1 THEN 1 ELSE 0 END) as pass_count FROM gcb_client_list";
+$sql = "SELECT COUNT(ID) as total_count, SUM(CASE WHEN GsAll_2 = GsAll_1 THEN 1 ELSE 0 END) as pass_count FROM gcb_client_list";
 $gcb = $db->execute($sql, [])[0];
 $total_count = $gcb['total_count'];
 $pass_count = $gcb['pass_count'];

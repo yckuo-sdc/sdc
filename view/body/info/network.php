@@ -30,7 +30,7 @@
 					</tr>
 					</thead>	
 					<tbody>	
-					<?php foreach($data['logs'] as $log){ ?>
+					<?php foreach($threat_data['logs'] as $log){ ?>
 						<tr>
 							<td><?php echo $log->receive_time ?></td>
 							<td><?php echo $log->threatid ?></td>

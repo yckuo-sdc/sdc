@@ -1,8 +1,4 @@
 <?php
-if(!defined("SITE_ROOT"))	define("SITE_ROOT", "/var/www/html/sdc");
-require SITE_ROOT.'/libraries/database_access_object_mysqli.php';
-require SITE_ROOT.'/config/MySQL.php';
-
 class DatabaseMysqli {
   
     private static $instance;

@@ -1,8 +1,5 @@
 <?php
 /*** manual： https://172.16.254.209/php/rest/browse.php ***/
-if(!defined("SITE_ROOT"))	define("SITE_ROOT", "/var/www/html/sdc");
-require SITE_ROOT.'/config/paloalto.php';
-
 Class PaloAltoAPI {
 	private $host;
 	private $apikey;

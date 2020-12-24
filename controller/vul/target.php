@@ -1,5 +1,5 @@
 <?php 
-$table = "scanTarget"; // 設定你想查詢資料的資料表
+$table = "scanTarget"; 
 $condition = "1 = ?";
 $order_by = "ou";
 $scanTarget = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", [1]);

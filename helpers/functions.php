@@ -249,6 +249,7 @@ function get_ou_desc_recursive($dn,$ldapconn){
 
 function formatBytes($bytes, $precision = 1) { 
     $units = array('B', 'KB', 'MB', 'GB', 'TB'); 
+    $bytes = (int) $bytes;
     $bytes = max($bytes, 0); 
     $pow = floor(($bytes ? log($bytes) : 0) / log(1024)); 
     $pow = min($pow, count($units) - 1); 
@@ -258,6 +259,7 @@ function formatBytes($bytes, $precision = 1) {
 
 function formatNumbers($num, $precision = 1) { 
     $units = array('', 'K', 'M', 'G', 'T'); 
+    $num = (int) $num;
     $num = max($num, 0); 
     $pow = floor(($num ? log($num) : 0) / log(1000)); 
     $pow = min($pow, count($units) - 1); 

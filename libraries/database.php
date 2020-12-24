@@ -1,8 +1,4 @@
 <?php
-if(!defined("SITE_ROOT"))	define("SITE_ROOT", "/var/www/html/sdc");
-require SITE_ROOT.'/libraries/database_access_object.php';
-require SITE_ROOT.'/config/mysql.php';
-
 class Database {
   
     private static $instance;

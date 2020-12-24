@@ -1,6 +1,6 @@
 <?php 
 $pa = new PaloAltoAPI();
-$data = $pa->getLogList($log_type = 'threat', $dir = 'backward', $nlogs = 10, $skip = 0, $query = '');
+$threat_data = $pa->getLogList($log_type = 'threat', $dir = 'backward', $nlogs = 10, $skip = 0, $query = '');
 $report_data = $pa->getSyncReport($report_type = 'predefined', $report_name = 'top-destination-countries');
 
 $max_count = 10;
@@ -13,11 +13,11 @@ foreach($report_data['logs'] as $log){
 	if($count >= $max_count){
 		break;
 	}
-    $entries[$count]['dstloc'] = strval($log['dstloc']); 
-    $entries[$count]['bytes'] = intval($log['bytes']); 
-    $entries[$count]['sessions'] = intval($log['sessions']); 
-    $bytes_array[$count] = intval($log['bytes']);
-    $sessions_array[$count] = intval($log['sessions']);
+    $entries[$count]['dstloc'] = $log['dstloc']; 
+    $entries[$count]['bytes'] = $log['bytes']; 
+    $entries[$count]['sessions'] = $log['sessions']; 
+    $bytes_array[$count] = $log['bytes'];
+    $sessions_array[$count] = $log['sessions'];
 	$count = $count + 1;
 }
 

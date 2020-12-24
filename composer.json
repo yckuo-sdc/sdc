@@ -20,7 +20,7 @@
 			"libraries"
 		],
 		"files": [
-			"libraries/functions.php"
+			"helpers/functions.php"
 		]
 	}
 }
