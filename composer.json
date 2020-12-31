@@ -1,5 +1,6 @@
 {
     "name": "yckuo/sdc",
+    "license": "proprietary",
     "authors": [
         {
             "name": "YuChieh Kuo",
@@ -11,8 +12,9 @@
     "require": {
 		"google/apiclient": "^2.7",
         "wixel/gump": "^1.2",
-		"phpmailer/phpmailer": "~6.1",
-		"tamtamchik/simple-flash": "2.*"
+		"phpmailer/phpmailer": "^6.1",
+		"tamtamchik/simple-flash": "^2.0.0",
+        "vlucas/phpdotenv": "^5.2"
 	},
 	"autoload": {
 		"classmap": [

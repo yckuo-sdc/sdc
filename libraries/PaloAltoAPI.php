@@ -1,6 +1,7 @@
 <?php
 /*** manual： https://172.16.254.209/php/rest/browse.php ***/
 Class PaloAltoAPI {
+
 	private $host;
 	private $apikey;
 

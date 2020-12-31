@@ -1,9 +1,8 @@
 <?php
+require 'vendor/autoload.php';
 
-$array = array(1,2);
-$array = array();
-              
-foreach( $array as $key => $value ){
-  echo $key."\t=>\t".$value."\n";
-}
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
+echo $_ENV['DB_USERNAME'];
+echo $_ENV['DB_HOST'];

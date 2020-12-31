@@ -1,5 +1,6 @@
 <?php
 class Paginator {
+
     private $db = null;
 	private $limit;
 	private $page;

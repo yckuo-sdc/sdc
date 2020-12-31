@@ -1,5 +1,6 @@
 <?php
 class Request {
+
     public static function uri()
     {
         $uri = str_replace(static::getFolderName(), "", static::redirect_url());
