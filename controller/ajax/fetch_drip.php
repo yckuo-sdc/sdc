@@ -1,5 +1,5 @@
 <?php
-require_once 'vendor/autoload.php';
+require_once __DIR__ .'/../../vendor/autoload.php';
 
 $db = Database::get();
 $file = "/var/www/html/sdc/upload/drip/IP_MAC_USED_IP_List.csv";

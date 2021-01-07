@@ -1,12 +1,9 @@
 <?php
-use gcb\api as gcb;
-require 'gcb_api.php';
-require_once 'vendor/autoload.php';
+require_once __DIR__ .'/../../vendor/autoload.php';
 
-$api_key = "u3mOZuf8lvZYps210BD5vA";  // the api key of sdc-iss
-$token = gcb\get_access_token($api_key);
-$response = gcb\get_client_list($token,$limit = 0);  // '0' represent no limit 
 $db = Database::get();
+$gcb = new gcb\api\RapixGCB();
+$response = $gcb->getClientList($limit = 0); 
 
 $count = 0;
 if(($data = json_decode($response,true)) == true){

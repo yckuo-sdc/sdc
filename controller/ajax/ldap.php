@@ -9,11 +9,11 @@ foreach($_GET as $getkey => $val){
 
 switch($type){
 	case "search":
-		$ldapconn = ldap_connect(LDAP::ADDRESS) or die("Could not connect to LDAP server.");	// connect to AD server
+		$ldapconn = ldap_connect(LDAP::HOST) or die("Could not connect to LDAP server.");	// connect to AD server
 		$set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		
 		if($ldapconn){
-			$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME."@".LDAP::DOMAIN, LDAP::PASSWORD);	//bind user
+			$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME . "@" . LDAP::DOMAIN, LDAP::PASSWORD);	//bind user
 			$ou = ["TainanLocalUser","TainanComputer"];
 			$keyword_type = ["CN","CN"];	//Search CN Object From LocalUser and Local Computer
 			for($k=0;$k<count($ou);$k++){
@@ -27,7 +27,7 @@ switch($type){
 						echo "<div class='fields'>";
 							echo "<div class='two wide field'>";
 							if($k==0){ //user
-								if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
+								if(isDisable($data[$i]['useraccountcontrol'][0])){
 									echo "<i class='user icon'></i>";
 									echo $data[$i]['cn'][0]."_已停用";
 								}else{
@@ -36,7 +36,7 @@ switch($type){
 								}
 								echo "<input type='hidden' name='type' value='edituser' >";
 							}elseif($k==1){	//computer
-								if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
+								if(isDisable($data[$i]['useraccountcontrol'][0])){
 									echo "<i class='desktop icon'></i>";
 									echo $data[$i]['cn'][0]."_已停用";
 								}else{
@@ -49,7 +49,7 @@ switch($type){
 							//common setting
 							echo "<div class='ten wide field'>";
 								echo "<div class='ui toggle checkbox'>";
-									if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
+									if(isDisable($data[$i]['useraccountcontrol'][0])){
 										echo "<input type='checkbox' name='stateSwitch'>";
 									}else{
 										echo "<input type='checkbox' name='stateSwitch' checked>";
@@ -184,11 +184,11 @@ switch($type){
 		ldap_close($ldapconn);
 		break;
 	case "newuser":
-		$ldapconn = ldap_connect(LDAP::ADDRESS) or die("Could not connect to LDAP server.");
+		$ldapconn = ldap_connect(LDAP::HOST) or die("Could not connect to LDAP server.");
 		$set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		if($ldapconn){
 			//bind user
-			$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME."@".LDAP::DOMAIN, LDAP::PASSWORD);
+			$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME . "@" . LDAP::DOMAIN, LDAP::PASSWORD);
 			$keyword = "(objectClass=organizationalUnit)";
 			$result = ldap_search($ldapconn,"OU=395000000A,OU=TainanLocalUser,dc=tainan,dc=gov,dc=tw",$keyword) or die ("Error in query");
 			$data = ldap_get_entries($ldapconn,$result);

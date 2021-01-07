@@ -26,8 +26,7 @@ function isLogin(){
 }	
 
 function checkAccountByLDAP($user, $ldappass){
-
-	$ldapconn = ldap_connect(LDAP::ADDRESS);
+	$ldapconn = ldap_connect(LDAP::HOST);
 	$ldaprdn = $user . "@" . LDAP::DOMAIN;
 	ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
@@ -58,25 +57,24 @@ function saveAction($db, $type, $ip, $user, $msg){
 }	
 
 //LDAP recursive search and print
-function myRecursiveFunction($ldapconn,$base_dn,$ou_name,$ou_des) {
-	$filter ="(objectClass=*)";
+function traverseOU($ldapconn, $base_dn, $ou_name ,$ou_des) {
+	$filter = "(objectClass=*)";
 	$result = @ldap_list($ldapconn,$base_dn,$filter) or die ("Error in query");
-	$num 	= @ldap_count_entries($ldapconn,$result);
+	$num = @ldap_count_entries($ldapconn,$result);
 	if($num==0){
 		echo "<li><i class='folder icon'></i>".$ou_name."(".$ou_des.")</li>";	
 		return;
 	}else{
 		echo "<li><i class='minus square outline icon'></i><i class='folder open icon'></i>".$ou_name."(".$ou_des.")";	
 		// list all computers of base_dn
-        $filter ="(&(objectClass=computer)(cn=*PC*))";
-		$filter ="(objectClass=computer)";
+		$filter = "(objectClass=computer)";
 		$result = @ldap_list($ldapconn,$base_dn,$filter) or die ("Error in query");
-		$data 	= @ldap_get_entries($ldapconn,$result);
-		$num 	= $data["count"];
+		$data = @ldap_get_entries($ldapconn,$result);
+		$num = $data["count"];
 		if($num!=0){
 			echo "<ol>";
 			for($i=0; $i<$num;$i++){
-				if(isAccountDisable($data[$i]['useraccountcontrol'][0])){
+				if(isDisable($data[$i]['useraccountcontrol'][0])){
 					echo "<li><i class='desktop icon'></i>".$data[$i]['cn'][0]."_已停用</li>";
 				}else{
 					echo "<li><i class='desktop icon'></i>".$data[$i]['cn'][0]."</li>";
@@ -85,10 +83,10 @@ function myRecursiveFunction($ldapconn,$base_dn,$ou_name,$ou_des) {
 			echo "</ol>";
 		}
 		// list all sub_ou of base_dn
-		$filter ="(objectClass=organizationalUnit)";
+		$filter = "(objectClass=organizationalUnit)";
 		$result = @ldap_list($ldapconn,$base_dn,$filter) or die ("Error in query");
-		$data 	= @ldap_get_entries($ldapconn,$result);
-		$num 	= $data["count"];
+		$data = @ldap_get_entries($ldapconn,$result);
+		$num = $data["count"];
 		if($num!=0){
 			echo "<ol>";
 			for($i=0; $i<$num;$i++){
@@ -97,7 +95,7 @@ function myRecursiveFunction($ldapconn,$base_dn,$ou_name,$ou_des) {
 				$sub_des = "";
 				if(isset($data[$i]["description"][0])) $sub_des = $data[$i]["description"][0];
 				// continue the recursion
-				myRecursiveFunction($ldapconn,$sub_dn,$sub_ou,$sub_des);
+				traverseOU($ldapconn,$sub_dn,$sub_ou,$sub_des);
 			}
 			echo "</ol>";
 		}
@@ -206,8 +204,8 @@ function array_to_csv_download($array, $filename, $delimiter) {
 	fclose($f);
 }
 
-// check the disabled ad account
-function isAccountDisable($useraccountcontrol){
+// check the disabled of AD account
+function isDisable($useraccountcontrol){
 	$hexValue = dechex($useraccountcontrol);
 	$len = strlen($hexValue);
 	$accountdisable = $hexValue[$len-1];

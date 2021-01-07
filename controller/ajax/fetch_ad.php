@@ -1,14 +1,14 @@
 <?php
-require_once 'vendor/autoload.php';
+require_once __DIR__ .'/../../vendor/autoload.php';
 
 $db = Database::get();
 
-$ldapconn = ldap_connect(LDAP::ADDRESS) or die("Could not connect to LDAP server.");
+$ldapconn = ldap_connect(LDAP::HOST) or die("Could not connect to LDAP server.");
 $set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 if($ldapconn){
-	$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME."@".LDAP::DOMAIN, LDAP::PASSWORD);
+	$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME . "@" . LDAP::DOMAIN, LDAP::PASSWORD);
 	$keyword = "(objectClass=computer)";
-	echo "host_ip=".LDAP::ADDRESS."<br>\n";
+	echo "host_ip=" . LDAP::HOST . "<br>\n";
 	$ou = ["TainanLocalUser","TainanComputer"];
 	$result = ldap_search($ldapconn,"OU=TainanComputer,dc=tainan,dc=gov,dc=tw",$keyword) or die ("Error in query");
 	$data = ldap_get_entries($ldapconn,$result);

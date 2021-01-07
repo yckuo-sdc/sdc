@@ -1,6 +1,6 @@
 <?php
-use ad\api as ad;
-require 'ad_api.php';
+require_once __DIR__ .'/../../vendor/autoload.php';
+$ad = new ad\api\WebadAPI();
 
 echo "<table><tbody>";
 foreach ($_GET as $key => $value) {
@@ -17,14 +17,14 @@ echo "</tbody></table>";
 switch($type){
 	case "edituser":
 		if(!empty($isActive)){
-			$res = ad\change_user_state($cn,'false',$isActive,'false');
+			$res = $ad->changeState($cn,'false',$isActive,'false');
 			echo "changestate 執行結果：".$res."<br>";
 			saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_state(account='.$cn.')res='.$res);
 		}
 		if(!empty($organizationalUnit)){
 			$ou = explode("(", $organizationalUnit);
 			$ou = $ou[0];	
-			$res = ad\change_user_ou($cn,$ou);
+			$res = $ad->changeUserOU($cn,$ou);
 			echo "change_user_ou 執行結果：".$res."<br>";
 			saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_ou(account='.$cn.')res='.$res);
 		}
@@ -32,7 +32,7 @@ switch($type){
 			echo "failed:兩次輸入密碼不同!<br>";
 			return ;
 		}
-		$res = ad\edit_user($cn,$new_password,$confirm_password,$displayname,$title,$telephonenumber,$physicaldeliveryofficename,$mail,$isActive);
+		$res = $ad->editUser($cn,$new_password,$confirm_password,$displayname,$title,$telephonenumber,$physicaldeliveryofficename,$mail,$isActive);
 		echo "edituser 執行結果：".$res."<br>";
 		saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/edit_user(account='.$cn.')res='.$res);
 		break;
@@ -43,20 +43,20 @@ switch($type){
 		}
 		$ou = explode("(", $organizationalUnit);
 		$ou = $ou[0];	
-		$res = ad\new_user($cn,$new_password,$confirm_password,$displayname,$title,$telephonenumber,$physicaldeliveryofficename,$mail,$ou);
+		$res = $ad->insertUser($cn,$new_password,$confirm_password,$displayname,$title,$telephonenumber,$physicaldeliveryofficename,$mail,$ou);
 		echo "newuser 執行結果：".$res."<br>";
 		saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/new_user(account='.$cn.')res='.$res);
 		break;
 	case "changecomputer":
 		if(!empty($isActive)){
-			$res = ad\change_user_state($cn,'false',$isActive,'false');
+			$res = $ad->changeState($cn,'false',$isActive,'false');
 			echo "changestate 執行結果：".$res."<br>";
 			saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_user_state(account='.$cn.')res='.$res);
 		}
 		if(!empty($organizationalUnit)){
 			$ou = explode("(", $organizationalUnit);
 			$ou = $ou[0];	
-			$res = ad\change_computer_ou($cn,$ou,$isYonghua);
+			$res = $ad->changeComputerOU($cn,$ou,$isYonghua);
 			echo "changecomputer 執行結果：".$res."<br>";
 			saveAction($db,'callFunction',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],'ad/change_computer_ou(account='.$cn.')res='.$res);
 		}

@@ -1,20 +1,20 @@
 <?php
-use gcb\api as gcb;
-require 'gcb_api.php';
+require_once __DIR__ .'/../../vendor/autoload.php';
+
+$gcb = new gcb\api\RapixGCB();
+
 if( isset($_GET['action']) && isset($_GET['id']) ){
 	$action = $_GET["action"];
 	$id = $_GET["id"];
-	$api_key = "u3mOZuf8lvZYps210BD5vA";
-	$token = gcb\get_access_token($api_key);
 	switch($action){
 		case 'gscan':
-			$res = gcb\get_gscan_result($token,$id);
+			$res = $gcb->getGscanResult($id);
 			//echo "<pre>".json_encode(json_decode($res),JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."</pre>";
             $res = json_encode(json_decode($res),JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 			echo "<pre>".str_replace(array('"IsPass"', '"Enabled"'), array('<font color="#e03997"><b>"IsPass"</b></font>', '<font color="#2185d0"><b>"Enabled"</b></font>'), $res)."<pre>";
 			break;
 		case 'detail':
-			$res = gcb\get_client_detail($token,$id);
+			$res = $gcb->getClientDetail($id);
 			echo "<pre>".json_encode(json_decode($res),JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."</pre>";
 			break;
 	}
