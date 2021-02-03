@@ -15,6 +15,7 @@ $query = "SELECT a.*, b.name AS os_name, c.name AS ie_name, ROUND(a.GsAll_1 / a.
 $gcb_paginator = new Paginator($query);
 $gcb = $gcb_paginator->getData($limit, $page);
 $gcb_num_rows = $gcb_paginator->getTotal();
+$GsStatMap = array('0' => '未套用', '1' => '已套用', '-1' => '套用失敗', '2' => '還原成功', '-2' => '還原失敗');
 
 //wsus
 $query = "SELECT * FROM wsus_computer_status ORDER BY ".$sort;

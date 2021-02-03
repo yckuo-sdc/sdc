@@ -1,4 +1,3 @@
-<!--vul_search-->
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
@@ -55,53 +54,51 @@
 					</div>
 					</form>
 					<div class="record_content">
-					<?php
-					if($last_num_rows==0){
-						echo "查無此筆紀錄";
-					}else{
-						echo "共有".$last_num_rows."筆資料！";
-					?>
-					<div class='ui relaxed divided list'>
-					<?php foreach($vuls->data as $vul){ ?>
-							<div class='item'>
-							<div class='content'>
-								<a>
-								<span style='background:#f3c4c4'><?=$vul['type']?></span>&nbsp&nbsp
-								<?=$vul['flow_id']?>&nbsp&nbsp
-								<?=str_replace("/臺南市政府/","",$vul['ou'])?>&nbsp&nbsp
-								<span style='background:#fde087'><?=$vul['system_name']?></span>&nbsp&nbsp
-								<?=$vul['status']?>&nbsp&nbsp
-								<span style='background:#DDDDDD'><?=$vul['vitem_name']?></span>&nbsp&nbsp
-								<?=$vul['scan_no']?>&nbsp&nbsp
-								<i class='angle down icon'></i>
-								</a>
-								<div class='description'>
-									<ol>
-									<li>弱點類別:<?=$vul['type']?></li>
-									<li>流水號:<?=$vul['flow_id']?></li>
-									<li>弱點序號:<?=$vul['vitem_id']?></li>
-									<li>弱點名稱:<?=$vul['vitem_name']?></li>
-									<li>OID:<?=$vul['OID']?></li>
-									<li>單位:<?=str_replace("/臺南市政府/","",$vul['ou'])?></li>
-									<li>系統名稱:<?=$vul['system_name']?></li>
-									<li>IP:<?=$vul['ip']?></li>
-									<li>掃描日期:<?=date_format(new DateTime($vul['scan_date']),'Y-m-d')?></li>
-									<li>管理員:<?=$vul['manager']?></li>
-									<li>Email:<?=$vul['email']?></li>
-									<li>影響網址:<a href='<?=$vul['affect_url']?>' target='_blank'><?=$vul['affect_url']?></a></li>
-									<li>弱點詳細資訊:<a href='<?=$vul['url']?>' target='_blank'?><?=$vul['url']?></a></li>
-									<li>總類:<?=$vul['category']?><li>
-									<li>風險程度:<?=$vul['severity']?></li>
-									<li>弱點處理情形:<?=$vul['status']?></li>
-									<li>掃描期別:<?=$vul['scan_no']?></li>
-									</ol>
-								</div>
-							</div>
-							</div>
-					<?php	} ?>
-					</div>
-					<?php echo $Paginator->createLinks($links, 'ui pagination menu'); ?>
-					<?php } ?>
+					<?php if($last_num_rows==0): ?>
+						查無此筆紀錄
+					<?php else: ?>
+						共有<?=$last_num_rows?>筆資料！
+                        <div class='ui relaxed divided list'>
+                        <?php foreach($vuls->data as $vul): ?>
+                            <div class='item'>
+                            <div class='content'>
+                                <a>
+                                <span style='background:#f3c4c4'><?=$vul['type']?></span>&nbsp&nbsp
+                                <?=$vul['flow_id']?>&nbsp&nbsp
+                                <?=str_replace("/臺南市政府/","",$vul['ou'])?>&nbsp&nbsp
+                                <span style='background:#fde087'><?=$vul['system_name']?></span>&nbsp&nbsp
+                                <?=$vul['status']?>&nbsp&nbsp
+                                <span style='background:#DDDDDD'><?=$vul['vitem_name']?></span>&nbsp&nbsp
+                                <?=$vul['scan_no']?>&nbsp&nbsp
+                                <i class='angle down icon'></i>
+                                </a>
+                                <div class='description'>
+                                    <ol>
+                                    <li>弱點類別:<?=$vul['type']?></li>
+                                    <li>流水號:<?=$vul['flow_id']?></li>
+                                    <li>弱點序號:<?=$vul['vitem_id']?></li>
+                                    <li>弱點名稱:<?=$vul['vitem_name']?></li>
+                                    <li>OID:<?=$vul['OID']?></li>
+                                    <li>單位:<?=str_replace("/臺南市政府/","",$vul['ou'])?></li>
+                                    <li>系統名稱:<?=$vul['system_name']?></li>
+                                    <li>IP:<?=$vul['ip']?></li>
+                                    <li>掃描日期:<?=date_format(new DateTime($vul['scan_date']),'Y-m-d')?></li>
+                                    <li>管理員:<?=$vul['manager']?></li>
+                                    <li>Email:<?=$vul['email']?></li>
+                                    <li>影響網址:<a href='<?=$vul['affect_url']?>' target='_blank'><?=$vul['affect_url']?></a></li>
+                                    <li>弱點詳細資訊:<a href='<?=$vul['url']?>' target='_blank'?><?=$vul['url']?></a></li>
+                                    <li>總類:<?=$vul['category']?><li>
+                                    <li>風險程度:<?=$vul['severity']?></li>
+                                    <li>弱點處理情形:<?=$vul['status']?></li>
+                                    <li>掃描期別:<?=$vul['scan_no']?></li>
+                                    </ol>
+                                </div>
+                            </div>
+                            </div>
+                        <?php endforeach ?>
+                        </div>
+                        <?=$Paginator->createLinks($links, 'ui pagination menu')?>
+					<?php endif ?>
 					</div> <!-- end of #record_content-->
 				</div><!--end of .post_cell-->
 			</div><!--end of .post-->

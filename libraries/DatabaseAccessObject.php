@@ -132,7 +132,9 @@ class DatabaseAccessObject {
 
         $setting_list = "";
         for ($xx = 0; $xx < count($data_array); $xx++) {
-            list($key, $value) = each($data_array);
+            //list($key, $value) = each($data_array);   deprecated after php 7.2
+            $key = key($data_array);
+            next($data_array);
             $setting_list .= $key . "=" . ':'.$key;
             if ($xx != count($data_array) - 1){
                 $setting_list .= ",";

@@ -502,8 +502,9 @@ if($ap=='html'){
 		echo $Paginator->createLinks($links, 'ui pagination menu', $pageAttr, $method='ajax');
 	}
 }elseif($ap='csv'){
-	$arrs=array();
-	switch($type){
+    $total_entries = $db->execute($query, $data_array);
+	$arrs = array();
+    switch($type){
 		case 'event': 
 			break;
 		case 'ncert': 
@@ -517,13 +518,14 @@ if($ap=='html'){
 		case 'antivirus': 
 			break;
 		case 'drip': 
-			foreach($entries->data as $entry) {
+			foreach($total_entries as $entry) {
+                $arr = array();
 				foreach($entry as $key => $val){
 					$arr[$key] = $val;
 				}
 				array_push($arrs,$arr);	
 			}
-			array_to_csv_download($arrs,"export.csv",";"); 	
+			array_to_csv_download($arrs, "export.csv", ";"); 	
 			break;
 	}
 }

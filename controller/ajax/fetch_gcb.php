@@ -50,7 +50,7 @@ if(($data = json_decode($response,true)) == true){
 }
 
 $error = $db->getErrorMessageArray();
-if(@count($error) > 0) {
+if(!empty($error)) {
 	return;
 }
 

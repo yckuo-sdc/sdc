@@ -1,5 +1,5 @@
 <div id="page" class="container">
-<div id="content">
+    <div id="content">
 		<div class="sub-content show">
 			<div class="post">
                 <h2 class="ui dividing header">Top 100流量排名(最近24小時)</h2>
@@ -24,7 +24,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <?php foreach($yh_entries as $entry){ ?>
+                        <?php foreach($yh_entries as $entry): ?>
                             <tr>
                                 <td><?=$entry['id']?></td>
                                 <td><?=$entry['src_ip']?></td>
@@ -42,15 +42,15 @@
                                 <td><?=$entry['app']?></td>
                                 <td><?=$entry['ou']?></td>
                                 <td>
-                                    <?php if($entry['type'] == 'server') { ?>
-                                    <i class="server icon"></i>
-                                    <?php }elseif($entry['type'] == 'client'){ ?>
-                                    <i class="desktop icon"></i>
-                                    <?php } ?>
+                                    <?php if($entry['type'] == 'server'): ?>
+                                        <i class="server icon"></i>
+                                    <?php elseif($entry['type'] == 'client'): ?>
+                                        <i class="desktop icon"></i>
+                                    <?php endif ?>
                                     <?=$entry['name']?>
                                 </td>
                             </tr>
-                        <?php } ?>
+                        <?php endforeach ?>
                         </tbody>
                         </table>
 						</div> <!-- end of .tabular-->
@@ -68,7 +68,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <?php foreach($mj_entries as $entry){ ?>
+                        <?php foreach($mj_entries as $entry): ?>
                             <tr>
                                 <td><?=$entry['id']?></td>
                                 <td><?=$entry['src_ip']?></td>
@@ -86,15 +86,15 @@
                                 <td><?=$entry['app']?></td>
                                 <td><?=$entry['ou']?></td>
                                 <td>
-                                    <?php if($entry['type'] == 'server') { ?>
-                                    <i class="server icon"></i>
-                                    <?php }elseif($entry['type'] == 'client'){ ?>
-                                    <i class="desktop icon"></i>
-                                    <?php } ?>
+                                    <?php if($entry['type'] == 'server'): ?>
+                                        <i class="server icon"></i>
+                                    <?php elseif($entry['type'] == 'client'): ?>
+                                        <i class="desktop icon"></i>
+                                    <?php endif ?>
                                     <?=$entry['name']?>
                                 </td>
                             </tr>
-                        <?php } ?>
+                        <?php endforeach ?>
                         </tbody>
                         </table>
 						</div> <!-- end of .tabular-->

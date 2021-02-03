@@ -54,8 +54,8 @@ switch($action){
 		# fetch the present Session ID
 		$sid = session_id();
 		$_SESSION['account'] = $account;
-		$_SESSION['UserName'] = $user['UserName'];
-		$_SESSION['Level'] = $user['Level'];
+		$_SESSION['username'] = $user['UserName'];
+		$_SESSION['level'] = $user['Level'];
 		saveAction($db,'ssoLogin',$_SERVER['REMOTE_ADDR'],$account,$_SERVER['REQUEST_URI']);
 		
 		if( !empty($mainpage) && !empty($subpage) ){

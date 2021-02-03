@@ -72,5 +72,5 @@
   </div>
 </div>
 
-<a class="item" href="/logout"><b><?php echo $_SESSION['UserName']."(登出)";?></b></a>
+<a class="item" href="/logout"><b><?php echo $_SESSION['username']."(登出)";?></b></a>
 

@@ -74,7 +74,7 @@
 							</tr>
 						</thead>
 						<tbody>	
-						<?php foreach($last_10_events as $event) {  ?>
+						<?php foreach($last_10_events as $event): ?>
 							<tr>
 								<td><?=date_format(new DateTime($event['OccurrenceTime']),'Y-m-d')?></td>
 								<td><?=$event['Status']?></td>
@@ -84,7 +84,7 @@
 								<td><?=$event['AgencyName']?></td>
 								<td><?=$event['DeviceOwnerName']?></td>
 							</tr>
-						<?php } ?>
+						<?php endforeach ?>
 						</tbody>
 						</table>
 				</div>

@@ -1,13 +1,12 @@
-<!--network_allowlist-->
 <div id="page" class="container">
-<div id="content">
+    <div id="content">
 		<div class="sub-content show">
 			<div class="post">
                 <h2 class="ui dividing header">應用程式核可清單(Client)</h2>
 				<div class="post_cell">
-                <?php if($status != 'success'){ ?>
+                <?php if($status != 'success'): ?>
                     很抱歉，該分類目前沒有資料！
-                <?php }else{ ?>
+                <?php else: ?>
 					<table class='ui celled table'>
 					<thead>
 						<tr>
@@ -17,25 +16,27 @@
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach($apps as $app){
-                        $app_member = $app->members->member; 
-						$size = count($app_member);
-						$name = $app->{'@name'};
-						foreach($app_member as $key => $member){ ?>
+					<?php foreach($apps as $app): ?>
+                        <?php
+                            $app_member = $app->members->member; 
+                            $size = count($app_member);
+                            $name = $app->{'@name'};
+						?>
+                        <?php foreach($app_member as $key => $member): ?>
 							<tr>
-							<?php if($key == 0){ ?>
+							<?php if($key == 0): ?>
 								<td rowspan=<?=$size?> ><?=$name?></td>
 								<td rowspan=<?=$size?> ><?=$size?></td>
 								<td><?=$member?></td>	
-							<?php }else{ ?>
+							<?php else: ?>
 								<td><?=$member?></td>	
-							<?php } ?>
+							<?php endif ?>
 							</tr>
-						<?php } ?>
-					<?php } ?>
+						<?php endforeach ?>
+					<?php endforeach ?>
 					</tbody>
 					</table>
-                <?php } ?>
+                <?php endif ?>
 				</div><!--end of .post_cell-->
 			</div><!--end of .post-->
 		</div><!--end of .sub-content-->

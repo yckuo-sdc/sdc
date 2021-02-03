@@ -47,8 +47,8 @@
 							</tr>
 							</thead>
 							<tbody>	
-							<?php foreach($systems as $system){
-								if($system['size'] == 0 ){ ?>
+							<?php foreach($systems as $system): ?>
+							    <?php if($system['size'] == 0 ): ?>
 									<tr>
 										<td><a href='<?=$system['url']?>' target='_blank'><?=$system['name']?></a></td>
 										<td><?=$system['ip']?></td>
@@ -58,9 +58,9 @@
 										<td></td>
 										<td><?=$system['scan_result']?></td>
 									</tr>
-								<?php }else{
-									foreach ($system['ports'] as $index => $port){
-										if($index == 0){ ?>
+								<?php else: ?>
+								    <?php foreach ($system['ports'] as $index => $port): ?>
+										<?php if($index == 0): ?>
 											<tr>
 												<td rowspan=<?=$system['size']?>><a href='<?=$system['url']?>' target='_blank'><?=$system['name']?></a></td>
 												<td rowspan=<?=$system['size']?>><?=$system['ip']?></td>
@@ -70,16 +70,16 @@
 												<td><?=$port['status']?></td>
 												<td rowspan=<?=$system['size']?>><?=$system['scan_result']?></td>
 											</tr>
-										<?php }else{ ?>
+										<?php else: ?>
 											<tr>
                                                 <td><?=$port['port_number']?></td>
                                                 <td><?=$port['service']?></td>
                                                 <td><?=$port['status']?></td>
 											</tr>
-										<?php }	
-									}
-								}
-							} ?>
+										<?php endif ?>	
+									<?php endforeach ?>
+								<?php endif ?>
+							<?php endforeach ?>
 							</tbody>
 							</table>
 						</div> <!-- end .tabular-->

@@ -1,4 +1,3 @@
-<!--tool_hydra-->
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
@@ -7,7 +6,6 @@
 				<div class="post_title">Hydra Passowrd Cracker</div>
 				<div class="post_cell">
 				<form class="ui form" action="javascript:void(0)">
- 				<!--<div class="fields">-->
 			    	<div class="field">
 						<label>Target(IP or Domain name)</label>
 						<div class="ui input">

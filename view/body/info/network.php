@@ -30,7 +30,7 @@
 					</tr>
 					</thead>	
 					<tbody>	
-					<?php foreach($threat_data['logs'] as $log){ ?>
+					<?php foreach($threat_data['logs'] as $log): ?>
 						<tr>
 							<td><?php echo $log->receive_time ?></td>
 							<td><?php echo $log->threatid ?></td>
@@ -40,7 +40,7 @@
 							<td><?php echo $log->dport ?></td>
 							<td><?php echo $log->app ?></td>
 						</tr>
-					<?php } ?>
+					<?php endforeach ?>
 					</tbody>
 					</table>
                     <div class="see_more" style="text-align:right">
@@ -55,7 +55,7 @@
 						<th>同時連線數</th>
 						<th>位元組</th>
 					</tr>
-					<?php foreach($entries as $entry){
+					<?php foreach($entries as $entry):
                         $bytes_ratio = round($entry['bytes'] / $max_bytes, 2)*100 ;
                         $sessions_ratio = round($entry['sessions'] / $max_sessions, 2)*100;
 					?>
@@ -70,7 +70,7 @@
                                 <?=formatBytes($entry['bytes'])?>
 							</td>
 						</tr>
-					<?php } ?>
+					<?php endforeach ?>
 					</table>
 			    </div>		
 				<div class="post_title">市府網段區隔</div>

@@ -4,89 +4,7 @@ require_once __DIR__ .'/../../vendor/autoload.php';
 $db = Database::get();
 $pa = new PaloAltoAPI();
 
-$client = new Google_Client();
-$client->setApplicationName('mytest');
-$client->useApplicationDefaultCredentials();
-
-$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);  //使用 google sheets api
-$client->setAccessType('offline');
-$client->setAuthConfig('config/My Project for google sheet-3d2d6667b843.json');
-
-$sheets = new \Google_Service_Sheets($client);
-$spreadsheetId = '1bb9zyNHfuwQanSdutcyh2fj1JsddsXmG9JCUC5NwPNE';  // 填入要操作的試算表的 id
-
-/** the google sheet of 
- * nccst bad domain **/
-
-$range = 'nccst_bad_dn!A2:D';
-$rows = $sheets->spreadsheets_values->get($spreadsheetId, $range, ['majorDimension' => 'ROWS']);
-
-if (!isset($rows['values'])) {
-	return;
-}
-
-$time = date("Y-m-d H:i:s");
-echo "DNS query on $time \n";
-
-$dn_count = 0;
-	
-$table = "malicious_site";
-$key_column = "Type";
-$type = "domain"; 
-$db->delete($table, $key_column, $type);
-
-foreach ($rows['values'] as $row){
-	
-	if (empty($row[0])){
-		continue;						
-	}
-
-	$action = "allow";
-	echo $row[0]." ".$row[1]."\n"; 
-	$dn = $row[1];
-	$output = shell_exec("/usr/bin/dig +short $dn @10.7.199.15");
-
-	if (strpos($output, 'sinkhole') !== false || strpos($output, '72.5.65.111') !== false || strpos($output, '1.1.2.100') !== false) {
-		$action = "deny";
-	}
-
-	echo $action."\n";
-	
-	$scan['Type'] = "domain";
-	$scan['Name'] = $dn;
-	$scan['Action'] = $action;
-	$scan['LastUpdate'] = date('Y-m-d H:i:s');	
-
-	$table = "malicious_site";
-	$db->insert($table, $scan);
-	$dn_count = $dn_count + 1;
-}		
-
-$error = $db->getErrorMessageArray();
-if(@count($error) > 0) {
-	return;
-}
-
-$status = 200;	
-$nowTime = date('Y-m-d H:i:s'); 
-
-$table = "apis";
-$condition = "class LIKE :class and name LIKE :name";
-$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'惡意中繼站', ':name'=>'domain']);
-$table = "api_status";
-$data_array['api_id'] = $apis[0]['id'];
-$data_array['url'] = $apis[0]['url'];
-$data_array['status'] = $status;
-$data_array['data_number'] = $dn_count;
-$data_array['last_update'] = $nowTime;
-$db->insert($table, $data_array);
-
-/** the google sheet of 
- * nccst bad ip **/
-
-$range = 'nccst_bad_ip!A2:D';
-$rows = $sheets->spreadsheets_values->get($spreadsheetId, $range, ['majorDimension' => 'ROWS']);
-
+// Retrieve paloAlto's data
 $type = "ip";
 $name = "ISAC_BlackList_IP";
 $num_records = 1;
@@ -111,45 +29,90 @@ foreach($members as $member){
 	$array_ip[] = $member;
 }
 
+// Validate protection of malicious domain
+$table = "ncert_malicious_sites";
+$condition = "type LIKE :type";
+$DNs = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':type' => 'domain']);
+
+$time = date("Y-m-d H:i:s");
+echo "DNS query on $time \n";
+
+$dn_count = 0;
+	
+foreach ($DNs as $dn){
+	$action = "allow";
+	echo $dn['id']." ".$dn['name']."\n"; 
+	
+    for($i=0; $i<3; $i++) {
+        $output = shell_exec("/usr/bin/dig +short ".$dn['name']." @10.7.199.15");
+        if (strpos($output, 'sinkhole') !== false || strpos($output, '72.5.65.111') !== false || strpos($output, '1.1.2.100') !== false) {
+            $action = "deny";
+            break;
+        }
+    }
+
+	echo $action."\n";
+
+    $scan = array();
+	$scan['scan_action'] = $action;
+	$scan['updated_at'] = date('Y-m-d H:i:s');	
+
+	$db->update($table, $scan, $key_column='name' , $dn['name']);
+	$dn_count = $dn_count + 1;
+    usleep(250000);
+}		
+
+$error = $db->getErrorMessageArray();
+if(!empty($error)) {
+	return;
+}
+
+$status = 200;	
+$nowTime = date('Y-m-d H:i:s'); 
+
+$table = "apis";
+$condition = "class LIKE :class and name LIKE :name";
+$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'惡意中繼站', ':name'=>'domain']);
+$table = "api_status";
+$data_array['api_id'] = $apis[0]['id'];
+$data_array['url'] = $apis[0]['url'];
+$data_array['status'] = $status;
+$data_array['data_number'] = $dn_count;
+$data_array['last_update'] = $nowTime;
+$db->insert($table, $data_array);
+
+
+// Validate protection of malicious ip 
 $time = date("Y-m-d H:i:s");
 echo "IP test on $time\n";
 
 $ip_count = 0;
 	
-$table = "malicious_site";
-$key_column = "Type";
-$type = "ip"; 
+$table = "ncert_malicious_sites";
+$condition = "type LIKE :type";
+$IPs = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':type' => 'ip']);
 $db->delete($table, $key_column, $type);
 
-foreach ($rows['values'] as $row){
-	
-	if (empty($row[0])){
-		continue;						
-	}
-
+foreach ($IPs as $ip){
 	$action = "allow";
-	echo $row[0]." ".$row[1]."\n"; 
-	$ip = $row[1];
-	$output = shell_exec("/usr/bin/nmap $ip");
+	echo $ip['id']." ".$ip['name']."\n"; 
 
-	if(in_array($ip, $array_ip)){
+	if(in_array($ip['name'], $array_ip)){
 		$action = "deny";
 	}
 	
 	echo $action."\n";
 	
-	$scan['Type'] = "ip";
-	$scan['Name'] = $ip;
-	$scan['Action'] = $action;
-	$scan['LastUpdate'] = date('Y-m-d H:i:s');	
+    $scan = array();
+	$scan['scan_action'] = $action;
+	$scan['updated_at'] = date('Y-m-d H:i:s');	
 
-	$table = "malicious_site";
-	$db->insert($table, $scan);
+	$db->update($table, $scan, $key_column='name' , $ip['name']);
 	$ip_count = $ip_count + 1;
 }
 
 $error = $db->getErrorMessageArray();
-if(@count($error) > 0) {
+if(!empty($error)) {
 	return;
 }
 

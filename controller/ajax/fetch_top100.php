@@ -100,7 +100,7 @@ SET A.ou = B.ou, A.name = B.name, A.type = B.type";
 $db->execute($sql);
 
 $error = $db->getErrorMessageArray();
-if(@count($error) > 0) {
+if(!empty($error)) {
 	return;
 }
 

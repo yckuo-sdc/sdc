@@ -1,10 +1,8 @@
-<!--about-->
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
                 <h2 class="ui dividing header">Data</h2>
-				<!--<div class="post_title">Data Status</div>-->
                 <div class="post_cell">
                     <table class="ui celled table">
                     <thead>
@@ -18,7 +16,7 @@
                     </tr>
                     </thead>	
                     <tbody>	
-                    <?php foreach($apis as $api){ ?>
+                    <?php foreach($apis as $api): ?>
                         <tr>
                             <td><?=$api['class']?></td>
                             <td><?=$api['name']?></td>
@@ -27,7 +25,7 @@
                             <td><?=$api['last_update']?></td>
                             <td><a href='<?=$api['url']?>' target='_blank'><?=$api['url']?></a></td>
                         </tr>
-                    <?php } ?>
+                    <?php endforeach ?>
                     </tbody>
                     </table>
 				</div><!--end of .post_cell-->

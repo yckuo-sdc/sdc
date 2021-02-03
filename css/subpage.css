@@ -49,14 +49,21 @@
 .post_cell ol { 
 	counter-reset: item ;
 }
+
 .post_cell li{ 
 	display: block;
 }
+
+/*.post_cell li:hover{ 
+    background-color: #bec1c7;
+}*/
+
+
 .post_cell li:before {
 	 content: counters(item, "-") " "; 
 	 counter-increment: item;
 }
-.post_cell li.hide ol{ 
+.post_cell .item.hide .content > .list{ 
 	display: none; 
 }
 

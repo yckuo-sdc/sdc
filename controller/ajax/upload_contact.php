@@ -1,5 +1,9 @@
 <?php
-if($_SESSION['Level'] != 2){
+require_once __DIR__ .'/../../vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
+if($_SESSION['level'] != 2){
 	return;
 }
 
@@ -18,8 +22,8 @@ if(is_array($_FILES)) {
 			$uploadOk = 0;
 		}
 		// Allow certain file formats
-		if($FileType != "csv") {
-			echo "Sorry, only csv files are allowed.";
+		if($FileType != "xls" && $FileType != "xlsx" && $FileType != "csv") {
+			echo "Sorry, only xls, xlsx and csv files are allowed.";
 			$uploadOk = 0;
 		}
 		// Check if $uploadOk is set to 0 by an error
@@ -35,40 +39,60 @@ if(is_array($_FILES)) {
 		}
 	}
 }
-$filename = $target_file;
-$row = 1;
-$count = 0;
-if ($uploadOk == 1){
-	//讀取csv檔
-	if (($handle = fopen($filename, "r")) !== FALSE) {
-		$table = "security_contact";
-		$key_column = "1";
-		$id = "1"; 
-		$db->delete($table, $key_column, $id); 
-		while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-			//ignore the first row(table head)
-			if($row != 1){
-				$num = count($data);
 
-				$status['OID']= trim($data[0]);
-				$status['organization']= trim($data[1]);
-				$status['person_name']= trim($data[2]);
-				$status['unit']= trim($data[3]);
-				$status['position']= trim($data[4]);
-				$status['person_type']= trim($data[5]);
-				$status['address']= trim($data[6]);
-				$status['tel']= trim($data[7]);
-				$status['ext']= trim($data[8]);
-				$status['fax']= trim($data[9]);
-				$status['email']= trim($data[10]);
-				 
-				$db->insert($table, $status);
-				$count = $count + 1;							
-			}
-			$row++;
-		}
-		echo "<p>";
-		echo "The ".$count." records have been inserted or updated into the security_contact \n\r<br>";
-		fclose($handle);
-	}
+$inputFileName = $target_file;
+$count = 0;
+
+if ($uploadOk == 1){
+
+    /** Load $inputFileName to a Spreadsheet Object  **/
+    $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileName);
+
+    $worksheet = $spreadsheet->getActiveSheet();
+    $Rows = [];
+
+    foreach ($worksheet->getRowIterator() AS $index => $row) {
+        if($index == 1){
+            continue;
+        }
+        $cellIterator = $row->getCellIterator();
+        $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+        $cells = [];
+        foreach ($cellIterator as $cell) {
+            $cells[] = $cell->getValue();
+        }
+        $Rows[] = $cells;
+    }
+
+	$table = "security_contact";
+	$key_column = "1";
+	$id = "1"; 
+	$db->delete($table, $key_column, $id); 
+
+    foreach($Rows as $row) {
+        $data_array = array();
+        $data_array['OID']= trim($row[0]);
+        $data_array['organization']= trim($row[1]);
+        $data_array['person_name']= trim($row[2]);
+        $data_array['unit']= trim($row[3]);
+        $data_array['position']= trim($row[4]);
+        $data_array['person_type']= trim($row[5]);
+        $data_array['address']= trim($row[6]);
+        $data_array['tel']= trim($row[7]);
+        $data_array['ext']= trim($row[8]);
+        $data_array['fax']= trim($row[9]);
+        $data_array['email']= trim($row[10]);
+
+        $db->insert($table, $data_array);
+        $count = $count + 1;							
+    }		
+
+    $error = $db->getErrorMessageArray();
+    if(!empty($error)) {
+        return;
+    }
+
+    echo "<p>";
+    echo "The ".$count." records have been inserted or updated into the security_contact \n\r<br>";
+
 }

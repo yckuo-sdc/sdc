@@ -1,6 +1,5 @@
-<!--network_search-->
 <div id="page" class="container">
-<div id="content">
+    <div id="content">
 		<div class="sub-content show">
 			<div class="post network">
                 <h2 class="ui dividing header">網路流量日誌(IPS)</h2>

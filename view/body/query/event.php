@@ -1,6 +1,5 @@
-<!--query_event-->
 <div id="page" class="container">
-<div id="content">
+    <div id="content">
 		<div class="sub-content show">
 			<div class="post event">
                 <h2 class="ui dividing header">市府資安事件</h2>
@@ -83,19 +82,20 @@
 				</div>
 				<?= flash() ?>
 				<div class="record_content">
-                <?php
-				if($last_num_rows==0){
-					echo "查無此筆紀錄";
-				}else{
-					echo "共有".$last_num_rows."筆資料！";
-				?>
-				<div class='ui relaxed divided list'>
-				<?php foreach($events->data as $event){ ?>
+                <?php if($last_num_rows==0): ?>
+					查無此筆紀錄
+				<?php else: ?>
+					共有<?=$last_num_rows?>筆資料！
+                    <div class='ui relaxed divided list'>
+                    <?php foreach($events->data as $event): ?>
 						<div class='item'>
 						<div class='content'>
 							<a>
-							<?php if($event['Status']=="已結案") { ?><i class='check circle icon' style='color:green'></i>
-							<?php }else { ?><i class='exclamation circle icon'></i> <?php } ?>
+							<?php if($event['Status']=="已結案"): ?>
+                                <i class='check circle icon' style='color:green'></i>
+							<?php else: ?>
+                                <i class='exclamation circle icon'></i>
+                            <?php endif ?>
 							<?=date_format(new DateTime($event['OccurrenceTime']),'Y-m-d')?>&nbsp&nbsp
 							<?=$event['Status']?>&nbsp&nbsp
 							<span style='background:#fde087'><?=$event['EventTypeName']?></span>&nbsp&nbsp
@@ -130,10 +130,10 @@
 							</div>
 						</div>
 						</div>
-				<?php	} ?>
-				</div>
-				<?php echo $Paginator->createLinks($links, 'ui pagination menu'); ?>
-				<?php } ?>
+                    <?php endforeach ?>
+                    </div>
+                    <?php echo $Paginator->createLinks($links, 'ui pagination menu'); ?>
+                <?php endif ?>
 				</div> <!--End of record_content-->	
 				</div><!--End of post_cell-->
 			</div><!--End of post-->

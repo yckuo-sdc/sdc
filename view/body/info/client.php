@@ -1,4 +1,3 @@
-<!--info_client-->
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
@@ -64,7 +63,7 @@
 				<div class="post_cell">
 					<div id="drip_chart" class="chart"></div>	
 				</div>
-				<div id="ad_post" class="post_title">AD統計</div>
+				<div id="ad_post" class="post_title">AD</div>
 				<div class="post_cell">
 					<center>
 						<div class="ui statistic">
@@ -73,7 +72,7 @@
 						</div>
 					</center>
 			    </div>		
-				<div id="gcbPass_post" class="post_title">GCB總通過率</div>
+				<div id="gcbPass_post" class="post_title">GCB通過率</div>
 				<div class="post_cell">
 					<center>
 						<div class="ui statistic">
@@ -87,7 +86,7 @@
 				<div class="post_cell">
 					<div id="gcbOS_chart" class="chart"></div>	
 			    </div>		
-				<div id="wsusPass_post" class="post_title">WSUS總通過率</div>
+				<div id="wsusPass_post" class="post_title">WSUS</div>
 					<div class="post_cell">
 					<div class="post_table">
 					<table>
@@ -114,7 +113,7 @@
 					</table>
 					</div>
 				</div>
-				<div id="avPass_post" class="post_title">AntiVirus總通過率</div>
+				<div id="avPass_post" class="post_title">AntiVirus</div>
 					<div class="post_cell">
 					<div class="post_table">
 					<table>

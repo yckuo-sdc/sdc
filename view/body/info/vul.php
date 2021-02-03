@@ -1,4 +1,3 @@
-<!--info_vul-->
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
@@ -36,7 +35,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <?php foreach($ou_vul as $vul) { ?>
+                        <?php foreach($ou_vul as $vul): ?>
                             <tr>
                                 <td data-label='OU'><?=$vul['ou']?></td>
                                 <td data-label='Total-Risks' data-sort-value='<?=round($vul['total_completion'],0)?>'>
@@ -58,27 +57,25 @@
                                     </div>
                                 </td>
                             </tr>
-                        <?php } 
-                        $vul = $total_vul[0];
-                        ?>
+                        <?php endforeach ?> 
                             <tr class='positive'>
                                 <td data-label='OU'>Total</td>
                                 <td data-label='Total-Risks'>
-                                    <div class='ui teal progress yckuo' data-percent='<?=round($vul['total_completion'],0)?>' data-total='100' id='example1'>
+                                    <div class='ui teal progress yckuo' data-percent='<?=round($total_vul['total_completion'],0)?>' data-total='100' id='example1'>
                                         <div class='bar'><div class='progress'></div></div>
-                                        <div class='label'><?=$vul['fixed_VUL']?>/<?=$vul['total_VUL']?></div>
+                                        <div class='label'><?=$total_vul['fixed_VUL']?>/<?=$total_vul['total_VUL']?></div>
                                     </div>
                                 </td>
                                 <td data-label='Non-Overdue-Risks'>
-                                    <div class='ui teal progress yckuo' data-percent='<?=round($vul['non_overdue_completion'],0)?>' data-total='100' id='example1'>
+                                    <div class='ui teal progress yckuo' data-percent='<?=round($total_vul['non_overdue_completion'],0)?>' data-total='100' id='example1'>
                                         <div class='bar'><div class='progress'></div></div>
-                                        <div class='label'><?=$vul['non_overdue_VUL']?>/<?=$vul['total_VUL']?></div>
+                                        <div class='label'><?=$total_vul['non_overdue_VUL']?>/<?=$total_vul['total_VUL']?></div>
                                     </div>
                                 </td>
                                 <td data-label='High-Risks'>
-                                    <div class='ui teal progress yckuo' data-percent='<?=round($vul['high_completion'],0)?>' data-total='100' id='example1'>
+                                    <div class='ui teal progress yckuo' data-percent='<?=round($total_vul['high_completion'],0)?>' data-total='100' id='example1'>
                                         <div class='bar'><div class='progress'></div></div>
-                                        <div class='label'><?=$vul['fixed_high_VUL']?>/<?=$vul['total_high_VUL']?></div>
+                                        <div class='label'><?=$total_vul['fixed_high_VUL']?>/<?=$total_vul['total_high_VUL']?></div>
                                     </div>
                                 </td>
                             </tr>

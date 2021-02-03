@@ -1,5 +1,5 @@
 <div id="page" class="container">
-<div id="content">
+    <div id="content">
 		<div class="sub-content show">
 			<div class="post">
                 <h2 class="ui dividing header">Fetch VUL</h2>
@@ -23,11 +23,9 @@
                         </div>
                     </form>
                     <pre></pre>
-                    <?php 
-                    foreach($vul_api as $api){
-                        echo $api['name'].": update ".$api['data_number']." records on ".$api['last_update']."<br>";
-                    }
-                    ?>
+                    <?php foreach($vul_api as $api): ?>
+                        <?=$api['name']?>: update <?=$api['data_number']?> records on <?=$api['last_update']?><br>
+                    <?php endforeach ?>
                     <button id="vs_btn" class="ui button">Fetch VUL</button>
                     <div class="ui centered inline loader"></div>
                     <div class="retrieve_vul"></div>

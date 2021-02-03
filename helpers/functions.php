@@ -21,19 +21,27 @@ function isLogin(){
 		}
 	}		
 	
-	//header("Location: /logout"); 
 	return false;
 }	
 
-function checkAccountByLDAP($user, $ldappass){
+function checkAccountByLDAP($user, $ldappass, &$user_attributes){
 	$ldapconn = ldap_connect(LDAP::HOST);
 	$ldaprdn = $user . "@" . LDAP::DOMAIN;
 	ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
 
 	if ($ldapconn){
-		$ldapbind = @ldap_bind($ldapconn, $ldaprdn, $ldappass);	// verify binding
+		$ldapbind = @ldap_bind($ldapconn, $ldaprdn, $ldappass);
 		if ($ldapbind) {
+            //bind sdc-ou
+            $base = "OU=395000300A,OU=395002900-,OU=395000000A,OU=TainanLocalUser,DC=tainan,DC=gov,DC=tw";
+            $filter = "(cn=" . $user . "*)";
+            $attributes = array("cn", "displayname");
+            $result = ldap_search($ldapconn, $base, $filter, $attributes) or die ("Error in query");
+            $entries = ldap_get_entries($ldapconn,$result);
+            $username = $entries[0]['displayname'][0];
+            $user_attributes = array('username' => $username);
+
 			ldap_close($ldapconn);
 			return true;
 	    }
@@ -55,54 +63,6 @@ function saveAction($db, $type, $ip, $user, $msg){
 	$data_array['time'] = $time;
 	$db->insert($table, $data_array);
 }	
-
-//LDAP recursive search and print
-function traverseOU($ldapconn, $base_dn, $ou_name ,$ou_des) {
-	$filter = "(objectClass=*)";
-	$result = @ldap_list($ldapconn,$base_dn,$filter) or die ("Error in query");
-	$num = @ldap_count_entries($ldapconn,$result);
-	if($num==0){
-		echo "<li><i class='folder icon'></i>".$ou_name."(".$ou_des.")</li>";	
-		return;
-	}else{
-		echo "<li><i class='minus square outline icon'></i><i class='folder open icon'></i>".$ou_name."(".$ou_des.")";	
-		// list all computers of base_dn
-		$filter = "(objectClass=computer)";
-		$result = @ldap_list($ldapconn,$base_dn,$filter) or die ("Error in query");
-		$data = @ldap_get_entries($ldapconn,$result);
-		$num = $data["count"];
-		if($num!=0){
-			echo "<ol>";
-			for($i=0; $i<$num;$i++){
-				if(isDisable($data[$i]['useraccountcontrol'][0])){
-					echo "<li><i class='desktop icon'></i>".$data[$i]['cn'][0]."_已停用</li>";
-				}else{
-					echo "<li><i class='desktop icon'></i>".$data[$i]['cn'][0]."</li>";
-				}
-			}
-			echo "</ol>";
-		}
-		// list all sub_ou of base_dn
-		$filter = "(objectClass=organizationalUnit)";
-		$result = @ldap_list($ldapconn,$base_dn,$filter) or die ("Error in query");
-		$data = @ldap_get_entries($ldapconn,$result);
-		$num = $data["count"];
-		if($num!=0){
-			echo "<ol>";
-			for($i=0; $i<$num;$i++){
-				$sub_ou = $data[$i]["ou"][0];
-				$sub_dn = $data[$i]["distinguishedname"][0];
-				$sub_des = "";
-				if(isset($data[$i]["description"][0])) $sub_des = $data[$i]["description"][0];
-				// continue the recursion
-				traverseOU($ldapconn,$sub_dn,$sub_ou,$sub_des);
-			}
-			echo "</ol>";
-		}
-		echo "</li>";
-	}
-
-}
 
 //Alert message
 function phpAlert($msg) {
@@ -215,34 +175,6 @@ function isDisable($useraccountcontrol){
 	}else{
 		return false;
 	}
-}
-
-//get ou'description of AD
-function get_ou_desc($dn,$ldapconn){
-	$desc ="";
-	$str_sec = explode(",",$dn);
-	for($i=0;$i<2;$i++){
-		if(substr_compare($str_sec[$i],"OU",0,2)==0){
-			$result_ou = @ldap_search($ldapconn,"ou=TainanComputer,dc=tainan,dc=gov,dc=tw","(".$str_sec[$i].")");
-			$data_ou = @ldap_get_entries($ldapconn,$result_ou);
-			if(isset($data_ou[0]['description'][0]))	$desc = $desc.$data_ou[0]['description'][0];
-		}
-	}
-	return $desc;
-}
-
-//get recursive ou'descriptions of AD
-function get_ou_desc_recursive($dn,$ldapconn){
-	$desc ="";
-	$str_sec = explode(",",$dn);
-	for($i=0;$i<count($str_sec);$i++){
-		if(substr_compare($str_sec[$i],"OU",0,2)==0){
-			$result_ou = @ldap_search($ldapconn,"ou=TainanComputer,dc=tainan,dc=gov,dc=tw","(".$str_sec[$i].")");
-			$data_ou = @ldap_get_entries($ldapconn,$result_ou);
-			if(isset($data_ou[0]['description'][0]))	$desc = $desc.$data_ou[0]['description'][0]."/";
-		}
-	}
-	return $desc;
 }
 
 function formatBytes($bytes, $precision = 1) { 

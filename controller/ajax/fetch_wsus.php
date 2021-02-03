@@ -93,7 +93,7 @@ if (($handle = fopen($file, "r")) !== FALSE) {
 }
 
 $error = $db->getErrorMessageArray();
-if(@count($error) > 0) {
+if(!empty($error)) {
 	return;
 }
 

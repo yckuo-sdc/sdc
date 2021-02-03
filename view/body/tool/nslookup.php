@@ -1,4 +1,3 @@
-<!--tool_nmap-->
 <div id="page" class="container">
 	<div id="content">
 		<div class="sub-content show">
@@ -18,12 +17,6 @@
 							<button type="submit" id="nslookup_btn" class="ui button">Query</button>
 							<div class="ui centered inline loader"></div>
 						</div>
-						<!--<div class="ui message">
-							<div class="header"><a href='https://nmap.org/nsedoc/' target='_blank'>Nmap Scripts</a></div>
-							<ul class="list">
-							  <li></li>
-							</ul>
-						</div>-->
 					</form>
 					<div class="record_content"></div>
 				</div> <!-- end .post_cell-->

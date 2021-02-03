@@ -103,10 +103,10 @@ $(document).ready(function(){
 	});
 	
 	/*query.php's component action*/
-	$('.post.isac .dynamiclists i.icon').on('click', function() {
+	$('.post.malware .dynamiclists i.icon.caret').on('click', function() {
 		var icon = $(this);
-		var detail = $(this).closest('.dynamiclists').find('.remaining.card');
-		if(detail.hasClass('show')){
+		var detail = $(this).closest('.dynamiclists').find('.foldable.card');
+		if(icon.hasClass('down')){
 			icon.removeClass('down').addClass('right');
 			detail.removeClass('show');
 		}else{
@@ -116,10 +116,30 @@ $(document).ready(function(){
 	});
 
 	/*sub_ldap_tree.php's component action*/
-	$('.ldap_tree_content').on('click', 'li > i.square.icon', function() {
+	$('.post.ldap i.icon.caret').on('click', function() {
+		var tree_content = $(this).parent('.post_title').next();
 		var icon1 = $(this);
-		var icon2 = $(this).parent('li').children('i.folder.icon');
-		var detail = $(this).parent('li');
+		var icon2 = tree_content.find('i.square.icon');
+		var icon3 = tree_content.find('i.folder.icon');
+		var detail = tree_content.find('.item');
+		if(icon1.hasClass('down')){
+			icon1.removeClass('down').addClass('right');
+			icon2.removeClass('minus').addClass('plus');
+			icon3.removeClass('open');
+			detail.addClass('hide');
+		}else{
+			icon1.removeClass('right').addClass('down');
+			icon2.removeClass('plus').addClass('minus');
+			icon3.addClass('open');
+			detail.removeClass('hide');
+		}
+	});
+
+	/*sub_ldap_tree.php's component action*/
+	$('.ldap_tree_content').on('click', '.item > i.square.icon', function() {
+		var icon1 = $(this);
+		var icon2 = $(this).parent('.item').children('i.folder.icon');
+		var detail = $(this).parent('.item');
 		if(detail.hasClass('hide')){
 			detail.removeClass('hide');
 			icon1.removeClass('plus').addClass('minus');
@@ -129,6 +149,12 @@ $(document).ready(function(){
 			icon1.removeClass('minus').addClass('plus');
 			icon2.removeClass('open');
 		}
+	});
+
+	/*sub_ldap_tree.php's component action*/
+	$('.ldap_tree_content').on('click', '.computer.item', function() {
+		$(this).closest('.ldap_tree_content').find('.computer.item').removeClass('selected');
+		$(this).addClass('selected');
 	});
 
 	/*query.php's component action*/
@@ -341,11 +367,15 @@ $(document).ready(function(){
 	//LDAP edit
 	$('.post_cell.ldap').on( 'click', '#ldap_edit_btn' ,function(){
 		var form = $(this).closest('#form-ldap');
-		ldap_edit_ajax(form);	
+		do_ldap_ajax(form);	
 	});
 	//LDAP clear
 	$('.post_cell.ldap').on( 'click', '#ldap_clear_btn' ,function(){
 		var form = $(this).closest('#form-ldap').remove();
+	});
+	//LDAP fetch
+	$('.post_cell.ldap_tainancomputers').on( 'click', '.fetch_btn' ,function(){
+        retrieve_ldap_tainancomputers_ajax();
 	});
 	//Hydra
 	$('.post.hydra #hydra_btn').click(function(){
@@ -387,16 +417,37 @@ $(document).ready(function(){
 
 	$('.post.event').on('click','.button.edit', function(){
 		var id = $(this).attr('key');
-		modal_form_action_ajax(id, 'edit');
+		modal_form_action_ajax(id, 'edit', 'event');
     });	
 
 	$('.post.event').on('click','.button.delete', function(){
 		if(confirm('是否刪除此紀錄')){
 			var id = $(this).attr('key');
-			modal_form_action_ajax(id, 'delete');
+			modal_form_action_ajax(id, 'delete', 'event');
 		}
     });	
-	
+
+	$('.post_cell.ldap_computers').on( 'click', '.edit_btn' ,function(){
+	    var item = $(this).closest('.ldap_computers').find('.computer.item.selected'); 
+        var cn = $(item).attr('cn');
+        var uac = $(item).attr('uac');
+        var selector = ".ui.modal ";
+        
+        $(selector + 'form input[name=cn]').val(cn);
+        $(selector + 'form span[name=cn]').text(cn);
+        $(selector + 'form input[name=isActive]').prop("checked", uac);
+
+        $(selector).modal({
+            closable  : false,
+            onDeny    : function(){
+            },
+            onApprove : function() {
+              $(selector + 'form').submit();
+            }
+        })
+        .modal('show');
+	});
+
 	//semantic dismissable block
 	$('.message .close').on('click', function() {
 		$(this).closest('.message').transition('fade');
@@ -448,14 +499,14 @@ function hydra_pwd_mode(type){
 	}
 }
 
-//ldap_edit
-function ldap_edit_ajax(form) {
+//ldap edit
+function do_ldap_ajax(form) {
 	var selector = ".post_cell.ldap ";
-	var isActive = form.find('input[name=stateSwitch]').prop("checked");
+	var isActive = form.find('input[name=isActive]').prop("checked");
 	var type = form.find('input[name=type]').val();
 	var input = form.serializeArray();
-	var obj = [	{name : "isActive", value: isActive} ];
-    input = input.concat(obj);
+	var parm = [ {name : "ajax", value: true} ];
+    input = input.concat(parm);
 
 	// input validation
 	switch(type){
@@ -496,7 +547,7 @@ function ldap_edit_ajax(form) {
 	// end of input validation
 
 	$.ajax({
-		 url: '/ajax/ldap_edit/',
+		 url: '/ajax/do_ldap/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -897,14 +948,36 @@ function retrieve_vul_ajax(){
 	});
 }
 
-function retrieve_ldap_tree_ajax(){
-	var selector = ".post_cell.ldap_computer_tree ";
+function retrieve_ldap_computers_ajax(){
+	var selector = ".post_cell.ldap_computers ";
 	var url;
 	if (location.protocol == 'https:') url='https://' + location.hostname +'/';
 	else							   url='http://' + location.hostname + '/';
     $(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({
-		 url: url+'ajax/ldap_computer/',
+		 url: url+'ajax/ldap_computers/',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+		 error: function(xhr) {
+			 alert('Ajax failed');
+		 },success: function(data) {
+            $(selector + '.ui.inline.loader').removeClass('active');
+            if(ajax_check_user_logged_in(data)){
+			    $(selector + '.ldap_tree_content').html(data);
+		    }
+         }
+	});
+}
+
+function retrieve_ldap_tainancomputers_ajax(){
+	var selector = ".post_cell.ldap_tainancomputers ";
+	var url;
+	if (location.protocol == 'https:') url='https://' + location.hostname +'/';
+	else							   url='http://' + location.hostname + '/';
+    $(selector + '.ui.inline.loader').addClass('active');
+	$.ajax({
+		 url: url+'ajax/ldap_tainancomputers/',
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
@@ -1000,17 +1073,17 @@ function retrieve_ldap_ajax(type){
 }
 
 //insert values form database into form inputs
-function modal_form_action_ajax(id, action){
+function modal_form_action_ajax(id, action, category){
 	var selector = ".ui.modal ";
 
-	switch(action){
-		case 'edit':
+	switch(true){
+        case (action == "edit" && category == "event"):
 			$.ajax({
 				 url: '/ajax/modal_form_action/',
 				 cache: false,
 				 dataType:'json',
 				 type:'get',
-				 data: {id:id,action:action},
+				 data: {id:id,action:action,category:category},
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
@@ -1041,13 +1114,13 @@ function modal_form_action_ajax(id, action){
 			})
 			.modal('show')
 			break;
-		case 'delete':
+        case (action == "delete " && category == "event"):
 			$.ajax({
 				 url: '/ajax/modal_form_action/',
 				 cache: false,
 				 dataType:'html',
 				 type:'GET',
-				 data: {id:id,action:action},
+				 data: {id:id,action:action,category:category},
 				 error: function(xhr) {
 					 alert('Ajax failed');
 				 },success: function(data) {
@@ -1055,6 +1128,31 @@ function modal_form_action_ajax(id, action){
 			            history.go(0);
 				    }
                  }
+			});
+			break;
+        case (action == "edit" && category == "ldap_computer"):
+			$.ajax({
+				 url: '/ajax/modal_form_action/',
+				 cache: false,
+				 dataType:'json',
+				 type:'get',
+				 data: {id:id,action:action,category:category},
+				 error: function(xhr) {
+					 alert('Ajax failed');
+				 },success: function(data) {
+                    if(ajax_check_user_logged_in(data)){
+                        console.log(data);
+                        $(selector).modal({
+                            closable  : false,
+                            onDeny    : function(){
+                            },
+                            onApprove : function() {
+                              $(selector + 'form').submit();
+                            }
+                        })
+                        .modal('show');
+                    }
+				 }
 			});
 			break;
 	}
@@ -1088,7 +1186,8 @@ function pageSwitch(){
         	break;
 		//load ldap's tree
       	case (mainpage == 'tool' && subpage == 'ldap' ):
-			retrieve_ldap_tree_ajax();
+			retrieve_ldap_computers_ajax();
+			//retrieve_ldap_tainancomputers_ajax();
         	break;
 	 	//load ou_vul
      	case (mainpage == 'vul' && subpage == 'overview' ):

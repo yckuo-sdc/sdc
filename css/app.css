@@ -317,25 +317,33 @@ th
    position:relative; /*讓裡面的兩個子容器絕對定位*/
 }
 
-/*b{display:block;position:absolute;top:-40px;left:-40px;width:35px;}
-em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
-*/
 /* semantic + mystyle.css*/
-.ui.list{
-	/*font-size: 2vmin;*/
+
+i.icon.caret, i.icon.square, i.icon.edit{
+    cursor: pointer;
+
 }
-.ui.list > .item{
-	/*font-size: 2vmin;*/
+
+.ui.list .computer.item:hover{
+    background: #ebedf2;
+    cursor: pointer;
 }
-.ui.list > .item div.header,.ui.list > .item div.header a{
+
+.ui.list .computer.item.selected{
+    background: #bec1c7;
+}
+
+.ui.list div.header a{
 	color: #4183C4 !important;
 }
+
 .ui.list > .item .content{
 	line-height: normal;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
+
 .ui.list > .item .content .description{
 	display:none;
 	word-break: break-all;
@@ -345,6 +353,7 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
 	padding: 3vw;
 	border-radius: 1vw;
 }
+
 .ui.list > .item .content .description.show{
 	display:block;
 	word-break: break-word;
@@ -376,11 +385,11 @@ em{display:block;position:absolute;top:-25px;left:-70px;width:55x;}
     border:none !important;
 }
 
-.ui.cards > .remaining.card{
+.ui.cards > .foldable.card{
 	display:none !important;
 }
 
-.ui.cards > .remaining.card.show{
+.ui.cards > .foldable.card.show{
 	display:block !important;
 }
 

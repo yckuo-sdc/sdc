@@ -82,7 +82,7 @@ if (isset($rows['values'])) {
 	}	
 
 	$error = $db->getErrorMessageArray();
-	if(@count($error) > 0) {
+    if(!empty($error)) {
 		return;
 	}
 

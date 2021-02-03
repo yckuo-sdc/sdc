@@ -1,6 +1,5 @@
-<!--query_ncert-->
 <div id="page" class="container">
-<div id="content">
+    <div id="content">
 		<div class="sub-content show">
 			<div class="post ncert">
                 <h2 class="ui dividing header">技服資安通報</h2>
@@ -34,14 +33,12 @@
 					</div>
 					</form>
 					<div class="record_content">
-					<?php
-					if($last_num_rows==0){
-						echo "查無此筆紀錄";
-					}else{
-						echo "共有".$last_num_rows."筆資料！";
-					?>
-					<div class='ui relaxed divided list'>
-					<?php	foreach($incidents->data as $incident){ ?>
+					<?php if($last_num_rows==0): ?>
+						查無此筆紀錄
+					<?php else: ?>
+						共有<?=$last_num_rows?>筆資料！
+                        <div class='ui relaxed divided list'>
+                        <?php foreach($incidents->data as $incident): ?>
 							<div class='item'>
 							<div class='content'>
 								<a>
@@ -91,10 +88,10 @@
 								</div>
 								</div>
 							</div>
-						<?php } ?>
+						<?php endforeach ?>
 						</div>
-					<?php echo $Paginator->createLinks($links, 'ui pagination menu'); ?>
-					<?php } ?>
+                        <?php echo $Paginator->createLinks($links, 'ui pagination menu'); ?>
+					<?php endif ?>
 					</div> <!--End of record_content-->	
 				</div><!--End of post_cell-->
 			</div><!--End of post-->

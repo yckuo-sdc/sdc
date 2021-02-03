@@ -166,12 +166,14 @@ if($ap=='html'){
 		echo $Paginator->createLinks($links, 'ui pagination menu', $pageAttr, $method='ajax');
 	}
 }elseif($ap='csv'){
-	$arrs=array();
-	foreach($vuls->data as $vul) {
+    $total_vuls = $db->execute($query, $data_array);
+	$arrs = array();
+	foreach($total_vuls as $vul) {
+        $arr = array();
 		foreach($vul as $key => $val){
 			$arr[$key] = $val;
 		}
 		array_push($arrs,$arr);	
 	}
-    array_to_csv_download($arrs,"export.csv",";"); 	
+    array_to_csv_download($arrs, "export.csv", ";"); 	
 }

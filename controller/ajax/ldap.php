@@ -7,241 +7,214 @@ foreach($_GET as $getkey => $val){
 	$$getkey = escapeshellcmd($val);
 }
 
+$ld = new MyLDAP();
+
 switch($type){
 	case "search":
-		$ldapconn = ldap_connect(LDAP::HOST) or die("Could not connect to LDAP server.");	// connect to AD server
-		$set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
-		
-		if($ldapconn){
-			$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME . "@" . LDAP::DOMAIN, LDAP::PASSWORD);	//bind user
-			$ou = ["TainanLocalUser","TainanComputer"];
-			$keyword_type = ["CN","CN"];	//Search CN Object From LocalUser and Local Computer
-			for($k=0;$k<count($ou);$k++){
-				$result = @ldap_search($ldapconn,"ou=".$ou[$k].",dc=tainan,dc=gov,dc=tw","(".$keyword_type[$k]."=".$target."*)") or die ("Error in query");
-				$data = @ldap_get_entries($ldapconn,$result);
-				echo "<p>".$data["count"]. " entries returned from ".$ou[$k]."</p>";
-				if($data["count"]!=0){
-					for($i=0; $i<$data["count"];$i++){
-						echo "<form id='form-ldap' class='ui form' action='javascript:void(0)'>";
-						echo "<h4 class='ui dividing header'>Entry Information</h4>";
-						echo "<div class='fields'>";
-							echo "<div class='two wide field'>";
-							if($k==0){ //user
-								if(isDisable($data[$i]['useraccountcontrol'][0])){
-									echo "<i class='user icon'></i>";
-									echo $data[$i]['cn'][0]."_已停用";
-								}else{
-									echo "<i class='user blue icon'></i>";
-									echo $data[$i]['cn'][0];
-								}
-								echo "<input type='hidden' name='type' value='edituser' >";
-							}elseif($k==1){	//computer
-								if(isDisable($data[$i]['useraccountcontrol'][0])){
-									echo "<i class='desktop icon'></i>";
-									echo $data[$i]['cn'][0]."_已停用";
-								}else{
-									echo "<i class='desktop blue icon'></i>";
-									echo $data[$i]['cn'][0];
-								}
-								echo "<input type='hidden' name='type' value='changecomputer' >";
-							}
-							echo "</div>";
-							//common setting
-							echo "<div class='ten wide field'>";
-								echo "<div class='ui toggle checkbox'>";
-									if(isDisable($data[$i]['useraccountcontrol'][0])){
-										echo "<input type='checkbox' name='stateSwitch'>";
-									}else{
-										echo "<input type='checkbox' name='stateSwitch' checked>";
-									}
-									echo "<label>是否啟用</label>";
-								echo "</div>";
-							echo "</div>";
-							echo "<div class='two wide field'>";
-								echo "<button id='ldap_clear_btn' class='ui button'>Cancel</button>";
-							echo "</div>";
-							echo "<div class='two wide field'>";
-								echo "<button id='ldap_edit_btn' class='ui button'>Save</button>";
-							echo "</div>";
-						echo "</div>";
-						echo "<div>";
-							if($k==0){	//user
-								$keyword_ou = "(objectClass=organizationalUnit)";
-								$result_ou = ldap_search($ldapconn,"OU=TainanLocalUser,dc=tainan,dc=gov,dc=tw",$keyword_ou) or die ("Error in query");
-								$data_ou = ldap_get_entries($ldapconn,$result_ou);
-							
-								echo "<div class='field'>";
-									echo "<label>移動單位</label>";
-								
-									echo "<input list='brow' name='organizationalUnit' placeholder='請選擇ou' >";
-									echo "<datalist id='brow' name='organizationalUnit'>";
-										if($data_ou["count"]!=0){
-											for($l=0; $l<$data_ou["count"];$l++) {
-												if(isset($data_ou[$l]['description'][0])) {
-													echo "<option value='".$data_ou[$l]['name'][0]."(".$data_ou[$l]['description'][0].")'>";
-												}else{
-													echo "<option value='".$data_ou[$l]['name'][0]."'>";
-												}	
-											}
-										}
-									echo "</datalist>";
-								echo "</div>";
-									
-								$labelArr = ['新密碼','確認密碼','姓名','職稱','mail','電話','分機'];
-								$nameArr = ['new_password','confirm_password','displayname','title','mail','telephonenumber','physicaldeliveryofficename'];
-								$rArr = ['','','required','required','required','',''];
-								foreach($nameArr as $key => $val){
-									echo "<div class='field'>";
-										echo "<label>".$labelArr[$key].$r = ($rArr[$key]=='required') ?"<font color='red'>*</font>":""."</label>";
-										if(isset($data[$i][$val])){
-											echo "<input type='text' name='".$val."' value='".$data[$i][$val][0]."'>";
-										}else{
-											if($val == "new_password" || $val == "confirm_password"){
-												echo "<input type='password' name='".$val."' value='' placeholder='".$labelArr[$key]."' >";
-											}else{
-												echo "<input type='text' name='".$val."' value='' placeholder='".$labelArr[$key]."' >";
-											}
-										}
-									echo "</div>";
-								}
-							}elseif($k==1){	//computer
-								$keyword_ou = "(objectClass=organizationalUnit)";
-								$result_ou = ldap_search($ldapconn,"OU=TainanComputer,dc=tainan,dc=gov,dc=tw",$keyword_ou) or die ("Error in query");
-								$data_ou = ldap_get_entries($ldapconn,$result_ou);
-					
-								echo "<div class='inline fields'>";
-									echo "<label for='isYonghua'>市政中心</label>";
-									echo "<div class='field'>";
-										echo "<div class='ui radio checkbox'>";
-											echo "<input type='radio' name='isYonghua' value='true' checked='checked'>";
-											echo "<label>永華</label>";
-										echo "</div>";
-									echo "</div>";
-									echo "<div class='field'>";
-										echo "<div class='ui radio checkbox'>";
-											echo "<input type='radio' name='isYonghua' value='false'>";
-											echo "<label>民治</label>";
-										echo "</div>";
-									echo "</div>";
-								echo "</div>";
-								echo "<div class='field'>";
-									echo "<label>移動單位</label>";
-								
-									echo "<input list='brow' name='organizationalUnit' placeholder='請選擇ou' >";
-									echo "<datalist id='brow' name='organizationalUnit'>";
-										if($data_ou["count"]!=0){
-											for($l=0; $l<$data_ou["count"];$l++) {
-												if(isset($data_ou[$l]['description'][0])) {
-													echo "<option value='".$data_ou[$l]['name'][0]."(".$data_ou[$l]['description'][0].")'>";
-												}else{
-													echo "<option value='".$data_ou[$l]['name'][0]."'>";
-												}	
-											}
-										}
-									echo "</datalist>";
-								echo "</div>";
-							}
-						echo "<ol class='ui list'>";
-						for ($j=0;$j<$data[$i]["count"];$j++){
-							if($data[$i][$j] == "cn"){
-								echo "<li>".$data[$i][$j].": ";
-								echo "<div class='ui input'>";
-									echo "<input type='text' name='".$data[$i][$j]."' value='".$data[$i][$data[$i][$j]][0]."' readonly='readonly'>";
-								echo "</div></li>";
-							}elseif($data[$i][$j] == "distinguishedname"){
-								echo "<li>".$data[$i][$j].": ".$data[$i][$data[$i][$j]][0]."</li>";
-								$str_sec = explode(",",$data[$i][$data[$i][$j]][0]);
-								for($o=0;$o<count($str_sec);$o++){
-									if(substr_compare($str_sec[$o],"OU",0,2)==0){
-										//echo $str_sec[$o]."(";
-										$result_ou = ldap_search($ldapconn,"ou=".$ou[$k].",dc=tainan,dc=gov,dc=tw","(".$str_sec[$o].")") or die ("Error in query");
-										$data_ou = ldap_get_entries($ldapconn,$result_ou);
-										if(isset($data_ou[0]['description'][0]))	echo $data_ou[0]["description"][0]."/";
-									}
-								}
-							}
-							elseif(@isset($data[$i][$j][0])) {
-								if($data[$i][$j] == "dnshostname"){
-									echo "<li>".$data[$i][$j].": ".$data[$i][$data[$i][$j]][0]." | ";
-									$output = shell_exec("/usr/bin/dig +short ".$data[$i][$data[$i][$j]][0]);
-									echo "IP: ".$output."</li>";
-								}elseif($data[$i][$j] == "pwdlastset" || $data[$i][$j] == "lastlogon" || $data[$i][$j] == "badpasswordtime"){
-									echo "<li>".$data[$i][$j].": ".WindowsTime2DateTime($data[$i][$data[$i][$j]][0])."</li>";
-								}else{
-									echo "<li>".$data[$i][$j].": ".$data[$i][$data[$i][$j]][0]."</li>";
-								}
-							}
-						}
-						echo "</ol>";
-						echo "<p></p>";
-						echo "</div>";
-					echo "</form>";
-					
-					}	
-				}
-			}
-		}
-		ldap_close($ldapconn);
+        $search_ou = ["ou=TainanLocalUser, dc=tainan, dc=gov, dc=tw",
+                      "ou=TainanComputer, dc=tainan, dc=gov, dc=tw"];
+        $move_ou = ["ou=TainanLocalUser, dc=tainan, dc=gov, dc=tw",
+                    "ou=YongHua, ou=TainanComputer, dc=tainan, dc=gov, dc=tw"];
+        $filter = "(cn=".$target."*)";			
+
+        $labelArr = ['新密碼','確認密碼','姓名','職稱','mail','電話','分機'];
+        $nameArr = ['new_password','confirm_password','displayname','title','mail','telephonenumber','physicaldeliveryofficename'];
+        $rArr = ['','','required','required','required','',''];
+
+        for($k=0; $k<count($search_ou); $k++){
+            $data_array = array();
+            $data_array['base'] = $search_ou[$k];
+            $data_array['filter'] = $filter;
+            $data = $ld->getData($data_array);
+
+            $data_array = array();
+            $data_array['base'] = $move_ou[$k];
+            $data_array['filter'] = "(objectClass=organizationalUnit)";
+            $data_array['attributes'] = array("name", "description");
+            $data_ou = $ld->getData($data_array);
+
+            ?>
+
+            <p><?=count($data)?> entries returned from <?=$search_ou[$k]?></p>
+
+            <?php foreach($data as $entry): ?>
+                <form id='form-ldap' class='ui form' action='javascript:void(0)'>
+                    <h4 class='ui dividing header'>Entry Information</h4>
+                    <div class='fields'>
+                        <div class='six wide field'>
+                            <?php if($k==0): ?>
+                                <?php if(isDisable($entry['useraccountcontrol'])): ?>
+                                    <i class='user icon'></i>
+                                    <?=$entry['cn']."__已停用"?>
+                                <?php else: ?>
+                                    <i class='user blue icon'></i>
+                                    <?=$entry['cn']?>
+                                <?php endif ?>
+                                <input type='hidden' name='type' value='edituser' >
+                            <?php elseif($k==1): ?>
+                                <?php if(isDisable($entry['useraccountcontrol'])): ?>
+                                    <i class='desktop icon'></i>
+                                    <?=$entry['cn']."__已停用"?>
+                                <?php else: ?>
+                                    <i class='desktop blue icon'></i>
+                                    <?=$entry['cn']?>
+                                <?php endif ?>
+                                <input type='hidden' name='type' value='changecomputer' >
+                            <?php endif ?>
+                            <input type='hidden' name='cn' value='<?=$entry['cn']?>' >
+                        </div>
+
+                        <div class='six wide field'>
+                            <div class='ui toggle checkbox'>
+                                <?php if(isDisable($entry['useraccountcontrol'])): ?>
+                                    <input type='checkbox' name='isActive' value="true">
+                                <?php else: ?>
+                                    <input type='checkbox' name='isActive' value="true" checked>
+                                <?php endif ?>
+                                <label>是否啟用</label>
+                            </div>
+                        </div>
+                        <div class='two wide field'>
+                            <button id='ldap_clear_btn' class='ui button'>Cancel</button>
+                        </div>
+                        <div class='two wide field'>
+                            <button id='ldap_edit_btn' class='ui button'>Save</button>
+                        </div>
+                    </div>
+                    <?php if($k==0): ?>
+                        <div class='field'>
+                            <label>移動單位</label>
+                            <input list='brow' name='organizationalUnit' placeholder='請選擇ou'>
+                            <datalist id='brow' name='organizationalUnit'>
+                                <?php foreach($data_ou as $ou): ?> 
+                                    <?php if(isset($ou['description'])): ?>
+                                        <option value='<?=$ou['name']?>(<?=$ou['description']?>)'>
+                                    <?php else: ?>
+                                        <option value='<?=$ou['name']?>'>
+                                    <?php endif ?>
+                                <?php endforeach ?>
+                            </datalist>
+                        </div>
+                        <?php foreach($nameArr as $key => $val): ?>
+                            <div class='field'>
+                                <label>
+                                    <?=$labelArr[$key]?><?php echo $r = ($rArr[$key]=='required') ? "<font color='red'>*</font>" : "" ?>
+                                </label>
+                                <?php if(isset($entry[$val])): ?>
+                                    <input type='text' name='<?=$val?>' value='<?=$entry[$val]?>'>
+                                <?php else: ?>
+                                    <?php if($val == "new_password" || $val == "confirm_password"): ?>
+                                        <input type='password' name='<?=$val?>' value='' placeholder='<?=$labelArr[$key]?>' >
+                                    <?php else: ?>
+                                        <input type='text' name='<?=$val?>' value='' placeholder='<?=$labelArr[$key]?>' >
+                                    <?php endif ?>
+                                <?php endif ?>
+                            </div>
+                        <?php endforeach ?>
+                    <?php elseif($k==1): ?>
+                        <div class='inline fields'>
+                            <label for='isYonghua'>市政中心</label>
+                            <div class='field'>
+                                <div class='ui radio checkbox'>
+                                    <input type='radio' name='isYonghua' value='true' checked='checked'>
+                                    <label>永華</label>
+                                </div>
+                            </div>
+                            <div class='field'>
+                                <div class='ui radio checkbox'>
+                                    <input type='radio' name='isYonghua' value='false'>
+                                    <label>民治</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='field'>
+                            <label>移動單位</label>
+                            <input list='brow' name='organizationalUnit' placeholder='請選擇ou'>
+                            <datalist id='brow' name='organizationalUnit'>
+                                <?php foreach($data_ou as $ou): ?>
+                                    <?php if(isset($ou['description'])): ?>
+                                        <option value='<?=$ou['name']?>(<?=$ou['description']?>)'>
+                                    <?php else: ?>
+                                        <option value='<?=$ou['name']?>'>
+                                    <?php endif ?>	
+                                <?php endforeach ?>
+                            </datalist>
+                        </div>
+                    <?php endif ?>
+                    <div class='ui ordered list'>
+                        <?php foreach($entry as $key => $val): ?>
+                            <?php if($key == "distinguishedname"): ?>
+                                <?php $ou_description = $ld->getAllOUDescription($search_ou[$k], $val); ?>
+                                <div class='item'><?=$key?>: <?=$val?> <br> <?=$ou_description?></div> 
+                            <?php elseif($key == "dnshostname"): ?>
+                                <?php $output = shell_exec("/usr/bin/dig +short ".$val) ?>
+                                <div class='item'><?=$key?>: <?=$val?> | IP: <?=$output?></div>
+                            <?php elseif($key == "pwdlastset" || $key == "lastlogon" || $key == "badpasswordtime"): ?>
+                                <div class='item'><?=$key?>: <?=WindowsTime2DateTime($val)?></div>
+                            <?php else: ?>
+                                <div class='item'><?=$key?>: <?=$val?></div>
+                            <?php endif ?>
+                        <?php endforeach ?>
+                    </div>
+                    <p></p>
+                </div>
+            </form>
+            <?php endforeach ?>
+        <?php }
 		break;
 	case "newuser":
-		$ldapconn = ldap_connect(LDAP::HOST) or die("Could not connect to LDAP server.");
-		$set = ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
-		if($ldapconn){
-			//bind user
-			$ldap_bd = ldap_bind($ldapconn, LDAP::USERNAME . "@" . LDAP::DOMAIN, LDAP::PASSWORD);
-			$keyword = "(objectClass=organizationalUnit)";
-			$result = ldap_search($ldapconn,"OU=395000000A,OU=TainanLocalUser,dc=tainan,dc=gov,dc=tw",$keyword) or die ("Error in query");
-			$data = ldap_get_entries($ldapconn,$result);
-			echo "<form id='form-ldap' class='ui form' action='javascript:void(0)'>";
-			echo "<h4 class='ui dividing header'>New User Information</h4>";
-			echo "<div class='inline fields'>";
-				echo "<div class='twelve wide field'>";
-				echo "Setting";
-				echo "<input type='hidden' name='type' value='newuser' >";
-				echo "</div>";
-				echo "<div class='two wide field'>";
-					echo "<button id='ldap_clear_btn' class='ui button'>Cancel</button>";
-				echo "</div>";
-				echo "<div class='two wide field'>";
-					echo "<button id='ldap_edit_btn' class='ui button'>Save</button>";
-				echo "</div>";
-			echo "</div>";
-			echo "<div>";
-			echo "<div class='field'>";
-				echo "<label>單位<font color='red'>*</font></label>";
-			
-				echo "<input list='brow' name='organizationalUnit' placeholder='請選擇ou' >";
-				echo "<datalist id='brow' name='organizationalUnit'>";
-					if($data["count"]!=0){
-						for($i=0; $i<$data["count"];$i++) {
-							if(isset($data[$i]['description'][0])) {
-								echo "<option value='".$data[$i]['name'][0]."(".$data[$i]['description'][0].")'>";
-							}else{
-								echo "<option value='".$data[$i]['name'][0]."'>";
-							}	
-						}
-					}
-				echo "</datalist>";
-			echo "</div>";
-			//create input with name and label
-			$labelArr = ['帳號','新密碼','確認密碼','姓名','職稱','mail','電話','分機'];
-			$nameArr = ['cn','new_password','confirm_password','displayname','title','mail','telephonenumber','physicaldeliveryofficename'];
-			$rArr = ['required','required','required','required','required','required','',''];
-			foreach($nameArr as $key => $val){
-				echo "<div class='field'>";
-					echo "<label>".$labelArr[$key].$r = ($rArr[$key]=='required') ?"<font color='red'>*</font>":""."</label>";
-					echo "</label>";
-					if($val == "new_password" || $val == "confirm_password"){
-						echo "<input type='password' name='".$val."' value='' placeholder='".$labelArr[$key]."' >";
-					}else{
-						echo "<input type='text' name='".$val."' value='' placeholder='".$labelArr[$key]."' >";
-					}
-				echo "</div>";
-			}
-			echo "</div>";
-			echo "</form>";
-		}
-		ldap_close($ldapconn);
-		break;
-}
+        $data_array = array();
+        $data_array['base'] = "ou=395000000A,ou=TainanLocalUser,dc=tainan,dc=gov,dc=tw"; 
+        $data_array['filter'] = "(objectClass=organizationalUnit)";
+        $data_array['attributes'] = array("name", "description");
+        $data_ou = $ld->getData($data_array);
 
+        $labelArr = ['帳號','新密碼','確認密碼','姓名','職稱','mail','電話','分機'];
+        $nameArr = ['cn','new_password','confirm_password','displayname','title','mail','telephonenumber','physicaldeliveryofficename'];
+        $rArr = ['required','required','required','required','required','required','',''];
+    ?>
+        <form id='form-ldap' class='ui form' action='javascript:void(0)'>
+        <h4 class='ui dividing header'>New User Information</h4>
+        <div class='inline fields'>
+            <div class='twelve wide field'>
+            Setting
+            <input type='hidden' name='type' value='newuser' >
+            </div>
+            <div class='two wide field'>
+                <button id='ldap_clear_btn' class='ui button'>Cancel</button>
+            </div>
+            <div class='two wide field'>
+                <button id='ldap_edit_btn' class='ui button'>Save</button>
+            </div>
+        </div>
+        <div>
+        <div class='field'>
+            <label>單位<font color='red'>*</font></label>
+            <input list='brow' name='organizationalUnit' placeholder='請選擇ou'>
+            <datalist id='brow' name='organizationalUnit'>
+                <?php foreach($data_ou as $ou): ?>
+                    <?php if(isset($ou['description'])): ?>
+                        <option value='<?=$ou['name']?>(<?=$ou['description']?>)'>
+                    <?php else: ?>
+                        <option value='<?=$ou['name']?>'>
+                    <?php endif ?>	
+                <?php endforeach ?>
+            </datalist>
+        </div>
+        <?php foreach($nameArr as $key => $val): ?>
+            <div class='field'>
+                <label>
+                    <?=$labelArr[$key]?><?php echo $r = ($rArr[$key]=='required') ? "<font color='red'>*</font>" : "" ?>
+                </label>
+                <?php if($val == "new_password" || $val == "confirm_password"): ?>
+                    <input type='password' name='<?=$val?>' value='' placeholder='<?=$labelArr[$key]?>' >
+                <?php else: ?>
+                    <input type='text' name='<?=$val?>' value='' placeholder='<?=$labelArr[$key]?>' >
+                <?php endif ?>
+            </div>
+        <?php endforeach ?>
+        </div>
+        </form>
+    <?php
+    break;
+}

@@ -153,7 +153,7 @@ foreach($apis as $api) {
 	}
 		
 	$error = $db->getErrorMessageArray();
-	if(@count($error) > 0) {
+    if(!empty($error)) {
 		return;
 	}
 
