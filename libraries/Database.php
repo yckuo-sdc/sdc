@@ -9,10 +9,6 @@ class Database {
     private static function getInstance() {
         if (!isset(self::$instance)) {
             self::$instance = new DatabaseAccessObject(
-              //DB_HOST,
-              //DB_USERNAME,
-              //DB_PASSWORD,
-              //DB_DATABASE
               MySQL::HOST,
               MySQL::USERNAME,
               MySQL::PASSWORD,

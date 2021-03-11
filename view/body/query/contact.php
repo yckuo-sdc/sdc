@@ -4,7 +4,7 @@
 			<div class="post contact">
                 <h2 class="ui dividing header">資安聯絡人</h2>
 				<div class="post_cell">
-					<form class="ui form" action="javascript:void(0)">
+					<form class="ui form" action="">
 					<div class="fields">
 						<div class="field">
 							<label>種類</label>
@@ -27,53 +27,11 @@
 							<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 						</div>
 						 <div class="field">
-							<button type="button" id="show_all_btn" class="ui button" onclick="window.location.href='/query/contact/'">顯示全部</button>
+							<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/query/contact/'">顯示全部</button>
 						</div>
 					</div>
 					</form>
-					<div class="record_content">
-					<?php if($last_num_rows==0): ?> 
-						查無此筆紀錄
-					<?php else: ?>
-						共有<?=$last_num_rows?>筆資料！
-						共有<?=$oid_num?>個機關！
-                        <div class='ui relaxed divided list'>
-                        <?php foreach($contacts->data as $contact): ?>
-							<div class='item'>
-							<div class='content'>
-								<a>
-								<?=$contact['organization']?>&nbsp&nbsp
-								<?php if( !empty($contact['rank'] )) ?><span style='color:#f80000'><?=$contact['rank']?></span>&nbsp&nbsp
-								<?=$contact['person_name']?>&nbsp&nbsp
-								<span style='background:#fde087'><?=$contact['person_type']?></span>&nbsp&nbsp
-								<?=$contact['email']?>&nbsp&nbsp
-								<span style='background:#DDDDDD'><?=$contact['tel']."#".$contact['ext']?></span>&nbsp&nbsp
-								<i class='angle down icon'></i>
-								</a>
-								<div class='description'>
-									<ol>
-									<li>序號<?=$contact['CID']?></li>
-									<li>OID<?=$contact['OID']?></li>
-									<li>資安責任等級<?=$contact['rank']?></li>
-									<li>機關名稱<?=$contact['organization']?></li>
-									<li>單位名稱<?=$contact['unit']?></li>
-									<li>姓名<?=$contact['person_name']?></li>
-									<li>職稱<?=$contact['position']?></li>
-									<li>資安聯絡人類型<?=$contact['person_type']?></li>
-									<li>地址<?=$contact['address']?></li>
-									<li>電話<?=$contact['tel']?></li>
-									<li>分機<?=$contact['ext']?></li>
-									<li>傳真<?=$contact['fax']?></li>
-									<li>email<?=$contact['email']?></li>
-									</ol>
-								</div>
-								</div>
-							</div>
-						<?php endforeach ?>
-						</div>
-                        <?php echo $Paginator->createLinks($links, 'ui pagination menu'); ?>
-					<?php endif ?>
-					</div> <!--End of record_content-->	
+					<div class="record_content"></div> <!--End of record_content-->	
 				</div><!--End of post_cell-->
 			</div><!--End of post-->
 		</div><!--End of sub-content-->

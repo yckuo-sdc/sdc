@@ -75,10 +75,10 @@ switch($type){
                             </div>
                         </div>
                         <div class='two wide field'>
-                            <button id='ldap_clear_btn' class='ui button'>Cancel</button>
+                            <button type='button' id='ldap_clear_btn' class='ui button'>Cancel</button>
                         </div>
                         <div class='two wide field'>
-                            <button id='ldap_edit_btn' class='ui button'>Save</button>
+                            <button type='submit' id='ldap_edit_btn' class='ui button'>Save</button>
                         </div>
                     </div>
                     <?php if($k==0): ?>

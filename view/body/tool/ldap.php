@@ -5,7 +5,7 @@
                 <h2 class="ui dividing header">LDAP</h2>
 				<div class="post_title">LDAP Search</div>
 				<div class="post_cell ldap">
-					<form class="ui form" action="javascript:void(0)">
+					<form class="ui form" action="">
 						<div class="field">
 							<label>CN(=User account or PC name)</label>
 							<div class="ui input">
@@ -19,7 +19,7 @@
 									<button type="submit" id="ldap_search_btn" class="ui button">Search</button>
 								</div>
 								<div class="field">
-									<button id="ldap_newuser_btn" class="ui button">New User</button>
+									<button type="button" id="ldap_newuser_btn" class="ui button">New User</button>
 								</div>
 							</div>
 							<div class="ui centered inline loader"></div>

@@ -57,7 +57,7 @@ $data_array['api_id'] = $apis[0]['id'];
 $data_array['url'] = "";
 $data_array['status'] = $status;
 $data_array['data_number'] = $count;
-$data_array['last_update'] = $nowTime;
+$data_array['updated_at'] = $nowTime;
 $db->insert($table, $data_array);
 
 $file = "/var/www/html/sdc/upload/wsus/GetUpdateStatusKBID.csv";
@@ -105,5 +105,5 @@ $data_array['api_id'] = $apis[0]['id'];
 $data_array['url'] = "";
 $data_array['status'] = $status;
 $data_array['data_number'] = $count;
-$data_array['last_update'] = $nowTime;
+$data_array['updated_at'] = $nowTime;
 $db->insert($table, $data_array);

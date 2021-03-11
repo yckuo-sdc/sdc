@@ -4,7 +4,7 @@ $sql = "SELECT a.*, b.name FROM api_status AS a INNER JOIN apis AS b ON a.api_id
     GROUP BY api_id)";
 $vul_api = $db->execute($sql);
 
-$key = ChtsecurityAPI::KEY;
+$key = ChtSecurity::APIKEY;
 $nowTime = date("Y-m-d H:i:s");
 $host_type = "ipscanResult";
 $web_type = "urlscanResult";

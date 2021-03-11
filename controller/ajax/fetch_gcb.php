@@ -29,6 +29,7 @@ if(($data = json_decode($response,true)) == true){
 				$client['IsOnline']= $value2['IsOnline'];
 				$client['Name']= $value2['Name'];
 				$client['OSEnvID']= $value2['OSEnvID'];
+				$client['OSArch']= $value2['OSArch'];
 				$client['OrgName']= $value2['OrgName'];
 				$client['Owner']= $value2['AssocOwner'];
 				$client['UserName']= $value2['UserName'];
@@ -62,5 +63,5 @@ $data_array['api_id'] = $apis[0]['id'];
 $data_array['url'] = "";
 $data_array['status'] = $status;
 $data_array['data_number'] = $count;
-$data_array['last_update'] = $nowTime;
+$data_array['updated_at'] = $nowTime;
 $db->insert($table, $data_array);

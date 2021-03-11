@@ -1,95 +1,116 @@
 <?php
 // input validation
-$v1 = 0;
-$v2 = 0;
-foreach($_GET as $getkey => $val){
-	$$getkey = $val;
-	if($getkey == "jsonObj" && $val == "[]"){
+$v1 = 0; $v2 = 0;
+
+// Strip tags, optionally strip or encode special characters.
+//$_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+
+foreach ($_GET as $getKey => $val) {
+	$$getKey = $val;
+	if ($getKey == "jsonConditions" && $val == "[]") {
 		$v1 = 1;	
-	}elseif($getkey != "jsonObj" && $val == ""){
+	} elseif($getKey != "jsonConditions" && $val == "") {
 		$v2 = 1;	
 	}
 }
 
-if($v1 && $v2){
+if ($v1 && $v2) {
 	echo "沒有輸入";
-	return 0;
+	return;
 }
 
 $page = isset($page) ? $page : 1;
 $ap = isset($ap) ? $ap : 'html';
 
-$arr_jsonObj = json_decode($jsonObj,true);
+$jsonConditions = json_decode($jsonConditions, true);
+$jsonSortsMap = ['ascending' => 'ASC', 'descending' => 'DESC'];
 
-//table switch
-switch(true){
-	case ($type == 'event'):
+switch($type){
+	case 'event':
 		$condition_table = "security_event";
 		$table = "security_event";
 		$order_by = "EventID DESC, OccurrenceTime DESC";	
 		break;
-	case ($type == 'ncert'):
+	case 'ncert':
 		$condition_table = "security_ncert";
 		$table = "security_ncert";
 		$order_by = "IncidentID DESC, DiscoveryTime DESC";	
 		break;
-	case ($type == 'contact'):
+	case 'contact':
 		$condition_table = "security_contact";
 		$table = "(select * from security_contact union select * from security_contact_extra)a";
 		$table = "(SELECT a.*, b.rank FROM( SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by OID asc,person_type asc )a LEFT JOIN security_rank AS b ON a.OID = b.OID)v";
 		$order_by = "oid, person_type";	
 		break;
-	case ($type == 'gcb'):
+	case 'drip':
+		$condition_table = "drip_client_list";
+		$table = "drip_client_list";
+		$order_by = "DetectorName ,IP";	
+		break;
+	case 'gcb':
 		$condition_table = "gcb_client_list";
 		$table = "(SELECT a.*,b.name as os_name,c.name as ie_name,ROUND(a.GsAll_1/a.GsAll_2*100,1) as GsPass FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id)A";
 		if($keyword == 'ExternalIP' or $keyword == 'InternalIP') $key = ip2long($key);
 		$order_by = "ID";	
 		break;
-	case ($type == 'wsus'):
+	case 'wsus':
 		$condition_table = "wsus_computer_status";
 		$table = "wsus_computer_status";
 		$order_by = "TargetID";	
 		break;
-	case ($type == 'antivirus'):
+	case 'antivirus':
 		$condition_table = "antivirus_client_list";
 		$table = "antivirus_client_list";
 		$order_by = "GUID";	
 		break;
-	case ($type == 'drip'):
-		$condition_table = "drip_client_list";
-		$table = "drip_client_list";
-		$order_by = "DetectorName ,IP";	
+	case 'edr':
+		$condition_table = "edr_endpoints";
+		$table = "edr_endpoints";
+		$order_by = "id";	
+		break;
+	default:
+        echo "no target type";
+        return;
 		break;
 }
 
-//retrieve condition
+// get conditions
 $data_array = [];
-if( count($arr_jsonObj) !=0 ){
+if (!empty($jsonConditions)) {
 	$condition = "";
-	foreach($arr_jsonObj as $val){
-		if($val['keyword'] == "all"){
+	foreach ($jsonConditions as $val) {
+		if ($val['keyword'] == "all") {
 			$res = $db->getFullTextSearchCondition($condition_table, $val['key']);
 			$one_condition = "(".$res['condition'].") "; 
 			$data_array = array_merge($data_array, $res['data']);
-		}else{
+		} else {
 			$one_condition = $val['keyword']." LIKE ?";
 			$data_array[] = "%".$val['key']."%"; 
 		}
 		$condition = $condition." AND ".$one_condition;
 	}
 	$condition = substr($condition,4);
-}else{
-	if($keyword == "all"){
+} else {
+	if ($keyword == 'all' && $key == 'any') {
+        $condition = "1 = ?";
+        $data_array[] = 1;
+    } elseif ($keyword == "all" && $key != 'any') {
 		$res = $db->getFullTextSearchCondition($condition_table, $key);
 		$condition = "(".$res['condition'].") "; 
 		$data_array = $res['data'];
-	}else{
+    } else {
 		$condition = $keyword." LIKE ?";
 		$data_array[] = "%".$key."%"; 
 	}
 }
 
-//echo $condition."<br>";
+// get order_by
+if(!empty($jsonSorts)) {
+    $jsonSorts = json_decode($jsonSorts, true);
+    if(array_key_exists($jsonSorts['sort'], $jsonSortsMap)) {
+        $order_by = $jsonSorts['label'] . " " . $jsonSortsMap[$jsonSorts['sort']];
+    }
+}
 
 $limit = 10;
 $links = 4;
@@ -99,409 +120,9 @@ $Paginator = new Paginator($query, $data_array);
 $entries = $Paginator->getData($limit, $page, $data_array);
 $last_num_rows = $Paginator->getTotal();
 
-if($ap=='html'){
-	if ($last_num_rows == 0){
-		echo "很抱歉，該分類目前沒有資料！";
-	}else{
-		echo "該分類共搜尋到".$last_num_rows."筆資料！";
+$pageAttr = array();	
 
-		$limit = 10;
-		$links = 4;
-        $query = "SELECT * FROM {$table} WHERE {$condition} ORDER BY {$order_by}";
-
-		$Paginator = new Paginator($query, $data_array);
-		$entries = $Paginator->getData($limit, $page, $data_array);
-		
-		switch($type){
-			case "event": 
-			echo "<div class='ui relaxed divided list'>";
-				echo "<div class='item'>";
-					echo "<div class='content'>";
-						echo "<a class='header'>";
-						echo "<a>";
-					echo "</div>";
-				echo "</div>";
-					foreach($entries->data as $entry) {
-						echo "<div class='item'>";
-						echo "<div class='content'>";
-							echo "<a>";
-							if($entry['Status']=="已結案")echo "<i class='check circle icon' style='color:green'></i>";
-							else echo "<i class='exclamation circle icon'></i>";
-							echo date_format(new DateTime($entry['OccurrenceTime']),'Y-m-d')."&nbsp&nbsp";
-							echo $entry['Status']."&nbsp&nbsp";
-							echo "<span style='background:#fde087'>".$entry['EventTypeName']."</span>&nbsp&nbsp";
-							echo $entry['Location']."&nbsp&nbsp";
-							echo "<span style='background:#DDDDDD'>".$entry['IP']."</span>&nbsp&nbsp";
-							echo $entry['DeviceOwnerName']."&nbsp&nbsp";
-							echo $entry['DeviceOwnerPhone']."&nbsp&nbsp";
-							echo "<i class='angle down icon'></i>";
-							echo "</a>";
-							echo "<div class='description'>";
-								echo "<ol>";
-								echo "<li>序號:".$entry['EventID']."</li>";
-								echo "<li>結案狀態:".$entry['Status']."</li>";
-								echo "<li>發現日期:".date_format(new DateTime($entry['OccurrenceTime']),'Y-m-d')."</li>";
-								echo "<li>資安事件類型:".$entry['EventTypeName']."</li>";
-								echo "<li>位置:".$entry['Location']."</li>";
-								echo "<li>電腦IP:".$entry['IP']."</li>";
-								echo "<li>封鎖原因:".$entry['BlockReason']."</li>";
-								echo "<li>設備類型:".$entry['DeviceTypeName']."</li>";
-								echo "<li>電腦所有人姓名:".$entry['DeviceOwnerName']."</li>";
-								echo "<li>電腦所有人分機:".$entry['DeviceOwnerPhone']."</li>";
-								echo "<li>機關:".$entry['AgencyName']."</li>";
-								echo "<li>單位:".$entry['UnitName']."</li>";
-								echo "<li>處理日期(國眾):".$entry['NetworkProcessContent']."</li>";
-								echo "<li>處理日期(三佑科技):".$entry['MaintainProcessContent']."</li>";
-								echo "<li>處理日期(京稘或中華SOC):".$entry['AntivirusProcessContent']."</li>";
-								echo "<li>未能處理之原因及因應方式:".$entry['UnprocessedReason']."</li>";
-								echo "<li>備註:".$entry['Remarks']."</li>";
-								echo "</ol>";
-								echo "<button type='button' class='ui button edit' key='".$entry['EventID']."'>Edit</button>";
-								echo "<button type='button' class='ui button delete' key='".$entry['EventID']."'>Delete</button>";
-							echo "</div>";
-							echo "</div>";
-						echo "</div>";
-
-					}
-				echo "</div>";
-				break;
-			case "ncert": 
-				echo "<div class='ui relaxed divided list'>";
-					echo "<div class='item'>";
-						echo "<div class='content'>";
-							echo "<a class='header'>";
-							echo "</a>";
-						echo "</div>";
-					echo "</div>";
-
-					foreach($entries->data as $entry) {
-						echo "<div class='item'>";
-						echo "<div class='content'>";
-							echo "<a>";
-							if($entry['Status']=="已結案")echo "<i class='check circle icon' style='color:green'></i>";
-							else echo "<i class='exclamation circle icon'></i>";
-							echo date_format(new DateTime($entry['DiscoveryTime']),'Y-m-d')."&nbsp&nbsp";
-							echo $entry['Status']."&nbsp&nbsp";
-							echo "<span style='background:#DDDDDD'>".$entry['ImpactLevel']."</span>&nbsp&nbsp";
-							echo $entry['Classification']."&nbsp&nbsp";
-							echo "<span style='background:#fde087'>".$entry['PublicIP']."</span>&nbsp&nbsp";
-							echo $entry['OrganizationName'];
-							echo "<i class='angle down icon'></i>";
-							echo "</a>";
-							
-							echo "<div class='description'>";
-								echo "<ol>";
-								echo "<li>編號:".$entry['IncidentID']."</li>";
-								echo "<li>結案狀態:".$entry['Status']."</li>";
-								echo "<li>事件編號:".$entry['NccstID']."</li>";	
-								echo "<li>行政院攻防演練:".$entry['NccstPT']."</li>";
-								echo "<li>攻防演練衝擊性:".$entry['NccstPTImpact']."</li>";
-								echo "<li>機關名稱:".$entry['OrganizationName']."</li>";
-								echo "<li>聯絡人:".$entry['ContactPerson']."</li>";
-								echo "<li>電話:".$entry['Tel']."</li>";
-								echo "<li>電子郵件:".$entry['Email']."</li>";
-								echo "<li>資安維護廠商:".$entry['SponsorName']."</li>";
-								echo "<li>對外IP或網址:".$entry['PublicIP']."</li>";
-								echo "<li>使用用途:".$entry['DeviceUsage']."</li>";
-								echo "<li>作業系統:".$entry['OperatingSystem']."</li>";
-								echo "<li>入侵網址:".$entry['IntrusionURL']."</li>";
-								echo "<li>影響等級:".$entry['ImpactLevel']."</li>";
-								echo "<li>事故分類:".$entry['Classification']."</li>";
-								echo "<li>事故說明:".$entry['Explaination']."</li>";
-								echo "<li>影響評估:".$entry['Evaluation']."</li>";
-								echo "<li>應變措施:".$entry['Response']."</li>";
-								echo "<li>解決辦法/結報內容:".$entry['Solution']."</li>";
-								echo "<li>發現時間:".$entry['DiscoveryTime']."</li>";
-								echo "<li>通報時間:".$entry['InformTime']."</li>";	
-								echo "<li>修復時間:".$entry['RepairTime']."</li>";
-								echo "<li>審核機關審核時間:".$entry['TainanGovVerificationTime']."</li>";
-								echo "<li>技服中心審核時間:".$entry['NccstVerificationTime']."</li>";
-								echo "<li>通報結報時間:".$entry['FinishTime']."</li>";	
-								echo "<li>通報執行時間(時:分):".$entry['InformExecutionTime']."</li>";
-								echo "<li>結案執行時間(時:分):".$entry['FinishExecutionTime']."</li>";
-								echo "<li>中華SOC複測結果:".$entry['SOCConfirmation']."</li>";
-								echo "<li>改善計畫提報日期:".$entry['ImprovementPlanTime']."</li>";	
-								echo "</ol>";
-							echo "</div>";
-							echo "</div>";
-						echo "</div>";
-					}
-				echo "</div>";
-				break;
-			case "contact":
-			$condition = $condition." GROUP BY OID";
-			$fields = "OID";
-			$db->query($table, $condition, $order_by = "1", $fields, $limit = "", $data_array);
-			$oid_num = $db->getLastNumRows();
-		
-			echo "該分類共搜尋到".$oid_num."個機關！";
-			echo "<div class='ui relaxed divided list'>";
-				echo "<div class='item'>";
-					echo "<div class='content'>";
-						echo "<a class='header'>";
-						echo "<a>";
-					echo "</div>";
-				echo "</div>";
-
-				foreach($entries->data as $entry) {
-					echo "<div class='item'>";
-					echo "<div class='content'>";
-						echo "<a>";
-						echo $entry['organization']."&nbsp&nbsp";
-						if( !empty($entry['rank'] )) echo "<span style='color:#f80000'>".$entry['rank']."</span>&nbsp&nbsp";
-						echo $entry['person_name']."&nbsp&nbsp";
-						echo "<span style='background:#fde087'>".$entry['person_type']."</span>&nbsp&nbsp";
-						echo $entry['email']."&nbsp&nbsp";
-						echo "<span style='background:#DDDDDD'>".$entry['tel']."#".$entry['ext']."</span>&nbsp&nbsp";
-						echo "<i class='angle down icon'></i>";
-						echo "</a>";
-						echo "<div class='description'>";
-							echo "<ol>";
-							echo "<li>序號:".$entry['CID']."</li>";
-							echo "<li>OID:".$entry['OID']."</li>";
-							echo "<li>資安責任等級:".$entry['rank']."</li>";
-							echo "<li>機關名稱:".$entry['organization']."</li>";
-							echo "<li>姓名:".$entry['person_name']."</li>";
-							echo "<li>單位名稱:".$entry['unit']."</li>";
-							echo "<li>職稱:".$entry['position']."</li>";
-							echo "<li>資安聯絡人類型:".$entry['person_type']."</li>";
-							echo "<li>地址:".$entry['address']."</li>";
-							echo "<li>電話:".$entry['tel']."</li>";
-							echo "<li>分機:".$entry['ext']."</li>";
-							echo "<li>傳真:".$entry['fax']."</li>";
-							echo "<li>email:".$entry['email']."</li>";
-							echo "</ol>";
-						echo "</div>";
-					echo "</div>";
-					echo "</div>";
-				}
-			echo "</div>";
-			break;
-			case "gcb":
-				echo "<div class='ui relaxed divided list'>";
-			foreach($entries->data as $entry) {
-				echo "<div class='item'>";
-				echo "<div class='content'>";
-					echo "<a>";
-					if($entry['IsOnline'] == "1")		echo "<i class='circle green icon'></i>";
-					else							echo "<i class='circle outline icon'></i>";
-					switch($entry['GsStat']){
-						case '0':
-							$GsStat_str = "未套用";
-							break;
-						case '1':
-							$GsStat_str = "已套用";
-							break;
-						case '-1':
-							$GsStat_str = "套用失敗";
-							break;
-						case '2':
-							$GsStat_str = "還原成功";
-							break;
-						case '-2':
-							$GsStat_str = "未套用";
-							break;
-					}
-					
-					echo $entry['Name']."&nbsp&nbsp";
-					echo "<span style='background:#fde087'>".$entry['OrgName']."</span>&nbsp&nbsp";
-					echo $entry['UserName']."&nbsp&nbsp";
-					echo $entry['Owner']."&nbsp&nbsp";
-					echo "<span style='background:#DDDDDD'>".long2ip($entry['InternalIP'])."</span>&nbsp&nbsp";
-					echo $entry['os_name']."&nbsp&nbsp";
-                    echo "<span style='background:#fbc5c5'>".$entry['GsPass']."%</span>&nbsp&nbsp";
-                    echo "<i class='angle down icon'></i>";
-					echo "</a>";
-					echo "<div class='description'>";
-						echo "<ol>";
-						echo "<li><a href='/ajax/gcb_detail/?action=detail&id=".$entry['ID']."' target='_blank'>序號:".$entry['ID']."&nbsp<i class='external alternate icon'></i></a></li>";
-						echo "<li>外部IP:".long2ip($entry['ExternalIP'])."</li>";
-						echo "<li>內部IP:".long2ip($entry['InternalIP'])."</li>";
-						echo "<li>電腦名稱:".$entry['Name']."</li>";
-						echo "<li>單位名稱:".$entry['OrgName']."</li>";
-						echo "<li>使用者帳號:".$entry['UserName']."</li>";
-						echo "<li>使用者名稱:".$entry['Owner']."</li>";
-						echo "<li>OS:".$entry['os_name']."</li>";
-						echo "<li>IE:".$entry['ie_name']."</li>";
-						echo "<li>是否上線:".$entry['IsOnline']."</li>";
-						echo "<li>gcb總掃描數:".$entry['GsAll_2']."</li>";
-						echo "<li>gcb總通過數[包含例外]:".$entry['GsAll_1']."</li>";
-						echo "<li>gcb總通過數[未包含例外]:".$entry['GsAll_0']."</li>";
-						echo "<li>gcb例外數量:".$entry['GsExcTot']."</li>";
-						echo "<li>gcb通過率:".$entry['GsPass']."%</li>";
-						echo "<li><a href='/ajax/gcb_detail/?action=gscan&id=".$entry['GsID']."' target='_blank'>gcb掃描編號:".$entry['GsID']."&nbsp<i class='external alternate icon'></i></a></li>";
-						echo "<li>gcb派送編號:".$entry['GsSetDeployID']."</li>";
-						echo "<li>gcb狀態:".$GsStat_str."</li>";
-						echo "<li>gcb回報時間:".$entry['GsUpdatedAt']."</li>";
-						echo "</ol>";
-					echo "</div>";
-					echo "</div>";
-				echo "</div>";
-			}
-			
-			echo "</div>";
-			break;
-			case "wsus":
-				echo "<div class='ui relaxed divided list'>";
-			foreach($entries->data as $entry) {
-				$table = "wsus_computer_updatestatus_kbid";
-				$order_by = "ID";
-				$condition = "TargetID = :TargetID AND UpdateState = :UpdateState";
-				$data_array = [':TargetID'=>$entry['TargetID'],':UpdateState'=>'NotInstalled'];
-				$notinstalled_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "",$data_array);
-				$data_array = [':TargetID'=>$entry['TargetID'],':UpdateState'=>'Failed'];
-				$failed_kb = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", $data_array);
-				echo "<div class='item'>";
-				echo "<div class='content'>";
-					echo "<a>";
-					echo strtoupper(str_replace(".tainan.gov.tw","",$entry['FullDomainName']))."&nbsp&nbsp";
-					echo "<span style='background:#fde087'>".$entry['IPAddress']."</span>&nbsp&nbsp";
-					echo "<span style='background:#DDDDDD'>".$entry['NotInstalled']."</span>&nbsp&nbsp";
-					echo "<span style='background:#fbc5c5'>".$entry['Failed']."</span>&nbsp&nbsp";
-					echo $entry['OSDescription'];
-					echo "<i class='angle down icon'></i>";
-					echo "</a>";
-					echo "<div class='description'>";
-						echo "<ol>";
-						echo "<li>序號:".$entry['TargetID']."</li>";
-						echo "<li>電腦名稱:".strtoupper(str_replace(".tainan.gov.tw","",$entry['FullDomainName']))."</li>";
-						echo "<li>內網IP:".$entry['IPAddress']."</li>";
-						echo "<li>未知更新數量:".$entry['Unknown']."</li>";
-						echo "<li>未安裝更新數量:".$entry['NotInstalled']."</li>";
-						foreach($notinstalled_kb as $kb) {
-							echo "<strong>KB".$kb['KBArticleID']."</strong> ";	
-						}	
-						echo "<li>已下載更新數量:".$entry['Downloaded']."</li>";
-						echo "<li>已安裝更新數量:".$entry['Installed']."</li>";
-						echo "<li>安裝失敗更新數量:".$entry['Failed']."</li>";
-						foreach($failed_kb as $kb) {
-							echo "<strong>KB".$kb['KBArticleID']."</strong> ";	
-						}	
-						echo "<li>已安裝待重開機更新數量:".$entry['InstalledPendingReboot']."</li>";
-						echo "<li>上次狀態回報日期:".dateConvert($entry['LastReportedStatusTime'])."</li>";
-						echo "<li>上次更新重開機日期:".dateConvert($entry['LastReportedRebootTime'])."</li>";
-						echo "<li>上次可用更新日期:".dateConvert($entry['EffectiveLastDetectionTime'])."</li>";
-						echo "<li>上次同步日期:".dateConvert($entry['LastSyncTime'])."</li>";
-						echo "<li>上次修改日期:".dateConvert($entry['LastChangeTime'])."</li>";
-						echo "<li>上次同步結果:".$entry['LastSyncResult']."</li>";
-						echo "<li>製造商:".$entry['ComputerMake']."</li>";
-						echo "<li>型號:".$entry['ComputerModel']."</li>";
-						echo "<li>作業系統:".$entry['OSDescription']."</li>";
-						echo "</ol>";
-					echo "</div>";
-					echo "</div>";
-				echo "</div>";
-			}
-			echo "</div>";
-			break;
-			case "antivirus":
-			echo "<div class='ui relaxed divided list'>";
-			foreach($entries->data as $entry) {
-				echo "<div class='item'>";
-				echo "<div class='content'>";
-					echo "<a>";
-					if($entry['ConnectionState'] == "線上")	echo "<i class='circle green icon'></i>";
-					else									echo "<i class='circle outline icon'></i>";
-					echo $entry['ClientName']."&nbsp&nbsp";
-					echo "<span style='background:#fde087'>".$entry['IP']."</span>&nbsp&nbsp";
-					echo "<span style='background:#fbc5c5'>".$entry['OS']."</span>&nbsp&nbsp";
-					echo $entry['VirusNum']."&nbsp&nbsp";
-					echo $entry['SpywareNum']."&nbsp&nbsp";
-					echo "<span style='background:#DDDDDD'>".$entry['VirusPatternVersion']."</span>&nbsp&nbsp";
-					echo $entry['LogonUser']."&nbsp&nbsp";
-					echo "<i class='angle down icon'></i>";
-					echo "</a>";
-				echo "<div class='description'>";
-					echo "<ol>";
-					echo "<li>設備名稱:".$entry['ClientName']."</li>";
-					echo "<li>內網IP:".$entry['IP']."</li>";
-					echo "<li>網域階層:".$entry['DomainLevel']."</li>";
-					echo "<li>連線狀態:".$entry['ConnectionState']."</li>";
-					echo "<li>GUID:".$entry['GUID']."</li>";
-					echo "<li>掃描方式:".$entry['ScanMethod']."</li>";
-					echo "<li>DLP狀態:".$entry['DLPState']."</li>";
-					echo "<li>病毒數量:".$entry['VirusNum']."</li>";
-					echo "<li>間諜程式數量:".$entry['SpywareNum']."</li>";
-					echo "<li>作業系統:".$entry['OS']."</li>";
-					echo "<li>位元版本:".$entry['BitVersion']."</li>";
-					echo "<li>MAC位址:".$entry['MAC']."</li>";
-					echo "<li>設備版本:".$entry['ClientVersion']."</li>";
-					echo "<li>病毒碼版本:".$entry['VirusPatternVersion']."</li>";
-					echo "<li>登入使用者:".$entry['LogonUser']."</li>";
-					echo "</ol>";
-				echo "</div>";
-				echo "</div>";
-				echo "</div>";
-			}		
-			echo "</div>";
-			break;
-			case "drip":
-			echo "<div class='ui relaxed divided list'>";
-			foreach($entries->data as $entry) {
-				echo "<div class='item'>";
-				echo "<div class='content'>";
-					echo "<a>";
-					if($entry['ad']==1) echo "<i class='circle yellow icon'></i>";
-					else echo "<i class='circle outline icon'></i>";
-					if($entry['gcb']==1) echo "<i class='circle green icon'></i>";
-					else echo "<i class='circle outline icon'></i>";
-					if($entry['wsus']==1) echo "<i class='circle red icon'></i>";
-					else echo "<i class='circle outline icon'></i>";
-					if($entry['antivirus']==1) echo "<i class='circle blue icon'></i>";
-					else echo "<i class='circle outline icon'></i>";
-					if($entry['edr']==1) echo "<i class='circle black icon'></i>";
-					else echo "<i class='circle outline icon'></i>";
-					echo $entry['DetectorName']."&nbsp&nbsp";
-					echo "<span style='background:#fde087'>".$entry['IP']."</span>&nbsp&nbsp";
-					echo $entry['ClientName']."&nbsp&nbsp";
-					echo "<span style='background:#fbc5c5'>".$entry['OrgName']."</span>&nbsp&nbsp";
-					echo $entry['Owner']."&nbsp&nbsp";
-					echo $entry['UserName']."&nbsp&nbsp";
-					echo "<i class='angle down icon'></i>";
-					echo "</a>";
-				echo "<div class='description'>";
-					echo "<ol>";
-					echo "<li>內網IP:".$entry['IP']."</li>";
-					echo "<li>MAC位址:".$entry['MAC']."</li>";
-					echo "<li>設備名稱:".$entry['ClientName']."</li>";
-					echo "<li>群組名稱:".$entry['GroupName']."</li>";
-					echo "<li>網卡製造商:".$entry['NICProductor']."</li>";
-					echo "<li>偵測器名稱:".$entry['DetectorName']."</li>";
-					echo "<li>偵測器IP:".$entry['DetectorIP']."</li>";
-					echo "<li>偵測器群組:".$entry['DetectorGroup']."</li>";
-					echo "<li>交換器名稱:".$entry['SwitchName']."</li>";
-					echo "<li>連接埠名稱:".$entry['PortName']."</li>";
-					echo "<li>最後上線時間:".$entry['LastOnlineTime']."</li>";
-					echo "<li>最後下線時間:".$entry['LastOfflineTime']."</li>";
-					echo "<li>IP封鎖原因:".$entry['IP_BlockReason']."</li>";
-					echo "<li>MAC封鎖原因:".$entry['MAC_BlockReason']."</li>";
-					echo "<li>備註ByIP:".$entry['MemoByIP']."</li>";
-					echo "<li>備註ByMac:".$entry['MemoByMAC']."</li>";
-					echo "<li>ad安裝:".$entry['ad']."</li>";
-					echo "<li>gcb安裝:".$entry['gcb']."</li>";
-					echo "<li>wsus安裝:".$entry['wsus']."</li>";
-					echo "<li>antivirus安裝:".$entry['antivirus']."</li>";
-					echo "<li>edr安裝:".$entry['edr']."</li>";
-					echo "<li>OrgName:".$entry['OrgName']."</li>";
-					echo "<li>Owner:".$entry['Owner']."</li>";
-					echo "<li>UserName:".$entry['UserName']."</li>";
-					echo "</ol>";
-				echo "</div>";
-				echo "</div>";
-				echo "</div>";
-			}		
-			echo "</div>";
-			break;
-		}
-		
-		$pageAttr['key'] = $key;	
-		$pageAttr['keyword'] = $keyword;	
-		$pageAttr['type'] = $type;	
-		$pageAttr['jsonObj'] = $jsonObj;	
-
-		echo $Paginator->createLinks($links, 'ui pagination menu', $pageAttr, $method='ajax');
-	}
-}elseif($ap='csv'){
+if ($ap=='csv') {
     $total_entries = $db->execute($query, $data_array);
 	$arrs = array();
     switch($type){
@@ -510,12 +131,6 @@ if($ap=='html'){
 		case 'ncert': 
 			break;
 		case 'contact': 
-			break;
-		case 'gcb': 
-			break;
-		case 'wsus': 
-			break;
-		case 'antivirus': 
 			break;
 		case 'drip': 
 			foreach($total_entries as $entry) {
@@ -527,5 +142,451 @@ if($ap=='html'){
 			}
 			array_to_csv_download($arrs, "export.csv", ";"); 	
 			break;
+		case 'gcb': 
+			break;
+		case 'wsus': 
+			break;
+		case 'antivirus': 
+			break;
 	}
+} elseif($ap=='html') { 
+?>
+	<?php if ($last_num_rows == 0): ?>
+		很抱歉，該分類目前沒有資料！
+	<?php else: ?>
+		該分類共搜尋到<?=$last_num_rows?>筆資料！
+		<?php switch ($type):
+                case "event": ?> 
+                <div class='ui relaxed divided list'>
+                <?php foreach($entries->data as $event): ?>
+                    <div class='item'>
+                        <div class='content'>
+                            <a>
+                            <?php if($event['Status']=="已結案"): ?>
+                                <i class='check circle icon' style='color:green'></i>
+                            <?php else: ?>
+                                <i class='exclamation circle icon'></i>
+                            <?php endif ?>
+                            <?=date_format(new DateTime($event['OccurrenceTime']),'Y-m-d')?>&nbsp&nbsp
+                            <?=$event['Status']?>&nbsp&nbsp
+                            <span style='background:#fde087'><?=$event['EventTypeName']?></span>&nbsp&nbsp
+                            <?=$event['Location']?>&nbsp&nbsp
+                            <span style='background:#DDDDDD'><?=$event['IP']?></span>&nbsp&nbsp
+                            <?=$event['DeviceOwnerName']?>&nbsp&nbsp
+                            <?=$event['DeviceOwnerPhone']?>&nbsp&nbsp
+                            <i class='angle down icon'></i>
+                            </a>
+                            <div class='description'>
+                                <ol>
+                                    <li>序號: <?=$event['EventID']?></li>
+                                    <li>結案狀態: <?=$event['Status']?></li>
+                                    <li>發現日期: <?=date_format(new DateTime($event['OccurrenceTime']),'Y-m-d')?></li>
+                                    <li>資安事件類型: <?=$event['EventTypeName']?></li>
+                                    <li>位置: <?=$event['Location']?></li>
+                                    <li>電腦IP: <?=$event['IP']?></li>
+                                    <li>封鎖原因: <?=$event['BlockReason']?></li>
+                                    <li>設備類型: <?=$event['DeviceTypeName']?></li>
+                                    <li>電腦所有人姓名: <?=$event['DeviceOwnerName']?></li>
+                                    <li>電腦所有人分機: <?=$event['DeviceOwnerPhone']?></li>
+                                    <li>機關: <?=$event['AgencyName']?></li>
+                                    <li>單位: <?=$event['UnitName']?></li>
+                                    <li>處理日期(國眾): <?=$event['NetworkProcessContent']?></li>
+                                    <li>處理日期(三佑科技): <?=$event['MaintainProcessContent']?></li>
+                                    <li>處理日期(京稘或中華SOC): <?=$event['AntivirusProcessContent']?></li>
+                                    <li>未能處理之原因及因應方式: <?=$event['UnprocessedReason']?></li>
+                                    <li>備註: <?=$event['Remarks']?></li>
+                                </ol>
+                                <button type="button" class="ui button edit" key="<?=$event['EventID']?>">Edit</button>
+                                <button type="button" class="ui button delete" key="<?=$event['EventID']?>">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+                </div>
+		        <?php break; ?>
+			<?php case "ncert": ?> 
+                <div class='ui relaxed divided list'>
+                <?php foreach($entries->data as $incident): ?>
+                    <div class='item'>
+                    <div class='content'>
+                        <a>
+                        <?php if($incident['Status']=="已結案") { ?><i class='check circle icon' style='color:green'></i>
+                        <?php }else { ?><i class='exclamation circle icon'></i> <?php } ?>
+                        <?=date_format(new DateTime($incident['DiscoveryTime']),'Y-m-d') ?>&nbsp&nbsp
+                        <?=$incident['Status'] ?>&nbsp&nbsp
+                        <span style='background:#DDDDDD'><?=$incident['ImpactLevel'] ?></span>&nbsp&nbsp
+                        <?=$incident['Classification'] ?>&nbsp&nbsp
+                        <span style='background:#fde087'><?=$incident['PublicIP'] ?> </span>&nbsp&nbsp
+                        <?=$incident['OrganizationName'] ?>
+                        <i class='angle down icon'></i>
+                        </a>
+                        <div class='description'>
+                            <ol>
+                            <li>編號:  <?=$incident['IncidentID'] ?></li>
+                            <li>結案狀態: <?=$incident['Status'] ?></li>
+                            <li>事件編號: <?=$incident['NccstID'] ?></li>
+                            <li>行政院攻防演練: <?=$incident['NccstPT'] ?></li>
+                            <li>攻防演練衝擊性: <?=$incident['NccstPTImpact'] ?></li>
+                            <li>機關名稱: <?=$incident['OrganizationName'] ?></li>
+                            <li>聯絡人: <?=$incident['ContactPerson'] ?></li>
+                            <li>電話: <?=$incident['Tel'] ?></li>
+                            <li>電子郵件: <?=$incident['Email'] ?></li>
+                            <li>資安維護廠商: <?=$incident['SponsorName'] ?></li>
+                            <li>對外IP或網址: <?=$incident['PublicIP'] ?></li>
+                            <li>使用用途: <?=$incident['DeviceUsage'] ?></li>
+                            <li>作業系統: <?=$incident['OperatingSystem'] ?></li>
+                            <li>入侵網址: <?=$incident['IntrusionURL'] ?></li>
+                            <li>影響等級: <?=$incident['ImpactLevel'] ?></li>
+                            <li>事故分類: <?=$incident['Classification'] ?></li>
+                            <li>事故說明: <?=$incident['Explaination'] ?></li>
+                            <li>影響評估: <?=$incident['Evaluation'] ?></li>
+                            <li>應變措施: <?=$incident['Response'] ?></li>
+                            <li>解決辦法/結報內容: <?=$incident['Solution'] ?></li>
+                            <li>發現時間: <?=$incident['DiscoveryTime'] ?></li>
+                            <li>通報時間: <?=$incident['InformTime'] ?></li>
+                            <li>修復時間: <?=$incident['RepairTime'] ?></li>
+                            <li>審核機關審核時間: <?=$incident['TainanGovVerificationTime'] ?></li>
+                            <li>技服中心審核時間: <?=$incident['NccstVerificationTime'] ?></li>
+                            <li>通報結報時間: <?=$incident['FinishTime'] ?></li>
+                            <li>通報執行時間(時: 分): <?=$incident['InformExecutionTime'] ?></li>
+                            <li>結案執行時間(時: 分): <?=$incident['FinishExecutionTime'] ?></li>
+                            <li>中華SOC複測結果: <?=$incident['SOCConfirmation'] ?></li>
+                            <li>改善計畫提報日期: <?=$incident['ImprovementPlanTime'] ?></li>
+                            </ol>
+                        </div>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+                </div>
+				<?php break; ?>
+			<?php case "contact": ?>
+                <?php 
+                $condition = $condition." GROUP BY OID";
+                $fields = "OID";
+                $db->query($table, $condition, $order_by = "1", $fields, $limit = "", $data_array);
+                $oid_num = $db->getLastNumRows();
+		        ?>
+                該分類共搜尋到<?=$oid_num?>個機關！
+                <div class='ui relaxed divided list'>
+                <?php foreach($entries->data as $contact): ?>
+                    <div class='item'>
+                    <div class='content'>
+                        <a>
+                        <?=$contact['organization']?>&nbsp&nbsp
+                        <?php if( !empty($contact['rank'] )) ?><span style='color:#f80000'><?=$contact['rank']?></span>&nbsp&nbsp
+                        <?=$contact['person_name']?>&nbsp&nbsp
+                        <span style='background:#fde087'><?=$contact['person_type']?></span>&nbsp&nbsp
+                        <?=$contact['email']?>&nbsp&nbsp
+                        <span style='background:#DDDDDD'><?=$contact['tel']."#".$contact['ext']?></span>&nbsp&nbsp
+                        <i class='angle down icon'></i>
+                        </a>
+                        <div class='description'>
+                            <ol>
+                            <li>序號: <?=$contact['CID']?></li>
+                            <li>OID: <?=$contact['OID']?></li>
+                            <li>資安責任等級: <?=$contact['rank']?></li>
+                            <li>機關名稱: <?=$contact['organization']?></li>
+                            <li>單位名稱: <?=$contact['unit']?></li>
+                            <li>姓名: <?=$contact['person_name']?></li>
+                            <li>職稱: <?=$contact['position']?></li>
+                            <li>資安聯絡人類型: <?=$contact['person_type']?></li>
+                            <li>地址: <?=$contact['address']?></li>
+                            <li>電話: <?=$contact['tel']?></li>
+                            <li>分機: <?=$contact['ext']?></li>
+                            <li>傳真: <?=$contact['fax']?></li>
+                            <li>email: <?=$contact['email']?></li>
+                            </ol>
+                        </div>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+                </div>
+                <?php break; ?>
+			<?php case "drip": ?>
+                <div class='ui relaxed divided list'>
+                <?php foreach($entries->data as $client): ?>
+                    <div class='item'>
+                    <div class='content'>
+                        <a>
+                        <?php if($client['ad']==1): ?> 
+                            <i class='circle yellow icon'></i>
+                        <?php else: ?>
+                            <i class='circle outline icon'></i> 
+                        <?php endif ?>
+                        <?php if($client['gcb']==1): ?> 
+                            <i class='circle green icon'></i>
+                        <?php else: ?> 
+                            <i class='circle outline icon'></i>
+                        <?php endif ?>
+                        <?php if($client['wsus']==1): ?>
+                            <i class='circle red icon'></i> 
+                        <?php else: ?>
+                            <i class='circle outline icon'></i>
+                        <?php endif ?>
+                        <?php if($client['antivirus']==1): ?>
+                            <i class='circle blue icon'></i>  
+                        <?php else: ?>
+                            <i class='circle outline icon'></i> 
+                        <?php endif ?>
+                        <?php if($client['edr']==1): ?> 
+                            <i class='circle black icon'></i> 
+                        <?php else: ?> 
+                            <i class='circle outline icon'></i>
+                        <?php endif ?>
+                        
+                        <?=$client['DetectorName']?>&nbsp&nbsp
+                        <span style='background:#fde087'><?=$client['IP']?></span>&nbsp&nbsp
+                        <?=$client['ClientName']?>&nbsp&nbsp
+                        <span style='background:#fbc5c5'><?=$client['OrgName']?></span>&nbsp&nbsp
+                        <?=$client['Owner']?>&nbsp&nbsp
+                        <?=$client['UserName']?>&nbsp&nbsp
+                        <i class='angle down icon'></i>
+                        </a>
+                        <div class='description'>
+                            <ol>
+                            <li>內網IP: <?=$client['IP']?></li>
+                            <li>MAC位址: <?=$client['MAC']?></li>
+                            <li>設備名稱: <?=$client['ClientName']?></li>
+                            <li>群組名稱: <?=$client['GroupName']?></li>
+                            <li>網卡製造商: <?=$client['NICProductor']?></li>
+                            <li>偵測器名稱: <?=$client['DetectorName']?></li>
+                            <li>偵測器IP: <?=$client['DetectorIP']?></li>
+                            <li>偵測器群組: <?=$client['DetectorGroup']?></li>
+                            <li>交換器名稱: <?=$client['SwitchName']?></li>
+                            <li>連接埠名稱: <?=$client['PortName']?></li>
+                            <li>最後上線時間: <?=$client['LastOnlineTime']?></li>
+                            <li>最後下線時間: <?=$client['LastOfflineTime']?></li>
+                            <li>IP封鎖原因: <?=$client['IP_BlockReason']?></li>
+                            <li>MAC封鎖原因: <?=$client['MAC_BlockReason']?></li>
+                            <li>備註ByIP: <?=$client['MemoByIP']?></li>
+                            <li>備註ByMac: <?=$client['MemoByMAC']?></li>
+                            <li>ad安裝: <?=$client['ad']?></li>
+                            <li>gcb安裝: <?=$client['gcb']?></li>
+                            <li>wsus安裝: <?=$client['wsus']?></li>
+                            <li>antivirus安裝: <?=$client['antivirus']?></li>
+                            <li>edr安裝: <?=$client['edr']?></li>
+                            <li>OrgName: <?=$client['OrgName']?></li>
+                            <li>Owner: <?=$client['Owner']?></li>
+                            <li>UserName: <?=$client['UserName']?></li>
+                            </ol>
+                        </div>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+                </div>
+                <?php break; ?>
+			<?php case "gcb": ?>
+                <?php $GsStatMap = array('0' => '未套用', '1' => '已套用', '-1' => '套用失敗', '2' => '還原成功', '-2' => '還原失敗'); ?>
+                <div class='ui relaxed divided list'>
+                <?php foreach($entries->data as $client): ?>
+                    <div class='item'>
+                    <div class='content'>
+                        <a>
+                        <?php if($client['IsOnline'] == "1"): ?>
+                            <i class='circle green icon'></i>
+                        <?php else: ?>
+                            <i class='circle outline icon'></i>
+                        <?php endif ?>
+                        <?=$client['Name']?>&nbsp&nbsp
+                        <span style='background:#fde087'><?=$client['OrgName']?></span>&nbsp&nbsp
+                        <?=$client['UserName']?>&nbsp&nbsp
+                        <?=$client['Owner']?>&nbsp&nbsp
+                        <span style='background:#DDDDDD'><?=long2ip($client['InternalIP'])?></span>&nbsp&nbsp
+                        <?=$client['os_name']?>&nbsp&nbsp
+                        <span style='background:#fbc5c5'><?=$client['GsPass']?>%</span>&nbsp&nbsp
+                        <i class='angle down icon'></i>
+                        </a>
+                        <div class='description'>
+                            <ol>
+                            <li><a href='/ajax/gcb_detail/?action=detail&id=<?=$client['ID']?>' target='_blank'>序號: <?=$client['ID']?>(用戶端資訊)&nbsp<i class='external alternate icon'></i></a></li>
+                            <li>外部IP: <?=long2ip($client['ExternalIP'])?></li>
+                            <li>內部IP: <?=long2ip($client['InternalIP'])?></li>
+                            <li>電腦名稱: <?=$client['Name']?></li>
+                            <li>單位名稱: <?=$client['OrgName']?></li>
+                            <li>使用者帳號: <?=$client['UserName']?></li>
+                            <li>使用者名稱: <?=$client['Owner']?></li>
+                            <li>OS: <?=$client['os_name']?></li>
+                            <li>OS位元: <?=$client['OSArch']?></li>
+                            <li>IE: <?=$client['ie_name']?></li>
+                            <li>是否上線: <?=$client['IsOnline']?></li>
+                            <li>gcb總掃描數: <?=$client['GsAll_2']?></li>
+                            <li>gcb總通過數[包含例外]: <?=$client['GsAll_1']?></li>
+                            <li>gcb總通過數[未包含例外]: <?=$client['GsAll_0']?></li>
+                            <li>gcb例外數量: <?=$client['GsExcTot']?></li>
+                            <li>gcb通過率: <?=$client['GsPass']?>%</li>
+                            <li><a href='/ajax/gcb_detail/?action=gscan&id=<?=$client['GsID']?>' target='_blank'>gcb掃描編號: <?=$client['GsID']?>(掃描結果資訊)&nbsp<i class='external alternate icon'></i></a></li>
+                            <li>gcb派送編號: <?=$client['GsSetDeployID']?></li>
+                            <li>gcb狀態: <?=$GsStatMap[$client['GsStat']]?></li>
+                            <li>gcb回報時間: <?=$client['GsUpdatedAt']?></li>
+                            </ol>
+                        </div>
+                    </div>
+                    </div>
+                <?php endforeach ?>
+                </div>
+                <?php break; ?>
+			<?php case "wsus": ?>
+                <div class='ui relaxed divided list'>
+                    <?php foreach($entries->data as $index => $client): ?>
+                        <?php
+                        $table = "wsus_computer_updatestatus_kbid";
+                        $order_by = "ID";
+                        $condition = "TargetID = :TargetID AND UpdateState = :UpdateState";
+                        $data_array = [':TargetID'=>$client['TargetID'], ':UpdateState'=>'NotInstalled'];
+                        $notinstalled_kb = $db->query($table, $condition, $order_by, $fields = "*", $kb_limit = "",$data_array);
+                        $data_array = [':TargetID'=>$client['TargetID'],':UpdateState'=>'Failed'];
+                        $failed_kb = $db->query($table, $condition, $order_by, $fields = "*", $kb_limit = "", $data_array);
+                        ?>
+                        <div class='item'>
+                            <div class='content'>
+                                <a>
+                                <?=strtoupper(str_replace(".tainan.gov.tw","",$client['FullDomainName']))?>&nbsp&nbsp
+                                <span style='background:#fde087'><?=$client['IPAddress']?></span>&nbsp&nbsp
+                                <span style='background:#DDDDDD'><?=$client['NotInstalled']?></span>&nbsp&nbsp
+                                <span style='background:#fbc5c5'><?=$client['Failed']?></span>&nbsp&nbsp
+                                <?=$client['OSDescription']?>
+                                <i class='angle down icon'></i>
+                                </a>
+                                <div class='description'>
+                                    <ol>
+                                    <li>序號: <?=$client['TargetID']?></li>
+                                    <li>電腦名稱: <?=strtoupper(str_replace(".tainan.gov.tw","",$client['FullDomainName']))?></li>
+                                    <li>內網IP: <?=$client['IPAddress']?></li>
+                                    <li>未知更新數量: <?=$client['Unknown']?></li>
+                                    <li>未安裝更新數量: <?=$client['NotInstalled']?></li>
+                                    <?php foreach($notinstalled_kb as $kb): ?>
+                                        <strong>KB<?=$kb['KBArticleID']?></strong>
+                                    <?php endforeach ?>
+                                    <li>已下載更新數量: <?=$client['Downloaded']?></li>
+                                    <li>已安裝更新數量: <?=$client['Installed']?></li>
+                                    <li>安裝失敗更新數量: <?=$client['Failed']?></li>
+                                    <?php foreach($failed_kb as $kb): ?>
+                                        <strong>KB<?=$kb['KBArticleID']?></strong>
+                                    <?php endforeach ?>	
+                                    <li>已安裝待重開機更新數量: <?=$client['InstalledPendingReboot']?></li>
+                                    <li>上次狀態回報日期: <?=dateConvert($client['LastReportedStatusTime'])?></li>
+                                    <li>上次更新重開機日期: <?=dateConvert($client['LastReportedRebootTime'])?></li>
+                                    <li>上次可用更新日期: <?=dateConvert($client['EffectiveLastDetectionTime'])?></li>
+                                    <li>上次同步日期: <?=dateConvert($client['LastSyncTime'])?></li>
+                                    <li>上次修改日期: <?=dateConvert($client['LastChangeTime'])?></li>
+                                    <li>上次同步結果: <?=$client['LastSyncResult']?></li>
+                                    <li>製造商: <?=$client['ComputerMake']?></li>
+                                    <li>型號: <?=$client['ComputerModel']?></li>
+                                    <li>作業系統: <?=$client['OSDescription']?></li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach ?>
+                </div>
+                <?php break; ?>
+			<?php case "antivirus": ?>
+                <div class='ui relaxed divided list'>
+                <?php foreach($entries->data as $client): ?>
+                    <div class='item'>
+                        <div class='content'>
+                            <a>
+                            <?php if($client['ConnectionState'] == "線上"){ ?> <i class='circle green icon'></i>
+                            <?php } else{ ?> <i class='circle outline icon'></i> <?php } ?>
+                            <?=$client['ClientName']?>&nbsp&nbsp
+                            <span style='background:#fde087'><?=$client['IP']?></span>&nbsp&nbsp
+                            <span style='background:#fbc5c5'><?=$client['OS']?></span>&nbsp&nbsp
+                            <?=$client['VirusNum']?>&nbsp&nbsp
+                            <?=$client['SpywareNum']?>&nbsp&nbsp
+                            <span style='background:#DDDDDD'><?=$client['VirusPatternVersion']?></span>&nbsp&nbsp
+                            <?=$client['LogonUser']?>&nbsp&nbsp
+                            <i class='angle down icon'></i>
+                            </a>
+                            <div class='description'>
+                                <ol>
+                                <li>設備名稱: <?=$client['ClientName']?></li>
+                                <li>內網IP: <?=$client['IP']?></li>
+                                <li>網域階層: <?=$client['DomainLevel']?></li>
+                                <li>連線狀態: <?=$client['ConnectionState']?></li>
+                                <li>GUID: <?=$client['GUID']?></li>
+                                <li>掃描方式: <?=$client['ScanMethod']?></li>
+                                <li>DLP狀態: <?=$client['DLPState']?></li>
+                                <li>病毒數量: <?=$client['VirusNum']?></li>
+                                <li>間諜程式數量: <?=$client['SpywareNum']?></li>
+                                <li>作業系統: <?=$client['OS']?></li>
+                                <li>位元版本: <?=$client['BitVersion']?></li>
+                                <li>MAC位址: <?=$client['MAC']?></li>
+                                <li>設備版本: <?=$client['ClientVersion']?></li>
+                                <li>病毒碼版本: <?=$client['VirusPatternVersion']?></li>
+                                <li>登入使用者: <?=$client['LogonUser']?></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+                </div>
+                <?php break; ?>
+			<?php case "edr": ?>
+               <?php
+                $state_icon_map = [
+                    '連線中' => 'green circle icon',
+                    '離線中' => 'circle outline icon',
+                    '暫停監控' => 'pause icon',
+                    'INIT' => 'dot circle outline icon'
+                ];
+                $edrs = array();
+                foreach($entries->data as $entry){
+                    $edr = array();
+                    $IPs = array_map('trim', explode(',', $entry['ip'])); 
+                    $edr['icon'] = array_key_exists($entry['state'], $state_icon_map) ? $state_icon_map[$entry['state']]: ""; 
+                    $edr['IPs'] = $IPs; 
+                    $edr['id'] = $entry['id']; 
+                    $edr['host_name'] = $entry['host_name']; 
+                    $edr['state'] = $entry['state']; 
+                    $edr['last_online_at'] = $entry['last_online_at']; 
+                    $edr['os'] = $entry['os']; 
+                    $edr['finished_number'] = $entry['finished_number']; 
+                    $edr['unfinished_number'] = $entry['unfinished_number']; 
+                    $edr['total_number'] = $entry['total_number']; 
+                    $edr['hidden_state'] = $entry['hidden_state']; 
+                    array_push($edrs, $edr);
+                }
+                ?> 
+                <div class='ui relaxed divided list'>
+                    <?php foreach($edrs as $entry): ?>
+                        <div class='item'>
+                            <div class='content'>
+                                <a>
+                                    <i class='<?=$entry['icon']?>'></i>&nbsp&nbsp
+                                    <?=$entry['host_name']?>&nbsp&nbsp
+                                    <span style='background:#fde087'><?=$entry['state']?></span>&nbsp&nbsp
+                                    <?=$entry['os']?>&nbsp&nbsp
+                                    <?php foreach($entry['IPs'] as $IP): ?>
+                                        <span style='background:#DDDDDD'><?=$IP?></span>&nbsp&nbsp
+                                    <?php endforeach ?>
+                                    <?=$entry['total_number']?>&nbsp&nbsp
+                                    <i class='angle down icon'></i>
+                                </a>
+                                <div class='description'>
+                                    <ol>
+                                        <li>序號: <?=$entry['id']?></li>
+                                        <li>IP: 
+                                            <?php foreach($entry['IPs'] as $IP): ?>
+                                                <?=$IP?>&nbsp
+                                            <?php endforeach ?>
+                                         </li>  
+                                        <li>主機名稱: <?=$entry['host_name']?></li>
+                                        <li>監控狀態: <?=$entry['state']?></li>
+                                        <li>最後上線時間: <?=$entry['last_online_at']?></li>
+                                        <li>OS: <?=$entry['os']?></li>
+                                        <li>已關單數: <?=$entry['finished_number']?></li>
+                                        <li>處理中單數: <?=$entry['unfinished_number']?></li>
+                                        <li>總單數: <?=$entry['total_number']?></li>
+                                        <li>隱藏狀態: <?=$entry['hidden_state']?></li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach ?>
+                </div>
+                <?php break; ?>
+		<?php endswitch ?>
+		<?=$Paginator->createLinks($links, 'ui pagination menu', $pageAttr, $method='ajax')?>
+    <?php endif ?>
+<?php
 }

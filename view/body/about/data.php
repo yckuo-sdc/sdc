@@ -17,12 +17,13 @@
                     </thead>	
                     <tbody>	
                     <?php foreach($apis as $api): ?>
-                        <tr>
+                        <?php $tr_class = $api['updated_at_today'] == 0 ? "negative" : ""; ?>
+                        <tr class="<?=$tr_class?>">
                             <td><?=$api['class']?></td>
                             <td><?=$api['name']?></td>
                             <td><?=$api['data_type']?></td>
                             <td><?=$api['data_number']?></td>
-                            <td><?=$api['last_update']?></td>
+                            <td><?=$api['updated_at']?></td>
                             <td><a href='<?=$api['url']?>' target='_blank'><?=$api['url']?></a></td>
                         </tr>
                     <?php endforeach ?>

@@ -27,8 +27,8 @@
 		<a class="item" href="/query/event/">市府資安事件</a> 
 		<a class="item" href="/query/ncert/">技服資安通報</a> 
 		<a class="item" href="/query/contact/">資安聯絡人</a> 
-		<a class="item" href="/query/client/">用戶端資安清單</a> 
-		<a class="item" href="/query/fetch/">Fetch GS & Ncert</a> 
+		<a class="item" href="/query/client/">端點資安清單</a> 
+		<a class="item" href="/query/fetch/">Fetch GS & Contact</a> 
   </div>
 </div>
 <div class="item">

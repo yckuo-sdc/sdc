@@ -333,7 +333,7 @@ i.icon.caret, i.icon.square, i.icon.edit{
     background: #bec1c7;
 }
 
-.ui.list div.header a{
+div.header a{
 	color: #4183C4 !important;
 }
 
@@ -368,7 +368,6 @@ i.icon.caret, i.icon.square, i.icon.edit{
 .ou_block .description{
 	display:none;
     overflow-x: hidden;
-	white-space: pre-wrap;
 	background-color: #efefef;
 	border-radius: 1vw;
 }
@@ -376,7 +375,6 @@ i.icon.caret, i.icon.square, i.icon.edit{
 	display:block;
 	word-break: break-word;
     overflow-x: hidden;
-	white-space: pre-wrap;
 	background-color: #efefef;
 	padding: 1vmin;
 }
@@ -395,6 +393,10 @@ i.icon.caret, i.icon.square, i.icon.edit{
 
 .ui.pagination.menu.mobile{
 	display:none;
+}
+
+.ui.menu .item.disabled{
+    pointer-events: none;
 }
 
 .ui.table{

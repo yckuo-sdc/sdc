@@ -1,5 +1,9 @@
 <?php 
-$sql = "SELECT a.id, a.class, a.name, a.data_type, b.url, b.data_number, b.last_update
+$sql = "SELECT a.id, a.class, a.name, a.data_type, b.url, b.data_number, b.updated_at,
+        CASE 
+            WHEN DATE(b.updated_at) = CURDATE() THEN 1 
+            ELSE 0 
+        END AS updated_at_today
         FROM apis AS a 
         INNER JOIN api_status AS b 
         ON a.id = b.api_id

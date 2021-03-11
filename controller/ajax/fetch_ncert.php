@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ .'/../../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 $db = Database::get();
 $client = new Google_Client();  // 載入 google api library
@@ -10,7 +10,7 @@ $client->useApplicationDefaultCredentials();
 $client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
 $client->setAccessType('offline');
 //這邊要設定的是你下載下來的金鑰檔
-$client->setAuthConfig('config/My Project for google sheet-3d2d6667b843.json');  //這邊要設定的是你下載下來的金鑰檔
+$client->setAuthConfig(__DIR__ . '/../../config/My Project for google sheet-3d2d6667b843.json');  //這邊要設定的是你下載下來的金鑰檔
 
 //以下是建立存取 google sheets 的範
 $sheets = new \Google_Service_Sheets($client);
@@ -99,7 +99,7 @@ if (isset($rows['values'])) {
 	$data_array['url'] = $apis[0]['url'];
 	$data_array['status'] = $status;
 	$data_array['data_number'] = $count;
-	$data_array['last_update'] = $nowTime;
+	$data_array['updated_at'] = $nowTime;
 	$db->insert($table, $data_array);
 }
 	

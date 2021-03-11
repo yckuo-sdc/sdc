@@ -25,6 +25,7 @@ $record = $pa->getXmlCmdResponse($xml_type, $cmd);
 $xml = simplexml_load_string($record) or die("Error: Cannot create object");
 $members = $xml->result->{'external-list'}->{'valid-members'}->member; 
 
+$array_ip = array();
 foreach($members as $member){
 	$array_ip[] = $member;
 }
@@ -78,21 +79,19 @@ $data_array['api_id'] = $apis[0]['id'];
 $data_array['url'] = $apis[0]['url'];
 $data_array['status'] = $status;
 $data_array['data_number'] = $dn_count;
-$data_array['last_update'] = $nowTime;
+$data_array['updated_at'] = $nowTime;
 $db->insert($table, $data_array);
 
-
 // Validate protection of malicious ip 
+$table = "ncert_malicious_sites";
+$condition = "type LIKE :type";
+$IPs = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':type' => 'ip']);
+
 $time = date("Y-m-d H:i:s");
 echo "IP test on $time\n";
 
 $ip_count = 0;
 	
-$table = "ncert_malicious_sites";
-$condition = "type LIKE :type";
-$IPs = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':type' => 'ip']);
-$db->delete($table, $key_column, $type);
-
 foreach ($IPs as $ip){
 	$action = "allow";
 	echo $ip['id']." ".$ip['name']."\n"; 
@@ -127,5 +126,5 @@ $data_array['api_id'] = $apis[0]['id'];
 $data_array['url'] = $apis[0]['url'];
 $data_array['status'] = $status;
 $data_array['data_number'] = $ip_count;
-$data_array['last_update'] = $nowTime;
+$data_array['updated_at'] = $nowTime;
 $db->insert($table, $data_array);

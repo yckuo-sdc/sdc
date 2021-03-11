@@ -10,7 +10,7 @@
 					</div>
 					<div class="ui noborder bottom attached segment">
 						<div class="tab-content nmap show">
-							<form class="ui form" action="javascript:void(0)">
+							<form class="ui form" action="">
 								<div class="field">
 									<label>Host(IP or Domain name)</label>
 									<div class="ui input">
@@ -20,7 +20,7 @@
 								</div>
 								<div class="field">
 									<label>Nmap</label>
-									<button type="submit" id="nmap_btn" class="ui button">Scan</button>
+									<input type="submit" class="ui button" value="Scan">
 									<div class="ui centered inline loader"></div>
 								</div>
 								<div class="ui message">

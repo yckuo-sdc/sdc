@@ -5,9 +5,26 @@ $ncert_num = $db->getLastNumRows();
 $db->query($table, $condition = "Status LIKE :Status", $order_by = "1", $fields = "*", $limit = "", [':Status'=>'已結案']);
 $done_ncert_num = $db->getLastNumRows();
 $undone_ncert_num = $ncert_num - $done_ncert_num;
-$sql = "SELECT COUNT(*) AS count FROM security_ncert WHERE Status LIKE '未完成' AND (
- (DiscoveryTime < DATE_SUB(NOW(), INTERVAL 72 HOUR) AND ImpactLevel IN ('1級(輕微資安事件)', '2級(一般資安事件)'))       OR
- (DiscoveryTime < DATE_SUB(NOW(), INTERVAL 36 HOUR) AND ImpactLevel IN ('3級(重要資安事件)', '4級(重大資安事件)'))
+$sql = "SELECT COUNT(*) AS count FROM security_ncert WHERE Status LIKE '未完成' AND ( 
+        DiscoveryTime < DATE_SUB(
+            CASE RepairTime 
+                WHEN '1000-01-01 00:00:00' 
+                THEN NOW()
+                ELSE RepairTime
+            END,
+            INTERVAL 72 HOUR
+        )
+        AND ImpactLevel IN ('1級(輕微資安事件)', '2級(一般資安事件)')
+    OR
+        DiscoveryTime < DATE_SUB(
+            CASE RepairTime 
+                WHEN '1000-01-01 00:00:00' 
+                THEN NOW()
+                ELSE RepairTime
+            END,
+            INTERVAL 36 HOUR
+        )
+        AND ImpactLevel IN ('3級(重要資安事件)', '4級(重大資安事件)')
 )";
 $overdue_ncert_num = $db->execute($sql)[0]['count'];		
 

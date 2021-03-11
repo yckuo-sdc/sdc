@@ -13,7 +13,7 @@
 					<div class="ui bottom attached segment">
 						<div class="tab-content yonghua show">
 						<div class="query_content"></div>
-						<form class="ui form" action="javascript:void(0)">
+						<form class="ui form" action="">
 						<div class="fields">
 							<div class="field">
 								<label>種類</label>
@@ -47,7 +47,7 @@
 								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
-								<button type="button" id="show_all_btn" class="ui button" onclick="window.location.href='/network/search/'">顯示全部</button>
+								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/search/'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -56,7 +56,7 @@
 						</div> <!-- end of .tabular-->
 						<div class="tab-content minjhih">
 						<div class="query_content"></div>
-						<form class="ui form" action="javascript:void(0)">
+						<form class="ui form" action="">
 						<div class="fields">
 							<div class="field">
 								<label>種類</label>
@@ -90,7 +90,7 @@
 								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
-								<button type="button" id="show_all_btn" class="ui button" onclick="window.location.href='/network/search/?tab=2'">顯示全部</button>
+								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/search/?tab=2'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -99,7 +99,7 @@
 						</div> <!-- end of .tabular-->
 						<div class="tab-content idc">
 						<div class="query_content"></div>
-						<form class="ui form" action="javascript:void(0)">
+						<form class="ui form" action="">
 						<div class="fields">
 							<div class="field">
 								<label>種類</label>
@@ -133,7 +133,7 @@
 								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
-								<button type="button" id="show_all_btn" class="ui button" onclick="window.location.href='/network/search/?tab=3'">顯示全部</button>
+								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/search/?tab=3'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -142,7 +142,7 @@
 						</div> <!-- end of .tabular-->
 						<div class="tab-content intrayonghua">
 						<div class="query_content"></div>
-						<form class="ui form" action="javascript:void(0)">
+						<form class="ui form" action="">
 						<div class="fields">
 							<div class="field">
 								<label>種類</label>
@@ -176,7 +176,7 @@
 								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
-								<button type="button" id="show_all_btn" class="ui button" onclick="window.location.href='/network/search/?tab=4'">顯示全部</button>
+								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/search/?tab=4'">顯示全部</button>
 							</div>
 						</div>
 						</form>

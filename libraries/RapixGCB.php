@@ -34,6 +34,7 @@ class RapixGCB {
                    "AssocOwner",
                    "OrgName",
                    "OSEnvID",
+                   "OSArch",
                    "IEEnvID",
                    "InternalIP",
                    "ExternalIP",
@@ -63,7 +64,7 @@ class RapixGCB {
     public function getGscanResult($gs_id) {
         $url = $this->host . "/api/v1/gscan/result/" . $gs_id;
         $postField = json_encode(array("gs_id" => $gs_id));
-	    $response = $this->sendCurlRequest($url);
+	    $response = $this->sendCurlRequest($url, $postField);
         return $response;
     }
 
@@ -116,6 +117,12 @@ class RapixGCB {
           CURLOPT_HTTPHEADER => $httpHeader
 		));
 		$res = curl_exec($curl);
+
+        // Check if any error occurred
+        if (curl_errno($curl)) {
+            echo 'Curl error: ' . curl_error($curl);
+        }
+
 		curl_close($curl);
 		return $res;
 	}

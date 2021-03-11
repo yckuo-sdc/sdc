@@ -24,11 +24,11 @@
                     </form>
                     <pre></pre>
                     <?php foreach($vul_api as $api): ?>
-                        <?=$api['name']?>: update <?=$api['data_number']?> records on <?=$api['last_update']?><br>
+                        <?=$api['name']?>: update <?=$api['data_number']?> records on <?=$api['updated_at']?><br>
                     <?php endforeach ?>
                     <button id="vs_btn" class="ui button">Fetch VUL</button>
                     <div class="ui centered inline loader"></div>
-                    <div class="retrieve_vul"></div>
+                    <div class="fetch_status"></div>
 				</div><!--end of .post_cell-->
 			</div><!--end of .post-->
 		</div><!--end of .sub-content-->

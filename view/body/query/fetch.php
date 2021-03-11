@@ -2,13 +2,14 @@
     <div id="content">
         <div class="sub-content show">
             <div class="post">
-                <h2 class="ui dividing header">Fetch GS & Ncert</h2>
+                <h2 class="ui dividing header">Fetch GS & Contact</h2>
                 <div class="post_title">Google Sheets and GCB</div>
                 <div class="post_cell">
                     <button id="gs_event_btn" class="ui button">Fetch Event GS</button>
                     <button id="gs_ncert_btn" class="ui button">Fetch Ncert GS</button>
                     <button id="gcb_api_btn" class="ui button">Fetch GCB</button>
-                    <div class="retrieve_info"></div>
+                    <div class="ui centered inline loader"></div>
+                    <div class="fetch_status"></div>
                 </div>
                 <?php if($_SESSION['level'] == 2):	?>
                     <div class="post_title">Ncert contacts</div>

@@ -15,8 +15,11 @@ class Paginator {
 	} 
 
 	public function getData( $limit, $page, $data_array = array() ) {
-		$this->limit   = $limit;
-		$this->page    = $page;
+		$this->limit = $limit;
+        // page filter 
+        $this->page = (filter_var($page, FILTER_VALIDATE_INT) && $page > 0) ? $page : 1;
+        //$this->page = (is_numeric($page) && $page > 0) ? $page : 1;
+		//$this->page = $page;
 		
 		if ( $this->limit == 'all' ) {
 			$query = $this->query;
@@ -121,27 +124,27 @@ class Paginator {
 				$html = '<div class="' . $list_class . '">';
 
 				$class = ( $this->page <= 1 ) ? "disabled" : "";
-				$href = ( $this->page > 1 ) ? 'href="javascript:void(0)" '.$attr.' page="' . ($this->page - 1).'"' : ""; 		
+				$href = ( $this->page > 1 ) ? ' '.$attr.' page="' . ($this->page - 1).'"' : ""; 		
 				$html .= '<a class="item ' . $class . '" ' . $href.'> ← </a>';
 
 
 				if ( $start > 1 ) {
-					$html .= '<a class="item" href="javascript:void(0)" '.$attr.' page="1">1</a>';
+					$html .= '<a class="item"  '.$attr.' page="1">1</a>';
 					$html .= '<a class="disabled item">...</a>';
 				}
 			 
 				for ( $i = $start ; $i <= $end; $i++ ) {
 					$class  = $this->page == $i ? "active" : "";
-					$html .= '<a class="item '.$class.'" href="javascript:void(0)" '.$attr.' page="' . $i . '">' . $i . '</a>';
+					$html .= '<a class="item '.$class.'"  '.$attr.' page="' . $i . '">' . $i . '</a>';
 				}
 			 
 				if ( $end < $last ) {
 					$html .= '<a class="disabled item">...</a>';
-					$html .= '<a class="item"  href="javascript:void(0)" '.$attr.' page="' . $last . '">' . $last . '</a>';
+					$html .= '<a class="item"   '.$attr.' page="' . $last . '">' . $last . '</a>';
 				}
 			 
 				$class = ( $this->page >= $last ) ? "disabled" : "";
-				$href = ( $this->page < $last ) ? 'href="javascript:void(0)" '.$attr.' page="' . ($this->page + 1).'"' : ""; 		
+				$href = ( $this->page < $last ) ? ' '.$attr.' page="' . ($this->page + 1).'"' : ""; 		
 				$html .= '<a class="item ' . $class . '" ' . $href.'> → </a>';
 				
 				$html .= '</div>';
@@ -150,13 +153,13 @@ class Paginator {
 				$html .= "<div class='".$list_class." mobile'>";	
 
 				$class = ( $this->page <= 1 ) ? "disabled" : "";
-				$href = ( $this->page > 1 ) ? 'href="javascript:void(0)" '.$attr.' page="' . ($this->page - 1).'"' : ""; 		
+				$href = ( $this->page > 1 ) ? ' '.$attr.' page="' . ($this->page - 1).'"' : ""; 		
 				$html .= '<a class="item ' . $class . '" ' . $href.'> ← </a>';
 
-				$html .= "<a class='active item' href='javascript:void(0)' ".$attr." page='".$this->page."'>(".$this->page."/".$last.")</a>";
+				$html .= "<a class='active item' href='' ".$attr." page='".$this->page."'>(".$this->page."/".$last.")</a>";
 
 				$class = ( $this->page >= $last ) ? "disabled" : "";
-				$href = ( $this->page < $last ) ? 'href="javascript:void(0)" '.$attr.' page="' . ($this->page + 1).'"' : ""; 		
+				$href = ( $this->page < $last ) ? ' '.$attr.' page="' . ($this->page + 1).'"' : ""; 		
 				$html .= '<a class="item ' . $class . '" ' . $href.'> → </a>';
 				
 				$html .= "</div>";

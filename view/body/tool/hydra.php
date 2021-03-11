@@ -5,7 +5,7 @@
                 <h2 class="ui dividing header">Hydra</h2>
 				<div class="post_title">Hydra Passowrd Cracker</div>
 				<div class="post_cell">
-				<form class="ui form" action="javascript:void(0)">
+				<form class="ui form" action="">
 			    	<div class="field">
 						<label>Target(IP or Domain name)</label>
 						<div class="ui input">

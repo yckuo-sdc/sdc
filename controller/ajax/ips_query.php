@@ -5,9 +5,9 @@ $v2 = 0;
 
 foreach($_GET as $getkey => $val){
 	$$getkey = $val;
-	if($getkey == "jsonObj" && $val == "[]"){
+	if($getkey == "jsonConditions" && $val == "[]"){
 		$v1 = 1;	
-	}elseif($getkey != "jsonObj" && $val == ""){
+	}elseif($getkey != "jsonConditions" && $val == ""){
 		$v2 = 1;	
 	}
 }
@@ -25,7 +25,7 @@ $max_item = 10;
 $lb = ($page <= $max_page) ? 1 : $page - $max_page + 1;
 $ub = ($page <= $max_page) ? $max_page : $page;					
 
-$arr_jsonObj = json_decode($jsonObj,true);
+$arr_jsonConditions = json_decode($jsonConditions,true);
 $query_map =[ // operator + keyword
 	'=' => [
 		'addr.src' => 'in',
@@ -45,9 +45,9 @@ $query_map =[ // operator + keyword
 	]
 ];
 
-if( count($arr_jsonObj) !=0 ){  // retrieve query
+if( count($arr_jsonConditions) !=0 ){  // retrieve query
 	$query = '';
-	foreach($arr_jsonObj as $val){
+	foreach($arr_jsonConditions as $val){
 		$one_query = "( ".$val['keyword']." ".$query_map[$val['operator']][$val['keyword']]." '".$val['key']."' )";
 		$query = $query." AND ".$one_query;
 	}
@@ -107,20 +107,20 @@ for($i=0; $i<count($log_type_map); $i++){
 
 <!--The desktop href-link of bottom pages-->
 <div class='ui pagination menu'>
-    <a class='item' href='javascript: void(0)' page='<?=$prev_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>'> ← </a>
+    <a class='item' page='<?=$prev_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonConditions='<?=$jsonConditions?>' type='<?=$type?>'> ← </a>
     <?php for ($p = $lb; $p <= $ub ;$p++){
         if($p == $page){ ?>
-            <a class='active item bold' href='javascript: void(0)' page='<?=$p?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' ><?=$p?></a>
+            <a class='active item bold' page='<?=$p?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonConditions='<?=$jsonConditions?>' type='<?=$type?>' ><?=$p?></a>
         <?php }else{ ?>
-            <a class='item' href='javascript: void(0)' page='<?=$p?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' ><?=$p?></a>
+            <a class='item' page='<?=$p?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonConditions='<?=$jsonConditions?>' type='<?=$type?>' ><?=$p?></a>
         <?php } 
         } ?>
-    <a class='item' href='javascript: void(0)' page='<?=$next_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' > → </a>
+    <a class='item' page='<?=$next_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonConditions='<?=$jsonConditions?>' type='<?=$type?>' > → </a>
 </div>
 
 <!--The mobile href-link of bottom pages-->
 <div class='ui pagination menu mobile'>	
-    <a class='item' href='javascript: void(0)' page='<?=$prev_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' > ← </a>
-    <a class='active item bold' href='javascript: void(0)' page='<?=$page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' ><?=$page?></a>";
-    <a class='item' href='javascript: void(0)' page='<?=$next_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonObj='<?=$jsonObj?>' type='<?=$type?>' > → </a>
+    <a class='item' page='<?=$prev_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonConditions='<?=$jsonConditions?>' type='<?=$type?>' > ← </a>
+    <a class='active item bold' page='<?=$page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonConditions='<?=$jsonConditions?>' type='<?=$type?>' ><?=$page?></a>";
+    <a class='item' page='<?=$next_page?>' key='<?=$key?>' keyword ='<?=$keyword?>' operator='<?=$operator?>' jsonConditions='<?=$jsonConditions?>' type='<?=$type?>' > → </a>
 </div>

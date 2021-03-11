@@ -4,7 +4,7 @@
 			<div class="post nslookup">
                 <h2 class="ui dividing header">Nslookup</h2>
 				<div class="post_cell">
-					<form class="ui form" action="javascript:void(0)">
+					<form class="ui form" action="">
 						<div class="field">
 							<label>Domain name</label>
 							<div class="ui input">
@@ -14,7 +14,7 @@
 						</div>
 						<div class="field">
 							<label>DNS</label>
-							<button type="submit" id="nslookup_btn" class="ui button">Query</button>
+							<input type="submit" id="nslookup_btn" class="ui button" value="Query">
 							<div class="ui centered inline loader"></div>
 						</div>
 					</form>

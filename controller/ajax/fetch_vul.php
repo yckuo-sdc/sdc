@@ -2,7 +2,8 @@
 require_once __DIR__ .'/../../vendor/autoload.php';
 
 $db = Database::get();
-$key = ChtsecurityAPI::KEY;
+$key = ChtSecurity::APIKEY;
+$portal = "https://tainan-vsms.chtsecurity.com/cgi-bin/api/portal.pl"; 
 
 $table = "apis"; // 設定你想查詢資料的資料表
 $condition = "class LIKE :class";
@@ -20,17 +21,21 @@ foreach($apis as $api) {
 	switch($api['label']){
 		case "ipscanResult":
 			$type = "ipscanResult";
-			$auth = hash("sha256",$type.$key.$nowTime);
-			$url = "https://tainan-vsms.chtsecurity.com/cgi-bin/api/portal.pl?type=".$type."&nowTime=".$nowTime."&auth=".$auth;
-			$preg_url = preg_replace("/ /", "%20", $url);  //replace all instances of spaces in urls with %20
-            $json = file_get_contents($preg_url, false, stream_context_create($Options));
+			$auth = hash("sha256", $type . $key . $nowTime);
+			$query = array(
+				'type' => $type,
+				'nowTime' => $nowTime,
+				'auth' => $auth
+			);
+			$url = $portal. "?" . http_build_query($query);
+            $json = file_get_contents($url, false, stream_context_create($Options));
 			// filter out the non-json content
 			$pos1 = strpos($json, '[');
 			$pos2 = strrpos($json, ']');
 			$len = $pos2 - $pos1 + 1;
 			$json = substr($json , $pos1 , $len);
+            $count = 0;
 			if(($data = json_decode($json,true)) == true){
-				$count = 0;
 				$table = "ipscanResult";
 				$key_column = "1";
 				$id = "1"; 
@@ -66,17 +71,21 @@ foreach($apis as $api) {
 			break;
 		case "urlscanResult";
 			$type = "urlscanResult";
-			$auth = hash("sha256",$type.$key.$nowTime);
-			$url = "https://tainan-vsms.chtsecurity.com/cgi-bin/api/portal.pl?type=".$type."&nowTime=".$nowTime."&auth=".$auth;
-			$preg_url = preg_replace("/ /", "%20", $url);
-            $json = file_get_contents($preg_url, false, stream_context_create($Options));
+			$auth = hash("sha256", $type . $key . $nowTime);
+			$query = array(
+				'type' => $type,
+				'nowTime' => $nowTime,
+				'auth' => $auth
+			);
+			$url = $portal. "?" . http_build_query($query);
+            $json = file_get_contents($url, false, stream_context_create($Options));
 			// filter out the non-json content
 			$pos1 = strpos($json, '[');
 			$pos2 = strrpos($json, ']');
 			$len = $pos2 - $pos1 + 1;
 			$json = substr($json , $pos1 , $len);
+            $count = 0;	
 			if(($data = json_decode($json,true)) == true){
-				$count = 0;	
 				$table = "urlscanResult";
 				$key_column = "1";
 				$id = "1"; 
@@ -114,17 +123,21 @@ foreach($apis as $api) {
 			break;
 		case "scanTarget";
 			$type = "scanTarget";
-			$auth = hash("sha256",$type.$key.$nowTime);
-			$url = "https://tainan-vsms.chtsecurity.com/cgi-bin/api/portal.pl?type=".$type."&nowTime=".$nowTime."&auth=".$auth;
-			$preg_url = preg_replace("/ /", "%20", $url);
-            $json = file_get_contents($preg_url, false, stream_context_create($Options));
+			$auth = hash("sha256", $type . $key . $nowTime);
+			$query = array(
+				'type' => $type,
+				'nowTime' => $nowTime,
+				'auth' => $auth
+			);
+			$url = $portal. "?" . http_build_query($query);
+            $json = file_get_contents($url, false, stream_context_create($Options));
 			// filter out the non-json content
 			$pos1 = strpos($json, '[');
 			$pos2 = strrpos($json, ']');
 			$len = $pos2 - $pos1 + 1;
 			$json = substr($json , $pos1 , $len);
+            $count = 0;	
 			if(($data = json_decode($json,true)) == true){
-				$count = 0;	
 				$table = "scanTarget";
 				$key_column = "1";
 				$id = "1"; 
@@ -162,18 +175,18 @@ foreach($apis as $api) {
 	$data_array['url'] = $url;
 	$data_array['status'] = $status;
 	$data_array['data_number'] = $count;
-	$data_array['last_update'] = $nowTime;
+	$data_array['updated_at'] = $nowTime;
 	$db->insert($table, $data_array);
 }
 
-//truncate the table 'ip_and_url_scanResult'
-$table = "ip_and_url_scanResult";
+//truncate the table 'scan_results'
+$table = "scan_results";
 $key_column = "1";
 $id = "1"; 
 $db->delete($table, $key_column, $id); 
 
-//insert the table 'ip_and_url_scanResult' from two tables 
-$sql = "INSERT INTO ip_and_url_scanResult(type, vitem_id, OID, ou, status, ip,system_name, flow_id, scan_no, affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated)
+//insert the table 'scan_results' from two tables 
+$sql = "INSERT INTO scan_results(type, vitem_id, OID, ou, status, ip,system_name, flow_id, scan_no, affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated)
 		SELECT '主機弱點' AS type, vitem_id, OID, ou, status, ip, system_name, flow_id, scan_no, 'null' AS affect_url, manager, email, vitem_name, url, category, severity, scan_date, is_duplicated
 		FROM ipscanResult
 		UNION ALL

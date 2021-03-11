@@ -102,6 +102,12 @@ class WebadAPI {
           CURLOPT_HTTPHEADER => $httpHeader
 		));
 		$res = curl_exec($curl);
+
+        // Check if any error occurred
+        if (curl_errno($curl)) {
+            echo 'Curl error: ' . curl_error($curl);
+        }
+
 		curl_close($curl);
 		return $res;
 	}
