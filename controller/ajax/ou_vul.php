@@ -31,7 +31,7 @@ $sql_targets = "SELECT * FROM scanTarget WHERE ou LIKE :ou";
 				</div>
 				<div class="ui green big label" style="width: 100%">
 					<?=$ou_vul['fixed_VUL']?>
-					<div class="detail">已修補</div>
+					<div class="detail">修補數</div>
 				</div> 
                <!--<div style='background-color:#009efb; text-align:center; padding:2%; line-height:1.5'>
                     <h3><?=$ou_vul['total_VUL']?></h3>

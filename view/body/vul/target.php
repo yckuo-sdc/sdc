@@ -13,8 +13,8 @@
                             <tr>
                             <th>ou</th>
                             <th>ip</th>
-                            <th>hostname</th>
-                            <th>system_name</th>
+                            <th>host name</th>
+                            <th>system name</th>
                             <th>domain</th>
                             <th>manager</th>
                             <th>email</th>
@@ -23,8 +23,8 @@
                         <tbody>
                         <?php foreach($scanTarget as $Target): ?>
                             <?php
-                                $system_names = explode(";",$Target['system_name']);
-                                $domains = explode(";",$Target['domain']);
+                                $system_names = explode(";", $Target['system_name']);
+                                $domains = explode(";", $Target['domain']);
                                 $size = count($domains);
                             ?>
                             <?php for($i=0;$i<$size;$i++): ?>
