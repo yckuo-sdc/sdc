@@ -2,6 +2,7 @@
     <div id="content">
 		<div class="sub-content show">
 			<div class="post contact">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">資安聯絡人</h2>
 				<div class="post_cell">
 					<form class="ui form" action="">

@@ -303,73 +303,69 @@ if ($ap=='csv') {
                 </div>
                 <?php break; ?>
 			<?php case "drip": ?>
+                <?php
+                $state_icon_map = [
+                    'type' => ['computer' => 'desktop icon', 'device' => 'hdd icon'],
+                    'ad' => ['outline circle icon', 'yellow circle icon'],
+                    'gcb' => ['outline circle icon', 'green circle icon'],
+                    'wsus' => ['outline circle icon', 'red circle icon'],
+                    'antivirus' => ['outline circle icon', 'blue circle icon'],
+                    'edr' => [ 'outline circle icon', 'brown circle icon']
+                ];
+                $condition = $condition." AND type LIKE 'computer' ";
+                $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", $data_array);
+                $pc_num = $db->getLastNumRows();
+                $device_num = $last_num_rows - $pc_num;
+		        ?>
+                (含<?=$pc_num?>個公務電腦, <?=$device_num?>個設備)
                 <div class='ui relaxed divided list'>
                 <?php foreach($entries->data as $client): ?>
                     <div class='item'>
-                    <div class='content'>
-                        <a>
-                        <?php if($client['ad']==1): ?> 
-                            <i class='circle yellow icon'></i>
-                        <?php else: ?>
-                            <i class='circle outline icon'></i> 
-                        <?php endif ?>
-                        <?php if($client['gcb']==1): ?> 
-                            <i class='circle green icon'></i>
-                        <?php else: ?> 
-                            <i class='circle outline icon'></i>
-                        <?php endif ?>
-                        <?php if($client['wsus']==1): ?>
-                            <i class='circle red icon'></i> 
-                        <?php else: ?>
-                            <i class='circle outline icon'></i>
-                        <?php endif ?>
-                        <?php if($client['antivirus']==1): ?>
-                            <i class='circle blue icon'></i>  
-                        <?php else: ?>
-                            <i class='circle outline icon'></i> 
-                        <?php endif ?>
-                        <?php if($client['edr']==1): ?> 
-                            <i class='circle black icon'></i> 
-                        <?php else: ?> 
-                            <i class='circle outline icon'></i>
-                        <?php endif ?>
-                        
-                        <?=$client['DetectorName']?>&nbsp&nbsp
-                        <span style='background:#fde087'><?=$client['IP']?></span>&nbsp&nbsp
-                        <?=$client['ClientName']?>&nbsp&nbsp
-                        <span style='background:#fbc5c5'><?=$client['OrgName']?></span>&nbsp&nbsp
-                        <?=$client['Owner']?>&nbsp&nbsp
-                        <?=$client['UserName']?>&nbsp&nbsp
-                        <i class='angle down icon'></i>
-                        </a>
-                        <div class='description'>
-                            <ol>
-                            <li>內網IP: <?=$client['IP']?></li>
-                            <li>MAC位址: <?=$client['MAC']?></li>
-                            <li>設備名稱: <?=$client['ClientName']?></li>
-                            <li>群組名稱: <?=$client['GroupName']?></li>
-                            <li>網卡製造商: <?=$client['NICProductor']?></li>
-                            <li>偵測器名稱: <?=$client['DetectorName']?></li>
-                            <li>偵測器IP: <?=$client['DetectorIP']?></li>
-                            <li>偵測器群組: <?=$client['DetectorGroup']?></li>
-                            <li>交換器名稱: <?=$client['SwitchName']?></li>
-                            <li>連接埠名稱: <?=$client['PortName']?></li>
-                            <li>最後上線時間: <?=$client['LastOnlineTime']?></li>
-                            <li>最後下線時間: <?=$client['LastOfflineTime']?></li>
-                            <li>IP封鎖原因: <?=$client['IP_BlockReason']?></li>
-                            <li>MAC封鎖原因: <?=$client['MAC_BlockReason']?></li>
-                            <li>備註ByIP: <?=$client['MemoByIP']?></li>
-                            <li>備註ByMac: <?=$client['MemoByMAC']?></li>
-                            <li>ad安裝: <?=$client['ad']?></li>
-                            <li>gcb安裝: <?=$client['gcb']?></li>
-                            <li>wsus安裝: <?=$client['wsus']?></li>
-                            <li>antivirus安裝: <?=$client['antivirus']?></li>
-                            <li>edr安裝: <?=$client['edr']?></li>
-                            <li>OrgName: <?=$client['OrgName']?></li>
-                            <li>Owner: <?=$client['Owner']?></li>
-                            <li>UserName: <?=$client['UserName']?></li>
-                            </ol>
-                        </div>
+                        <div class='content'>
+                            <a>
+                                <i class="<?=$state_icon_map['ad'][$client['ad']]?>"></i>
+                                <i class="<?=$state_icon_map['gcb'][$client['gcb']]?>"></i>
+                                <i class="<?=$state_icon_map['wsus'][$client['wsus']]?>"></i>
+                                <i class="<?=$state_icon_map['antivirus'][$client['antivirus']]?>"></i>
+                                <i class="<?=$state_icon_map['edr'][$client['edr']]?>"></i>
+                                <?=$client['DetectorName']?>&nbsp&nbsp
+                                <span style='background:#fde087'><?=$client['IP']?></span>&nbsp&nbsp
+                                <i class="<?=$state_icon_map['type'][$client['type']]?>"></i>
+                                <?=$client['ClientName']?>&nbsp&nbsp
+                                <span style='background:#fbc5c5'><?=$client['OrgName']?></span>&nbsp&nbsp
+                                <?=$client['Owner']?>&nbsp&nbsp
+                                <?=$client['UserName']?>&nbsp&nbsp
+                                <i class='angle down icon'></i>
+                            </a>
+                            <div class='description'>
+                                <ol>
+                                <li>設備類型: <?=$client['type']?></li>
+                                <li>內網IP: <?=$client['IP']?></li>
+                                <li>MAC位址: <?=$client['MAC']?></li>
+                                <li>設備名稱: <?=$client['ClientName']?></li>
+                                <li>群組名稱: <?=$client['GroupName']?></li>
+                                <li>網卡製造商: <?=$client['NICProductor']?></li>
+                                <li>偵測器名稱: <?=$client['DetectorName']?></li>
+                                <li>偵測器IP: <?=$client['DetectorIP']?></li>
+                                <li>偵測器群組: <?=$client['DetectorGroup']?></li>
+                                <li>交換器名稱: <?=$client['SwitchName']?></li>
+                                <li>連接埠名稱: <?=$client['PortName']?></li>
+                                <li>最後上線時間: <?=$client['LastOnlineTime']?></li>
+                                <li>最後下線時間: <?=$client['LastOfflineTime']?></li>
+                                <li>IP封鎖原因: <?=$client['IP_BlockReason']?></li>
+                                <li>MAC封鎖原因: <?=$client['MAC_BlockReason']?></li>
+                                <li>備註ByIP: <?=$client['MemoByIP']?></li>
+                                <li>備註ByMac: <?=$client['MemoByMAC']?></li>
+                                <li>ad安裝: <?=$client['ad']?></li>
+                                <li>gcb安裝: <?=$client['gcb']?></li>
+                                <li>wsus安裝: <?=$client['wsus']?></li>
+                                <li>antivirus安裝: <?=$client['antivirus']?></li>
+                                <li>edr安裝: <?=$client['edr']?></li>
+                                <li>OrgName: <?=$client['OrgName']?></li>
+                                <li>Owner: <?=$client['Owner']?></li>
+                                <li>UserName: <?=$client['UserName']?></li>
+                                </ol>
+                            </div>
                         </div>
                     </div>
                 <?php endforeach ?>
@@ -531,11 +527,17 @@ if ($ap=='csv') {
                 ];
                 $edrs = array();
                 foreach($entries->data as $entry){
+                    $table = "edr_ips";
+                    $order_by = "";
+                    $condition = "edr_endpoint_id  = :edr_endpoint_id";
+                    $data_array = [':edr_endpoint_id' => $entry['id'] ];
+                    $ip_array = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", $data_array);
+                    //$IPs = array_map('trim', explode(',', $entry['ip'])); 
                     $edr = array();
-                    $IPs = array_map('trim', explode(',', $entry['ip'])); 
                     $edr['icon'] = array_key_exists($entry['state'], $state_icon_map) ? $state_icon_map[$entry['state']]: ""; 
-                    $edr['IPs'] = $IPs; 
+                    //$edr['IPs'] = $IPs; 
                     $edr['id'] = $entry['id']; 
+                    $edr['ip_array'] = $ip_array; 
                     $edr['host_name'] = $entry['host_name']; 
                     $edr['state'] = $entry['state']; 
                     $edr['last_online_at'] = $entry['last_online_at']; 
@@ -556,8 +558,8 @@ if ($ap=='csv') {
                                     <?=$entry['host_name']?>&nbsp&nbsp
                                     <span style='background:#fde087'><?=$entry['state']?></span>&nbsp&nbsp
                                     <?=$entry['os']?>&nbsp&nbsp
-                                    <?php foreach($entry['IPs'] as $IP): ?>
-                                        <span style='background:#DDDDDD'><?=$IP?></span>&nbsp&nbsp
+                                    <?php foreach($entry['ip_array'] as $ip_entry): ?>
+                                        <span style='background:#DDDDDD'><?=$ip_entry['ip']?></span>&nbsp&nbsp
                                     <?php endforeach ?>
                                     <?=$entry['total_number']?>&nbsp&nbsp
                                     <i class='angle down icon'></i>
@@ -566,8 +568,8 @@ if ($ap=='csv') {
                                     <ol>
                                         <li>序號: <?=$entry['id']?></li>
                                         <li>IP: 
-                                            <?php foreach($entry['IPs'] as $IP): ?>
-                                                <?=$IP?>&nbsp
+                                            <?php foreach($entry['ip_array'] as $ip_entry): ?>
+                                                <?=$ip_entry['ip']?>&nbsp
                                             <?php endforeach ?>
                                          </li>  
                                         <li>主機名稱: <?=$entry['host_name']?></li>

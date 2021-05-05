@@ -2,6 +2,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">VUL</h2>
 				<div id="highRisk_post" class="post_title">High Severity VUL</div>
 				<div class="post_cell">

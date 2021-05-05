@@ -2,6 +2,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post nslookup">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">Nslookup</h2>
 				<div class="post_cell">
 					<form class="ui form" action="">

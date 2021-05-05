@@ -2,6 +2,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post hydra">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">Hydra</h2>
 				<div class="post_title">Hydra Passowrd Cracker</div>
 				<div class="post_cell">

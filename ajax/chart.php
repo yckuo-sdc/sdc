@@ -56,11 +56,13 @@ switch($chartID){
 	case "client":
 		$sql = "SELECT DetectorName as name,COUNT(DetectorName) as count FROM drip_client_list GROUP BY DetectorName ORDER by count desc";
 		$DrIP = $db->execute($sql);
+		$sql = "SELECT DetectorName as name,COUNT(DetectorName) as count FROM drip_client_list WHERE type LIKE 'computer' GROUP BY DetectorName ORDER by count desc";
+		$DrIPComputers = $db->execute($sql);
 		$sql = "SELECT COUNT(ID) as total_count,SUM(CASE WHEN GsAll_2 = GsAll_1 THEN 1 ELSE 0 END) as pass_count FROM gcb_client_list";
 		$GCBPass = $db->execute($sql);
 		$sql = "SELECT b.name as name, COUNT(b.name) as count FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id GROUP BY b.name ORDER by count desc";
 		$OSEnv = $db->execute($sql);
-		$res = ['DrIP' => $DrIP, 'GCBPass' => $GCBPass, 'OSEnv' => $OSEnv];
+		$res = ['DrIP' => $DrIP, 'DrIPComputers' => $DrIPComputers, 'GCBPass' => $GCBPass, 'OSEnv' => $OSEnv];
 		echo json_encode($res, JSON_UNESCAPED_UNICODE);
 		break;
 	case "network":

@@ -1,56 +1,99 @@
 <?php
-require_once __DIR__ .'/../../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+$inputFileName =  __DIR__ . '/../../upload/edr/endpoints.csv';
 
 $db = Database::get();
-$file = "/var/www/html/sdc/upload/edr/endpoints.csv";
-$count = 0;
-$skip_row = true;
 
-if (($handle = fopen($file, "r")) !== FALSE) {
-	$table = "edr_endpoints";
-	$key_column = "1";
-	$id = "1"; 
-	$db->delete($table, $key_column, $id); 
+$inputFileType = 'Csv';
+//  $inputFileType = 'Xls';
+//  $inputFileType = 'Xlsx';
+//  $inputFileType = 'Xml';
+//  $inputFileType = 'Ods';
+//  $inputFileType = 'Slk';
+//  $inputFileType = 'Gnumeric';
 
-    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-		if($skip_row){
-			$skip_row = false;
-			continue;
-		}
+//  Create a new Reader of the type defined in $inputFileType 
+$reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
 
-		$edr = array();
-		$edr['id'] = $count + 1;
-		$edr['host_name'] = mb_convert_encoding($data[0], "utf-8", "big5");
-		$edr['ip'] = mb_convert_encoding($data[1], "utf-8", "big5");
-		$edr['state'] = mb_convert_encoding($data[2], "utf-8", "big5");
-		$edr['last_online_at'] = mb_convert_encoding($data[3], "utf-8", "big5");
-		$edr['os'] = mb_convert_encoding($data[4], "utf-8", "big5");
-		$edr['finished_number'] = mb_convert_encoding($data[5], "utf-8", "big5");
-		$edr['unfinished_number'] = mb_convert_encoding($data[6], "utf-8", "big5");
-		$edr['total_number'] = mb_convert_encoding($data[7], "utf-8", "big5");
-		$edr['hidden_state'] = mb_convert_encoding($data[8], "utf-8","big5");
+//  this line would internally convert chinese big5 to utf-8 encoding
+$reader->setInputEncoding('big5'); 
 
-        $ip = $edr['ip'];
-        $condition = "ip LIKE :ip";
-        $exist_edrs = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':ip' => $ip]);
-        if (empty($exist_edrs)) {
-            $db->insert($table, $edr);
-            $count = $count + 1;						
-        } else {
-            unset($edr['id']);
-            unset($edr['ip']);
-            $db->update($table, $edr, $key_column = "ip", $ip);
-        }
-		
-    }
-    fclose($handle);
-	$nowTime = date("Y-m-d H:i:s", filemtime($file));
-	echo "The ".$count." records have been inserted or updated into the antivirus_clinet_list on ".$nowTime."\n\r<br>";
-	$status = 200;
-}else{
-	echo "No target-data \n\r<br>";
-	$status = 400;
+//  Load $inputFileName to a Spreadsheet Object
+$spreadsheet = $reader->load($inputFileName);
+
+if(empty($spreadsheet)) {
+    echo "The inputFile : " . $inputFileName . " can't been loaded \n\r<br>";
+    return;
 }
+
+$worksheet = $spreadsheet->getActiveSheet();
+$Rows = [];
+
+foreach ($worksheet->getRowIterator() AS $index => $row) {
+    if($index == 1){  // skip first row
+        continue;
+    }
+    $cellIterator = $row->getCellIterator();
+    $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+    $cells = [];
+    foreach ($cellIterator as $cell) {
+        $cells[] = $cell->getValue();
+    }
+    $Rows[] = $cells;
+}
+
+$table = "edr_endpoints";
+$key_column = "1";
+$id = "1"; 
+$db->delete($table, $key_column, $id); 
+
+$table = "edr_ips";
+$key_column = "1";
+$id = "1"; 
+$db->delete($table, $key_column, $id); 
+
+$count = 0;
+foreach($Rows as $data) {
+    $edr = array();
+    $edr['id'] = $count + 1;
+    $edr['host_name'] = $data[0];
+    $edr['ip'] = $data[1];
+    $edr['state'] = $data[2];
+    $edr['last_online_at'] = $data[3];
+    $edr['os'] = $data[4];
+    $edr['finished_number'] = $data[5];
+    $edr['unfinished_number'] = $data[6];
+    $edr['total_number'] = $data[7];
+    $edr['hidden_state'] = $data[8];
+
+    $ip = $edr['ip'];
+    $table = "edr_endpoints";
+    $condition = "ip LIKE :ip";
+    $existings = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':ip' => $ip]);
+    if (empty($existings)) {
+        $ip_array = explode(", ", $edr['ip']);
+        foreach($ip_array as $single_ip) {
+            $data_array = array();
+            $data_array['ip'] = $single_ip;
+            $data_array['edr_endpoint_id'] = $edr['id'];
+            $table = "edr_ips";
+            $db->insert($table, $data_array);
+        }
+        $table = "edr_endpoints";
+        $db->insert($table, $edr);
+        $count = $count + 1;						
+    } else {
+        unset($edr['id']);
+        unset($edr['ip']);
+        $table = "edr_endpoints";
+        $db->update($table, $edr, $key_column = "ip", $ip);
+    }
+
+}
+
+$nowTime = date("Y-m-d H:i:s", filemtime($inputFileName));
+echo "The ".$count." records have been inserted or updated into the edr_endpoints on ".$nowTime."\n\r<br>";
+$status = 200;
 
 $error = $db->getErrorMessageArray();
 if(!empty($error)) {
@@ -61,6 +104,7 @@ $table = "apis"; // 設定你想查詢資料的資料表
 $condition = "class LIKE :class and name LIKE :name";
 $apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'edr', ':name'=>'用戶端清單']);
 $table = "api_status"; // 設定你想新增資料的資料表
+$data_array = array();
 $data_array['api_id'] = $apis[0]['id'];
 $data_array['url'] = "";
 $data_array['status'] = $status;

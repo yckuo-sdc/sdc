@@ -2,6 +2,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">Data</h2>
                 <div class="post_cell">
                     <table class="ui celled table">

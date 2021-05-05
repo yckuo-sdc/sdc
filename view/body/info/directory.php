@@ -2,6 +2,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">Directory</h2>
 				<div class="post_title">Directory Service + Web Portal</div>
 				<div class="post_cell">

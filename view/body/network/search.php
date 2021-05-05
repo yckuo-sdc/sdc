@@ -2,6 +2,7 @@
     <div id="content">
 		<div class="sub-content show">
 			<div class="post network">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">網路流量日誌(IPS)</h2>
 				<div class="post_cell">
 					<div class="ui top attached tabular menu">

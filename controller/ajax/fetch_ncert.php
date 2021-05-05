@@ -95,6 +95,7 @@ if (isset($rows['values'])) {
 	$condition = "class LIKE :class and name LIKE :name";
 	$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'資安事件', ':name'=>'技服資安通報']);
 	$table = "api_status"; // 設定你想新增資料的資料表
+    $data_array = array();
 	$data_array['api_id'] = $apis[0]['id'];
 	$data_array['url'] = $apis[0]['url'];
 	$data_array['status'] = $status;

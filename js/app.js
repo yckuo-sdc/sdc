@@ -1189,6 +1189,11 @@ function pageSwitch() {
     var queryTypesIndex = queryTypes.indexOf(subpage);
 
     switch(true){
+		// load default query
+      	case (mainpage == 'query' && subpage == ''):
+            var parameter = {type: queryTypes[0], ap: 'html', page: page, partial: false};
+            query_ajax(parameter);
+        	break;
 		// load query
       	case (mainpage == 'query' && queryTypesIndex >= 0 && queryTypesIndex <= 2):
             var parameter = {type: subpage, ap: 'html', page: page, partial: false};
@@ -1202,7 +1207,7 @@ function pageSwitch() {
 			});
         	break;
 	 	// load ou vul
-     	case (mainpage == 'vul' && subpage == 'overview' ):
+     	case (mainpage == 'vul' && ['overview', ''].includes(subpage)):
 			retrieve_ou_vul_ajax();
         	break;
 		// load vul query
@@ -1211,7 +1216,7 @@ function pageSwitch() {
             vul_query_ajax(parameter);
         	break;
 		// load ips query
-      	case (mainpage == 'network' && subpage == 'search' ):
+     	case (mainpage == 'network' && ['search', ''].includes(subpage)):
 			networkTypes.forEach(function(item, index){
                 if(index === tabIndex) {
                     console.log(index);
@@ -1244,7 +1249,7 @@ function getRouterParameter() {
     var url = location.href;
 	var pathArray = location.pathname.split("/");
 	var mainpage = (pathArray[1] !== undefined) ? pathArray[1] : 'info';	
-	var subpage = (pathArray[2] !== undefined) ? pathArray[2] : 'enews';	
+	var subpage = (pathArray[2] !== undefined) ? pathArray[2] : '';	
 	var thirdpage = (pathArray[3] !== undefined) ? pathArray[3] : '';	
 	var page = 1;
     var tab = (getParameterByName('tab',url)!= null) ? getParameterByName('tab',url) : 1;	

@@ -2,6 +2,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post nmap">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">Nmap</h2>
 				<div class="post_cell">
 					<div class="ui secondary pointing menu">
@@ -28,6 +29,8 @@
 									<ul class="list">
 									  <li>nmap -sV --script ssl-cert,ssl-enum-ciphers  -p 443,465,993,995 &lthost&gt</li>
 									  <li>nmap -sV --script ssl-enum-ciphers,ssl-cert -p 443 &lthost&gt</li>
+									  <li>nmap --script=vuln &lthost&gt</li>
+									  <li>nmap --script=default &lthost&gt</li>
 									</ul>
 							  	</div>
 							</form>

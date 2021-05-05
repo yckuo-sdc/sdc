@@ -26,6 +26,10 @@
 	<link rel="stylesheet" type="text/css" href="/node_modules/semantic/semantic.css">
 	<script src="/node_modules/semantic/semantic.js"></script>
 
+    <!-- DataTables -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+	<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
 	<!-- template css-->
 	<link href="/css/default.css" rel="stylesheet" type="text/css" media="all" />
 
@@ -37,6 +41,7 @@
 	<script src="/js/app.js"></script>
 	<script src='/js/c3chart.js'></script>
 	<script src='/js/gchart.js'></script>
+	<script src="/js/data_tables.js"></script>
 
 </head>
 <body id="example">

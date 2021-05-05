@@ -34,7 +34,7 @@ $db->delete($table, $key_column, $id);
 
 $count = 0;
 foreach($Rows as $data) {
-    if(!empty($data[4])) {
+    if(!empty($data[4]) && $data[4] != 'IP') {
         $status['isOnline']= trim($data[0]);
         $status['DetectorName']= trim($data[2]);
         $status['DetectorIP']= trim($data[29]);
@@ -77,6 +77,7 @@ $table = "apis"; // 設定你想查詢資料的資料表
 $condition = "class LIKE :class and name LIKE :name";
 $apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'ip管理', ':name'=>'使用ip清單']);
 $table = "api_status"; // 設定你想新增資料的資料表
+$data_array = array();
 $data_array['api_id'] = $apis[0]['id'];
 $data_array['url'] = "";
 $data_array['status'] = $status;

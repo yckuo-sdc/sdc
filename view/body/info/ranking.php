@@ -2,6 +2,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">Ranking Data</h2>
 				<div class="post_title">資安事件跨年度比較</div>
 				<div class="post_cell">

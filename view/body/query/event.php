@@ -50,6 +50,7 @@
                 </div>
             </div>
 			<div class="post event">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">市府資安事件</h2>
 				<div class="post_cell">
 				<form class="ui form" action="">

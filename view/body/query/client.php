@@ -2,6 +2,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post client">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">端點資安清單</h2>
 				<div class="post_cell">
 					<div class="ui secondary pointing menu">
@@ -56,7 +57,7 @@
                             <i class='circle green icon'></i>gcb
                             <i class='circle red icon'></i>wsus
                             <i class='circle blue icon'></i>antivirus
-                            <i class='circle black icon'></i>edr
+                            <i class='circle brown icon'></i>edr
                             <p></p>
                             <div class="record_content"></div> <!--End of record_content-->	
                         </div> <!--End of tabular_content-->	

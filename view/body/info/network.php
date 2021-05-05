@@ -2,6 +2,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">Network</h2>
 				<div id="topApp_post" class="post_title">Top 對外應用程式</div>
 				<div class="post_cell">

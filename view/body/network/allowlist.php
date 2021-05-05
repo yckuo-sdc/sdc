@@ -2,6 +2,7 @@
     <div id="content">
 		<div class="sub-content show">
 			<div class="post">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">應用程式核可清單(Client)</h2>
 				<div class="post_cell">
                 <?php if($status != 'success'): ?>

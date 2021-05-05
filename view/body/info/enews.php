@@ -2,6 +2,7 @@
 	<div id="content">
 		<div class="sub-content show">
 			<div class="post">
+                <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">Enews</h2>
                 <div id="actionItem_post" class="post_title">資安事件列管(已結案/總數)</div>
 				<div class="post_cell">

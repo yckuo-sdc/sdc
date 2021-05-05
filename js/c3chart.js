@@ -270,7 +270,7 @@ function c3_chart_client_ajax(url){
 		 },success: function(data) {
 			//console.log(data);	
 			var tmp_data, len;
-			var dripArray = [], gcbpassArray = [], osArray = [];
+			var dripArray = [], dripComputersArray = [], gcbpassArray = [], osArray = [];
 			var total_ip = 0;
 			tmp_data = data.DrIP;
 			len = tmp_data.length;
@@ -280,6 +280,16 @@ function c3_chart_client_ajax(url){
 				dripArray.push([name, count]);
 				total_ip = total_ip + parseInt(count);
 			}
+
+			tmp_data = data.DrIPComputers;
+			len = tmp_data.length;
+			for(var i=0; i<len; i++){
+				var name = tmp_data[i].name;
+				var count = tmp_data[i].count;
+				dripComputersArray.push([name, count]);
+				total_ip = total_ip + parseInt(count);
+			}
+
 			tmp_data = data.GCBPass;
 			len = tmp_data.length;
 			for(var i=0; i<len; i++){
@@ -287,6 +297,7 @@ function c3_chart_client_ajax(url){
 				var pass_count = tmp_data[i].pass_count;
 				gcbpassArray.push(pass_count / total_count * 100);
 			}
+
 			tmp_data = data.OSEnv;
 			len = tmp_data.length;
 			for(var i=0; i<len; i++){
@@ -358,6 +369,37 @@ function c3_chart_client_ajax(url){
 						return subtotal + t.values.reduce (function (subsubtotal,b) { return subsubtotal + b.value; }, 0);
 					}, 0);
 					d3.select(this.config.bindto + " .c3-chart-arcs-title").text("IP總數: "+total);
+				}
+			});
+			
+			var chart = c3.generate({
+				bindto: '#drip_computers_chart',
+				data: {
+				columns:
+					dripComputersArray,
+				type : 'donut'
+				},
+				donut:{
+					//title: "IP總數:"+total_ip,
+					label: {
+					}
+				},
+				size:{
+					height: '100%'
+				},
+				tooltip:{ 
+					format: { 
+						value: function (value, ratio, id) {
+							return Math.round(ratio * 1000)/10+'% | '+value;
+						} 
+					} 
+				},
+				onrendered: function () {
+					var data = this.api.data.shown.call (this.api);
+					var total = data.reduce (function (subtotal, t) {
+						return subtotal + t.values.reduce (function (subsubtotal,b) { return subsubtotal + b.value; }, 0);
+					}, 0);
+					d3.select(this.config.bindto + " .c3-chart-arcs-title").text("電腦總數: "+total);
 				}
 			});
 			
