@@ -14,5 +14,5 @@ $controller_array = array_change_key_case($controller_array, CASE_LOWER);
 if (in_array($subpage.'.php', $controller_array)) {
 	  require 'controller/network/'.$subpage.'.php';
 }else{
-	  require 'controller/network/search.php';
+	  require 'controller/network/traffic.php';
 }

@@ -197,6 +197,10 @@ function formatNumbers($num, $precision = 1) {
 	return round($num, $precision) . ' ' . $units[$pow]; 
 } 
 
+function test_print($item, $key) {
+    echo "<div class='ui black label'>" . $item . "</div>";
+}
+
 function filterHtml(&$value) {
     $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 } 

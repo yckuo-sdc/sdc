@@ -1216,7 +1216,7 @@ function pageSwitch() {
             vul_query_ajax(parameter);
         	break;
 		// load ips query
-     	case (mainpage == 'network' && ['search', ''].includes(subpage)):
+     	case (mainpage == 'network' && ['traffic', ''].includes(subpage)):
 			networkTypes.forEach(function(item, index){
                 if(index === tabIndex) {
                     console.log(index);

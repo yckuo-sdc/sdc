@@ -31,7 +31,7 @@ Class PaloAltoAPI {
 		$apikey = $this->apikey;
 		$args = array('type' => 'log', 'log-type' => $log_type, 'dir' => $dir, 'nlogs' => $nlogs, 'skip' => $skip, 'query' => $query, 'async' => 'yes', 'uniq' => 'yes');
 		$url = "https://$host/api/?".http_build_query($args)."&key=$apikey";
-		$res = $this->sendCurlRequest($url);
+		$res = $this->sendHttpRequest($url);
 
         $xml = simplexml_load_string($res) or die("Error: Cannot create object");
         $job_id = $xml->result->job;
@@ -54,7 +54,7 @@ Class PaloAltoAPI {
 		$apikey = $this->apikey;
 		$args = array('type' => 'report', 'reporttype' => $report_type, 'reportname' => $report_name, 'async' => 'yes', 'uniq' => 'yes');
 		$url = "https://$host/api/?".http_build_query($args)."&key=$apikey";
-		$res = $this->sendCurlRequest($url);
+		$res = $this->sendHttpRequest($url);
         $xml = simplexml_load_string($res) or die("Error: Cannot create object");
         $job_id = $xml->result->job;
 
@@ -85,7 +85,7 @@ Class PaloAltoAPI {
 		$apikey = $this->apikey;
 		$args = array('type' => 'report', 'reporttype' => $report_type, 'reportname' => $report_name, 'async' => 'yes', 'uniq' => 'yes');
 		$url = "https://$host/api/?".http_build_query($args)."&key=$apikey";
-		$res = $this->sendCurlRequest($url);
+		$res = $this->sendHttpRequest($url);
         $xml = simplexml_load_string($res) or die("Error: Cannot create object");
         
         $log_count = 0; 
@@ -107,7 +107,7 @@ Class PaloAltoAPI {
 		$apikey = $this->apikey;
 		$args = array('type' => $type, 'action' => $action, );
 		$url = "https://$host/api/?".http_build_query($args)."&job-id=$job_id&key=$apikey";
-		$res = $this->sendCurlRequest($url);
+		$res = $this->sendHttpRequest($url);
 		return $res;
 	}
 
@@ -115,7 +115,7 @@ Class PaloAltoAPI {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://".$host."/api/?type=$type&cmd=$cmd&key=$apikey";
-		$res = $this->sendCurlRequest($url);
+		$res = $this->sendHttpRequest($url);
 		return $res;
 	}
 
@@ -124,7 +124,7 @@ Class PaloAltoAPI {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://$host/restapi/9.0/Objects/$object_type?name=$name&location=vsys&vsys=vsys1&output-format=json&key=".$apikey;
-		$res = $this->sendCurlRequest($url);
+		$res = $this->sendHttpRequest($url);
 		return $res;
 	}
 
@@ -132,7 +132,7 @@ Class PaloAltoAPI {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://$host/restapi/9.0/Policies/$policy_type?name=$name&location=vsys&vsys=vsys1&output-format=json&key=".$apikey;
-		$res = $this->sendCurlRequest($url);
+		$res = $this->sendHttpRequest($url);
 		return $res;
 	}
 
@@ -140,14 +140,14 @@ Class PaloAltoAPI {
 	private function getAPIKey($type, $username, $password) {
 		$host = $this->host;
 		$url = "https://".$host."/api/?type=$type&user=$username&password=$password";
-		$res = $this->sendCurlRequest($url);
+		$res = $this->sendHttpRequest($url);
 		$xml = simplexml_load_string($res) or die("Error: Cannot create object");
 		$apikey = $xml->result->key;
 		return $apikey;
 	}
 	
 	//Curl Request with options
-	private function sendCurlRequest($url) {
+	private function sendHttpRequest($url) {
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
 		  CURLOPT_URL => $url,

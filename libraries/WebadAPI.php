@@ -23,7 +23,7 @@ class WebadAPI {
             "Email" => $mail,
             "IsActive" => $isActive
         ));
-	    $response = $this->sendCurlRequest($url, $postField);
+	    $response = $this->sendHttpRequest($url, $postField);
         return $response;
     }
 
@@ -41,7 +41,7 @@ class WebadAPI {
             "Email" => $mail,
             "OU" => $ou
         ));
-	    $response = $this->sendCurlRequest($url, $postField);
+	    $response = $this->sendHttpRequest($url, $postField);
         return $response;
     }
 
@@ -55,7 +55,7 @@ class WebadAPI {
             "isActive" => $isActive,
             "isLocked" => $isLocked
         ));
-	    $response = $this->sendCurlRequest($url, $postField);
+	    $response = $this->sendHttpRequest($url, $postField);
         return $response;
     }
 
@@ -68,7 +68,7 @@ class WebadAPI {
             "UpperOU" => $ou,
             "IsYongHua" => $isYonghua
         ));
-	    $response = $this->sendCurlRequest($url, $postField);
+	    $response = $this->sendHttpRequest($url, $postField);
         return $response;
     }
 
@@ -79,12 +79,12 @@ class WebadAPI {
             "Username" => $cn,
             "OU" => $ou
         ));
-	    $response = $this->sendCurlRequest($url, $postField);
+	    $response = $this->sendHttpRequest($url, $postField);
         return $response;
     }
 
 	//send curl request with bearer token 
-	private function sendCurlRequest($url, $postField) {
+	private function sendHttpRequest($url, $postField) {
         $httpHeader = array("Content-Type: application/json");
 		$curl = curl_init();
 		curl_setopt_array($curl, array(

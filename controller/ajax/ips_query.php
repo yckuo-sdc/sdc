@@ -78,7 +78,7 @@ for($i=0; $i<count($log_type_map); $i++){
 			<a class='header'><?=$log_type_map[$i]?></a>
 			</div>
 		</div>
-		<?php foreach($data['logs'] as $log){ ?>
+		<?php foreach($data['logs'] as $log): ?>
 			<div class='item'>
 			<div class='content'>
 			<a>
@@ -94,14 +94,14 @@ for($i=0; $i<count($log_type_map); $i++){
 			</a>
 			<div class='description'>
 				<ol>
-				<?php foreach($log as $keyindex => $val){ ?>
+				<?php foreach($log as $keyindex => $val): ?>
 					<li><?=$keyindex?>:&nbsp<?=$val?></li>
-				<?php } ?>
+				<?php endforeach ?>
 				</ol>
 			</div>
 			</div>
 			</div>
-		 <?php } ?>
+		 <?php endforeach ?>
 	</div>	
 <?php } ?>
 

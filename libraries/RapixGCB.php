@@ -48,7 +48,7 @@ class RapixGCB {
                ],
                "filter" => []
         ));
-	    $response = $this->sendCurlRequest($url, $postField);
+	    $response = $this->sendHttpRequest($url, $postField);
         return $response;
     }
 
@@ -56,7 +56,7 @@ class RapixGCB {
     public function getClientDetail($client_id) {
         $url = $this->host . "/api/v1/client/detail/" . $client_id;
         $postField = json_encode(array("client_id" => $client_id));
-	    $response = $this->sendCurlRequest($url, $postField);
+	    $response = $this->sendHttpRequest($url, $postField);
         return $response;
     }
 
@@ -64,7 +64,7 @@ class RapixGCB {
     public function getGscanResult($gs_id) {
         $url = $this->host . "/api/v1/gscan/result/" . $gs_id;
         $postField = json_encode(array("gs_id" => $gs_id));
-	    $response = $this->sendCurlRequest($url, $postField);
+	    $response = $this->sendHttpRequest($url, $postField);
         return $response;
     }
 
@@ -99,7 +99,7 @@ class RapixGCB {
    }
 
 	//send curl request with bearer token 
-	private function sendCurlRequest($url, $postField) {
+	private function sendHttpRequest($url, $postField) {
         $httpHeader = array("Content-Type: application/json", "Authorization: Bearer ".$this->token);
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
