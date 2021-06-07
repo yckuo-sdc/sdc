@@ -45,17 +45,16 @@
 
 </head>
 <body id="example">
-
-<div class="ui vertical inverted sidebar menu left" id="toc">
-<?php require 'view/sidebar.php'; ?>
-</div>
-<?php require 'view/nav.php'; ?>
-<div class="pusher">
-	<div class="full height">
-		<div class="toc">
-			<div class="ui vertical inverted sidebar menu left overlay visible">
-				<?php require 'view/sidebar.php'; ?>
-			</div>
-		</div>
-		<div class="article">
+    <div class="ui vertical inverted sidebar menu left" id="toc">
+    <?php require 'view/sidebar.php'; ?>
+    </div>
+    <?php require 'view/nav.php'; ?>
+    <div class="pusher">
+        <div class="full height">
+            <div class="toc">
+                <div class="ui vertical inverted sidebar menu left overlay visible">
+                    <?php require 'view/sidebar.php'; ?>
+                </div>
+            </div>
+            <div class="article">
 

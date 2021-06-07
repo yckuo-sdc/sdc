@@ -21,6 +21,9 @@ switch($type){
         $nameArr = ['new_password','confirm_password','displayname','title','mail','telephonenumber','physicaldeliveryofficename'];
         $rArr = ['','','required','required','required','',''];
 
+        $timestamp_attribute_array = array("pwdlastset", "lastlogon", "badpasswordtime", "lastlogontimestamp");
+
+
         for($k=0; $k<count($search_ou); $k++){
             $data_array = array();
             $data_array['base'] = $search_ou[$k];
@@ -143,15 +146,15 @@ switch($type){
                     <?php endif ?>
                     <div class='ui ordered list'>
                         <?php foreach($entry as $key => $val): ?>
-                            <?php if($key == "distinguishedname"): ?>
+                            <?php if ($key == "distinguishedname") : ?>
                                 <?php $ou_description = $ld->getAllOUDescription($search_ou[$k], $val); ?>
                                 <div class='item'><?=$key?>: <?=$val?> <br> <?=$ou_description?></div> 
-                            <?php elseif($key == "dnshostname"): ?>
+                            <?php elseif ($key == "dnshostname") : ?>
                                 <?php $output = shell_exec("/usr/bin/dig +short ".$val) ?>
                                 <div class='item'><?=$key?>: <?=$val?> | IP: <?=$output?></div>
-                            <?php elseif($key == "pwdlastset" || $key == "lastlogon" || $key == "badpasswordtime"): ?>
+                            <?php elseif (in_array($key, $timestamp_attribute_array)) : ?>
                                 <div class='item'><?=$key?>: <?=WindowsTime2DateTime($val)?></div>
-                            <?php else: ?>
+                            <?php else : ?>
                                 <div class='item'><?=$key?>: <?=$val?></div>
                             <?php endif ?>
                         <?php endforeach ?>

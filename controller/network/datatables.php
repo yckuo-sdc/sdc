@@ -4,4 +4,4 @@
  */
 require 'view/header/datatables.php'; 
 require 'view/body/network/datatables.php';
-require 'view/footer/datatables.php';
+require 'view/footer/default.php';

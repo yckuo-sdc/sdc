@@ -3,7 +3,7 @@
 		<div class="sub-content show">
 			<div class="post">
                 <?=$route->createBreadcrumbs(' > ');?>
-                <h2 class="ui dividing header">Top 100流量排名(最近24小時)</h2>
+                <h2 class="ui dividing header">Top 100 流量(最近24小時)</h2>
 				<div class="post_cell">
                     上次更新：<?=$apis['updated_at']?>，更新頻率：1小時<br>
 					<div class="ui secondary pointing menu">

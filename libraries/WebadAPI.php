@@ -10,12 +10,12 @@ class WebadAPI {
     }
 
     // edit domain user
-    public function editUser($cn, $newpass, $confirmpass, $displayname, $title, $telephonenumber, $physicaldeliveryofficename, $mail, $isActive){
+    public function editUser($cn, $newpass, $displayname, $title, $telephonenumber, $physicaldeliveryofficename, $mail, $isActive){
         $url = $this->host . "/api/EditUser";
         $postField = json_encode(array(
             "Username" => $cn,
-            "Password" => $newpass,
-            "NewPassword" => $confirmpass,
+            //"Password" => $newpass,
+            "NewPassword" => $newpass,
             "Name" => $displayname,
             "JobTitle" => $title,
             "Tel" => $telephonenumber,
@@ -28,12 +28,12 @@ class WebadAPI {
     }
 
     // insert domain user
-    public function insertUser($cn, $newpass, $confirmpass, $displayname, $title, $telephonenumber, $physicaldeliveryofficename, $mail, $ou){
+    public function insertUser($cn, $pass, $displayname, $title, $telephonenumber, $physicaldeliveryofficename, $mail, $ou){
         $url = $this->host . "/api/NewUser";
         $postField = json_encode(array(
             "Username" => $cn,
-            "Password" => $newpass,
-            "NewPassword" => $confirmpass,
+            "Password" => $pass,
+            //"NewPassword" => $newpass,
             "Name" => $displayname,
             "JobTitle" => $title,
             "Tel" => $telephonenumber,
