@@ -7,4 +7,4 @@ dir name | usage
 --- | ---
 init | initialization
 controller | page controller
-view | html layout
+view | html layout2
