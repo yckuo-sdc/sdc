@@ -205,8 +205,7 @@ function filterHtml(&$value) {
     $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 } 
 
-function breadcrumbs($separator = ' &raquo; ', $home = 'Home')
-{
+function breadcrumbs($separator = ' &raquo; ', $home = 'Home') {
     // This gets the REQUEST_URI (/path/to/file.php), splits the string (using '/') into an array, and then filters out any empty values
     $path = array_filter(explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
 
