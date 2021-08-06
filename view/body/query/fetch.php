@@ -3,7 +3,7 @@
         <div class="sub-content show">
             <div class="post">
                 <?=$route->createBreadcrumbs(' > ');?>
-                <h2 class="ui dividing header">Fetch GS & Contact</h2>
+                <h2 class="ui dividing header">GS & Contact 擷取</h2>
                 <div class="post_title">Google Sheets and GCB</div>
                 <div class="post_cell">
                     <button id="gs_event_btn" class="ui button">Fetch Event GS</button>

@@ -9,23 +9,28 @@ if(!isset($_POST['submit'])) {
 $error = array(); 
 $gump = new GUMP();
 $_POST = $gump->sanitize($_POST); 
+
+// set validation rules
 $validation_rules_array = array(
 	'account'    => 'required|alpha_numeric_dash',
 	'password'   => 'required|min_len,8'
 );
 $gump->validation_rules($validation_rules_array);
+
+// set filter rules
 $filter_rules_array = array(
 	'account' => 'trim|sanitize_string',
 	'password' => 'trim',
 );
 $gump->filter_rules($filter_rules_array);
+
 $validated_data = $gump->run($_POST);
 
 if($validated_data === false) {
 	$error = $gump->get_readable_errors(false);
 } else {
 	foreach($validated_data as $key => $val){
-		${$key} = $val;
+		${$key} = $val; // transfer to local parameters
 	}
 
 	$table = "users";	
@@ -44,20 +49,25 @@ if($validated_data === false) {
             $data_array['password'] = $password;
             $result = $ld->loginVerification($data_array, $user_attributes);
 
-			if($result && !empty($user[0]['SSOID'])){
+			if($result && !empty($user[0]['SSOID'])) {
                 session_regenerate_id(); //Prevent Session Fixation with changing session id
+                $username = empty($user_attributes) ? $user[0]['UserName'] : $user_attributes['username'];
+                $level = $user[0]['Level']; 
+
 				$_SESSION['account'] = $account;
-				$_SESSION['username'] = empty($user_attributes) ? $user[0]['UserName'] : $user_attributes['username'];
-				$_SESSION['level'] = $user[0]['Level'];
+				$_SESSION['username'] = $username;
+				$_SESSION['level'] = $level;
+
 				saveAction($db,'login', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
-				if(isset($remember) && !empty($remember)){
+
+				if(isset($remember) && !empty($remember)) {
 					$SECRET_KEY = "security";
 					$token = GenerateRandomToken(); // generate a token, should be 128 - 256 bit
-					$cookie = $account . ':' . $token. ':' .$user[0]['UserName']. ':' .$user[0]['Level'];
+					$cookie = $account . ':' . $token. ':' . $username . ':' . $level;
 					$mac = hash_hmac('sha256', $cookie, $SECRET_KEY);
 					$cookie .= ':' . $mac;
 					setcookie('rememberme', $cookie, time() + $expire_time, '/');
-				}else{
+				} else {
 					setcookie('rememberme', "", time() - $expire_time, '/');
 				}
 				header("Location: /");
@@ -65,23 +75,27 @@ if($validated_data === false) {
 			}
             break;
 		case "mail":
-			$pop = POP3::popBeforeSmtp('pop3.tainan.gov.tw', 110, 30, $account,$password, 1);
+			$pop = POP3::popBeforeSmtp('pop3.tainan.gov.tw', 110, 30, $account, $password, 1);
 			if($pop && isset($user[0]['SSOID']) && !empty($user[0]['SSOID'])){
                 session_regenerate_id(); //Prevent Session Fixation with changing session id
+
+                $username = $user[0]['UserName'];
+                $level = $user[0]['Level']; 
+
 				$_SESSION['account'] = $account;
-				$_SESSION['username'] = $user[0]['UserName'];
-				$_SESSION['level'] = $user[0]['Level'];
+				$_SESSION['username'] = $username;
+				$_SESSION['level'] = $level;
+
 				saveAction($db,'login', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
-				if(!empty($remember)){
+
+				if (!empty($remember)) {
 					$SECRET_KEY = "security";
 					$token = GenerateRandomToken(); // generate a token, should be 128 - 256 bit
-					$cookie = $account . ':' . $token;
+					$cookie = $account . ':' . $token. ':' . $username . ':' . $level;
 					$mac = hash_hmac('sha256', $cookie, $SECRET_KEY);
 					$cookie .= ':' . $mac;
-					$cookie .= ':' . $user[0]['UserName'];
-					$cookie .= ':' . $user[0]['Level'];
 					setcookie('rememberme', $cookie, time() + $expire_time, '/');
-				}else{
+				} else {
 					setcookie('rememberme', "", time() - $expire_time, '/');
 				}
 				header("Location: /");

@@ -117,11 +117,11 @@
                         </form>
                         <div class='header'>
                             排序：
-                            <a href="" data-label='FullDomainName'>電腦名稱<i class='sort icon'></i></a>&nbsp&nbsp
-                            <a href="" data-label='FullDomainName'>內網IP<i class='sort icon'></i></a>&nbsp&nbsp
-                            <a href="" data-label='NotInstalled'>未安裝更新<i class='sort icon'></i></a>&nbsp&nbsp
-                            <a href="" data-label='Failed'>安裝失敗更新<i class='sort icon'></i></a>&nbsp&nbsp
-                            <a href="" data-label='OSDescription'>作業系統<i class='sort icon'></i></a>&nbsp&nbsp
+                            <a href="" data-label='FullDomainName'>電腦名稱<i class='sort icon'></i></a>&nbsp;&nbsp;
+                            <a href="" data-label='FullDomainName'>內網IP<i class='sort icon'></i></a>&nbsp;&nbsp;
+                            <a href="" data-label='NotInstalled'>未安裝更新<i class='sort icon'></i></a>&nbsp;&nbsp;
+                            <a href="" data-label='Failed'>安裝失敗更新<i class='sort icon'></i></a>&nbsp;&nbsp;
+                            <a href="" data-label='OSDescription'>作業系統<i class='sort icon'></i></a>&nbsp;&nbsp;
                         </div>
                         <div class="record_content"></div> <!--End of record_content-->	
                     </div> <!--End of tabular_content-->	
@@ -180,11 +180,11 @@
                     </form>
                     <div class='header'>
                         排序：
-                        <a href="" data-label='host_name'>主機名稱<i class='sort icon'></i></a>&nbsp&nbsp
-                        <a href="" data-label='state'>監控狀態<i class='sort icon'></i></a>&nbsp&nbsp
-                        <a href="" data-label='os'>作業系統<i class='sort icon'></i></a>&nbsp&nbsp
-                        <a href="" data-label='ip'>內網IP<i class='sort icon'></i></a>&nbsp&nbsp
-                        <a href="" data-label='total_number'>總單數<i class='sort icon'></i></a>&nbsp&nbsp
+                        <a href="" data-label='host_name'>主機名稱<i class='sort icon'></i></a>&nbsp;&nbsp;
+                        <a href="" data-label='state'>監控狀態<i class='sort icon'></i></a>&nbsp;&nbsp;
+                        <a href="" data-label='os'>作業系統<i class='sort icon'></i></a>&nbsp;&nbsp;
+                        <a href="" data-label='ip'>內網IP<i class='sort icon'></i></a>&nbsp;&nbsp;
+                        <a href="" data-label='total_number'>總單數<i class='sort icon'></i></a>&nbsp;&nbsp;
                     </div>
                     <div class="record_content"></div> <!--End of record_content-->	
                 </div> <!--End of tabular_content-->	

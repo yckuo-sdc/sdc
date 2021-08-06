@@ -13,7 +13,7 @@
 						<div class="tab-content nmap show">
 							<form class="ui form" action="">
 								<div class="field">
-									<label>Host(IP or Domain name)</label>
+									<label>Host( IP or Domain name )</label>
 									<div class="ui input">
 										<?php $target = "localhost vision.tainan.gov.tw 10.7.102.4"; ?>
 										<input type="text" name="target" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">

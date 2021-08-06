@@ -1,96 +1,98 @@
 <?php
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 $ad = new ad\api\WebadAPI();
-$isActive = "false";
 
-?>
+if (!isset($_GET['isActive'])) {
+    $_GET['isActive'] = "false";
+}
+echo createQueryStringTable($_GET);
 
-<table>
-    <tbody>
-        <?php foreach($_GET as $key => $value): ?>
-            <?php $$key = str_replace("'", "\'", $value);  //過濾特殊字元(') ?>
-            <?php if( $key != "_"  && $key !="new_password" && $key !="confirm_password" && $key !="isActive"): ?>
-                <tr>
-                    <td><?=$key?></td>
-                    <td><?=$value?></td>
-                </tr>
-            <?php endif ?>	
-        <?php endforeach ?>
-        <tr>
-            <td>isActive</td>
-            <td><?=$isActive?></td>
-        </tr>
-    </tbody>
-</table>
+foreach ($_GET as $key => $value) {
+    ${$key} = str_replace("'", "\'", $value);  // transfer to local parameters & filtered char(')
+}
 
-<?php
 $error = array();
 
-switch($type){
+switch ($type) {
 	case "edituser":
 		if ($new_password !== $confirm_password) {
-            echo createMessageBox($res = "兩次輸入密碼不同", "editUser");
+            echo createWebadMessageBox($res = "兩次輸入密碼不同", "editUser");
 			return ;
 		}
 
 		if (!empty($isActive)) {
 			$res = $ad->changeState($cn, 'false', $isActive, 'false');
-            echo createMessageBox($res, "changeState");
+            echo createWebadMessageBox($res, "changeState");
 			saveAction($db, 'callFunction', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], 'ad/change_user_state(account='.$cn.')res='.$res);
 		}
 
-		if (!empty($organizationalUnit)) {
-			$ou = explode("(", $organizationalUnit);
+		if (!empty($moveOU)) {
+			$ou = explode("(", $moveOU);
 			$ou = $ou[0];	
 			$res = $ad->changeUserOU($cn,$ou);
-            echo createMessageBox($res, "changeUserOU");
+            echo createWebadMessageBox($res, "changeUserOU");
 			saveAction($db, 'callFunction', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], 'ad/change_user_ou(account='.$cn.')res='.$res);
 		}
 
 		$res = $ad->editUser($cn, $new_password, $displayname, $title, $telephonenumber, $physicaldeliveryofficename, $mail, $isActive);
-        echo createMessageBox($res, "editUser");
+        echo createWebadMessageBox($res, "editUser");
 		saveAction($db, 'callFunction', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], 'ad/edit_user(account='.$cn.')res='.$res);
 
 		break;
 	case "newuser":
 		if ($new_password !== $confirm_password) {
-            echo createMessageBox($res = "兩次輸入密碼不同", "insertUser");
+            echo createWebadMessageBox($res = "兩次輸入密碼不同", "insertUser");
 			return ;
 		}
 
-		$ou = explode("(", $organizationalUnit);
+		$ou = explode("(", $moveOU);
 		$ou = $ou[0];	
 		$res = $ad->insertUser($cn, $new_password, $displayname, $title, $telephonenumber, $physicaldeliveryofficename, $mail, $ou);
-        echo createMessageBox($res, "insertUser");
+        echo createWebadMessageBox($res, "insertUser");
 		saveAction($db, 'callFunction', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], 'ad/new_user(account='.$cn.')res='.$res);
 		break;
 	case "changecomputer":
 		if (!empty($isActive)) {
 			$res = $ad->changeState($cn, 'false', $isActive, 'false');
-            echo createMessageBox($res, "changeState");
+            echo createWebadMessageBox($res, "changeState");
 			saveAction($db, 'callFunction', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], 'ad/change_user_state(account='.$cn.')res='.$res);
             if($res != '"1."'){
                 $error[] = $res;
             }
 		}
-		if (!empty($organizationalUnit)) {
-			$ou = explode("(", $organizationalUnit);
+		if (!empty($moveOU)) {
+			$ou = explode("(", $moveOU);
 			$ou = $ou[0];	
 			$res = $ad->changeComputerOU($cn, $ou, $isYonghua);
-            echo createMessageBox($res, "changeComputerOU");
+            echo createWebadMessageBox($res, "changeComputerOU");
 			saveAction($db, 'callFunction', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], 'ad/change_computer_ou(account='.$cn.')res='.$res);
             if($res != '"1."'){
                 $error[] = $res;
             }
 		}
 		break;
+	case "editou":
+        $upperou = explode("(", $upperou);
+        $upperou = $upperou[0];	
+		$res = $ad->editOU($upperou, $name, $description);
+        echo createWebadMessageBox($res, "editOU");
+		saveAction($db, 'callFunction', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], 'ad/edit_ou(name='.$name.')res='.$res);
+		break;
+	case "newou":
+        $upperou = explode("(", $upperou);
+        $upperou = $upperou[0];	
+		$res = $ad->insertOU($upperou, $name, $description);
+        echo createWebadMessageBox($res, "insertOU");
+		saveAction($db, 'callFunction', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], 'ad/insert_ou(name='.$name.')res='.$res);
+		break;
+    default:
 }
 
+// ajax
 if (!empty($ajax)) {
     return;
 }
 
+// non-ajax
 if (empty($error)) {
     $flash->success("編輯成功");
 } else {
@@ -101,16 +103,23 @@ if (empty($error)) {
 
 header("Location: " . $_SERVER['HTTP_REFERER']); 
 
-function createMessageBox($result, $label) {
+function createQueryStringTable($query_string) {
+    $hidden_keys = array("_", "new_password", "confirm_password");
     $html = "";
-    if ($result == '"1."') {
-        $html .= "<div class='ui info message'>";
-	    $html .= $label . " 執行結果: ". $result;
-		$html .= "</div>";
-    } else {
-        $html .= "<div class='ui negative message'>";
-	    $html .= $label . " 執行結果: ". $result;
-		$html .= "</div>";
+    $html .= "<table>";
+    $html .= "<tbody>";
+
+    foreach($query_string as $key => $value) {
+        if(!in_array($key, $hidden_keys)) {
+            $html .= "<tr>";
+                $html .= "<td>" . $key . "</td>";
+                $html .= "<td>" . $value . "</td>";
+            $html .= "</tr>";
+        }
     }
+
+    $html .= "</tbody>";
+    $html .= "<table>";
+
     return $html;
 }

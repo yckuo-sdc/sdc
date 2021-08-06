@@ -25,8 +25,9 @@ class MyLDAP {
         $base = $data_array['base'];
         $filter = $data_array['filter'];
         $attributes = empty($data_array['attributes']) ? array() : $data_array['attributes'];
+        $sizelimit = empty($data_array['sizelimit']) ? -1 : $data_array['sizelimit'];
 
-	    $result = ldap_search($this->ldapconn, $base, $filter, $attributes);
+	    $result = ldap_search($this->ldapconn, $base, $filter, $attributes, $attributes_only = 0, $sizelimit);
         $entries = ldap_get_entries($this->ldapconn, $result);
 
         $data = array();
@@ -64,15 +65,15 @@ class MyLDAP {
         return $data;
     }
 
-    public function createTree($base, $ou ,$ou_description) {
+    public function createComputerTree($base, $ou ,$ou_description) {
         $html = "";
         $data_array = array();
         $data_array['base'] = $base;
         $data_array['filter'] = "(objectCategory=*)";
-        $data_array['attributes'] = array("cn");
-        $data = $this->getData($data_array);
+        $data_array['attributes'] = array("distinguishedname");
+        $lists = $this->getList($data_array);
 
-        if(empty($data)){
+        if (empty($lists)) {
             $html .= "<div class='item'>";
                 $html .= "<i class='folder icon'></i>";
                 $html .= "<div class='content'>";
@@ -100,12 +101,14 @@ class MyLDAP {
                                 if(isDisable($list['useraccountcontrol'])){
                                     $uac = false;
                                     $uac_status = "__已停用";
+                                    $computer_icon = "<i class='desktop icon'></i>";
                                 }else{
                                     $uac = true;
                                     $uac_status = "";
+                                    $computer_icon = "<i class='blue desktop icon'></i>";
                                 }
                                 $html .= "<div class='computer item' cn='".$list['cn']."' uac='".$uac."'>";
-                                    $html .= "<i class='desktop icon'></i> ";
+                                    $html .= $computer_icon . "&nbsp;";
                                     $html .= $list['cn'];
                                     $html .= $uac_status;
                                 $html .= "</div>";
@@ -125,13 +128,172 @@ class MyLDAP {
                                 $sub_base = $list["distinguishedname"];
                                 $sub_ou = $list["ou"];
                                 $sub_ou_description = empty($list["description"]) ?  "" : $list["description"];
-                                $html .= $this->createTree($sub_base, $sub_ou, $sub_ou_description); 
+                                $html .= $this->createComputerTree($sub_base, $sub_ou, $sub_ou_description); 
                             }
                         $html .= "</div>";
                     }
 
             $html .= "</div>";
         $html .= "</div>";
+
+        return $html;
+    }
+
+    public function createSingleLevelComputerTree($base, $ou ,$description) {
+        $html = "";
+
+        // computer 
+        $data_array = array();
+        $data_array['base'] = $base;
+        $data_array['filter'] = "(objectCategory=computer)";
+        $data_array['attributes'] = array("cn", "useraccountcontrol", "description");
+        $computer_list = $this->getList($data_array);
+    
+        if (!empty($computer_list)) {
+            $computer_count = count($computer_list);
+            $html .= "<div class='list'>";
+                $html .= "<div class='item'>共 " . $computer_count . " 筆資料 !</div>";
+                foreach($computer_list as $computer) {
+                    if(isDisable($computer['useraccountcontrol'])){
+                        $uac = false;
+                        $uac_status = "__已停用";
+                        $computer_icon = "<i class='desktop icon'></i>";
+                    }else{
+                        $uac = true;
+                        $uac_status = "";
+                        $computer_icon = "<i class='blue desktop icon'></i>";
+                    }
+                    $computer_description = empty($computer['description']) ? "" : "(" . $computer['description'] . ")";
+
+                    $html .= "<div class='computer item' cn='" . $computer['cn'] . "' uac='" . $uac . "'>";
+                        $html .= $computer_icon . "&nbsp;";
+                        $html .= $computer['cn'];
+                        $html .= $computer_description;
+                        $html .= $uac_status;
+                    $html .= "</div>";
+                }
+            $html .= "</div>";
+        }
+
+        // ou
+        $data_array = array();
+        $data_array['base'] = $base;
+        $data_array['filter'] = "(objectCategory=organizationalUnit)";
+        $data_array['attributes'] = array("ou", "distinguishedname", "description");
+        $ou_list = $this->getList($data_array);
+
+        if (!empty($ou_list)) {
+            $html .= "<div class='list'>";
+                foreach($ou_list as $entry) {
+                    $base = $entry['distinguishedname'];
+                    $ou = $entry['ou'];
+                    $description = empty($entry["description"]) ?  "" : $entry["description"];
+                    $text_description = empty($entry["description"]) ?  "" : "(" . $entry["description"] . ")";
+
+                    $data_array = array();
+                    $data_array['base'] = $base;
+                    $data_array['filter'] = "(objectCategory=*)";
+                    $data_array['attributes'] = array("distinguishedname");
+                    $list = $this->getList($data_array);
+
+                    if (empty($list)) {
+                        $html .= "<div class='item'>";
+                            $html .= "<i class='folder icon'></i>";
+                            $html .= "<div class='content'>";
+                                $html .= "<div class='header'>" . $ou . $text_description . "</div>";	
+                            $html .= "</div>";
+                        $html .= "</div>";
+                    } else {
+                        $html .= "<div class='item'>";
+                            $html .= "<i class='plus square outline icon' base='" . $base . "' ou='" . $ou . "' description='" . $description . "'></i>";
+                            $html .= "<i class='folder icon'></i>";
+                            $html .= "<div class='content'>";
+                                $html .= "<div class='header'>" . $ou . $text_description . "</div>";	
+                            $html .= "</div>";
+                        $html .= "</div>";
+                    }
+                }
+                $html .= "</div>";
+            }
+
+        return $html;
+    }
+
+    public function createSingleLevelUserTree($base, $ou ,$description) {
+        $html = "";
+
+        // user
+        $data_array = array();
+        $data_array['base'] = $base;
+        $data_array['filter'] = "(objectCategory=person)";
+        $data_array['attributes'] = array("cn", "useraccountcontrol", "displayname");
+        $user_list = $this->getList($data_array);
+    
+        if (!empty($user_list)) {
+            $user_count = count($user_list);
+            $html .= "<div class='list'>";
+                $html .= "<div class='item'>共 " . $user_count . " 筆資料 !</div>";
+                foreach($user_list as $user) {
+                    if (isDisable($user['useraccountcontrol'])) {
+                        $uac = false;
+                        $uac_status = "__已停用";
+                        $user_icon = "<i class='user icon'></i>";
+                    } else {
+                        $uac = true;
+                        $uac_status = "";
+                        $user_icon = "<i class='blue user icon'></i>";
+                    }
+                    $displayname = empty($user['displayname']) ? "" : "(" . $user['displayname'] . ")";
+                    $html .= "<div class='user item' cn='" . $user['cn'] . "' uac='" . $uac . "'>";
+                        $html .= $user_icon . "&nbsp;";
+                        $html .= $user['cn'];
+                        $html .= $displayname;
+                        $html .= $uac_status;
+                    $html .= "</div>";
+                }
+            $html .= "</div>";
+        }
+
+        // ou
+        $data_array = array();
+        $data_array['base'] = $base;
+        $data_array['filter'] = "(objectCategory=organizationalUnit)";
+        $data_array['attributes'] = array("ou", "distinguishedname", "description");
+        $ou_list = $this->getList($data_array);
+
+        if (!empty($ou_list)) {
+            $html .= "<div class='list'>";
+                foreach($ou_list as $entry) {
+                    $base = $entry['distinguishedname'];
+                    $ou = $entry['ou'];
+                    $description = empty($entry["description"]) ?  "" : $entry["description"];
+                    $text_description = empty($entry["description"]) ?  "" : "(" . $entry["description"] . ")";
+
+                    $data_array = array();
+                    $data_array['base'] = $base;
+                    $data_array['filter'] = "(objectCategory=*)";
+                    $data_array['attributes'] = array("distinguishedname");
+                    $list = $this->getList($data_array);
+
+                    if (empty($list)) {
+                        $html .= "<div class='item'>";
+                            $html .= "<i class='folder icon'></i>";
+                            $html .= "<div class='content'>";
+                                $html .= "<div class='header'>" . $ou . $text_description . "</div>";	
+                            $html .= "</div>";
+                        $html .= "</div>";
+                    } else {
+                        $html .= "<div class='item'>";
+                            $html .= "<i class='plus square outline icon' base='" . $base . "' ou='" . $ou . "' description='" . $description . "'></i>";
+                            $html .= "<i class='folder icon'></i>";
+                            $html .= "<div class='content'>";
+                                $html .= "<div class='header'>" . $ou . $text_description . "</div>";	
+                            $html .= "</div>";
+                        $html .= "</div>";
+                    }
+                }
+                $html .= "</div>";
+            }
 
         return $html;
     }

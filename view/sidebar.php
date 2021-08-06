@@ -15,4 +15,4 @@
     </div>
 <?php endforeach ?>
 
-<a class="item" href="/logout"><b><?php echo $_SESSION['username']."(登出)";?></b></a>
+<a class="item" href="/logout"><b><?=$_SESSION['username'] . "(登出)"?></b></a>

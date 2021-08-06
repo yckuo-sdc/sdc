@@ -3,7 +3,7 @@
 		<div class="sub-content show">
 			<div class="post">
                 <?=$route->createBreadcrumbs(' > ');?>
-                <h2 class="ui dividing header">防火牆政策清單(Policy)</h2>
+                <h2 class="ui dividing header">網路防護政策(Policy)</h2>
                 <div class="ui secondary pointing menu">
                     <a class="active item">Yonghua</a>
                     <a class="item">Minjhih</a>
@@ -23,26 +23,26 @@
                             <?php if($policy_result['status'] != 'success'): ?>
                                 <p>很抱歉，該分類目前沒有資料！</p>
                             <?php else: ?>
-                                <p>該分類共搜尋到<?=$policy_result['total_count']?>筆資料！</p>
+                                <p>該分類共搜尋到 <?=$policy_result['total_count']?> 筆資料！</p>
                                 <div class="ui relaxed divided list">
                                 <?php foreach($policy_result['apps'] as $app): ?>
                                     <div class="item">
                                         <div class="content">
                                             <div class="header">
                                                 <?php if ($policy_key == "SecurityRules"): ?>
-                                                    <?=$app['@name']?>&nbsp|&nbsp
+                                                    <?=$app['@name']?>&nbsp;|&nbsp;
                                                     <?=$app['action']?>
-                                                    <?=empty($app['description']) ? "" : "&nbsp|&nbsp" . $app['description'] ?>
+                                                    <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
                                                 <?php elseif ($policy_key == "NatRules"): ?>
                                                     <?=$app['@name']?>
-                                                    <?=empty($app['description']) ? "" : "&nbsp|&nbsp" . $app['description'] ?>
+                                                    <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
                                                 <?php endif ?>
                                             </div>
                                             <div class="description" style="display:block">
                                                 <div class="ui ordered list">
                                                     <?php foreach($app as $keyindex => $val): ?>
                                                         <div class="item">
-                                                            <?=$keyindex?>:&nbsp
+                                                            <?=$keyindex?>:&nbsp;
                                                              <?php if(!is_array($val)): ?>
                                                                 <?=$val?>
                                                              <?php else: ?>
@@ -74,26 +74,26 @@
                             <?php if($policy_result['status'] != 'success'): ?>
                                 <p>很抱歉，該分類目前沒有資料！</p>
                             <?php else: ?>
-                                <p>該分類共搜尋到<?=$policy_result['total_count']?>筆資料！</p>
+                                <p>該分類共搜尋到 <?=$policy_result['total_count']?> 筆資料！</p>
                                 <div class="ui relaxed divided list">
                                 <?php foreach($policy_result['apps'] as $app): ?>
                                     <div class="item">
                                         <div class="content">
                                             <div class="header">
                                                 <?php if ($policy_key == "SecurityRules"): ?>
-                                                    <?=$app['@name']?>&nbsp|&nbsp
+                                                    <?=$app['@name']?>&nbsp;|&nbsp;
                                                     <?=$app['action']?>
-                                                    <?=empty($app['description']) ? "" : "&nbsp|&nbsp" . $app['description'] ?>
+                                                    <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
                                                 <?php elseif ($policy_key == "NatRules"): ?>
                                                     <?=$app['@name']?>
-                                                    <?=empty($app['description']) ? "" : "&nbsp|&nbsp" . $app['description'] ?>
+                                                    <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
                                                 <?php endif ?>
                                             </div>
                                             <div class="description" style="display:block">
                                                 <div class="ui ordered list">
                                                     <?php foreach($app as $keyindex => $val): ?>
                                                         <div class="item">
-                                                            <?=$keyindex?>:&nbsp
+                                                            <?=$keyindex?>:&nbsp;
                                                              <?php if(!is_array($val)): ?>
                                                                 <?=$val?>
                                                              <?php else: ?>
@@ -125,26 +125,26 @@
                             <?php if($policy_result['status'] != 'success'): ?>
                                 <p>很抱歉，該分類目前沒有資料！</p>
                             <?php else: ?>
-                                <p>該分類共搜尋到<?=$policy_result['total_count']?>筆資料！</p>
+                                <p>該分類共搜尋到 <?=$policy_result['total_count']?> 筆資料！</p>
                                 <div class="ui relaxed divided list">
                                 <?php foreach($policy_result['apps'] as $app): ?>
                                     <div class="item">
                                         <div class="content">
                                             <div class="header">
                                                 <?php if ($policy_key == "SecurityRules"): ?>
-                                                    <?=$app['@name']?>&nbsp|&nbsp
+                                                    <?=$app['@name']?>&nbsp;|&nbsp;
                                                     <?=$app['action']?>
-                                                    <?=empty($app['description']) ? "" : "&nbsp|&nbsp" . $app['description'] ?>
+                                                    <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
                                                 <?php elseif ($policy_key == "NatRules"): ?>
                                                     <?=$app['@name']?>
-                                                    <?=empty($app['description']) ? "" : "&nbsp|&nbsp" . $app['description'] ?>
+                                                    <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
                                                 <?php endif ?>
                                             </div>
                                             <div class="description" style="display:block">
                                                 <div class="ui ordered list">
                                                     <?php foreach($app as $keyindex => $val): ?>
                                                         <div class="item">
-                                                            <?=$keyindex?>:&nbsp
+                                                            <?=$keyindex?>:&nbsp;
                                                              <?php if(!is_array($val)): ?>
                                                                 <?=$val?>
                                                              <?php else: ?>

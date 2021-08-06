@@ -8,4 +8,4 @@ session_unset();  //It deletes only the variables from session and session still
 session_destroy();  //destroys all of the data associated with the current session
 
 echo 'logout...';
-header("Location: /login"); 
+header("Location: login"); 

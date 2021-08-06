@@ -215,15 +215,9 @@
 	border: 1px solid #e3e3e3;
 }
 
-.post .query_content .query_label{
-	margin: 5px;
-	padding: .2em .6em .3em;
-	color: #fff;
-	text-align: center;
-	white-space: nowrap;
-	vertical-align: baseline;
-	border-radius: .25em;
-	background-color: #777;
+.post .query_content button.close{
+    opacity: 0.2;
+    cursor: pointer;
 }
 
 .post table tr th
@@ -324,12 +318,12 @@ i.icon.caret, i.icon.square, i.icon.edit{
 
 }
 
-.ui.list .computer.item:hover{
+.ui.list .computer.item:hover, .ui.list .user.item:hover{
     background: #ebedf2;
     cursor: pointer;
 }
 
-.ui.list .computer.item.selected{
+.ui.list .computer.item.selected, .ui.list .user.item.selected{
     background: #bec1c7;
 }
 

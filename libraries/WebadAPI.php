@@ -72,7 +72,7 @@ class WebadAPI {
         return $response;
     }
 
-    //change ou
+    // change user's OU
     public function changeUserOU($cn, $ou){
         $url = $this->host . "/api/ChangeOU";
         $postField = json_encode(array(
@@ -83,7 +83,31 @@ class WebadAPI {
         return $response;
     }
 
-	//send curl request with bearer token 
+    // edit OU
+    public function editOU ($upperou, $ou, $description) {
+        $url = $this->host . "/api/ChangeUpperOU";
+        $postField = json_encode(array(
+            "UpperOU" => $upperou,
+            "OU" => $ou,
+            "OUName" => $description
+        ));
+	    $response = $this->sendHttpRequest($url, $postField);
+        return $response;
+    }
+
+    // insert OU
+    public function insertOU ($upperou, $ou, $description) {
+        $url = $this->host . "/api/NewOU";
+        $postField = json_encode(array(
+            "UpperOU" => $upperou,
+            "OU" => $ou,
+            "OUName" => $description
+        ));
+	    $response = $this->sendHttpRequest($url, $postField);
+        return $response;
+    }
+
+	// send curl request with bearer token 
 	private function sendHttpRequest($url, $postField) {
         $httpHeader = array("Content-Type: application/json");
 		$curl = curl_init();

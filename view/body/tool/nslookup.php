@@ -9,8 +9,13 @@
 						<div class="field">
 							<label>Domain name</label>
 							<div class="ui input">
-								<?php $target = "www.tainan.gov.tw 8.8.8.8"?>
-								<input type="text" name="target" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
+								<input type="text" name="target" value="<?=$target?>" placeholder="<?=$target?>">
+							</div>
+						</div>
+						<div class="field">
+							<label>Server</label>
+							<div class="ui input">
+								<input type="text" name="server" value="<?=$server?>" placeholder="<?=$server?>">
 							</div>
 						</div>
 						<div class="field">

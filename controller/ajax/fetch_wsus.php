@@ -2,108 +2,153 @@
 require_once __DIR__ .'/../../vendor/autoload.php';
 
 $db = Database::get();
-$file = "/var/www/html/sdc/upload/wsus/GetComputerStatus.csv";
-$row = 1;
-$count = 0;
-$status = array();
-if (($handle = fopen($file, "r")) !== FALSE) {
-	$table = "wsus_computer_status";
-	$key_column = "1";
-	$id = "1"; 
-	$db->delete($table, $key_column, $id); 
-    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-		$num = count($data);
-		if($num > 1){
-			//echo "$num fields in line $row:\n";
-			$row++;
-			$status['TargetID']= trim($data[0]);
-			$status['LastSyncTime']= trim($data[1]);
-			$status['LastReportedStatusTime']= trim($data[2]);
-			$status['LastReportedRebootTime']= trim($data[3]);
-			$status['IPAddress']= trim($data[4]);
-			$status['FullDomainName']= trim(mb_convert_encoding($data[5],"utf-8","big5"));
-			$status['EffectiveLastDetectionTime']= trim($data[6]);
-			$status['LastSyncResult']= trim($data[7]);
-			$status['Unknown']= trim($data[8]);
-			$status['NotInstalled']= trim($data[9]);
-			$status['Downloaded']= trim($data[10]);
-			$status['Installed']= trim($data[11]);
-			$status['Failed']= trim($data[12]);
-			$status['InstalledPendingReboot']= trim($data[13]);
-			$status['LastChangeTime']= trim($data[14]);
-			$status['ComputerMake']= trim($data[15]);
-			$status['ComputerModel']= trim($data[16]);
-			$status['OSDescription']= trim($data[17]);
-			
-			$db->insert($table, $status);
-			$count = $count + 1;							
-		}
-    }
-    fclose($handle);
-	$nowTime = date("Y-m-d H:i:s");
-	$nowTime = date("Y-m-d H:i:s", filemtime($file));
-	echo "The ".$count." records have been inserted or updated into the wsus_computer_status on ".$nowTime."\n\r<br>";
-	$status = 200;
-}else{
-	echo "No target-data \n\r<br>";
-	$status = 400;
+$inputFileName =  __DIR__ .'/../../upload/wsus/GetComputerStatus.csv';
+
+/** Load $inputFileName to a Spreadsheet Object  **/
+ini_set('auto_detect_line_endings',TRUE);
+$reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
+$reader->setDelimiter(',');
+$reader->setEnclosure('');
+$reader->setSheetIndex(0);
+$spreadsheet = $reader->load($inputFileName);
+
+if (empty($spreadsheet)) {
+    echo "The inputFile : " . $inputFileName . " can't been loaded \n\r<br>";
+    return;
 }
 
-$table = "apis"; // 設定你想查詢資料的資料表
-$condition = "class LIKE :class and name LIKE :name";
-$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'wsus', ':name'=>'用戶端清單']);
-$table = "api_status"; // 設定你想新增資料的資料表
-$data_array['api_id'] = $apis[0]['id'];
-$data_array['url'] = "";
-$data_array['status'] = $status;
-$data_array['data_number'] = $count;
-$data_array['updated_at'] = $nowTime;
-$db->insert($table, $data_array);
+$worksheet = $spreadsheet->getActiveSheet();
+$Rows = [];
 
-$file = "/var/www/html/sdc/upload/wsus/GetUpdateStatusKBID.csv";
-$row = 1;
-$count = 0;
-$status = array();
-if (($handle = fopen($file, "r")) !== FALSE) {
-	$table = "wsus_computer_updatestatus_kbid";
-	$key_column = "1";
-	$id = "1"; 
-	$db->delete($table, $key_column, $id); 
-    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-		$num = count($data);
-		if($num > 1){
-			//echo "$num fields in line $row:\n";
-			$row++;
-			$status['TargetID']= trim($data[0]);
-			$status['KBArticleID']= trim($data[1]);
-			$status['UpdateState']= trim($data[2]);
-			
-			$db->insert($table, $status);
-			$count = $count + 1;							
-		}
+foreach ($worksheet->getRowIterator() AS $index => $row) {
+    $cellIterator = $row->getCellIterator();
+    $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+    $cells = [];
+    foreach ($cellIterator as $cell) {
+        $cells[] = $cell->getValue();
     }
-    fclose($handle);
-	$nowTime = date("Y-m-d H:i:s");
-	$nowTime = date("Y-m-d H:i:s", filemtime($file));
-	echo "The ".$count." records have been inserted or updated into the wsus_computer_status on ".$nowTime."\n\r<br>";
-	$status = 200;
-}else{
-	echo "No target-data \n\r<br>";
-	$status = 400;
+    $Rows[] = $cells;
 }
+
+$table = "wsus_computer_status";
+$key_column = "1";
+$id = "1"; 
+$db->delete($table, $key_column, $id); 
+
+$count = 0;
+foreach ($Rows as $data) {
+    if (!empty(trim($data[0])) && !empty(trim($data[4]))) {
+        $status_array = array();
+        $status_array['TargetID']= trim($data[0]);
+        $status_array['LastSyncTime']= trim($data[1]);
+        $status_array['LastReportedStatusTime']= trim($data[2]);
+        $status_array['LastReportedRebootTime']= trim($data[3]);
+        $status_array['IPAddress']= trim($data[4]);
+        $status_array['FullDomainName']= trim(mb_convert_encoding($data[5],"utf-8","big5"));
+        $status_array['EffectiveLastDetectionTime']= trim($data[6]);
+        $status_array['LastSyncResult']= trim($data[7]);
+        $status_array['Unknown']= trim($data[8]);
+        $status_array['NotInstalled']= trim($data[9]);
+        $status_array['Downloaded']= trim($data[10]);
+        $status_array['Installed']= trim($data[11]);
+        $status_array['Failed']= trim($data[12]);
+        $status_array['InstalledPendingReboot']= trim($data[13]);
+        $status_array['LastChangeTime']= trim($data[14]);
+        $status_array['ComputerMake']= trim($data[15]);
+        $status_array['ComputerModel']= trim($data[16]);
+        $status_array['OSDescription']= trim($data[17]);
+        //var_dump($status_array);
+        
+        $db->insert($table, $status_array);
+        $count = $count + 1;							
+    }
+}
+
+$nowTime = date("Y-m-d H:i:s", filemtime($inputFileName));
+echo "The " . $count . " records have been inserted or updated into the wsus_computer_status on " . $nowTime . "\n\r<br>";
+$status = 200;
 
 $error = $db->getErrorMessageArray();
-if(!empty($error)) {
-	return;
+if (empty($error)) {
+    $table = "apis"; // 設定你想查詢資料的資料表
+    $condition = "class LIKE :class and name LIKE :name";
+    $apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'wsus', ':name'=>'用戶端清單']);
+    $table = "api_status"; // 設定你想新增資料的資料表
+    $data_array = array();
+    $data_array['api_id'] = $apis[0]['id'];
+    $data_array['url'] = "";
+    $data_array['status'] = $status;
+    $data_array['data_number'] = $count;
+    $data_array['updated_at'] = $nowTime;
+    $db->insert($table, $data_array);
+} else {
+    var_dump($error);
 }
 
-$table = "apis"; // 設定你想查詢資料的資料表
-$condition = "class LIKE :class and name LIKE :name";
-$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'wsus', ':name'=>'更新資訊']);
-$table = "api_status"; // 設定你想新增資料的資料表
-$data_array['api_id'] = $apis[0]['id'];
-$data_array['url'] = "";
-$data_array['status'] = $status;
-$data_array['data_number'] = $count;
-$data_array['updated_at'] = $nowTime;
-$db->insert($table, $data_array);
+$inputFileName =  __DIR__ .'/../../upload/wsus/GetUpdateStatusKBID.csv';
+
+/** Load $inputFileName to a Spreadsheet Object  **/
+ini_set('auto_detect_line_endings',TRUE);
+$reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
+$reader->setDelimiter(',');
+$reader->setEnclosure('');
+$reader->setSheetIndex(0);
+$spreadsheet = $reader->load($inputFileName);
+
+if (empty($spreadsheet)) {
+    echo "The inputFile : " . $inputFileName . " can't been loaded \n\r<br>";
+    return;
+}
+
+$worksheet = $spreadsheet->getActiveSheet();
+$Rows = [];
+
+foreach ($worksheet->getRowIterator() AS $index => $row) {
+    $cellIterator = $row->getCellIterator();
+    $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+    $cells = [];
+    foreach ($cellIterator as $cell) {
+        $cells[] = $cell->getValue();
+    }
+    $Rows[] = $cells;
+}
+
+$table = "wsus_computer_updatestatus_kbid";
+$key_column = "1";
+$id = "1"; 
+$db->delete($table, $key_column, $id); 
+
+$count = 0;
+foreach ($Rows as $data) {
+    if (!empty(trim($data[0])) && !empty(trim($data[1]))) {
+        $status_array = array();
+        $status_array['TargetID']= trim($data[0]);
+        $status_array['KBArticleID']= trim($data[1]);
+        $status_array['UpdateState']= trim($data[2]);
+        
+        $db->insert($table, $status_array);
+        $count = $count + 1;							
+    }
+}
+
+$nowTime = date("Y-m-d H:i:s", filemtime($inputFileName));
+echo "The ".$count." records have been inserted or updated into the wsus_computer_status on ".$nowTime."\n\r<br>";
+$status = 200;
+
+$error = $db->getErrorMessageArray();
+if (empty($error)) {
+    $table = "apis"; // 設定你想查詢資料的資料表
+    $condition = "class LIKE :class and name LIKE :name";
+    $apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'wsus', ':name'=>'更新資訊']);
+    $table = "api_status"; // 設定你想新增資料的資料表
+    $data_array = array();
+    $data_array['api_id'] = $apis[0]['id'];
+    $data_array['url'] = "";
+    $data_array['status'] = $status;
+    $data_array['data_number'] = $count;
+    $data_array['updated_at'] = $nowTime;
+    $db->insert($table, $data_array);
+} else {
+    var_dump($error);
+}
+

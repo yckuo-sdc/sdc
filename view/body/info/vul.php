@@ -14,7 +14,7 @@
 					  <br>
 					  <div class="ui tiny statistic">
 						  <div class="value"><?php echo $fixed_high_VUL ?> / <?php echo $total_high_VUL ?></div>
-						  <div class="label">已修補數 / 總數</div>
+						  <div class="label">修補數 / 總數</div>
 					  </div>
 					  <br>
 					  <div class="ui tiny statistic">
@@ -30,9 +30,9 @@
                         <thead>
                             <tr>
                                 <th>OU</th>
-                                <th>修補率<br> 已修補數 | 總數</th>
-                                <th>未逾期率<br> 未逾期未修補+已修補數 | 總數</th>
-                                <th>高風險修補率<br> 已修補數 | 總數</th>
+                                <th>修補率<br> 修補數 | 總數</th>
+                                <th>未逾期率<br> 未逾期未修補+修補數 | 總數</th>
+                                <th>高風險修補率<br> 修補數 | 總數</th>
                             </tr>
                         </thead>
                         <tbody>

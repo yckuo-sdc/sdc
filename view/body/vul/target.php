@@ -8,7 +8,7 @@
 				<?php if($last_num_rows==0): ?>
 					<p>查無此筆紀錄</p>
 				<?php else: ?>
-			        <p>共有<?=$last_num_rows?>筆資產(含<?=$host_num?>個掃描主機,<?=$url_num?>筆掃描網站)！</p>
+			        <p>共有 <?=$last_num_rows?> 筆資產(含 <?=$host_num?> 個掃描主機, <?=$url_num?> 筆掃描網站)！</p>
                     <table class="ui celled table">
                         <thead>
                             <tr>

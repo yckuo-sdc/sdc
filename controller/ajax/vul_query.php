@@ -130,19 +130,19 @@ if ($ap == 'csv') {
 	<?php if ($last_num_rows == 0): ?>
 		很抱歉，該分類目前沒有資料！
 	<?php else: ?>
-		該分類共搜尋到<?=$last_num_rows?>筆資料！
+		該分類共搜尋到 <?=$last_num_rows?> 筆資料！
 		<div class='ui relaxed divided list'>
 		<?php foreach($vuls->data as $vul): ?>
 			<div class='item'>
                 <div class='content'>
                     <a>
-                        <span style='background:#f3c4c4'><?=$vul['type']?></span>&nbsp&nbsp
-                        <?=$vul['flow_id']?>&nbsp&nbsp
-                        <?=str_replace("/臺南市政府/","",$vul['ou'])?>&nbsp&nbsp
-                        <span style='background:#fde087'><?=$vul['system_name']?></span>&nbsp&nbsp
-                        <?=$vul['status']?>&nbsp&nbsp
-                        <span style='background:#DDDDDD'><?=$vul['vitem_name']?></span>&nbsp&nbsp
-                        <?=$vul['scan_no']?>&nbsp&nbsp
+                        <span style='background:#f3c4c4'><?=$vul['type']?></span>&nbsp;&nbsp;
+                        <?=$vul['flow_id']?>&nbsp;&nbsp;
+                        <?=str_replace("/臺南市政府/","",$vul['ou'])?>&nbsp;&nbsp;
+                        <span style='background:#fde087'><?=$vul['system_name']?></span>&nbsp;&nbsp;
+                        <?=$vul['status']?>&nbsp;&nbsp;
+                        <span style='background:#DDDDDD'><?=$vul['vitem_name']?></span>&nbsp;&nbsp;
+                        <?=$vul['scan_no']?>&nbsp;&nbsp;
                         <i class='angle down icon'></i>
                     </a>
                     <div class='description'>

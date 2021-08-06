@@ -4,4 +4,4 @@ foreach ($_GET as $key => $val) {
 }
 
 $ld = new MyLDAP();
-echo $ld->createSingleLevelComputerTree($base, $ou, $description); 
+echo $ld->createSingleLevelUserTree($base, $ou, $description); 

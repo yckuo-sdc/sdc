@@ -28,16 +28,16 @@ $pass_count = $gcb['pass_count'];
 $total_rate = ($total_count != 0) ? round($total_count/$total_count*100,2)."%" : 0; 
 $pass_rate = ($total_count != 0) ? round($pass_count/$total_count*100,2)."%" : 0; 
 
-$sql = "SELECT COUNT(TargetID) as total_count,SUM(CASE WHEN Failed LIKE '0' THEN 1 ELSE 0 END) as pass_count FROM wsus_computer_status";
+$sql = "SELECT COUNT(TargetID) AS total_count, SUM(CASE WHEN Failed LIKE '0' THEN 1 ELSE 0 END) AS pass_count FROM wsus_computer_status";
 $wsus = $db->execute($sql, [])[0];
 $total_wsus_num = $wsus['total_count'];
 $pass_wsus_num = $wsus['pass_count'];
 $table = "wsus_computer_status"; // 設定你想查詢資料的資料表
 $db->query($table, $condition = "LastSyncTime > ADDDATE(NOW(), INTERVAL -1 WEEK) AND 1 = ?", $order_by = "1", $fields = "*", $limit = "", [1]);
 $sync_wsus_num = $db->getLastNumRows();
-$total_wsus_rate = round($total_wsus_num/$total_wsus_num*100,2)."%"; 
-$pass_wsus_rate = round($pass_wsus_num/$total_wsus_num*100,2)."%"; 
-$sync_wsus_rate = round($sync_wsus_num/$total_wsus_num*100,2)."%"; 
+$total_wsus_rate = empty($total_wsus_num) ? 0 : round($total_wsus_num / $total_wsus_num * 100, 2) . "%"; 
+$pass_wsus_rate = empty($total_wsus_num) ? 0 : round($pass_wsus_num / $total_wsus_num * 100, 2) . "%"; 
+$sync_wsus_rate = empty($total_wsus_num) ? 0 : round($sync_wsus_num / $total_wsus_num * 100, 2) . "%"; 
 
 $table = "antivirus_client_list"; 
 $db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "*", $limit = "", [1]);

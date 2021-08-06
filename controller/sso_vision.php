@@ -33,12 +33,12 @@ switch($action){
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("token"=>$encryToken))); 
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("token" => $encryToken))); 
 		$account = trim(curl_exec($ch)); 
 		curl_close($ch);
 		
-		if(empty($account)){
-			header("Location: /error"); 
+		if(empty($account)) {
+			header("Location: error"); 
 		    return ;	
 		}
 
@@ -47,7 +47,7 @@ switch($action){
 		$user = $db->query($table, $condition, $order_by = 1, $fields = "*", $limit = "", [':SSOID'=>$account])[0];
 			
 		if($user['SSOID'] != $account){
-			header("Location: /error");
+			header("Location: error");
 		    return ;	
 		}
 
@@ -56,12 +56,12 @@ switch($action){
 		$_SESSION['account'] = $account;
 		$_SESSION['username'] = $user['UserName'];
 		$_SESSION['level'] = $user['Level'];
-		saveAction($db,'ssoLogin',$_SERVER['REMOTE_ADDR'],$account,$_SERVER['REQUEST_URI']);
+		saveAction($db, 'ssoLogin', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
 		
 		if( !empty($mainpage) && !empty($subpage) ){
-			header("Location: /".$mainpage."/".$subpage."/?sid=".$sid); 
+			header("Location: /" . $mainpage . "/" . $subpage . "/?sid=" . $sid); 
 		}else{	
-			header("Location: /?sid=".$sid); 
+			header("Location: /?sid=" . $sid); 
 		}	
 		
 		break;

@@ -17,7 +17,7 @@ GROUP BY system_name ORDER BY system_name";
 $sql_targets = "SELECT * FROM scanTarget WHERE ou LIKE :ou";
 ?>
 
-共有<?=$rowcount?>個單位,<?=$rowcount_scan?>筆掃描設備(含歷史紀錄)！<br><br>
+共有 <?=$rowcount?> 個單位, <?=$rowcount_scan?> 筆掃描設備(含歷史紀錄)！<br><br>
 <div class='ui cards'>
     <?php foreach($ou_vuls as $ou_vul): ?>
         <?php $details = $db->execute($sql_details, [':ou1' => '/臺南市政府/' . $ou_vul['ou'], ':ou2' => '/臺南市政府/' . $ou_vul['ou'] ]); ?>

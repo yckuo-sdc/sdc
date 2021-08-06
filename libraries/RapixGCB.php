@@ -9,6 +9,9 @@ class RapixGCB {
     public function __construct() {
         $this->host = Rapix::HOST;
         $this->token = $this->getAccessToken(Rapix::APIKEY);
+        if (is_null($this->token)) {
+            exit;
+        }
     }
 
     public function __destruct() {
@@ -71,36 +74,26 @@ class RapixGCB {
     //get token
     private function getAccessToken($apikey) {
         $url = $this->host . "/api/v1/token";
-        $httpHeader = array("Content-Type"=>"application/json");
-        $postField = json_encode(array("key"=>$apikey));
-        $ch = curl_init();
-        $timeout = 5;
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_REFERER, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $httpHeader);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postField); 
-        $response = curl_exec($ch);
-        curl_close($ch);
+        $httpHeader = array("Content-Type: application/json");
+        $postField = json_encode(array("key" => $apikey));
+	    $response = $this->sendHttpRequest($url, $postField, $httpHeader);
 
         if(($data = json_decode($response,true)) == true) {
             $token = $data['token']; 
         }
-        if(isset($token)) {
+
+        if (isset($token)) {
             return $token;
-        }else {
-            return false;
-        }
+        } 
+            
+        return null;
    }
 
-	//send curl request with bearer token 
-	private function sendHttpRequest($url, $postField) {
-        $httpHeader = array("Content-Type: application/json", "Authorization: Bearer ".$this->token);
+	// send http request with bearer token 
+	private function sendHttpRequest($url, $postField, $httpHeader = array()) {
+        if (empty($httpHeader)) {
+            $httpHeader = array("Content-Type: application/json", "Authorization: Bearer ".$this->token);
+        }
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
 		  CURLOPT_URL => $url,

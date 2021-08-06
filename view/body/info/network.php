@@ -63,11 +63,11 @@
 						<tr>
 							<td><?=$entry['dstloc']?></td>
 							<td>
-								<div style='width:<?=$sessions_ratio?>%; background:#78838c'>&nbsp</div>
+								<div style='width:<?=$sessions_ratio?>%; background:#78838c'>&nbsp;</div>
                                 <?=formatNumbers($entry['sessions'])?>
 							</td>
 							<td>
-								<div style='width:<?=$bytes_ratio?>%; background:#78838c'>&nbsp</div>
+								<div style='width:<?=$bytes_ratio?>%; background:#78838c'>&nbsp;</div>
                                 <?=formatBytes($entry['bytes'])?>
 							</td>
 						</tr>

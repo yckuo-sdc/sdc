@@ -23,7 +23,7 @@ $page = isset($page) ? $page : 1;
 $ap = isset($ap) ? $ap : 'html';
 
 $jsonConditions = json_decode($jsonConditions, true);
-$jsonSortsMap = ['ascending' => 'ASC', 'descending' => 'DESC'];
+$jsonSortsMap = array('ascending' => 'ASC', 'descending' => 'DESC');
 
 switch($type){
 	case 'event':
@@ -154,26 +154,27 @@ if ($ap=='csv') {
 	<?php if ($last_num_rows == 0): ?>
 		很抱歉，該分類目前沒有資料！
 	<?php else: ?>
-		該分類共搜尋到<?=$last_num_rows?>筆資料！
+		該分類共搜尋到 <?=$last_num_rows?> 筆資料！
 		<?php switch ($type):
                 case "event": ?> 
+                <?php
+                $icon_map = array(
+                    'Status' => array('已結案' => 'green check circle icon', '未完成' => 'exclamation circle icon')
+                );
+                ?>
                 <div class='ui relaxed divided list'>
                 <?php foreach($entries->data as $event): ?>
                     <div class='item'>
                         <div class='content'>
                             <a>
-                            <?php if($event['Status']=="已結案"): ?>
-                                <i class='check circle icon' style='color:green'></i>
-                            <?php else: ?>
-                                <i class='exclamation circle icon'></i>
-                            <?php endif ?>
-                            <?=date_format(new DateTime($event['OccurrenceTime']),'Y-m-d')?>&nbsp&nbsp
-                            <?=$event['Status']?>&nbsp&nbsp
-                            <span style='background:#fde087'><?=$event['EventTypeName']?></span>&nbsp&nbsp
-                            <?=$event['Location']?>&nbsp&nbsp
-                            <span style='background:#DDDDDD'><?=$event['IP']?></span>&nbsp&nbsp
-                            <?=$event['DeviceOwnerName']?>&nbsp&nbsp
-                            <?=$event['DeviceOwnerPhone']?>&nbsp&nbsp
+                            <i class="<?=$icon_map['Status'][$event['Status']]?>"></i>
+                            <?=date_format(new DateTime($event['OccurrenceTime']),'Y-m-d')?>&nbsp;&nbsp;
+                            <?=$event['Status']?>&nbsp;&nbsp;
+                            <span style='background:#fde087'><?=$event['EventTypeName']?></span>&nbsp;&nbsp;
+                            <?=$event['Location']?>&nbsp;&nbsp;
+                            <span style='background:#DDDDDD'><?=$event['IP']?></span>&nbsp;&nbsp;
+                            <?=$event['DeviceOwnerName']?>&nbsp;&nbsp;
+                            <?=$event['DeviceOwnerPhone']?>&nbsp;&nbsp;
                             <i class='angle down icon'></i>
                             </a>
                             <div class='description'>
@@ -205,18 +206,26 @@ if ($ap=='csv') {
                 </div>
 		        <?php break; ?>
 			<?php case "ncert": ?> 
+                <?php
+                $icon_map = array(
+                    'Status' => array('已結案' => 'green check circle icon', '未完成' => 'exclamation circle icon')
+                );
+                $label_map = array( 
+                    'NccstPT' => array('是' => '<div class="ui label">攻防</div>', '否' => '', '' => '')
+                );
+                ?>
                 <div class='ui relaxed divided list'>
                 <?php foreach($entries->data as $incident): ?>
                     <div class='item'>
                     <div class='content'>
                         <a>
-                        <?php if($incident['Status']=="已結案") { ?><i class='check circle icon' style='color:green'></i>
-                        <?php }else { ?><i class='exclamation circle icon'></i> <?php } ?>
-                        <?=date_format(new DateTime($incident['DiscoveryTime']),'Y-m-d') ?>&nbsp&nbsp
-                        <?=$incident['Status'] ?>&nbsp&nbsp
-                        <span style='background:#DDDDDD'><?=$incident['ImpactLevel'] ?></span>&nbsp&nbsp
-                        <?=$incident['Classification'] ?>&nbsp&nbsp
-                        <span style='background:#fde087'><?=$incident['PublicIP'] ?> </span>&nbsp&nbsp
+                        <i class="<?=$icon_map['Status'][$incident['Status']]?>"></i>
+                        <?=date_format(new DateTime($incident['DiscoveryTime']),'Y-m-d') ?>&nbsp;&nbsp;
+                        <?=$incident['Status'] ?>&nbsp;&nbsp;
+                        <span style='background:#DDDDDD'><?=$incident['ImpactLevel'] ?></span>&nbsp;&nbsp;
+                        <?=$label_map['NccstPT'][$incident['NccstPT']]?>
+                        <?=$incident['Classification'] ?>&nbsp;&nbsp;
+                        <span style='background:#fde087'><?=$incident['PublicIP'] ?> </span>&nbsp;&nbsp;
                         <?=$incident['OrganizationName'] ?>
                         <i class='angle down icon'></i>
                         </a>
@@ -266,18 +275,19 @@ if ($ap=='csv') {
                 $db->query($table, $condition, $order_by = "1", $fields, $limit = "", $data_array);
                 $oid_num = $db->getLastNumRows();
 		        ?>
-                該分類共搜尋到<?=$oid_num?>個機關！
+                該分類共搜尋到 <?=$oid_num?> 個機關！
                 <div class='ui relaxed divided list'>
                 <?php foreach($entries->data as $contact): ?>
+                    <?php $text_ext = empty($contact['ext']) ? "" : "#" . $contact['ext']; ?>
                     <div class='item'>
                     <div class='content'>
                         <a>
-                        <?=$contact['organization']?>&nbsp&nbsp
-                        <?php if( !empty($contact['rank'] )) ?><span style='color:#f80000'><?=$contact['rank']?></span>&nbsp&nbsp
-                        <?=$contact['person_name']?>&nbsp&nbsp
-                        <span style='background:#fde087'><?=$contact['person_type']?></span>&nbsp&nbsp
-                        <?=$contact['email']?>&nbsp&nbsp
-                        <span style='background:#DDDDDD'><?=$contact['tel']."#".$contact['ext']?></span>&nbsp&nbsp
+                        <?=$contact['organization']?>&nbsp;&nbsp;
+                        <?php if( !empty($contact['rank'] )) ?><span style='color:#f80000'><?=$contact['rank']?></span>&nbsp;&nbsp;
+                        <?=$contact['person_name']?>&nbsp;&nbsp;
+                        <span style='background:#fde087'><?=$contact['person_type']?></span>&nbsp;&nbsp;
+                        <?=$contact['email']?>&nbsp;&nbsp;
+                        <span style='background:#DDDDDD'><?=$contact['tel'] . $text_ext?></span>&nbsp;&nbsp;
                         <i class='angle down icon'></i>
                         </a>
                         <div class='description'>
@@ -304,20 +314,20 @@ if ($ap=='csv') {
                 <?php break; ?>
 			<?php case "drip": ?>
                 <?php
-                $state_icon_map = [
-                    'type' => ['computer' => 'desktop icon', 'device' => 'hdd icon'],
-                    'ad' => ['outline circle icon', 'yellow circle icon'],
-                    'gcb' => ['outline circle icon', 'green circle icon'],
-                    'wsus' => ['outline circle icon', 'red circle icon'],
-                    'antivirus' => ['outline circle icon', 'blue circle icon'],
-                    'edr' => [ 'outline circle icon', 'brown circle icon']
-                ];
+                $state_icon_map = array( 
+                    'type' => array('computer' => 'desktop icon', 'device' => 'hdd icon'),
+                    'ad' => array('outline circle icon', 'yellow circle icon'),
+                    'gcb' => array('outline circle icon', 'green circle icon'),
+                    'wsus' => array('outline circle icon', 'red circle icon'),
+                    'antivirus' => array('outline circle icon', 'blue circle icon'),
+                    'edr' => array('outline circle icon', 'brown circle icon')
+                );
                 $condition = $condition." AND type LIKE 'computer' ";
                 $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", $data_array);
                 $pc_num = $db->getLastNumRows();
                 $device_num = $last_num_rows - $pc_num;
 		        ?>
-                (含<?=$pc_num?>個公務電腦, <?=$device_num?>個設備)
+                (含 <?=$pc_num?> 個公務電腦, <?=$device_num?> 個設備)
                 <div class='ui relaxed divided list'>
                 <?php foreach($entries->data as $client): ?>
                     <div class='item'>
@@ -328,13 +338,13 @@ if ($ap=='csv') {
                                 <i class="<?=$state_icon_map['wsus'][$client['wsus']]?>"></i>
                                 <i class="<?=$state_icon_map['antivirus'][$client['antivirus']]?>"></i>
                                 <i class="<?=$state_icon_map['edr'][$client['edr']]?>"></i>
-                                <?=$client['DetectorName']?>&nbsp&nbsp
-                                <span style='background:#fde087'><?=$client['IP']?></span>&nbsp&nbsp
+                                <?=$client['DetectorName']?>&nbsp;&nbsp;
+                                <span style='background:#fde087'><?=$client['IP']?></span>&nbsp;&nbsp;
                                 <i class="<?=$state_icon_map['type'][$client['type']]?>"></i>
-                                <?=$client['ClientName']?>&nbsp&nbsp
-                                <span style='background:#fbc5c5'><?=$client['OrgName']?></span>&nbsp&nbsp
-                                <?=$client['Owner']?>&nbsp&nbsp
-                                <?=$client['UserName']?>&nbsp&nbsp
+                                <?=$client['ClientName']?>&nbsp;&nbsp;
+                                <span style='background:#fbc5c5'><?=$client['OrgName']?></span>&nbsp;&nbsp;
+                                <?=$client['Owner']?>&nbsp;&nbsp;
+                                <?=$client['UserName']?>&nbsp;&nbsp;
                                 <i class='angle down icon'></i>
                             </a>
                             <div class='description'>
@@ -372,29 +382,36 @@ if ($ap=='csv') {
                 </div>
                 <?php break; ?>
 			<?php case "gcb": ?>
-                <?php $GsStatMap = array('0' => '未套用', '1' => '已套用', '-1' => '套用失敗', '2' => '還原成功', '-2' => '還原失敗'); ?>
+                <?php 
+                $GsStatMap = array(
+                    '0' => '未套用',
+                    '1' => '已套用',
+                    '-1' => '套用失敗',
+                    '2' => '還原成功',
+                    '-2' => '還原失敗'
+                );                
+                $icon_map = array(
+                    'IsOnline' =>  array('1' => 'green circle icon', '' => 'circle outline icon')
+                );
+                ?>
                 <div class='ui relaxed divided list'>
                 <?php foreach($entries->data as $client): ?>
                     <div class='item'>
                     <div class='content'>
                         <a>
-                        <?php if($client['IsOnline'] == "1"): ?>
-                            <i class='circle green icon'></i>
-                        <?php else: ?>
-                            <i class='circle outline icon'></i>
-                        <?php endif ?>
-                        <?=$client['Name']?>&nbsp&nbsp
-                        <span style='background:#fde087'><?=$client['OrgName']?></span>&nbsp&nbsp
-                        <?=$client['UserName']?>&nbsp&nbsp
-                        <?=$client['Owner']?>&nbsp&nbsp
-                        <span style='background:#DDDDDD'><?=long2ip($client['InternalIP'])?></span>&nbsp&nbsp
-                        <?=$client['os_name']?>&nbsp&nbsp
-                        <span style='background:#fbc5c5'><?=$client['GsPass']?>%</span>&nbsp&nbsp
+                        <i class="<?=$icon_map['IsOnline'][$client['IsOnline']]?>"></i>
+                        <?=$client['Name']?>&nbsp;&nbsp;
+                        <span style='background:#fde087'><?=$client['OrgName']?></span>&nbsp;&nbsp;
+                        <?=$client['UserName']?>&nbsp;&nbsp;
+                        <?=$client['Owner']?>&nbsp;&nbsp;
+                        <span style='background:#DDDDDD'><?=long2ip($client['InternalIP'])?></span>&nbsp;&nbsp;
+                        <?=$client['os_name']?>&nbsp;&nbsp;
+                        <span style='background:#fbc5c5'><?=$client['GsPass']?>%</span>&nbsp;&nbsp;
                         <i class='angle down icon'></i>
                         </a>
                         <div class='description'>
                             <ol>
-                            <li><a href='/ajax/gcb_detail/?action=detail&id=<?=$client['ID']?>' target='_blank'>序號: <?=$client['ID']?>(用戶端資訊)&nbsp<i class='external alternate icon'></i></a></li>
+                            <li><a href='/ajax/gcb_detail/?action=detail&id=<?=$client['ID']?>' target='_blank'>序號: <?=$client['ID']?>(用戶端資訊)&nbsp;<i class='external alternate icon'></i></a></li>
                             <li>外部IP: <?=long2ip($client['ExternalIP'])?></li>
                             <li>內部IP: <?=long2ip($client['InternalIP'])?></li>
                             <li>電腦名稱: <?=$client['Name']?></li>
@@ -410,7 +427,7 @@ if ($ap=='csv') {
                             <li>gcb總通過數[未包含例外]: <?=$client['GsAll_0']?></li>
                             <li>gcb例外數量: <?=$client['GsExcTot']?></li>
                             <li>gcb通過率: <?=$client['GsPass']?>%</li>
-                            <li><a href='/ajax/gcb_detail/?action=gscan&id=<?=$client['GsID']?>' target='_blank'>gcb掃描編號: <?=$client['GsID']?>(掃描結果資訊)&nbsp<i class='external alternate icon'></i></a></li>
+                            <li><a href='/ajax/gcb_detail/?action=gscan&id=<?=$client['GsID']?>' target='_blank'>gcb掃描編號: <?=$client['GsID']?>(掃描結果資訊)&nbsp;<i class='external alternate icon'></i></a></li>
                             <li>gcb派送編號: <?=$client['GsSetDeployID']?></li>
                             <li>gcb狀態: <?=$GsStatMap[$client['GsStat']]?></li>
                             <li>gcb回報時間: <?=$client['GsUpdatedAt']?></li>
@@ -436,10 +453,10 @@ if ($ap=='csv') {
                         <div class='item'>
                             <div class='content'>
                                 <a>
-                                <?=strtoupper(str_replace(".tainan.gov.tw","",$client['FullDomainName']))?>&nbsp&nbsp
-                                <span style='background:#fde087'><?=$client['IPAddress']?></span>&nbsp&nbsp
-                                <span style='background:#DDDDDD'><?=$client['NotInstalled']?></span>&nbsp&nbsp
-                                <span style='background:#fbc5c5'><?=$client['Failed']?></span>&nbsp&nbsp
+                                <?=strtoupper(str_replace(".tainan.gov.tw","",$client['FullDomainName']))?>&nbsp;&nbsp;
+                                <span style='background:#fde087'><?=$client['IPAddress']?></span>&nbsp;&nbsp;
+                                <span style='background:#DDDDDD'><?=$client['NotInstalled']?></span>&nbsp;&nbsp;
+                                <span style='background:#fbc5c5'><?=$client['Failed']?></span>&nbsp;&nbsp;
                                 <?=$client['OSDescription']?>
                                 <i class='angle down icon'></i>
                                 </a>
@@ -477,20 +494,25 @@ if ($ap=='csv') {
                 </div>
                 <?php break; ?>
 			<?php case "antivirus": ?>
+                <?php
+                $icon_map = array(
+                    'ConnectionState' =>  array('線上' => 'green circle icon', '離線' => 'circle outline icon')
+                );
+                ?>
+                
                 <div class='ui relaxed divided list'>
                 <?php foreach($entries->data as $client): ?>
                     <div class='item'>
                         <div class='content'>
                             <a>
-                            <?php if($client['ConnectionState'] == "線上"){ ?> <i class='circle green icon'></i>
-                            <?php } else{ ?> <i class='circle outline icon'></i> <?php } ?>
-                            <?=$client['ClientName']?>&nbsp&nbsp
-                            <span style='background:#fde087'><?=$client['IP']?></span>&nbsp&nbsp
-                            <span style='background:#fbc5c5'><?=$client['OS']?></span>&nbsp&nbsp
-                            <?=$client['VirusNum']?>&nbsp&nbsp
-                            <?=$client['SpywareNum']?>&nbsp&nbsp
-                            <span style='background:#DDDDDD'><?=$client['VirusPatternVersion']?></span>&nbsp&nbsp
-                            <?=$client['LogonUser']?>&nbsp&nbsp
+                            <i class="<?=$icon_map['ConnectionState'][$client['ConnectionState']]?>"></i>   
+                            <?=$client['ClientName']?>&nbsp;&nbsp;
+                            <span style='background:#fde087'><?=$client['IP']?></span>&nbsp;&nbsp;
+                            <span style='background:#fbc5c5'><?=$client['OS']?></span>&nbsp;&nbsp;
+                            <?=$client['VirusNum']?>&nbsp;&nbsp;
+                            <?=$client['SpywareNum']?>&nbsp;&nbsp;
+                            <span style='background:#DDDDDD'><?=$client['VirusPatternVersion']?></span>&nbsp;&nbsp;
+                            <?=$client['LogonUser']?>&nbsp;&nbsp;
                             <i class='angle down icon'></i>
                             </a>
                             <div class='description'>
@@ -519,12 +541,12 @@ if ($ap=='csv') {
                 <?php break; ?>
 			<?php case "edr": ?>
                <?php
-                $state_icon_map = [
+                $state_icon_map = array(
                     '連線中' => 'green circle icon',
                     '離線中' => 'circle outline icon',
                     '暫停監控' => 'pause icon',
                     'INIT' => 'dot circle outline icon'
-                ];
+                );
                 $edrs = array();
                 foreach($entries->data as $entry){
                     $table = "edr_ips";
@@ -554,14 +576,14 @@ if ($ap=='csv') {
                         <div class='item'>
                             <div class='content'>
                                 <a>
-                                    <i class='<?=$entry['icon']?>'></i>&nbsp&nbsp
-                                    <?=$entry['host_name']?>&nbsp&nbsp
-                                    <span style='background:#fde087'><?=$entry['state']?></span>&nbsp&nbsp
-                                    <?=$entry['os']?>&nbsp&nbsp
+                                    <i class='<?=$entry['icon']?>'></i>&nbsp;&nbsp;
+                                    <?=$entry['host_name']?>&nbsp;&nbsp;
+                                    <span style='background:#fde087'><?=$entry['state']?></span>&nbsp;&nbsp;
+                                    <?=$entry['os']?>&nbsp;&nbsp;
                                     <?php foreach($entry['ip_array'] as $ip_entry): ?>
-                                        <span style='background:#DDDDDD'><?=$ip_entry['ip']?></span>&nbsp&nbsp
+                                        <span style='background:#DDDDDD'><?=$ip_entry['ip']?></span>&nbsp;&nbsp;
                                     <?php endforeach ?>
-                                    <?=$entry['total_number']?>&nbsp&nbsp
+                                    <?=$entry['total_number']?>&nbsp;&nbsp;
                                     <i class='angle down icon'></i>
                                 </a>
                                 <div class='description'>
@@ -569,7 +591,7 @@ if ($ap=='csv') {
                                         <li>序號: <?=$entry['id']?></li>
                                         <li>IP: 
                                             <?php foreach($entry['ip_array'] as $ip_entry): ?>
-                                                <?=$ip_entry['ip']?>&nbsp
+                                                <?=$ip_entry['ip']?>&nbsp;
                                             <?php endforeach ?>
                                          </li>  
                                         <li>主機名稱: <?=$entry['host_name']?></li>

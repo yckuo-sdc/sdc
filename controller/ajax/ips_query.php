@@ -71,7 +71,7 @@ $log_type_map = ['traffic', 'threat', 'data'];
 for($i=0; $i<count($log_type_map); $i++){
 	$data = $pa->getLogList($log_type = $log_type_map[$i], $dir, $nlogs, $skip, $query);
 ?>
-    該分類分頁共搜尋到<?=$data['log_count']?>筆資料！
+    該分類分頁共搜尋到 <?=$data['log_count']?> 筆資料！
 	<div class='ui relaxed divided list'>
 		 <div class='item'>
 			<div class='content'>
@@ -82,20 +82,20 @@ for($i=0; $i<count($log_type_map); $i++){
 			<div class='item'>
 			<div class='content'>
 			<a>
-			<?=$log->receive_time?>&nbsp&nbsp
-			<span style='background:#fde087'><?=$log->rule?></span>&nbsp&nbsp
-			<?=$log->src?>&nbsp&nbsp
-			<span style='background:#dddddd'><?=$log->dst?></span>&nbsp&nbsp
-			<?=$log->dport?>&nbsp&nbsp
-			<?=$log->app?>&nbsp&nbsp
-			<span style='background:#fbc5c5'><?=$log->subtype?></span>&nbsp&nbsp
-			<?=$log->action?>&nbsp&nbsp
+			<?=$log->receive_time?>&nbsp;&nbsp;
+			<span style='background:#fde087'><?=$log->rule?></span>&nbsp;&nbsp;
+			<?=$log->src?>&nbsp;&nbsp;
+			<span style='background:#dddddd'><?=$log->dst?></span>&nbsp;&nbsp;
+			<?=$log->dport?>&nbsp;&nbsp;
+			<?=$log->app?>&nbsp;&nbsp;
+			<span style='background:#fbc5c5'><?=$log->subtype?></span>&nbsp;&nbsp;
+			<?=$log->action?>&nbsp;&nbsp;
 			<i class='angle down icon'></i>
 			</a>
 			<div class='description'>
 				<ol>
 				<?php foreach($log as $keyindex => $val): ?>
-					<li><?=$keyindex?>:&nbsp<?=$val?></li>
+					<li><?=$keyindex?>:&nbsp;<?=$val?></li>
 				<?php endforeach ?>
 				</ol>
 			</div>

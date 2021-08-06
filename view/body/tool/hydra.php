@@ -8,7 +8,7 @@
 				<div class="post_cell">
 				<form class="ui form" action="">
 			    	<div class="field">
-						<label>Target(IP or Domain name)</label>
+						<label>Target( IP or Domain name )</label>
 						<div class="ui input">
 							<?php $target = "192.168.100.127";?>
 							<input type="text" name="target" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">

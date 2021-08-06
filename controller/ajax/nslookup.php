@@ -8,6 +8,6 @@ foreach($_GET as $getkey => $val){
 	$$getkey = escapeshellcmd($val);
 }
 
-$output = shell_exec("/usr/bin/nslookup $target");
+$output = shell_exec("/usr/bin/nslookup $target $server");
 echo "<pre>$output</pre>";
 system("killall -q nslookup");	//kill the task

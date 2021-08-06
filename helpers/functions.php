@@ -10,11 +10,11 @@ function isLogin(){
 	
 	if(isset($_COOKIE['rememberme'])){	//使用者選擇記住登入狀態
 		$SECRET_KEY = "security";
-		list ($user, $token, $UserName, $Level, $mac) = explode(':', $_COOKIE['rememberme']);
-		if (hash_equals(hash_hmac('sha256', $user . ':' . $token .':'. $UserName . ':' . $Level, $SECRET_KEY), $mac)) {	//使用者名稱和密碼對了，把使用者的個人資料放到session裡面 
+		list ($user, $token, $userName, $level, $mac) = explode(':', $_COOKIE['rememberme']);
+		if (hash_equals(hash_hmac('sha256', $user . ':' . $token .':'. $userName . ':' . $level, $SECRET_KEY), $mac)) {	//使用者名稱和密碼對了，把使用者的個人資料放到session裡面 
 			$_SESSION['account'] = $user;   
-			$_SESSION['UserName'] = $UserName;
-			$_SESSION['Level'] = $Level;
+			$_SESSION['username'] = $userName;
+			$_SESSION['level'] = $level;
 			$db = Database::get();
 			saveAction($db,'rememberLogin',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],$_SERVER['REQUEST_URI']);
 			return true;	
@@ -177,6 +177,46 @@ function isDisable($useraccountcontrol){
 	}
 }
 
+function getUACDescription($useraccountcontrol){
+    $UAC_flag_array = array(
+        array('property' => 'SCRIPT', 'hex_value' => '0x0001', 'dec_value' => '1'),
+		array('property' => 'ACCOUNTDISABLE', 'hex_value' => '0x0002', 'dec_value' => '2'),
+		array('property' => 'HOMEDIR_REQUIRED', 'hex_value' => '0x0008', 'dec_value' => '8'),
+		array('property' => 'LOCKOUT', 'hex_value' => '0x0010', 'dec_value' => '16'),
+		array('property' => 'PASSWD_NOTREQD', 'hex_value' => '0x0020', 'dec_value' => '32'),
+		array('property' => 'PASSWD_CANT_CHANGE', 'hex_value' => '0x0040', 'dec_value' => '64'),
+		array('property' => 'ENCRYPTED_TEXT_PWD_ALLOWED', 'hex_value' => '0x0080', 'dec_value' => '128'),
+		array('property' => 'TEMP_DUPLICATE_ACCOUNT', 'hex_value' => '0x0100', 'dec_value' => '256'),
+		array('property' => 'NORMAL_ACCOUNT', 'hex_value' => '0x0200', 'dec_value' => '512'),
+		array('property' => 'INTERDOMAIN_TRUST_ACCOUNT', 'hex_value' => '0x0800', 'dec_value' => '2048'),
+		array('property' => 'WORKSTATION_TRUST_ACCOUNT', 'hex_value' => '0x1000', 'dec_value' => '4096'),
+		array('property' => 'SERVER_TRUST_ACCOUNT', 'hex_value' => '0x2000', 'dec_value' => '8192'),
+		array('property' => 'DONT_EXPIRE_PASSWORD', 'hex_value' => '0x10000', 'dec_value' => '65536'),
+		array('property' => 'MNS_LOGON_ACCOUNT', 'hex_value' => '0x20000', 'dec_value' => '131072'),
+		array('property' => 'SMARTCARD_REQUIRED', 'hex_value' => '0x40000', 'dec_value' => '262144'),
+		array('property' => 'TRUSTED_FOR_DELEGATION', 'hex_value' => '0x80000', 'dec_value' => '524288'),
+		array('property' => 'NOT_DELEGATED', 'hex_value' => '0x100000', 'dec_value' => '1048576'),
+		array('property' => 'USE_DES_KEY_ONLY', 'hex_value' => '0x200000', 'dec_value' => '2097152'),
+		array('property' => 'DONT_REQ_PREAUTH', 'hex_value' => '0x400000', 'dec_value' => '4194304'),
+		array('property' => 'PASSWORD_EXPIRED', 'hex_value' => '0x800000', 'dec_value' => '8388608'),
+		array('property' => 'TRUSTED_TO_AUTH_FOR_DELEGATION', 'hex_value' => '0x1000000', 'dec_value' => '16777216'),
+		array('property' => 'PARTIAL_SECRETS_ACCOUNT', 'hex_value' => '0x04000000', 'dec_value' => '67108864'),
+	);
+
+    // convert string to int base 10 
+    $useraccountcontrol = intval($useraccountcontrol);
+    // convert base 10 to base 16
+	$hexValue = intval($useraccountcontrol, 16);
+
+	$filtered_array = array_filter($UAC_flag_array, function($value) use(&$hexValue) {
+		return intval($value['hex_value'], 16) & $hexValue;	
+	});
+	
+    $property_array = array_column($filtered_array, 'property');
+
+    return implode(" | ", $property_array);
+}
+
 function formatBytes($bytes, $precision = 1) { 
     $units = array('B', 'KB', 'MB', 'GB', 'TB'); 
     $bytes = (int) $bytes;
@@ -241,5 +281,20 @@ function breadcrumbs($separator = ' &raquo; ', $home = 'Home') {
     // Build our temporary array (pieces of bread) into one big string :)
     return implode($separator, $breadcrumbs);
 }
+
+function createWebadMessageBox($result, $label) {
+    $html = "";
+    if ($result == '"1."') {
+        $html .= "<div class='ui info message'>";
+	    $html .= $label . " 執行結果: ". $result;
+		$html .= "</div>";
+    } else {
+        $html .= "<div class='ui negative message'>";
+	    $html .= $label . " 執行結果: ". $result;
+		$html .= "</div>";
+    }
+    return $html;
+}
+
 
 
