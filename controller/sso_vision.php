@@ -56,7 +56,7 @@ switch($action){
 		$_SESSION['account'] = $account;
 		$_SESSION['username'] = $user['UserName'];
 		$_SESSION['level'] = $user['Level'];
-		saveAction($db, 'ssoLogin', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
+		saveAction($db, 'ssoLogin', Ip::get(), $account, $_SERVER['REQUEST_URI']);
 		
 		if( !empty($mainpage) && !empty($subpage) ){
 			header("Location: /" . $mainpage . "/" . $subpage . "/?sid=" . $sid); 

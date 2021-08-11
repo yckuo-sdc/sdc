@@ -58,7 +58,7 @@ if($validated_data === false) {
 				$_SESSION['username'] = $username;
 				$_SESSION['level'] = $level;
 
-				saveAction($db,'login', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
+				saveAction($db,'login', Ip::get(), $account, $_SERVER['REQUEST_URI']);
 
 				if(isset($remember) && !empty($remember)) {
 					$SECRET_KEY = "security";
@@ -86,7 +86,7 @@ if($validated_data === false) {
 				$_SESSION['username'] = $username;
 				$_SESSION['level'] = $level;
 
-				saveAction($db,'login', $_SERVER['REMOTE_ADDR'], $account, $_SERVER['REQUEST_URI']);
+				saveAction($db,'login', Ip::get(), $account, $_SERVER['REQUEST_URI']);
 
 				if (!empty($remember)) {
 					$SECRET_KEY = "security";

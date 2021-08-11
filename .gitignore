@@ -7,6 +7,8 @@
 /TODO
 # 忽略config/目錄下所有檔案
 config/
+# 忽略upload/目錄下所有檔案
+upload/
 # 忽略vendor/目錄下所有檔案
 /vendor/
 # 忽略doc/notes.txt但不包含doc/server/arch.txt

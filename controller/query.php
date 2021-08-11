@@ -5,7 +5,7 @@ if(!isLogin()){
 	return;
 }	
 
-saveAction($db, 'pageSwitch', $_SERVER['REMOTE_ADDR'], $_SESSION['account'], $_SERVER['REQUEST_URI']);
+saveAction($db, 'pageSwitch', Ip::get(), $_SESSION['account'], $_SERVER['REQUEST_URI']);
 
 $subpage = strtolower($route->getParameter(2));
 $controller_array = scandir('controller/query');
