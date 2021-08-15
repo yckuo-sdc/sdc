@@ -3,13 +3,12 @@ if(empty($_GET)){
 	return;
 }	
 
-$db = Database::get();
 $apcode = 'sdc-iss';
 
-if(!isset($_GET["action"])){
+if (!isset($_GET['action'])) {
 	$action = "";
-}else{				
-	$action = $_GET["action"];
+} else {				
+	$action = $_GET['action'];
 }
 
 switch($action){
@@ -19,7 +18,7 @@ switch($action){
 		echo "logout";
 		break;
 	default:
-		$srcToken = $_GET["token"];
+		$srcToken = $_GET['token'];
 		
 		$mainpage = strtolower($route->getParameter(2));
 		$subpage = strtolower($route->getParameter(3));
@@ -46,7 +45,7 @@ switch($action){
 		$condition = "SSOID = :SSOID";
 		$user = $db->query($table, $condition, $order_by = 1, $fields = "*", $limit = "", [':SSOID'=>$account])[0];
 			
-		if($user['SSOID'] != $account){
+		if ($user['SSOID'] != $account) {
 			header("Location: error");
 		    return ;	
 		}
@@ -56,11 +55,11 @@ switch($action){
 		$_SESSION['account'] = $account;
 		$_SESSION['username'] = $user['UserName'];
 		$_SESSION['level'] = $user['Level'];
-		saveAction($db, 'ssoLogin', Ip::get(), $account, $_SERVER['REQUEST_URI']);
+        $userAction->logger('ssoLogin', $_SERVER['REQUEST_URI']); 
 		
-		if( !empty($mainpage) && !empty($subpage) ){
+		if( !empty($mainpage) && !empty($subpage) ) {
 			header("Location: /" . $mainpage . "/" . $subpage . "/?sid=" . $sid); 
-		}else{	
+		} else {	
 			header("Location: /?sid=" . $sid); 
 		}	
 		

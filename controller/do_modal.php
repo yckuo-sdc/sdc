@@ -1,5 +1,5 @@
 <?php
-if(!isLogin() || !isset($_POST['EventID'])) {
+if(!$userValidator->isLogin() || !isset($_POST['EventID'])) {
 	header("Location: /logout"); 
 	return;
 }

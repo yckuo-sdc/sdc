@@ -11,3 +11,6 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);  //Loads environment variable
 $dotenv->load();
 
 $db = Database::get();
+
+$userValidator = new UserValidator();
+$userAction = new UserAction();

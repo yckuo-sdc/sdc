@@ -333,7 +333,7 @@ class MyLDAP {
         return $description;
     }
 
-    public function loginVerification($data_array = array(), &$user_attributes){
+    public function verifyUser($data_array = array(), &$user_attributes){
         if(empty($data_array)) return false;
         $base = $data_array['base'];
         $account = $data_array['account'];

@@ -22,7 +22,7 @@ switch ($type) {
 		if (!empty($isActive)) {
 			$res = $ad->changeState($cn, 'false', $isActive, 'false');
             echo createWebadMessageBox($res, "changeState");
-			saveAction($db, 'callFunction', Ip::get(), $_SESSION['account'], 'ad/change_user_state(account='.$cn.')res='.$res);
+			$userAction->logger('callFunction', 'ad/change_user_state(account=' . $cn . ')res=' . $res);
 		}
 
 		if (!empty($moveOU)) {
@@ -30,12 +30,12 @@ switch ($type) {
 			$ou = $ou[0];	
 			$res = $ad->changeUserOU($cn,$ou);
             echo createWebadMessageBox($res, "changeUserOU");
-			saveAction($db, 'callFunction', Ip::get(), $_SESSION['account'], 'ad/change_user_ou(account='.$cn.')res='.$res);
+			$userAction->logger('callFunction', 'ad/change_user_ou(account=' . $cn . ')res=' . $res);
 		}
 
 		$res = $ad->editUser($cn, $new_password, $displayname, $title, $telephonenumber, $physicaldeliveryofficename, $mail, $isActive);
         echo createWebadMessageBox($res, "editUser");
-		saveAction($db, 'callFunction', Ip::get(), $_SESSION['account'], 'ad/edit_user(account='.$cn.')res='.$res);
+		$userAction->logger('callFunction', 'ad/edit_user(account=' . $cn . ')res=' . $res);
 
 		break;
 	case "newuser":
@@ -48,13 +48,13 @@ switch ($type) {
 		$ou = $ou[0];	
 		$res = $ad->insertUser($cn, $new_password, $displayname, $title, $telephonenumber, $physicaldeliveryofficename, $mail, $ou);
         echo createWebadMessageBox($res, "insertUser");
-		saveAction($db, 'callFunction', Ip::get(), $_SESSION['account'], 'ad/new_user(account='.$cn.')res='.$res);
+		$userAction->logger('callFunction', 'ad/new_user(account=' . $cn . ')res=' . $res);
 		break;
 	case "changecomputer":
 		if (!empty($isActive)) {
 			$res = $ad->changeState($cn, 'false', $isActive, 'false');
             echo createWebadMessageBox($res, "changeState");
-			saveAction($db, 'callFunction', Ip::get(), $_SESSION['account'], 'ad/change_user_state(account='.$cn.')res='.$res);
+			$userAction->logger('callFunction', 'ad/change_user_state(account=' . $cn . ')res=' . $res);
             if($res != '"1."'){
                 $error[] = $res;
             }
@@ -64,7 +64,7 @@ switch ($type) {
 			$ou = $ou[0];	
 			$res = $ad->changeComputerOU($cn, $ou, $isYonghua);
             echo createWebadMessageBox($res, "changeComputerOU");
-			saveAction($db, 'callFunction', Ip::get(), $_SESSION['account'], 'ad/change_computer_ou(account='.$cn.')res='.$res);
+			$userAction->logger('callFunction', 'ad/change_computer_ou(account=' . $cn . ')res=' . $res);
             if($res != '"1."'){
                 $error[] = $res;
             }
@@ -75,14 +75,14 @@ switch ($type) {
         $upperou = $upperou[0];	
 		$res = $ad->editOU($upperou, $name, $description);
         echo createWebadMessageBox($res, "editOU");
-		saveAction($db, 'callFunction', Ip::get(), $_SESSION['account'], 'ad/edit_ou(name='.$name.')res='.$res);
+		$userAction->logger('callFunction', 'ad/edit_ou(name=' . $name . ')res=' . $res);
 		break;
 	case "newou":
         $upperou = explode("(", $upperou);
         $upperou = $upperou[0];	
 		$res = $ad->insertOU($upperou, $name, $description);
         echo createWebadMessageBox($res, "insertOU");
-		saveAction($db, 'callFunction', Ip::get(), $_SESSION['account'], 'ad/insert_ou(name='.$name.')res='.$res);
+		$userAction->logger('callFunction', 'ad/insert_ou(name=' . $name . ')res=' . $res);
 		break;
     default:
 }

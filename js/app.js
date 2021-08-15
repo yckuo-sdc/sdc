@@ -492,24 +492,24 @@ $(document).ready(function(){
 		$(this).closest('.message').transition('fade');
 	});
 
-	$("#upload_Form").on('submit',(function(e){
+	$("#upload_Form").on('submit', function(e) {
 		$.ajax({
 			url: "/ajax/upload_contact/",
 			type: "POST",
 			data:  new FormData(this),
 			contentType: false,
 			cache: false,
-			processData:false,
-			success: function(data){
-                if(ajax_check_user_logged_in(data)){
-                    $(".retrieve_ncert").html(data);
-                }
-			},
-			error: function(){
-			}               
-		});
+			processData: false,
+		})
+        .done(function(data) {
+            $(".retrieve_ncert").html(data);
+        })
+        .fail(function(jqXHR) {
+            ajax_check_user_logged_out(jqXHR);
+        });
+
 		e.preventDefault();
-    }));	
+    });	
 
 	// mobile launch button
 	$('#example .fixed.main.menu .item.launch').on('click', function(){
@@ -621,14 +621,13 @@ function do_ldap_ajax(form) {
 		 dataType:'html',
 		 type:'GET',
 		 data:input,
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-            if(ajax_check_user_logged_in(data)){
-                form.html(data);
-		    }
-         }
-	});
+	})
+    .done(function(data) {
+        form.html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
 }
 
 function query_ajax(parameter) {
@@ -706,14 +705,13 @@ function query_ajax(parameter) {
 			 dataType:'html',
 			 type:'GET',
 			 data: input,
-			 error: function(xhr) {
-				 alert('Ajax failed');
-			 },success: function(data) {
-                if(ajax_check_user_logged_in(data)){
-				    $(selector + '.record_content').html(data);
-			    }
-            }
-		});
+		})
+        .done(function(data) {
+            $(selector + '.record_content').html(data);
+        })
+        .fail(function(jqXHR) {
+            ajax_check_user_logged_out(jqXHR);
+        });
 	}
  }
 
@@ -733,14 +731,13 @@ function query_pagination_ajax(parameter) {
 		 dataType:'html',
 		 type:'GET',
 		 data: parameter,
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-            if(ajax_check_user_logged_in(data)){
-                $(selector + '.record_content').html(data);
-            }
-		 }
-	});
+	})
+    .done(function(data) {
+        $(selector + '.record_content').html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
  }
 
 function vul_query_ajax(parameter) {
@@ -829,13 +826,12 @@ function vul_query_ajax(parameter) {
              dataType:'html',
              type:'GET',
              data: input,
-             error: function(xhr) {
-                 alert('Ajax failed');
-             },success: function(data) {
-                if(ajax_check_user_logged_in(data)){
-                    $(selector + '.record_content').html(data);
-                }
-             }
+        })
+        .done(function(data) {
+            $(selector + '.record_content').html(data);
+        })
+        .fail(function(jqXHR) {
+            ajax_check_user_logged_out(jqXHR);
         });
     }
 
@@ -850,14 +846,13 @@ function vul_query_pagination_ajax(data_array) {
 		 dataType:'html',
 		 type:'GET',
 		 data: data_array,
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-            if(ajax_check_user_logged_in(data)){
-			    $(selector + '.record_content').html(data);
-            }
-		 }
-	});
+	})
+    .done(function(data) {
+        $(selector + '.record_content').html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
 }
 
 function ips_query_ajax(parameter) {
@@ -925,15 +920,14 @@ function ips_query_ajax(parameter) {
 		 dataType: 'html',
 		 type: 'GET',
 		 data: input,
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-			$(selector + '.ui.inline.loader').removeClass('active');
-            if(ajax_check_user_logged_in(data)){
-                $(selector + '.record_content').html(data);
-            }
-		 }
-	});
+	})
+    .done(function(data) {
+        $(selector + '.ui.inline.loader').removeClass('active');
+        $(selector + '.record_content').html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
 }
 
 function ips_query_pagination_ajax(data_array) {
@@ -946,15 +940,14 @@ function ips_query_pagination_ajax(data_array) {
 		 dataType:'html',
 		 type:'GET',
 		 data: data_array,
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-			 $(selector + '.ui.inline.loader').removeClass('active');
-             if(ajax_check_user_logged_in(data)){
-			    $(selector + '.record_content').html(data);
-             }
-		 }
-	});
+	})
+    .done(function(data) {
+        $(selector + '.ui.inline.loader').removeClass('active');
+        $(selector + '.record_content').html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
  }
 
 function retrieve_ou_vul_ajax() {
@@ -966,15 +959,14 @@ function retrieve_ou_vul_ajax() {
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-			 $(selector + '.ui.inline.loader').removeClass('active');
-             if(ajax_check_user_logged_in(data)){
-			    $(selector + '.ou_vs_content').html(data);
-             }
-		 }
-	});
+	})
+    .done(function(data) {
+        $(selector + '.ui.inline.loader').removeClass('active');
+        $(selector + '.ou_vs_content').html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
  }
 
 function fetch_data_ajax(type) {
@@ -985,15 +977,14 @@ function fetch_data_ajax(type) {
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-            $('.ui.inline.loader').removeClass('active');
-            if(ajax_check_user_logged_in(data)){
-			    $('.fetch_status').html(data);
-            }
-		 }
-	});
+	})
+    .done(function(data) {
+        $('.ui.inline.loader').removeClass('active');
+        $('.fetch_status').html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
 }
 
 function fetch_vul_ajax() {
@@ -1003,15 +994,14 @@ function fetch_vul_ajax() {
 		 cache: false,
 		 dataType:'html',
 		 type:'GET',
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-			$('.ui.inline.loader').removeClass('active');
-            if(ajax_check_user_logged_in(data)){
-			    $('.retrieve_vul').html(data);
-		    }
-         }
-	});
+	})
+    .done(function(data) {
+        $('.ui.inline.loader').removeClass('active');
+        $('.retrieve_vul').html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
 }
 
 function ldap_tainancomputers_ajax(icon, content) {
@@ -1029,15 +1019,14 @@ function ldap_tainancomputers_ajax(icon, content) {
 		 dataType:'html',
 		 type:'GET',
          data: input,
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 }, success: function(data) {
-            $(content).children('.ui.inline.loader').removeClass('active');
-            if (ajax_check_user_logged_in(data)) {
-			    $(content).append(data);
-		    }
-         }
-	});
+	})
+    .done(function(data) {
+        $(content).children('.ui.inline.loader').removeClass('active');
+        $(content).append(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
 
 }
 
@@ -1056,15 +1045,14 @@ function ldap_tainanlocalusers_ajax(icon, content) {
 		 dataType:'html',
 		 type:'GET',
          data: input,
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 }, success: function(data) {
-            $(content).children('.ui.inline.loader').removeClass('active');
-            if (ajax_check_user_logged_in(data)) {
-			    $(content).append(data);
-		    }
-         }
-	});
+	})
+    .done(function(data) {
+        $(content).children('.ui.inline.loader').removeClass('active');
+        $(content).append(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
 }
 
 function hydra_ajax(type) {
@@ -1076,15 +1064,14 @@ function hydra_ajax(type) {
 		 dataType:'html',
 		 type:'GET',
 		 data: $(selector + 'form').serializeArray(),
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-			$(selector + '.ui.inline.loader').removeClass('active');
-            if(ajax_check_user_logged_in(data)){
-			    $(selector + '.record_content').html(data);
-            }
-		 }
-	});
+	})
+    .done(function(data) {
+        $(selector + '.ui.inline.loader').removeClass('active');
+        $(selector + '.record_content').html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
 }
 
 function nmap_ajax(type) {
@@ -1096,15 +1083,14 @@ function nmap_ajax(type) {
 		 dataType:'html',
 		 type:'GET',
 		 data: $(selector + 'form').serializeArray(),
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-	        $(selector + '.ui.inline.loader').removeClass('active');
-            if(ajax_check_user_logged_in(data)){
-			    $(selector + '.record_content').html(data);
-		    }
-         }
-	});
+	})
+    .done(function(data) {
+        $(selector + '.ui.inline.loader').removeClass('active');
+        $(selector + '.record_content').html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
 }
 
 function nslookup_ajax(type) {
@@ -1116,15 +1102,14 @@ function nslookup_ajax(type) {
 		 dataType:'html',
 		 type:'GET',
 		 data: $(selector + 'form').serializeArray(),
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-		    $(selector + '.ui.inline.loader').removeClass('active');
-            if(ajax_check_user_logged_in(data)){
-			    $(selector + '.record_content').html(data);
-		    }
-         }
-	});
+	})
+    .done(function(data) {
+        $(selector + '.ui.inline.loader').removeClass('active');
+        $(selector + '.record_content').html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
 }
 
 function ldap_ajax(action) {
@@ -1140,46 +1125,44 @@ function ldap_ajax(action) {
 		 dataType:'html',
 		 type:'GET',
 		 data: input,
-		 error: function(xhr) {
-			 alert('Ajax failed');
-		 },success: function(data) {
-			 $(selector + '.ui.inline.loader').removeClass('active');
-             if(ajax_check_user_logged_in(data)){
-			    $(selector + '.record_content').html(data);
-		     }
-         }
-	});
+    })
+    .done(function(data) {
+        $(selector + '.ui.inline.loader').removeClass('active');
+        $(selector + '.record_content').html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
 }
 
 // insert values form database into form inputs
 function modal_form_action_ajax(id, action, category) {
 	var selector = ".ui.modal ";
 
-	switch(true){
+	switch(true) {
         case (action == "edit" && category == "event"):
 			$.ajax({
 				 url: '/ajax/modal_form_action/',
 				 cache: false,
 				 dataType:'json',
 				 type:'get',
-				 data: {id:id,action:action,category:category},
-				 error: function(xhr) {
-					 alert('Ajax failed');
-				 },success: function(data) {
-                    if(ajax_check_user_logged_in(data)){
-                         console.log(data);
-                         var inputs = $(selector + 'form').find(':input');
-                         var len = inputs.length;
-                         for (var i = 0; i < len; i++) {
-                              var name = inputs[i].name;
-                              var localName = inputs[i].localName;
-                              if(name != 'submit'){
-                                 $(selector + localName + '[name='+name+']').val(data[name]);
-                              }
-                         }
-                    }
-				 }
-			});
+				 data: {id:id, action:action, category:category},
+			})
+            .done(function(data) {
+                 console.log(data);
+                 var inputs = $(selector + 'form').find(':input');
+                 var len = inputs.length;
+                 for (var i = 0; i < len; i++) {
+                      var name = inputs[i].name;
+                      var localName = inputs[i].localName;
+                      if(name != 'submit'){
+                         $(selector + localName + '[name='+name+']').val(data[name]);
+                      }
+                 }
+            })
+            .fail(function(jqXHR) {
+                ajax_check_user_logged_out(jqXHR);
+            });
 
 			$(selector).modal({
 				closable  : false,
@@ -1193,21 +1176,20 @@ function modal_form_action_ajax(id, action, category) {
 			})
 			.modal('show')
 			break;
-        case (action == "delete " && category == "event"):
+        case (action == "delete" && category == "event"):
 			$.ajax({
 				 url: '/ajax/modal_form_action/',
 				 cache: false,
 				 dataType:'html',
 				 type:'GET',
 				 data: {id:id,action:action,category:category},
-				 error: function(xhr) {
-					 alert('Ajax failed');
-				 },success: function(data) {
-                    if(ajax_check_user_logged_in(data)){
-			            history.go(0);
-				    }
-                 }
-			});
+			})
+            .done(function(data) {
+                history.go(0);
+            })
+            .fail(function(jqXHR) {
+                ajax_check_user_logged_out(jqXHR);
+            });
 			break;
         case (action == "edit" && category == "ldap_computer"):
 			$.ajax({
@@ -1216,33 +1198,31 @@ function modal_form_action_ajax(id, action, category) {
 				 dataType:'json',
 				 type:'get',
 				 data: {id:id,action:action,category:category},
-				 error: function(xhr) {
-					 alert('Ajax failed');
-				 },success: function(data) {
-                    if(ajax_check_user_logged_in(data)){
-                        console.log(data);
-                        $(selector).modal({
-                            closable  : false,
-                            onDeny    : function(){
-                            },
-                            onApprove : function() {
-                              $(selector + 'form').submit();
-                            }
-                        })
-                        .modal('show');
+			})
+            .done(function(data) {
+                console.log(data);
+                $(selector).modal({
+                    closable  : false,
+                    onDeny    : function(){
+                    },
+                    onApprove : function() {
+                      $(selector + 'form').submit();
                     }
-				 }
-			});
+                })
+                .modal('show');
+            })
+            .fail(function(jqXHR) {
+                ajax_check_user_logged_out(jqXHR);
+            });
 			break;
 	}
 }
 
-function ajax_check_user_logged_in(data) {
-    if(data === '401 Unauthorized'){
+function ajax_check_user_logged_out(jqXHR) {
+    if(jqXHR.status == '401'){
         alert('已逾時 請重新登入!');
-        return false;
-    }else{
-        return true;
+    } else {
+        alert('Ajax failed');
     }
 }
 

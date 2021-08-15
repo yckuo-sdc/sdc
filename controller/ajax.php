@@ -1,11 +1,12 @@
 <?php 
-if(!isLogin()){
+if(!$userValidator->isLogin()){
+    header("Location: ./", TRUE, 401);
 	echo "401 Unauthorized";
     return;
 }	
 
 $account = $_SESSION['account'];
-saveAction($db, 'pageSwitch', Ip::get(), $account, $_SERVER['REQUEST_URI']);
+$userAction->logger('pageSwitch', $_SERVER['REQUEST_URI']); 
 
 $subpage = strtolower($route->getParameter(2));
 $controller_array = scandir('controller/ajax');

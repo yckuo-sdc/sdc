@@ -11,7 +11,7 @@ switch(true){
 		$entry = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", $data_array);
 		echo json_encode($entry[0], JSON_UNESCAPED_UNICODE);
 		break;
-    case ($action == "delete " && $category == "event"):
+    case ($action == "delete" && $category == "event"):
 		$table = "security_event";
 		$key_column = "EventID";
 		$db->delete($table, $key_column, $id);

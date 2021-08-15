@@ -19,7 +19,7 @@ doc/**/*.txt
 *.inc.php
 # ignore all .csv files
 *.csv
-# ignore all .csv files
-*.xls
+# ignore all .xls files
+*.xls*
 # ignore env file
 .env

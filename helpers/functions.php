@@ -1,68 +1,37 @@
 <?php
-function GenerateRandomToken(){
-	return md5(uniqid(rand(), true));
+function generateRandomToken() {
+    return bin2hex(random_bytes($length=32));
 }
 
-function isLogin(){
-	if(isset($_SESSION['account'])) { 	//檢查session是否有值
-		return true;
-	}
-	
-	if(isset($_COOKIE['rememberme'])){	//使用者選擇記住登入狀態
-		$SECRET_KEY = "security";
-		list ($user, $token, $userName, $level, $mac) = explode(':', $_COOKIE['rememberme']);
-		if (hash_equals(hash_hmac('sha256', $user . ':' . $token .':'. $userName . ':' . $level, $SECRET_KEY), $mac)) {	//使用者名稱和密碼對了，把使用者的個人資料放到session裡面 
-			$_SESSION['account'] = $user;   
-			$_SESSION['username'] = $userName;
-			$_SESSION['level'] = $level;
-			$db = Database::get();
-			saveAction($db,'rememberLogin',$_SERVER['REMOTE_ADDR'],$_SESSION['account'],$_SERVER['REQUEST_URI']);
-			return true;	
-		}
-	}		
-	
-	return false;
-}	
+function generateUserCookie($account, $username, $level) {
+    $algo = "sha256";
+    $key = "security";
 
-function checkAccountByLDAP($user, $ldappass, &$user_attributes){
-	$ldapconn = ldap_connect(LDAP::HOST);
-	$ldaprdn = $user . "@" . LDAP::DOMAIN;
-	ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
-	ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
+    $token = generateRandomToken(); // generate a token, should be 128 - 256 bit
+    $userCookie = $account . ':' . $token. ':' . $username . ':' . $level;
+    $mac = hash_hmac($algo, $userCookie, $key);
+    $userCookie .= ':' . $mac;
+	return $userCookie;
+}
 
-	if ($ldapconn){
-		$ldapbind = @ldap_bind($ldapconn, $ldaprdn, $ldappass);
-		if ($ldapbind) {
-            //bind sdc-ou
-            $base = "OU=395000300A,OU=395002900-,OU=395000000A,OU=TainanLocalUser,DC=tainan,DC=gov,DC=tw";
-            $filter = "(cn=" . $user . "*)";
-            $attributes = array("cn", "displayname");
-            $result = ldap_search($ldapconn, $base, $filter, $attributes) or die ("Error in query");
-            $entries = ldap_get_entries($ldapconn,$result);
-            $username = $entries[0]['displayname'][0];
-            $user_attributes = array('username' => $username);
+function decryptUserCookie($userCookie) {
+    $algo = "sha256";
+    $key = "security";
 
-			ldap_close($ldapconn);
-			return true;
-	    }
+    list ($account, $token, $username, $level, $mac) = explode(':', $userCookie);
+    $encrypted_data = $account . ':' . $token .':'. $username . ':' . $level;
+
+    $data_array = array();
+    if (hash_equals(hash_hmac($algo, $encrypted_data, $key), $mac)) { 
+        $data_array['isValid'] = true; 
+        $data_array['account'] = $account; 
+        $data_array['username'] = $username; 
+        $data_array['level'] = $level; 
+    } else {
+        $data_array['isValid'] = false; 
     }
-
-	ldap_close($ldapconn);
-	return false;	
+	return $data_array;
 }
-
-//store user's action to DB's log table	
-function saveAction($db, $type, $ip, $user, $msg){
-	$time = date('Y-m-d H:i:s');
-	
-	$table = "logs"; // 設定你想新增資料的資料表
-	$data_array['type'] = $type;
-	$data_array['ip'] = $ip;
-	$data_array['user'] = $user;
-	$data_array['msg'] = $msg;
-	$data_array['time'] = $time;
-	$db->insert($table, $data_array);
-}	
 
 //Alert message
 function phpAlert($msg) {
@@ -70,14 +39,14 @@ function phpAlert($msg) {
 }
 
 // For Windows NT Time convert to UnixTimestamp
-function WindowsTime2UnixTime($WindowsTime){
-	$UnixTime = $WindowsTime/10000000-11644473600;
+function WindowsTime2UnixTime($WindowsTime) {
+	$UnixTime = $WindowsTime / 10000000 - 11644473600;
 	return $UnxiTime; 
 }
 // For Windows NT Time convert to UnixTimestamp
-function WindowsTime2DateTime($WindowsTime){
-	$UnixTime = $WindowsTime/10000000-11644473600;
-	return date('Y-m-d H:i:s',$UnixTime); 
+function WindowsTime2DateTime($WindowsTime) {
+	$UnixTime = $WindowsTime / 10000000 - 11644473600;
+	return date('Y-m-d H:i:s', $UnixTime); 
 }
 
 // check the disabled ad account

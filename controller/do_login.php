@@ -41,13 +41,13 @@ if($validated_data === false) {
 
 	switch($authentication){
 		case "ad":
-            $ld = new MyLDAP();
+            $ldap = new MyLDAP();
             //Bind Smart Developement Center OU
             $data_array = array();
             $data_array['base'] = "ou=395000300A, ou=395002900-, ou=395000000A, ou=TainanLocalUser, dc=tainan, dc=gov, dc=tw";
             $data_array['account'] = $account;
             $data_array['password'] = $password;
-            $result = $ld->loginVerification($data_array, $user_attributes);
+            $result = $ldap->verifyUser($data_array, $user_attributes);
 
 			if($result && !empty($user[0]['SSOID'])) {
                 session_regenerate_id(); //Prevent Session Fixation with changing session id
@@ -58,14 +58,10 @@ if($validated_data === false) {
 				$_SESSION['username'] = $username;
 				$_SESSION['level'] = $level;
 
-				saveAction($db,'login', Ip::get(), $account, $_SERVER['REQUEST_URI']);
+                $userAction->logger('login', $_SERVER['REQUEST_URI']); 
 
 				if(isset($remember) && !empty($remember)) {
-					$SECRET_KEY = "security";
-					$token = GenerateRandomToken(); // generate a token, should be 128 - 256 bit
-					$cookie = $account . ':' . $token. ':' . $username . ':' . $level;
-					$mac = hash_hmac('sha256', $cookie, $SECRET_KEY);
-					$cookie .= ':' . $mac;
+                    $cookie = generateUserCookie($account, $username, $level);
 					setcookie('rememberme', $cookie, time() + $expire_time, '/');
 				} else {
 					setcookie('rememberme', "", time() - $expire_time, '/');
@@ -86,14 +82,10 @@ if($validated_data === false) {
 				$_SESSION['username'] = $username;
 				$_SESSION['level'] = $level;
 
-				saveAction($db,'login', Ip::get(), $account, $_SERVER['REQUEST_URI']);
+                $userAction->logger('login', $_SERVER['REQUEST_URI']); 
 
 				if (!empty($remember)) {
-					$SECRET_KEY = "security";
-					$token = GenerateRandomToken(); // generate a token, should be 128 - 256 bit
-					$cookie = $account . ':' . $token. ':' . $username . ':' . $level;
-					$mac = hash_hmac('sha256', $cookie, $SECRET_KEY);
-					$cookie .= ':' . $mac;
+                    $cookie = generateUserCookie($account, $username, $level);
 					setcookie('rememberme', $cookie, time() + $expire_time, '/');
 				} else {
 					setcookie('rememberme', "", time() - $expire_time, '/');

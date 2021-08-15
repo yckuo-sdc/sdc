@@ -1,11 +1,11 @@
 <!--tool-->
 <?php 
-if(!isLogin()){
+if(!$userValidator->isLogin()){
 	header("Location: /logout"); 
 	return;
 }	
 
-saveAction($db, 'pageSwitch', Ip::get(), $_SESSION['account'], $_SERVER['REQUEST_URI']);
+$userAction->logger('pageSwitch', $_SERVER['REQUEST_URI']); 
 
 $subpage = strtolower($route->getParameter(2));
 $controller_array = scandir('controller/tool');
