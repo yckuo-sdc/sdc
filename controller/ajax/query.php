@@ -2,8 +2,9 @@
 // input validation
 $v1 = 0; $v2 = 0;
 
-// Strip tags, optionally strip or encode special characters.
-//$_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+// Sanitizes data and converts strings to UTF-8 (if available), according to the provided field whitelist
+$whitelist = array("key", "keyword", "page", "jsonConditions", "type", "ap");
+$_GET = $gump->sanitize($_GET, $whitelist); 
 
 foreach ($_GET as $getKey => $val) {
 	$$getKey = $val;
@@ -22,7 +23,7 @@ if ($v1 && $v2) {
 $page = isset($page) ? $page : 1;
 $ap = isset($ap) ? $ap : 'html';
 
-$jsonConditions = json_decode($jsonConditions, true);
+$jsonConditions = $gump->sanitize(json_decode(html_entity_decode($jsonConditions), true));
 $jsonSortsMap = array('ascending' => 'ASC', 'descending' => 'DESC');
 
 switch($type){
@@ -64,8 +65,8 @@ switch($type){
 		$order_by = "GUID";	
 		break;
 	case 'edr':
-		$condition_table = "edr_endpoints";
-		$table = "edr_endpoints";
+		$condition_table = "edr_coreclouds";
+		$table = "edr_coreclouds";
 		$order_by = "id";	
 		break;
 	default:
@@ -542,6 +543,7 @@ if ($ap=='csv') {
 			<?php case "edr": ?>
                <?php
                 $state_icon_map = array(
+                    '已移除' => 'close icon',
                     '連線中' => 'green circle icon',
                     '離線中' => 'circle outline icon',
                     '暫停監控' => 'pause icon',
@@ -549,10 +551,10 @@ if ($ap=='csv') {
                 );
                 $edrs = array();
                 foreach($entries->data as $entry){
-                    $table = "edr_ips";
+                    $table = "edr_corecloud_ips";
                     $order_by = "";
-                    $condition = "edr_endpoint_id  = :edr_endpoint_id";
-                    $data_array = [':edr_endpoint_id' => $entry['id'] ];
+                    $condition = "edr_corecloud_id = :edr_corecloud_id";
+                    $data_array = [':edr_corecloud_id' => $entry['id'] ];
                     $ip_array = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", $data_array);
                     //$IPs = array_map('trim', explode(',', $entry['ip'])); 
                     $edr = array();

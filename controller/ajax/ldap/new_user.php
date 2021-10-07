@@ -45,13 +45,13 @@ $data_ou = $ld->getData($data_array);
     <label>
         新密碼<font color='red'>*</font>
     </label>
-    <input type='text' name='new_password' placeholder='新密碼'>
+    <input type='password' name='new_password' placeholder='新密碼'>
 </div>
 <div class='field'>
     <label>
         確認密碼<font color='red'>*</font>
     </label>
-    <input type='text' name='confirm_password' placeholder='確認密碼'>
+    <input type='password' name='confirm_password' placeholder='確認密碼'>
 </div>
 <div class='field'>
     <label>

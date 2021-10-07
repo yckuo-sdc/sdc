@@ -3,19 +3,20 @@
 		<div class="sub-content show">
 			<div class="post">
                 <?=$route->createBreadcrumbs(' > ');?>
-                <h2 class="ui dividing header">DataTables</h2>
+                <h2 class="ui dividing header">伺服器資安清單</h2>
 				<div class="post_cell">
                     <table id="example_table" class="ui celled table" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>IP</th>
+                                <th></th>
                                 <th>Department</th>
                                 <th>Section</th>
+                                <th>IP</th>
+                                <th>Name</th>
+                                <th>Description</th>
                                 <th>Owner</th>
-                                <th>Tel</th>
-                                <th>Mail</th>
+                                <!--<th>Tel</th>-->
+                                <!--<th>Mail</th>-->
                                 <th>Antivirus</th>
                                 <th>Corecloud</th>
                                 <th>Fireeye</th>
@@ -24,14 +25,15 @@
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>IP</th>
+                                <th></th>
                                 <th>Department</th>
                                 <th>Section</th>
+                                <th>IP</th>
+                                <th>Name</th>
+                                <th>Description</th>
                                 <th>Owner</th>
-                                <th>Tel</th>
-                                <th>Mail</th>
+                                <!--<th>Tel</th>-->
+                                <!--<th>Mail</th>-->
                                 <th>Antivirus</th>
                                 <th>Corecloud</th>
                                 <th>Fireeye</th>

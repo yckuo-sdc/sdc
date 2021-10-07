@@ -1,7 +1,9 @@
 <?php
 $error = array(); 
-$gump = new GUMP();
-$_GET = $gump->sanitize($_GET); 
+
+// Sanitizes data and converts strings to UTF-8 (if available), according to the provided field whitelist
+$whitelist = array("objectCategory", "target", "action"); 
+$_GET = $gump->sanitize($_GET, $whitelist); 
 
 // set validation rules
 $validation_rules_array = array(
@@ -12,12 +14,12 @@ $validation_rules_array = array(
 $gump->validation_rules($validation_rules_array);
 
 // set filter rules
-$filter_rules_array = array(
-	'objectCategory' => 'trim|sanitize_string',
-	'target' => 'trim|sanitize_string',
-	'action' => 'trim|sanitize_string'
-);
-$gump->filter_rules($filter_rules_array);
+//$filter_rules_array = array(
+//	'objectCategory' => 'trim|sanitize_string',
+//	'target' => 'trim|sanitize_string',
+//	'action' => 'trim|sanitize_string'
+//);
+//$gump->filter_rules($filter_rules_array);
 
 $validated_data = $gump->run($_GET);
 

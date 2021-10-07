@@ -362,3 +362,30 @@ class MyLDAP {
 
 
 }
+
+/** Usage
+
+// init
+$ldap = new MyLDAP();
+
+// get all OUs on LDAP_SCOPE_SUBTREE
+$data_array = array();
+$data_array['base'] =  "ou=TainanLocalUser, dc=tainan, dc=gov, dc=tw";
+$data_array['filter'] = "(objectClass=organizationalUnit)";
+$data_array['attributes'] = array("name", "description");
+$OUs = $ldap->getData($data_array);
+
+// get 1-level users on LDAP_SCOPE_ONELEVEL
+$data_array = array();
+$data_array['base'] =  "ou=TainanLocalUser, dc=tainan, dc=gov, dc=tw";
+$data_array['filter'] = "(objectCategory=person)";
+$data_array['attributes'] = array("cn", "useraccountcontrol", "displayname");
+$user_list = $this->getList($data_array);
+
+// create UserTree on search base
+$base = "ou=TainanLocalUser, dc=tainan, dc=gov, dc=tw";
+$ou = "TainanLocalUser";
+$description = "永華及民治使用者AD帳號";
+echo $ldap->createSingleLevelUserTree($base, $ou, $description);		
+		
+**/

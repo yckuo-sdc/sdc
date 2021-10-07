@@ -81,11 +81,11 @@ $input_array = array("displayname", "title", "mail", "telephonenumber", "physica
         </div>
         <div class='field'>
             <label>新密碼</label>
-            <input type='text' name='new_password' placeholder='新密碼'>
+            <input type='password' name='new_password' placeholder='新密碼'>
         </div>
         <div class='field'>
             <label>確認密碼</label>
-            <input type='text' name='confirm_password' placeholder='確認密碼'>
+            <input type='password' name='confirm_password' placeholder='確認密碼'>
         </div>
         <div class='field'>
             <label>

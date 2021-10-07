@@ -64,9 +64,9 @@ ON A.IP = B.IP
 SET A.antivirus = 1;";
 $db->execute($sql);
 
-//update the column 'edr' from table 'edr_endpoints'
+//update the column 'edr' from table 'edr_corecloud_ips'
 $sql = "UPDATE drip_client_list AS A
-JOIN edr_ips AS B
+JOIN edr_corecloud_ips AS B
 ON A.IP = B.ip
 SET A.edr = 1";
 $db->execute($sql);

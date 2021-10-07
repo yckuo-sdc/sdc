@@ -265,5 +265,21 @@ function createWebadMessageBox($result, $label) {
     return $html;
 }
 
+function xml2array ($xmlObject, $out = array()) {
+    foreach ( (array) $xmlObject as $index => $node ) {
+        $out[$index] = ( is_object ( $node ) ||  is_array ( $node ) ) ? xml2array ( $node ) : $node;
+    }
+    return $out;
+}
 
-
+/**
+ * Filter an array based on a white list of keys
+ *
+ * @param array $array
+ * @param array $keys
+ *
+ * @return array
+ */
+function array_keys_whitelist( array $array, array $keys ) {
+   return array_intersect_key( $array, array_flip( $keys ) );
+}

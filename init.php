@@ -7,6 +7,8 @@ $template = Tamtamchik\SimpleFlash\TemplateFactory::create(Tamtamchik\SimpleFlas
 
 $flash = new Tamtamchik\SimpleFlash\Flash($template);  // passing to constructor
 
+$gump = new GUMP();
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);  //Loads environment variables 
 $dotenv->load();
 

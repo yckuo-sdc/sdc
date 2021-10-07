@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
-$inputFileName =  __DIR__ . '/../../upload/edr/endpoints.csv';
+$inputFileName =  __DIR__ . '/../../upload/corecloud/endpoints.csv';
 
 $db = Database::get();
 
@@ -42,12 +42,12 @@ foreach ($worksheet->getRowIterator() AS $index => $row) {
     $Rows[] = $cells;
 }
 
-$table = "edr_endpoints";
+$table = "edr_coreclouds";
 $key_column = "1";
 $id = "1"; 
 $db->delete($table, $key_column, $id); 
 
-$table = "edr_ips";
+$table = "edr_corecloud_ips";
 $key_column = "1";
 $id = "1"; 
 $db->delete($table, $key_column, $id); 
@@ -67,32 +67,32 @@ foreach($Rows as $data) {
     $edr['hidden_state'] = $data[8];
 
     $ip = $edr['ip'];
-    $table = "edr_endpoints";
+    $table = "edr_coreclouds";
     $condition = "ip LIKE :ip";
     $existings = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':ip' => $ip]);
     if (empty($existings)) {
         $ip_array = explode(", ", $edr['ip']);
         foreach($ip_array as $single_ip) {
             $data_array = array();
+            $data_array['edr_corecloud_id'] = $edr['id'];
             $data_array['ip'] = $single_ip;
-            $data_array['edr_endpoint_id'] = $edr['id'];
-            $table = "edr_ips";
+            $table = "edr_corecloud_ips";
             $db->insert($table, $data_array);
         }
-        $table = "edr_endpoints";
+        $table = "edr_coreclouds";
         $db->insert($table, $edr);
         $count = $count + 1;						
     } else {
         unset($edr['id']);
         unset($edr['ip']);
-        $table = "edr_endpoints";
+        $table = "edr_coreclouds";
         $db->update($table, $edr, $key_column = "ip", $ip);
     }
 
 }
 
 $nowTime = date("Y-m-d H:i:s", filemtime($inputFileName));
-echo "The ".$count." records have been inserted or updated into the edr_endpoints on ".$nowTime."\n\r<br>";
+echo "The " . $count . " records have been inserted or updated into the edr_coreclouds on " . $nowTime . PHP_EOL;
 $status = 200;
 
 $error = $db->getErrorMessageArray();
@@ -102,7 +102,7 @@ if(!empty($error)) {
 
 $table = "apis"; // 設定你想查詢資料的資料表
 $condition = "class LIKE :class and name LIKE :name";
-$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'edr', ':name'=>'用戶端清單']);
+$apis = $db->query($table, $condition, $order_by = "1", $fields = "*", $limit = "", [':class'=>'edr', ':name'=>'corecloud 用戶端清單']);
 $table = "api_status"; // 設定你想新增資料的資料表
 $data_array = array();
 $data_array['api_id'] = $apis[0]['id'];

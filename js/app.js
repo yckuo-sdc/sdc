@@ -492,7 +492,8 @@ $(document).ready(function(){
 		$(this).closest('.message').transition('fade');
 	});
 
-	$("#upload_Form").on('submit', function(e) {
+	$(".post_cell.upload_contact #upload_Form").on('submit', function(e) {
+        var selector = ".post_cell.upload_contact ";
 		$.ajax({
 			url: "/ajax/upload_contact/",
 			type: "POST",
@@ -502,7 +503,27 @@ $(document).ready(function(){
 			processData: false,
 		})
         .done(function(data) {
-            $(".retrieve_ncert").html(data);
+            $(selector + ".record_content").html(data);
+        })
+        .fail(function(jqXHR) {
+            ajax_check_user_logged_out(jqXHR);
+        });
+
+		e.preventDefault();
+    });	
+
+	$(".post_cell.upload_fireeye #upload_Form").on('submit', function(e) {
+        var selector = ".post_cell.upload_fireeye ";
+		$.ajax({
+			url: "/ajax/upload_fireeye/",
+			type: "POST",
+			data:  new FormData(this),
+			contentType: false,
+			cache: false,
+			processData: false,
+		})
+        .done(function(data) {
+            $(selector + ".record_content").html(data);
         })
         .fail(function(jqXHR) {
             ajax_check_user_logged_out(jqXHR);
@@ -914,6 +935,7 @@ function ips_query_ajax(parameter) {
     });
 
 	$(selector + '.ui.inline.loader').addClass('active');
+    $(selector + '.record_content').empty();
 	$.ajax({
 		 url: '/ajax/ips_query/',
 		 cache: false,
@@ -934,6 +956,7 @@ function ips_query_pagination_ajax(data_array) {
 	 var type = data_array[4].value;
 	 var selector = ".post.network .tab-content." + type + " ";
 	 $(selector + '.ui.inline.loader').addClass('active');
+     $(selector + '.record_content').empty();
 	 $.ajax({
 		 url: '/ajax/ips_query/',
 		 cache: false,
@@ -1268,7 +1291,7 @@ function pageSwitch() {
             vul_query_ajax(parameter);
         	break;
 		// load ips query
-     	case (mainpage == 'network' && ['traffic', ''].includes(subpage)):
+     	case (mainpage == 'network' && ['log', ''].includes(subpage)):
 			networkTypes.forEach(function(item, index){
                 if(index === tabIndex) {
                     console.log(index);

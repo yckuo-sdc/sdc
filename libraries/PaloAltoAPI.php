@@ -25,7 +25,18 @@ Class PaloAltoAPI {
 		$this->apikey = $apikey;
 	}
 	
-	//XML API
+	// XML API
+	public function getXmlSecurityRules() {
+		$host = $this->host;
+		$apikey = $this->apikey;
+		$args = array('type' => 'config', 'action' => 'show', 'xpath' => '/config/devices/entry/vsys/entry/rulebase/security');
+		$url = "https://" . $host . "/api/?" . http_build_query($args) . "&key=" . $apikey;
+		$response = $this->sendHttpRequest($url);
+		$xmlObject = simplexml_load_string($response) or die("Error: Cannot create object");
+		$data_array = xml2array($xmlObject);        
+        return $data_array;
+    }
+
 	public function getLogList($log_type, $dir, $nlogs, $skip, $query) {
 		$host = $this->host;
 		$apikey = $this->apikey;
@@ -35,9 +46,24 @@ Class PaloAltoAPI {
 
         $xml = simplexml_load_string($res) or die("Error: Cannot create object");
         $job_id = $xml->result->job;
-        usleep(500000);
-        $res = $this->retrieveLogs($job_id);
-        $xml = simplexml_load_string($res) or die("Error: Cannot create object");
+
+        $loop_count = 0;
+        $flag = 1;
+        do {
+            $res = $this->retrieveLogs($job_id);
+            $loop_count = $loop_count + 1;
+            $xml = simplexml_load_string($res) or die("Error: Cannot create object");
+            if ($xml['status'] == 'success') {
+                echo $xml->result->job->status . " "; 
+                if ($xml->result->job->status == 'FIN') {
+                    $flag = 0;
+                }
+            }
+        } while ($flag & $loop_count < 30);
+        echo "<br>";
+        if ($flag) {
+            echo "Timeout<br>";
+        }
 
         if($xml['status'] != 'success'){
             $data['log_count'] = 0;

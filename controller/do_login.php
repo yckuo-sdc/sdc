@@ -7,7 +7,6 @@ if(!isset($_POST['submit'])) {
 }
 
 $error = array(); 
-$gump = new GUMP();
 $_POST = $gump->sanitize($_POST); 
 
 // set validation rules

@@ -51,7 +51,7 @@ $server_antivirus_num = $total_antivirus_num - $client_antivirus_num;
 $client_antivirus_rate = round($client_antivirus_num/$total_antivirus_num*100,2)."%"; 
 $server_antivirus_rate = round($server_antivirus_num/$total_antivirus_num*100,2)."%"; 
 
-$table = "edr_endpoints"; 
+$table = "edr_coreclouds"; 
 $db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "*", $limit = "", [1]);
 $total_edr_num = $db->getLastNumRows();
 $db->query($table, $condition = "state LIKE :state", $order_by = "1", $fields = "*", $limit = "", [':state' => '暫停監控']);

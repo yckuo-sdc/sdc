@@ -417,7 +417,14 @@ div.header a{
     color: #117692;
 }
 
-/*@media only screen and (min-width: 400px) and (max-width: 700px) and (orientation: portrait){*/
+
+#example_table tfoot input {
+	width: 100%;
+	padding: 3px;
+	box-sizing: border-box;
+}
+
+/*media only screen and (min-width: 400px) and (max-width: 700px) and (orientation: portrait){*/
 @media screen and (orientation: portrait),screen and (min-width: 350px) and (max-width: 700px){
     /* For mobile phones: */
 	

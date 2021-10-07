@@ -1,4 +1,8 @@
 <?php
+// Sanitizes data and converts strings to UTF-8 (if available), according to the provided field whitelist
+$whitelist = array("key", "keyword", "page", "jsonConditions", "jsonStates", "type", "ap");
+$_GET = $gump->sanitize($_GET, $whitelist); 
+
 // input validation
 $v1 = 0;
 $v2 = 0;
@@ -19,8 +23,10 @@ if($v1 && $v2){
 $page = isset($page) ? $page : 1;
 $ap = isset($ap) ? $ap : 'html';
 
-$jsonStates = json_decode($jsonStates,true);
-$jsonConditions = json_decode($jsonConditions,true);
+//$jsonStates = json_decode($jsonStates,true);
+//$jsonConditions = json_decode($jsonConditions,true);
+$jsonStates = $gump->sanitize(json_decode(html_entity_decode($jsonStates), true));
+$jsonConditions = $gump->sanitize(json_decode(html_entity_decode($jsonConditions), true));
 
 $table_map = ['scanResult' => 'scan_results'];
 if(!array_key_exists($type, $table_map)) {
