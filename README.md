@@ -8,5 +8,5 @@ dir name | usage
 --- | ---
 init | initialization
 controller | page controller
-view | html layout2
-
+view | html layout
+router | forward the supported requests to the appropriate controller
