@@ -23,5 +23,6 @@ doc/**/*.txt
 *.xls*
 # ignore env file
 .env
+# ignore package lock files
 composer.lock
 package-lock.json
