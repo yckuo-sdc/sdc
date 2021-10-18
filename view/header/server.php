@@ -10,34 +10,32 @@
 	<meta name="description" content="" />
 	<link rel="shortcut icon" href="/images/logo.ico" />
 
-	<!-- jQuery-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<!-- jquery-->
+	<script src="/node_modules/jquery/dist/jquery.min.js"></script>
 
 	<!-- node_modules-->
-	<script src="/node_modules/d3js/d3.min.js" charset="utf-8"></script>
-	<link href="/node_modules/c3js/c3.css" rel="stylesheet" type="text/css">
-	<script src="/node_modules/c3js/c3.min.js"></script>
-	<script src="/node_modules/tablesort.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+	<link href="/node_modules/c3/c3.css" rel="stylesheet" type="text/css">
+	<script src="/node_modules/c3/c3.min.js"></script>
+	<script src="/node_modules/jquery-tablesort/jquery.tablesort.min.js"></script>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 	<!-- semantic ui -->
 	<link rel="stylesheet" type="text/css" href="/node_modules/semantic/semantic.css">
 	<script src="/node_modules/semantic/semantic.js"></script>
 
-    <!-- DataTables -->
+    <!-- datatables -->
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
 	<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
 	<!-- template css-->
 	<link href="/css/default.css" rel="stylesheet" type="text/css" media="all" />
 
-	<!-- my CSS-->
+	<!-- my css-->
 	<link href="/css/subpage.css" rel="stylesheet"/>
 	<link href="/css/app.css" rel="stylesheet"/>
 
-	<!-- my JS-->
+	<!-- my js-->
 	<script src="/js/app.js"></script>
 	<script src='/js/c3chart.js'></script>
 	<script src='/js/gchart.js'></script>

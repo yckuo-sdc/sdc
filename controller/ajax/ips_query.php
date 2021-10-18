@@ -3,11 +3,11 @@
 $v1 = 0;
 $v2 = 0;
 
-foreach($_GET as $getkey => $val){
-	$$getkey = $val;
-	if($getkey == "jsonConditions" && $val == "[]"){
+foreach ($_GET as $getkey => $val) {
+	${$getkey} = $val;
+	if ($getkey == "jsonConditions" && $val == "[]") {
 		$v1 = 1;	
-	}elseif($getkey != "jsonConditions" && $val == ""){
+	} elseif ($getkey != "jsonConditions" && $val == "") {
 		$v2 = 1;	
 	}
 }
@@ -26,41 +26,69 @@ $lb = ($page <= $max_page) ? 1 : $page - $max_page + 1;
 $ub = ($page <= $max_page) ? $max_page : $page;					
 
 $arr_jsonConditions = json_decode($jsonConditions,true);
-$query_map =[ // operator + keyword
-	'=' => [
-		'addr.src' => 'in',
-		'addr.dst' => 'in',
-		'port.dst' => 'eq',
-		'rule' => 'eq',
-		'app' => 'eq',
-		'action' => 'eq',
-	],
-	'!=' => [
-		'addr.src' => 'notin',
-		'addr.dst' => 'notin',
-		'port.dst' => 'neq',
-		'rule' => 'neq',
-		'app' => 'neq',
-		'action' => 'neq',
-	]
-];
 
-if( count($arr_jsonConditions) !=0 ){  // retrieve query
-	$query = '';
-	foreach($arr_jsonConditions as $val){
-		$one_query = "( ".$val['keyword']." ".$query_map[$val['operator']][$val['keyword']]." '".$val['key']."' )";
-		$query = $query." AND ".$one_query;
+$field_operator_map = array (
+    'addr.src' => array (
+        '=' => 'in',
+        '!=' => 'notin',
+    ),
+    'addr.dst' => array (
+        '=' => 'in',
+        '!=' => 'notin',
+    ),
+    'port.dst' => array (
+        '=' => 'eq',
+        '!=' => 'neq',
+    ),
+    'rule' => array (
+        '=' => 'eq',
+        '!=' => 'neq',
+    ),
+    'app' => array (
+        '=' => 'eq',
+        '!=' => 'neq',
+    ),
+    'action' => array (
+        '=' => 'eq',
+        '!=' => 'neq',
+    ),
+    'receive_time' => array (
+        '=' => 'eq',
+        '>=' => 'geq',
+        '<=' => 'leq',
+    ),
+);
+
+// retrieve query
+$query = "";
+if (empty($arr_jsonConditions)) {   // single query 
+	if ($key != 'any' || $keyword != 'all' ||  $operator != '=') {
+        $translated_operator = @$field_operator_map[$keyword][$operator];
+        if (empty($translated_operator)) {  
+            echo "invalid operator " . $operator . " for field " . $keyword;
+            return ;
+        }
+
+		$query = "( " . $keyword . " " . $translated_operator . " '" . $key . "' )";
+	}
+} else {    // multipe query
+	foreach($arr_jsonConditions as $val) {
+        $key = $val['key'];
+        $keyword = $val['keyword'];
+        $operator = $val['operator'];
+        $translated_operator = @$field_operator_map[$keyword][$operator];
+        if (empty($translated_operator)) {  
+            echo "invalid operator " . $operator . " for field " . $keyword;
+            return ;
+        }
+
+		$single_query = "( " . $keyword . " " . $translated_operator . " '" . $key . "' )";
+		$query = $query . " AND " . $single_query;
 	}
 	$query = substr($query, 4);
-}else{
-	if($key == 'any' && $keyword == 'all' && $operator == '='){
-		$query = "";
-	}else{
-		$query = "( ".$keyword." ".$query_map[$operator][$keyword]." '".$key."' )";
-	}
 }
 
-//echo $query."<br>";
+//echo $query . "<br>";
 $nlogs = $max_item;
 $dir = 'backward';
 $skip = ($page-1)*$nlogs;
@@ -68,7 +96,7 @@ $skip = ($page-1)*$nlogs;
 $pa = new PaloAltoAPI($type);
 $log_type_map = ['traffic', 'threat', 'data'];
 
-for($i=0; $i<count($log_type_map); $i++){
+for ($i=0; $i<count($log_type_map); $i++) {
 	$data = $pa->getLogList($log_type = $log_type_map[$i], $dir, $nlogs, $skip, $query);
 ?>
     該分類分頁共搜尋到 <?=$data['log_count']?> 筆資料！

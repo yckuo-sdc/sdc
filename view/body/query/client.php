@@ -18,7 +18,7 @@
                             <div class="query_content"></div>
                             <div class="fields">
                                 <div class="field">
-                                    <label>種類</label>
+                                    <label>欄位</label>
                                     <select name="keyword" id="keyword" class="ui fluid dropdown" required>
                                     <option value="ClientName"  selected>電腦名稱</option>
                                     <option value="IP" >內部IP</option>
@@ -65,7 +65,7 @@
                         <form class="ui form" action="">
                         <div class="fields">
                             <div class="field">
-                                <label>種類</label>
+                                <label>欄位</label>
                                 <select name="keyword" id="keyword" class="ui fluid dropdown" required>
                                 <option value="Name"  selected>電腦名稱</option>
                                 <option value="InternalIP" >內部IP</option>
@@ -94,7 +94,7 @@
                         <form class="ui form" action="">
                         <div class="fields">
                             <div class="field">
-                                <label>種類</label>
+                                <label>欄位</label>
                                 <select name="keyword" id="keyword" class="ui fluid dropdown" required>
                                 <option value="FullDomainName"  selected>電腦名稱</option>
                                 <option value="IPAddress" >內部IP</option>
@@ -129,7 +129,7 @@
                         <form class="ui form" action="">
                         <div class="fields">
                             <div class="field">
-                                <label>種類</label>
+                                <label>欄位</label>
                                 <select name="keyword" id="keyword" class="ui fluid dropdown" required>
                                 <option value="ClientName"  selected>電腦名稱</option>
                                 <option value="IP" >內部IP</option>
@@ -156,7 +156,7 @@
                     <form class="ui form" action="">
                     <div class="fields">
                         <div class="field">
-                            <label>種類</label>
+                            <label>欄位</label>
                             <select name="keyword" id="keyword" class="ui fluid dropdown" required>
                             <option value="host_name"  selected>電腦名稱</option>
                             <option value="ip" >內部IP</option>

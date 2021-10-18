@@ -10,6 +10,14 @@ function format ( d ) {
             '<td>Mail:</td>'+
             '<td>'+d.mail+'</td>'+
         '</tr>'+
+        '<tr>'+
+            '<td>Disabled at:</td>'+
+            '<td>'+d.disabled_at+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Shutdown at:</td>'+
+            '<td>'+d.shut_at+'</td>'+
+        '</tr>'+
     '</table>';
 }
 

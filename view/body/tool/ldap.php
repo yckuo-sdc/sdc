@@ -9,7 +9,7 @@
 					<form class="ui form" action="">
 						<div class="fields">
                             <div class="field">
-                                <label>種類</label>
+                                <label>欄位</label>
                                 <select name="objectCategory" class="ui fluid dropdown" required>
                                     <option value="user" selected>user</option>
                                     <option value="computer">computer</option>

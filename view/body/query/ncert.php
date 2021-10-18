@@ -8,7 +8,7 @@
 					<form class="ui form" action="">
 					<div class="fields">
 						<div class="field">
-							<label>種類</label>
+							<label>欄位</label>
 							<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 							<option value="PublicIP"  selected>IP/URL</option>
 							<option value="Status" >結案狀態</option>

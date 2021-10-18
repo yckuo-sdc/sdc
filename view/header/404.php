@@ -10,10 +10,8 @@
 	<meta name="description" content="">
 	<link rel="shortcut icon" href="/images/logo.ico">
 
-	<!-- add jQuery-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<!-- jquery-->
+	<script src="/node_modules/jquery/dist/jquery.min.js"></script>
 
 	<!-- semantic ui -->
 	<link rel="stylesheet" type="text/css" href="/node_modules/semantic/semantic.css">

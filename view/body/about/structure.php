@@ -66,6 +66,21 @@
 								</div>
 							</div>
 						</div> <!-- end of .card -->
+						<div class="card">
+							<a href="/images/mail.png" target="_blank">
+							<div class="image">
+								<img src="/images/mail.png">
+							</div>
+							</a>
+							<div class="content">
+								<div class="meta">
+									<span class="date">Joined in 2021</span>
+								</div>
+								<div class="description">
+								    公務郵件寄送流程	
+								</div>
+							</div>
+						</div> <!-- end of .card -->
 					</div> <!-- end of .cards --> 
 				</div> <!--end of .post_cell -->
 			</div> <!--end of .post --> 

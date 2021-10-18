@@ -297,7 +297,7 @@ $(document).ready(function(){
 		var keyword_text = $(selector + '#keyword option:selected').text();
 		if (key !== undefined && key !='' && keyword !='') {
 			var query_content = $(selector + '.query_content');
-			var query_label = "<div class='ui grey label query_label' keyword='" + keyword + "' key='" + key + "'>" + keyword_text + "=" + key + "<button type='button' class='close'><i class='close icon'></i></button></div>";
+			var query_label = "<div class='ui grey label query_label' keyword='" + keyword + "' key='" + key + "'>" + keyword_text + " = " + key + "<button type='button' class='close'><i class='close icon'></i></button></div>";
 			query_content.append(query_label);
 		}else{
 			alert("沒有輸入");
@@ -314,7 +314,7 @@ $(document).ready(function(){
 		var keyword_text = $(selector + '#keyword option:selected').text();
 		if (key !== undefined && key !='' && keyword !='' && operator !='') {
 			var query_content = $(selector + '.query_content');
-			var query_label = "<div class='ui grey label query_label' keyword='" + keyword + "' operator='" + operator + "' key='" + key + "'>" + keyword_text + operator + key + "<button type='button' class='close'><i class='close icon'></i></button></div>";
+			var query_label = "<div class='ui grey label query_label' keyword='" + keyword + "' operator='" + operator + "' key='" + key + "'>" + keyword_text + " " + operator + " " + key + "<button type='button' class='close'><i class='close icon'></i></button></div>";
 			query_content.append(query_label);
 		}else{
 			alert("沒有輸入");

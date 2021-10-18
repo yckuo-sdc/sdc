@@ -17,14 +17,15 @@
 						<form class="ui form" action="">
 						<div class="fields">
 							<div class="field">
-								<label>種類</label>
+								<label>欄位</label>
 								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 								<option value="addr.src"  selected>來源IP</option>
-								<option value="addr.dst" >目的IP</option>
-								<option value="port.dst" >目的port</option>
-								<option value="rule" >規則</option>
-								<option value="app" >應用程式</option>
-								<option value="action" >動作</option>
+								<option value="addr.dst">目的IP</option>
+								<option value="port.dst">目的port</option>
+								<option value="rule">規則</option>
+								<option value="app">應用程式</option>
+								<option value="action">動作</option>
+								<option value="receive_time">接收時間</option>
 								</select>
 							</div>
 							<div class="field">
@@ -32,6 +33,8 @@
 								<select name="operator" id="operator" class="ui fluid dropdown" required>
 								<option value="="  selected>=</option>
 								<option value="!=" >!=</option>
+								<option value=">=" >>=</option>
+								<option value="<=" ><=</option>
 								</select>
 							</div>
 							<div class="field">
@@ -48,7 +51,7 @@
 								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
-								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/search/'">顯示全部</button>
+								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/log/'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -60,7 +63,7 @@
 						<form class="ui form" action="">
 						<div class="fields">
 							<div class="field">
-								<label>種類</label>
+								<label>欄位</label>
 								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 								<option value="addr.src"  selected>來源IP</option>
 								<option value="addr.dst" >目的IP</option>
@@ -91,7 +94,7 @@
 								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
-								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/search/?tab=2'">顯示全部</button>
+								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/log/?tab=2'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -103,7 +106,7 @@
 						<form class="ui form" action="">
 						<div class="fields">
 							<div class="field">
-								<label>種類</label>
+								<label>欄位</label>
 								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 								<option value="addr.src"  selected>來源IP</option>
 								<option value="addr.dst" >目的IP</option>
@@ -134,7 +137,7 @@
 								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
-								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/search/?tab=3'">顯示全部</button>
+								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/log/?tab=3'">顯示全部</button>
 							</div>
 						</div>
 						</form>
@@ -146,7 +149,7 @@
 						<form class="ui form" action="">
 						<div class="fields">
 							<div class="field">
-								<label>種類</label>
+								<label>欄位</label>
 								<select name="keyword" id="keyword" class="ui fluid dropdown" required>
 								<option value="addr.src"  selected>來源IP</option>
 								<option value="addr.dst">目的IP</option>
@@ -177,7 +180,7 @@
 								<button type="submit" id="search_btn" name="search_btn" class="ui button" >搜尋</button>
 							</div>
 							 <div class="field">
-								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/search/?tab=4'">顯示全部</button>
+								<button type="button" id="show_all_btn" class="ui button" onclick="location.href='/network/log/?tab=4'">顯示全部</button>
 							</div>
 						</div>
 						</form>

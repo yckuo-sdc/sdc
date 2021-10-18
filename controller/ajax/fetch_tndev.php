@@ -52,6 +52,14 @@ foreach ($entries as $entry) {
     $data_array['section'] = $entry['DEPT_SECTION'];
     $data_array['tel'] = $entry['CONTACT_INFO'];
     $data_array['mail'] = $entry['CONTACT_MAIL'];
+
+    if (!empty($entry['STOP_DATE'])) {
+        $data_array['disabled_at'] = date('Y-m-d H:i:s', strtotime($entry['STOP_DATE']));
+    }
+    if (!empty($entry['DOWN_DATE'])) {
+        $data_array['shut_at'] = date('Y-m-d H:i:s', strtotime($entry['DOWN_DATE']));
+    }
+
     $db->insert($table, $data_array);
     $count = $count + 1;
 
