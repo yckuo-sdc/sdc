@@ -38,7 +38,7 @@
                         <tbody>
                         <?php foreach($ou_vul as $vul): ?>
                             <tr>
-                                <td data-label='OU'><?=$vul['ou']?></td>
+                                <td data-label='OU'><?=createBreadCrumbsWithOu($vul['ou'])?></td>
                                 <td data-label='Total-Risks' data-sort-value='<?=round($vul['total_completion'],0)?>'>
                                     <div class='ui teal progress yckuo' data-sort-value='<?=round($vul['total_completion'],0)?>' data-percent='<?=round($vul['total_completion'],0)?>' data-total='100' id='example1'>
                                         <div class='bar'><div class='progress'></div></div>

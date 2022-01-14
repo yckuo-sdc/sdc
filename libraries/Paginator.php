@@ -7,19 +7,30 @@ class Paginator {
 	private $query;
 	private $total;
 
+    /**
+     * Constructor
+     */
 	public function __construct($query, $data_array = array()) {
         $this->db = Database::get();
 		$this->query = $query;
+        $query = "SELECT 1 FROM ($query) T";
 		$this->db->execute($query, $data_array);
+		#$this->db->execute($query, $data_array);
 		$this->total = $this->db->getLastNumRows();
+	} 
+
+	/**
+     * Destructor.
+     */
+	public function __destruct() {
+        $this->db = null;
+		$this->query = "";
+		$this->total = 0;
 	} 
 
 	public function getData( $limit, $page, $data_array = array() ) {
 		$this->limit = $limit;
-        // page filter 
         $this->page = (filter_var($page, FILTER_VALIDATE_INT) && $page > 0) ? $page : 1;
-        //$this->page = (is_numeric($page) && $page > 0) ? $page : 1;
-		//$this->page = $page;
 		
 		if ( $this->limit == 'all' ) {
 			$query = $this->query;

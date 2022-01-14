@@ -177,22 +177,19 @@ $(document).ready(function(){
 	});
 
 	// sub_ldap_tree.php's component action
-	$('.post.ldap i.icon.caret').on('click', function() {
-		var tree_content = $(this).parent('.post_title').next();
+	$('.post.ldap .ldap_tree_content').on('click', 'i.icon.caret', function() {
 		var icon1 = $(this);
-		var icon2 = tree_content.find('i.square.icon');
-		var icon3 = tree_content.find('i.folder.icon');
-		var detail = tree_content.find('.item');
-		if(icon1.hasClass('down')){
+        var icon2 = $(this).closest('.list').children('i.icon.ellipsis'); 
+        console.log(icon2);
+		var detail = $(this).closest('.list').children('.foldable.item');
+		if (icon1.hasClass('down')) {
 			icon1.removeClass('down').addClass('right');
-			icon2.removeClass('minus').addClass('plus');
-			icon3.removeClass('open');
-			detail.addClass('hide');
-		}else{
+			icon2.show();
+			detail.removeClass('show');
+		} else {
 			icon1.removeClass('right').addClass('down');
-			icon2.removeClass('plus').addClass('minus');
-			icon3.addClass('open');
-			detail.removeClass('hide');
+			icon2.hide();
+			detail.addClass('show');
 		}
 	});
 
@@ -228,13 +225,13 @@ $(document).ready(function(){
 
 	// ldap_tree.php's component action
 	$('.ldap_tree_content').on('click', '.computer.item', function() {
-		$(this).siblings('.computer.item').removeClass('selected');
+		$('.ldap_tree_content .computer.item').removeClass('selected');
 		$(this).addClass('selected');
 	});
 
 	// ldap_tree.php's component action
 	$('.ldap_tree_content').on('click', '.user.item', function() {
-		$(this).siblings('.user.item').removeClass('selected');
+		$('.ldap_tree_content .user.item').removeClass('selected');
 		$(this).addClass('selected');
 	});
 
@@ -408,8 +405,23 @@ $(document).ready(function(){
 		ldap_ajax('new_ou');	
 	});
 
-	// LDAP edit
-	$('.post_cell.ldap').on( 'click', '#ldap_edit_btn' ,function(){
+	// LDAP bind 
+	$('.post_cell.ldap #ldap_bind_btn').on('click', function() {
+		ldap_ajax('bind_item');	
+	});
+
+	// LDAP binduser
+	$('.post_cell.ldap_tainanlocalusers .edit_btn').on('click', function(){
+		ldap_ajax('bind_user');	
+	});
+
+	// LDAP bindcomputer
+	$('.post_cell.ldap_tainancomputers .edit_btn').on('click', function(){
+		ldap_ajax('bind_computer');	
+	});
+
+	// LDAP save
+	$('.post_cell.ldap').on( 'click', '#ldap_save_btn' ,function(){
 		var form = $(this).closest('#form-ldap');
 		do_ldap_ajax(form);	
 	});
@@ -419,10 +431,33 @@ $(document).ready(function(){
 		var form = $(this).closest('#form-ldap').remove();
 	});
 
-	// LDAP fetch
-	//$('.post_cell.ldap_tainancomputers').on( 'click', '.fetch_btn' ,function(){
-    //    ldap_tainancomputers_ajax();
-	//});
+	// LDAP moveou
+	$('.post_cell.ldap, .ui.modal').on( 'change', 'input[name=TopOU]' ,function(){
+		var form = $(this).closest('form');
+        ldap_moveou_ajax(form);
+	});
+    
+    // LDAP modal
+	$('.post_cell.ldap_computers').on( 'click', '.edit_btn' ,function(){
+	    var item = $(this).closest('.ldap_computers').find('.computer.item.selected'); 
+        var cn = $(item).attr('cn');
+        var uac = $(item).attr('uac');
+        var selector = ".ui.modal ";
+        
+        $(selector + 'form input[name=cn]').val(cn);
+        $(selector + 'form span[name=cn]').text(cn);
+        $(selector + 'form input[name=isActive]').prop("checked", uac);
+
+        $(selector).modal({
+            closable  : false,
+            onDeny    : function(){
+            },
+            onApprove : function() {
+              $(selector + 'form').submit();
+            }
+        })
+        .modal('show');
+	});
 
 	// Hydra
 	$('.post.hydra #hydra_btn').on('click', function(e){
@@ -465,27 +500,6 @@ $(document).ready(function(){
 			modal_form_action_ajax(id, 'delete', 'event');
 		}
     });	
-
-	$('.post_cell.ldap_computers').on( 'click', '.edit_btn' ,function(){
-	    var item = $(this).closest('.ldap_computers').find('.computer.item.selected'); 
-        var cn = $(item).attr('cn');
-        var uac = $(item).attr('uac');
-        var selector = ".ui.modal ";
-        
-        $(selector + 'form input[name=cn]').val(cn);
-        $(selector + 'form span[name=cn]').text(cn);
-        $(selector + 'form input[name=isActive]').prop("checked", uac);
-
-        $(selector).modal({
-            closable  : false,
-            onDeny    : function(){
-            },
-            onApprove : function() {
-              $(selector + 'form').submit();
-            }
-        })
-        .modal('show');
-	});
 
 	// semantic dismissable block
 	$('.message .close').on('click', function() {
@@ -557,6 +571,27 @@ function hydra_pwd_mode(type) {
 	}else{
 		input.prop('disabled', true);
 	}
+}
+
+function ldap_modal(tab) {
+    var item = tab.find('.computer.item.selected'); 
+    var cn = $(item).attr('cn');
+    var uac = $(item).attr('uac');
+    var selector = ".ui.modal ";
+    
+    $(selector + 'form input[name=cn]').val(cn);
+    $(selector + 'form span[name=cn]').text(cn);
+    $(selector + 'form input[name=isActive]').prop("checked", uac);
+
+    $(selector).modal({
+        closable  : false,
+        onDeny    : function(){
+        },
+        onApprove : function() {
+          $(selector + 'form').submit();
+        }
+    })
+    .modal('show');
 }
 
 // ldap edit
@@ -645,6 +680,29 @@ function do_ldap_ajax(form) {
 	})
     .done(function(data) {
         form.html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
+}
+
+// ldap moveou 
+function ldap_moveou_ajax(form) {
+    var datalist = form.find("datalist[name=moveOU]");
+
+    var input = [	
+        {name : "TopOU", value: form.find("input[name=TopOU]:checked").val()},
+    ];
+
+	$.ajax({
+		 url: '/ajax/ldap_fetch_moveou',
+		 cache: false,
+		 dataType: 'html',
+		 type: 'GET',
+		 data: input,
+	})
+    .done(function(data) {
+        datalist.html(data);
     })
     .fail(function(jqXHR) {
         ajax_check_user_logged_out(jqXHR);
@@ -1137,9 +1195,36 @@ function nslookup_ajax(type) {
 
 function ldap_ajax(action) {
 	var selector = ".post_cell.ldap ";
-	var input = $(selector + '> form').serializeArray();
-	var parm = [ {name : "action", value: action} ];
-    input = input.concat(parm);
+
+    if (action == "bind_item") {
+        var showTab = $('.post.ldap .tab-content.show'); 
+        var showTabClass = showTab.attr('class').split(' ')[1];
+        console.log(showTabClass);
+        var bindItems = ['ldap_tainanlocalusers', 'ldap_tainancomputers', 'ldap_computers'];
+        var bindItemsIndex = bindItems.indexOf(showTabClass);
+
+        if (bindItemsIndex == 0) {
+            var input = [	
+                {name : "objectCategory", value: "user"},
+                {name : "target", value: showTab.find('.selected.item').attr('cn')},
+                {name : "action", value: "bind_user"}
+            ];
+        } else if (bindItemsIndex == 1) {
+            var input = [	
+                {name : "objectCategory", value: "computer"},
+                {name : "target", value: showTab.find('.selected.item').attr('cn')},
+                {name : "action", value: "bind_computer"}
+            ];
+        } else if (bindItemsIndex == 2) {
+            ldap_modal(showTab);
+            return;
+        }
+    } else {
+        var input = $(selector + '> form').serializeArray();
+        var parm = [ {name : "action", value: action} ];
+        input = input.concat(parm);
+    }
+
     console.log(input);
 	$(selector + '.ui.inline.loader').addClass('active');
 	$.ajax({

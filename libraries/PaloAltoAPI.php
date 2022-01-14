@@ -1,118 +1,180 @@
 <?php
+
 /*** manual： https://172.16.254.209/php/rest/browse.php ***/
+
 Class PaloAltoAPI {
 
 	private $host;
 	private $apikey;
 
-	public function __construct($host = null) {  // a public function (default)
-		if($host == null){	
+    /**
+     * Constructor
+     */
+	public function __construct($host = null) {
+		if ($host == null) {	
 			$this->host = PaloAlto::HOST_ADDRESS['yonghua'];
-		}else{
+		} else {
 			$this->host = PaloAlto::HOST_ADDRESS[$host];
 		}
+
 		$this->apikey = $this->getAPIKey("keygen", PaloAlto::USERNAME, PaloAlto::PASSWORD);
 	}
 
-	public function getProperty() {  // a public function (default)
-		$item['host'] = $this->host;
-		$item['apikey'] = $this->apikey;
-		return $item;
+	/**
+     * Destructor.
+     */
+    public function __destruct()
+    {
+        $this->host = null;
+        $this->apikey = null;
+    }
+
+    /**
+     * @return array $property
+     */
+	public function getProperty() {
+        $property['host'] = $this->host;
+		$property['apikey'] = $this->apikey;
+		return $property;
 	}
 	
-	public function setProperty($host,$apikey) {  // a public function (default)
+    /**
+     * @param string $host
+     * @param string $apikey
+     */
+	public function setProperty($host, $apikey) { 
 		$this->host = $host;
 		$this->apikey = $apikey;
 	}
-	
-	// XML API
+    
+    // ================
+	// === xml api ====
+    // ================
+
+    /**
+     * @return array $security_rules
+     */
 	public function getXmlSecurityRules() {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$args = array('type' => 'config', 'action' => 'show', 'xpath' => '/config/devices/entry/vsys/entry/rulebase/security');
 		$url = "https://" . $host . "/api/?" . http_build_query($args) . "&key=" . $apikey;
-		$response = $this->sendHttpRequest($url);
-		$xmlObject = simplexml_load_string($response) or die("Error: Cannot create object");
-		$data_array = xml2array($xmlObject);        
-        return $data_array;
+		$xmlstr = $this->sendHttpRequest($url);
+		$xml = simplexml_load_string($xmlstr) or die("Error: Cannot create object");
+		$security_rules= xml2array($xml);        
+        return $security_rules;
     }
 
-	public function getLogList($log_type, $dir, $nlogs, $skip, $query) {
+    /**
+     * @param string $log_type
+     * @param string $dir
+     * @param integer $nlogs
+     * @param integer $skip
+     * @param string $query_criteria
+     *
+     * @return array $logs
+     */
+	public function retrieveLogs($log_type, $dir, $nlogs, $skip, $query_criteria) {
 		$host = $this->host;
 		$apikey = $this->apikey;
-		$args = array('type' => 'log', 'log-type' => $log_type, 'dir' => $dir, 'nlogs' => $nlogs, 'skip' => $skip, 'query' => $query, 'async' => 'yes', 'uniq' => 'yes');
-		$url = "https://$host/api/?".http_build_query($args)."&key=$apikey";
-		$res = $this->sendHttpRequest($url);
-
-        $xml = simplexml_load_string($res) or die("Error: Cannot create object");
+		$args = array('type' => 'log', 'log-type' => $log_type, 'dir' => $dir, 'nlogs' => $nlogs, 'skip' => $skip, 'query' => $query_criteria, 'async' => 'yes', 'uniq' => 'yes');
+		$url = "https://$host/api/?" . http_build_query($args) . "&key=$apikey";
+		$xmlstr = $this->sendHttpRequest($url);
+        $xml = simplexml_load_string($xmlstr) or die("Error: Cannot create object");
         $job_id = $xml->result->job;
 
-        $loop_count = 0;
-        $flag = 1;
+        $max_query_count = 30;
+        $query_count = 0;
+        $timeout = true;
         do {
-            $res = $this->retrieveLogs($job_id);
-            $loop_count = $loop_count + 1;
-            $xml = simplexml_load_string($res) or die("Error: Cannot create object");
-            if ($xml['status'] == 'success') {
-                echo $xml->result->job->status . " "; 
-                if ($xml->result->job->status == 'FIN') {
-                    $flag = 0;
+            $queried_log = $this->retrieveLogsByJobId($job_id);
+            $query_count = $query_count + 1;
+            if ($queried_log['status'] == 'success') {
+                if ($queried_log->result->job->status == 'FIN') {
+                    $timeout = false;
                 }
             }
-        } while ($flag & $loop_count < 30);
-        echo "<br>";
-        if ($flag) {
-            echo "Timeout<br>";
+        } while ($timeout & $query_count < $max_query_count);
+
+        if ($timeout) {
+            echo "Timeout" . "<br>";
+        }
+        
+        $data_array = array();
+        $data_array['log_count'] = 0;
+        $data_array['logs'] = array();
+
+        if($queried_log['status'] != 'success'){
+            return $data_array;
         }
 
-        if($xml['status'] != 'success'){
-            $data['log_count'] = 0;
-            $data['logs'] = array();
-            return $data;
+        $logs = xml2array($queried_log->result->log->logs);
+        $data_array['log_count'] = $logs['@attributes']['count'];
+
+        if (empty($data_array['log_count'])) {
+            return $data_array;
         }
-        $data['log_count'] = $xml->result->log->logs['count'];
-		$data['logs'] = $xml->result->log->logs->entry;
-        return $data;
+
+        // if log_count euqal 1, PaloAlto will return object not array of object
+        if ($data_array['log_count'] == 1) {
+            $data_array['logs'] = array($logs['entry']);
+            return $data_array;
+        }
+
+        $data_array['logs'] = $logs['entry'];
+        return $data_array;
 	}
 
+    /**
+     * @param string $report_type
+     * @param string $report_name
+     *
+     * @return array $report
+     */
 	public function getAsyncReport($report_type, $report_name) {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$args = array('type' => 'report', 'reporttype' => $report_type, 'reportname' => $report_name, 'async' => 'yes', 'uniq' => 'yes');
-		$url = "https://$host/api/?".http_build_query($args)."&key=$apikey";
-		$res = $this->sendHttpRequest($url);
-        $xml = simplexml_load_string($res) or die("Error: Cannot create object");
+		$url = "https://$host/api/?" . http_build_query($args) . "&key=$apikey";
+		$xmlstr = $this->sendHttpRequest($url);
+        $xml = simplexml_load_string($xmlstr) or die("Error: Cannot create object");
         $job_id = $xml->result->job;
 
-        $log_count = 0; 
+        $report = array();
         $logs = array();
-        if(!isset($job_id)){
+        $log_count = 0; 
+        if (empty($job_id)) {
             echo "no job_id";
-            $data['log_count'] = $log_count;
-            $data['logs'] = $logs;
-            return $data;
-        }else{
-            $res = $this->retrieveLogs($job_id, $type="report", $action="get");
-            $xml = simplexml_load_string($res) or die("Error: Cannot create object");
-            foreach($xml->result->report->entry as $entry){
+            $report['log_count'] = $log_count;
+            $report['logs'] = $logs;
+            return $report;
+        } else {
+            $queried_log = $this->retrieveLogsByJobId($job_id, $type="report", $action="get");
+            foreach($queried_log->result->report->entry as $entry){
                 foreach($entry as $key => $val){
                     $logs[$log_count][$key] = $val;
                 }
                 $log_count = $log_count + 1;
             }
-            $data['log_count'] = $log_count;
-            $data['logs'] = $logs;
+            $report['log_count'] = $log_count;
+            $report['logs'] = $logs;
         }
-		return $data;
+		return $report;
 	}
 
+    /**
+     * @param string $report_type
+     * @param string $report_name
+     *
+     * @return array $report
+     */
 	public function getSyncReport($report_type, $report_name) {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$args = array('type' => 'report', 'reporttype' => $report_type, 'reportname' => $report_name, 'async' => 'yes', 'uniq' => 'yes');
-		$url = "https://$host/api/?".http_build_query($args)."&key=$apikey";
-		$res = $this->sendHttpRequest($url);
-        $xml = simplexml_load_string($res) or die("Error: Cannot create object");
+		$url = "https://$host/api/?" . http_build_query($args) . "&key=$apikey";
+		$xmlstr = $this->sendHttpRequest($url);
+        $xml = simplexml_load_string($xmlstr) or die("Error: Cannot create object");
         
         $log_count = 0; 
         $logs = array();
@@ -123,56 +185,99 @@ Class PaloAltoAPI {
             $log_count = $log_count + 1;
         }
        
-        $data['log_count'] = $log_count;
-		$data['logs'] = $logs;
-        return $data;
+        $report = array();
+        $report['log_count'] = $log_count;
+		$report['logs'] = $logs;
+        return $report;
 	}
 
-	public function retrieveLogs($job_id, $type="log", $action="get") {
-		$host = $this->host;
-		$apikey = $this->apikey;
-		$args = array('type' => $type, 'action' => $action, );
-		$url = "https://$host/api/?".http_build_query($args)."&job-id=$job_id&key=$apikey";
-		$res = $this->sendHttpRequest($url);
-		return $res;
-	}
-
+    /**
+     * @param string $type
+     * @param string $cmd
+     *
+     * @return string $response
+     */
 	public function getXmlCmdResponse($type, $cmd) {
 		$host = $this->host;
 		$apikey = $this->apikey;
-		$url = "https://".$host."/api/?type=$type&cmd=$cmd&key=$apikey";
-		$res = $this->sendHttpRequest($url);
-		return $res;
+		$url = "https://$host/api/?type=$type&cmd=$cmd&key=$apikey";
+		$response = $this->sendHttpRequest($url);
+		return $response;
 	}
 
-	//Restful API
+    // ====================
+	// === restful api ====
+    // ====================
+
+    /**
+     * @param string $object_type
+     * @param string $name
+     *
+     * @return array
+     */
 	public function getObjectList($object_type, $name){
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://$host/restapi/9.0/Objects/$object_type?name=$name&location=vsys&vsys=vsys1&output-format=json&key=".$apikey;
-		$res = $this->sendHttpRequest($url);
-		return $res;
+		$result = $this->sendHttpRequest($url);
+        $result = json_decode($result, true);
+		return $result;
 	}
 
+    /**
+     * @param string $policy_type
+     * @param string $name
+     *
+     * @return array
+     */
 	public function getPoliciesList($policy_type, $name) {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$url = "https://$host/restapi/9.0/Policies/$policy_type?name=$name&location=vsys&vsys=vsys1&output-format=json&key=".$apikey;
-		$res = $this->sendHttpRequest($url);
-		return $res;
+		$response = $this->sendHttpRequest($url);
+        $response = json_decode($response, true);
+		return $response;
 	}
 
-	//Private Function
+    /**
+     * @param string $job_id
+     * @param string $type
+     * @param string $action
+     *
+     * @return SimpleXMLElement $queried_log
+     */
+	private function retrieveLogsByJobId($job_id, $type="log", $action="get", $max_query_count = 30) {
+		$host = $this->host;
+		$apikey = $this->apikey;
+		$args = array('type' => $type, 'action' => $action, );
+		$url = "https://$host/api/?".http_build_query($args)."&job-id=$job_id&key=$apikey";
+		$xmlstr = $this->sendHttpRequest($url);
+        $queried_log = simplexml_load_string($xmlstr) or die("Error: Cannot create object");
+
+		return $queried_log;
+	}
+
+    /**
+     * @param string $type
+     * @param string $username
+     * @param string $password
+     *
+     * @return string $apikey
+     */
 	private function getAPIKey($type, $username, $password) {
 		$host = $this->host;
 		$url = "https://".$host."/api/?type=$type&user=$username&password=$password";
-		$res = $this->sendHttpRequest($url);
-		$xml = simplexml_load_string($res) or die("Error: Cannot create object");
+		$xmlstr = $this->sendHttpRequest($url);
+		$xml = simplexml_load_string($xmlstr) or die("Error: Cannot create object");
 		$apikey = $xml->result->key;
 		return $apikey;
 	}
 	
-	//Curl Request with options
+    /**
+     * @param string $url
+     *
+     * @return string $response
+     */
 	private function sendHttpRequest($url) {
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
@@ -182,12 +287,12 @@ Class PaloAltoAPI {
 		  CURLOPT_SSL_VERIFYHOST => false,
 		  CURLOPT_ENCODING => "",
 		  CURLOPT_MAXREDIRS => 10,
-		  CURLOPT_TIMEOUT => 0,
+		  CURLOPT_TIMEOUT => 30,
 		  CURLOPT_FOLLOWLOCATION => true,
 		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		  CURLOPT_HTTPHEADER => array("Content-Type: application/json")
 		));
-		$res = curl_exec($curl);
+		$response = curl_exec($curl);
 
         // Check if any error occurred
         if (curl_errno($curl)) {
@@ -195,13 +300,13 @@ Class PaloAltoAPI {
         }
 
 		curl_close($curl);
-		return $res;
+		return $response;
 	}
 
 }
 
 /** Usage
-require 'PaloAltoAPI.php';
+require 'vendor/autoloader.php';
 
 $hosts = ['yonghua', 'minjhih', 'idc', 'intrayonghua'];
 
@@ -209,8 +314,8 @@ foreach($hosts as $key => $host){
 	$pa = new PaloAltoAPI($host);
 	$xml_type = "op";
 	$cmd = "<show><system><info></info></system></show>";
-	$res = $pa->getXmlCmdResponse($xml_type, $cmd);
-	print_r($res);
+	$xmlstr = $pa->getXmlCmdResponse($xml_type, $cmd);
+	print_r($xmlstr);
 }
 
 **/

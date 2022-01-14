@@ -13,7 +13,7 @@ curl_setopt_array($curl, array(
   CURLOPT_SSL_VERIFYHOST => false,
   CURLOPT_ENCODING => "",
   CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 0,
+  CURLOPT_TIMEOUT => 30,
   CURLOPT_FOLLOWLOCATION => true,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_HTTPHEADER => array("Content-Type:: application/json")

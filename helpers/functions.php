@@ -251,6 +251,22 @@ function breadcrumbs($separator = ' &raquo; ', $home = 'Home') {
     return implode($separator, $breadcrumbs);
 }
 
+function createBreadCrumbsWithOu($ou){
+    $ou_pieces = explode("/", substr_replace($ou, '', 0, 1));
+
+    // remove first piece "雲嘉嘉南"
+    unset($ou_pieces[0]);
+
+    foreach($ou_pieces as $key => $val) {
+        $ou_pieces[$key] = "<div class='section'>"  . $val . "</div>";
+    }
+    
+    $separator = "<i class='right angle icon divider'></i>";
+    $breadcrumbs = "<div class='ui breadcrumb'>" . implode($separator, $ou_pieces) . "</div>";
+
+   return $breadcrumbs;
+}
+
 function createWebadMessageBox($result, $label) {
     $html = "";
     if ($result == '"1."') {
@@ -266,9 +282,11 @@ function createWebadMessageBox($result, $label) {
 }
 
 function xml2array ($xmlObject, $out = array()) {
-    foreach ( (array) $xmlObject as $index => $node ) {
-        $out[$index] = ( is_object ( $node ) ||  is_array ( $node ) ) ? xml2array ( $node ) : $node;
-    }
+    // Convert into json
+    $con = json_encode($xmlObject);
+    // Convert into associative array
+    $out = json_decode($con, true);
+
     return $out;
 }
 

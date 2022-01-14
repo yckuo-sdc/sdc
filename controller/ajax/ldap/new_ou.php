@@ -18,7 +18,7 @@ $data_ou = $ld->getData($data_array);
         <button id='ldap_clear_btn' class='ui button'>Cancel</button>
     </div>
     <div class='two wide field'>
-        <button id='ldap_edit_btn' class='ui button'>Save</button>
+        <button id='ldap_save_btn' class='ui button'>Save</button>
     </div>
 </div>
 <div class='field'>

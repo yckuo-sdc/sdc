@@ -33,13 +33,13 @@
 					<tbody>	
 					<?php foreach($threat_data['logs'] as $log): ?>
 						<tr>
-							<td><?php echo $log->receive_time ?></td>
-							<td><?php echo $log->threatid ?></td>
-							<td><?php echo $log->subtype ?></td>
-							<td><?php echo $log->src ?></td>
-							<td><?php echo $log->dst ?></td>
-							<td><?php echo $log->dport ?></td>
-							<td><?php echo $log->app ?></td>
+							<td><?=$log['receive_time']?></td>
+							<td><?=$log['threatid']?></td>
+							<td><?=$log['subtype']?></td>
+							<td><?=$log['src']?></td>
+							<td><?=$log['dst']?></td>
+							<td><?=$log['dport']?></td>
+							<td><?=$log['app']?></td>
 						</tr>
 					<?php endforeach ?>
 					</tbody>

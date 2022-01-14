@@ -10,18 +10,12 @@
                             <label>nowTime</label>
                             <?php echo $nowTime; ?>
                         </div>
+                        <?php foreach($urls as $type => $url): ?>
                         <div class="field">
-                            <label>host json</label>
-                            <?php echo "<a href='".$host_url."' target='_blank'>".$host_url."</a>"; ?>
+                            <label><?=$type?></label>
+                            <a href="<?=$url?>" target="_blank"><?=$url?></a>
                         </div>
-                        <div class="field">
-                            <label>web json</label>
-                            <?php echo "<a href='".$web_url."' target='_blank'>".$web_url."</a>"; ?>
-                        </div>
-                        <div class="field">
-                            <label>target json</label>
-                            <?php echo "<a href='".$target_url."' target='_blank'>".$target_url."</a>"; ?>
-                        </div>
+                        <?php endforeach ?>
                     </form>
                     <pre></pre>
                     <?php foreach($vul_api as $api): ?>

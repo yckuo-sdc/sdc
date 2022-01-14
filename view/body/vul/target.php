@@ -31,7 +31,7 @@
                             <?php for($i=0;$i<$size;$i++): ?>
                                 <?php if($i==0): ?>
                                     <tr>
-                                    <td rowspan=<?=$size?>><?=str_replace('/臺南市政府/','',$Target['ou'])?></td>
+                                    <td rowspan=<?=$size?>><?=$Target['ou']?></td>
                                     <td rowspan=<?=$size?>><?=$Target['ip']?></td>
                                     <td rowspan=<?=$size?>><?=$Target['hostname']?></td>
                                     <td><?=$system_names[$i]?></td>

@@ -4,7 +4,7 @@ $timestamp_attribute_array = array("pwdlastset", "lastlogon", "badpasswordtime",
 
 $search_ou = "ou=TainanLocalUser, dc=tainan, dc=gov, dc=tw";
 $move_ou = "ou=TainanLocalUser, dc=tainan, dc=gov, dc=tw";
-$filter = "(cn=" . $target . "*)";			
+$filter = "(cn=" . $target . ")";			
 
 $data_array = array();
 $data_array['base'] = $search_ou;

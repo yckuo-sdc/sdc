@@ -23,7 +23,7 @@ $input_array = array();
 
 <p><?=count($data)?> entries returned from <?=$search_ou?></p>
 
-<?php foreach($data as $entry): ?>
+<?php foreach($data as $data_index => $entry): ?>
     <?php 
         $value_array = array();
         foreach($input_array as $input):
@@ -63,28 +63,34 @@ $input_array = array();
                 <button type='button' id='ldap_clear_btn' class='ui button'>Cancel</button>
             </div>
             <div class='two wide field'>
-                <button type='submit' id='ldap_edit_btn' class='ui button'>Save</button>
+                <button type='submit' id='ldap_save_btn' class='ui button'>Save</button>
             </div>
         </div>
         <div class='inline fields'>
             <label for='isYonghua'>市政中心</label>
             <div class='field'>
                 <div class='ui radio checkbox'>
-                    <input type='radio' name='isYonghua' value='true' checked='checked'>
+                    <input type='radio' name='TopOU' value='YongHua' checked='checked'>
                     <label>永華</label>
                 </div>
             </div>
             <div class='field'>
                 <div class='ui radio checkbox'>
-                    <input type='radio' name='isYonghua' value='false'>
+                    <input type='radio' name='TopOU' value='MinJhih'>
                     <label>民治</label>
+                </div>
+            </div>
+            <div class='field'>
+                <div class='ui radio checkbox'>
+                    <input type='radio' name='TopOU' value='District'>
+                    <label>公所</label>
                 </div>
             </div>
         </div>
         <div class='field'>
             <label>移動單位</label>
-            <input list='brow' name='moveOU' placeholder='請選擇ou'>
-            <datalist id='brow' name='moveOU'>
+            <input list='brow<?=$data_index?>' name='moveOU' placeholder='請選擇ou'>
+            <datalist id='brow<?=$data_index?>' name='moveOU'>
                 <?php foreach($data_ou as $ou): ?>
                     <?php if(isset($ou['description'])): ?>
                         <option value='<?=$ou['name']?>(<?=$ou['description']?>)'>

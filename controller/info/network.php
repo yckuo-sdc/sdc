@@ -1,10 +1,7 @@
 <?php 
 $pa = new PaloAltoAPI();
 
-// $policy_data = $pa->getPoliciesList($policy_type = 'SecurityRules', $name = '');
-// print $policy_data;
-
-$threat_data = $pa->getLogList($log_type = 'threat', $dir = 'backward', $nlogs = 10, $skip = 0, $query = '');
+$threat_data = $pa->retrieveLogs($log_type = 'threat', $dir = 'backward', $nlogs = 10, $skip = 0, $query = '');
 $report_data = $pa->getSyncReport($report_type = 'predefined', $report_name = 'top-destination-countries');
 
 $max_count = 10;

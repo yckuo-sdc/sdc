@@ -21,6 +21,9 @@ $worksheet = $spreadsheet->getActiveSheet();
 $Rows = [];
 
 foreach ($worksheet->getRowIterator() AS $index => $row) {
+    if($index == 1){
+        continue;
+    }
     $cellIterator = $row->getCellIterator();
     $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
     $cells = [];
@@ -39,19 +42,19 @@ $count = 0;
 foreach ($Rows as $data) {
     if (!empty(trim($data[0])) && !empty(trim($data[4]))) {
         $status_array = array();
-        $status_array['TargetID']= trim($data[0]);
+        $status_array['TargetID']= intval(trim($data[0]));
         $status_array['LastSyncTime']= trim($data[1]);
         $status_array['LastReportedStatusTime']= trim($data[2]);
         $status_array['LastReportedRebootTime']= trim($data[3]);
         $status_array['IPAddress']= trim($data[4]);
         $status_array['FullDomainName']= trim(mb_convert_encoding($data[5],"utf-8","big5"));
         $status_array['EffectiveLastDetectionTime']= trim($data[6]);
-        $status_array['LastSyncResult']= trim($data[7]);
-        $status_array['Unknown']= trim($data[8]);
-        $status_array['NotInstalled']= trim($data[9]);
-        $status_array['Downloaded']= trim($data[10]);
-        $status_array['Installed']= trim($data[11]);
-        $status_array['Failed']= trim($data[12]);
+        $status_array['LastSyncResult']= intval(trim($data[7]));
+        $status_array['Unknown']= intval(trim($data[8]));
+        $status_array['NotInstalled']= intval(trim($data[9]));
+        $status_array['Downloaded']= intval(trim($data[10]));
+        $status_array['Installed']= intval(trim($data[11]));
+        $status_array['Failed']= intval(trim($data[12]));
         $status_array['InstalledPendingReboot']= trim($data[13]);
         $status_array['LastChangeTime']= trim($data[14]);
         $status_array['ComputerMake']= trim($data[15]);
@@ -104,6 +107,9 @@ $worksheet = $spreadsheet->getActiveSheet();
 $Rows = [];
 
 foreach ($worksheet->getRowIterator() AS $index => $row) {
+    if($index == 1){
+        continue;
+    }
     $cellIterator = $row->getCellIterator();
     $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
     $cells = [];
@@ -122,8 +128,8 @@ $count = 0;
 foreach ($Rows as $data) {
     if (!empty(trim($data[0])) && !empty(trim($data[1]))) {
         $status_array = array();
-        $status_array['TargetID']= trim($data[0]);
-        $status_array['KBArticleID']= trim($data[1]);
+        $status_array['TargetID']= intval(trim($data[0]));
+        $status_array['KBArticleID']= intval(trim($data[1]));
         $status_array['UpdateState']= trim($data[2]);
         
         $db->insert($table, $status_array);

@@ -144,7 +144,7 @@ if ($ap == 'csv') {
                     <a>
                         <span style='background:#f3c4c4'><?=$vul['type']?></span>&nbsp;&nbsp;
                         <?=$vul['flow_id']?>&nbsp;&nbsp;
-                        <?=str_replace("/臺南市政府/","",$vul['ou'])?>&nbsp;&nbsp;
+                        <?=$vul['ou']?>&nbsp;&nbsp;
                         <span style='background:#fde087'><?=$vul['system_name']?></span>&nbsp;&nbsp;
                         <?=$vul['status']?>&nbsp;&nbsp;
                         <span style='background:#DDDDDD'><?=$vul['vitem_name']?></span>&nbsp;&nbsp;
@@ -157,8 +157,8 @@ if ($ap == 'csv') {
                             <li>流水號: <?=$vul['flow_id']?></li>
                             <li>弱點序號: <?=$vul['vitem_id']?></li>
                             <li>弱點名稱: <?=$vul['vitem_name']?></li>
-                            <li>OID: <?=$vul['OID']?></li>
-                            <li>單位: <?=str_replace("/臺南市政府/","",$vul['ou'])?></li>
+                            <li>OID: <?=$vul['oid']?></li>
+                            <li>單位: <?=$vul['ou']?></li>
                             <li>系統名稱: <?=$vul['system_name']?></li>
                             <li>IP: <?=$vul['ip']?></li>
                             <li>掃描日期: <?=date_format(new DateTime($vul['scan_date']),'Y-m-d')?></li>

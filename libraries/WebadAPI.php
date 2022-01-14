@@ -60,13 +60,12 @@ class WebadAPI {
     }
 
     // change computer's OU
-    public function changeComputerOU($cn, $ou, $isYonghua){
+    public function changeComputerOU($cn, $ou, $TopOU){
         $url = $this->host . "/api/ChangeComputerOU";
         $postField = json_encode(array(
-            "Username" => $cn,
             "ComputerName" => $cn,
             "UpperOU" => $ou,
-            "IsYongHua" => $isYonghua
+            "TopOU" => $TopOU
         ));
 	    $response = $this->sendHttpRequest($url, $postField);
         return $response;
@@ -118,7 +117,7 @@ class WebadAPI {
 		  CURLOPT_SSL_VERIFYHOST => false,
 		  CURLOPT_ENCODING => "",
 		  CURLOPT_MAXREDIRS => 10,
-		  CURLOPT_TIMEOUT => 0,
+		  CURLOPT_TIMEOUT => 30,
 		  CURLOPT_FOLLOWLOCATION => true,
 		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
           CURLOPT_CUSTOMREQUEST => "POST",

@@ -19,9 +19,9 @@
 					<tbody>
 					<?php foreach($apps as $app): ?>
                         <?php
-                            $app_member = $app->members->member; 
+                            $app_member = $app['members']['member']; 
                             $size = count($app_member);
-                            $name = $app->{'@name'};
+                            $name = $app['@name'];
 						?>
                         <?php foreach($app_member as $key => $member): ?>
 							<tr>

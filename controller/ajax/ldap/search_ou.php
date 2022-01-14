@@ -40,8 +40,8 @@ $upperou = empty($data_upperou) ? array("name" => "", "description" => "") : $da
 ?>
 <form id='form-ldap' class='ui form' action='javascript:void(0)'>
     <h4 class='ui dividing header'>Entry Information</h4>
-    <div class='fields'>
-        <div class='six wide field'>
+    <div class='inline fields'>
+        <div class='twelve wide field'>
             <i class="folder icon"></i>
             <?=$entry['name']?>
             <input type='hidden' name='type' value='editou' >
@@ -51,7 +51,7 @@ $upperou = empty($data_upperou) ? array("name" => "", "description" => "") : $da
             <button type='button' id='ldap_clear_btn' class='ui button'>Cancel</button>
         </div>
         <div class='two wide field'>
-            <button type='submit' id='ldap_edit_btn' class='ui button'>Save</button>
+            <button type='submit' id='ldap_save_btn' class='ui button'>Save</button>
         </div>
     </div>
     <div class='field'>

@@ -10,7 +10,6 @@ foreach($pa_hosts as $host) {
 
     foreach($policy_types as $policy_type) {
         $response = $pa->getPoliciesList($policy_type, $name = "");
-        $response = json_decode($response, true);
 
         if (empty($response['result']['@total-count'])) {
             $data_array = array();

@@ -30,6 +30,7 @@
                     </div><!--End of post_cell-->
                 <?php endif ?>
                 <?php if($_SESSION['level'] == 2):	?>
+                    <!--
                     <div class="post_title">Edr fireeyes</div>
                     <div class="post_cell upload_fireeye">
                         從<a href="https://srm.chtsecurity.com" target="_blank">SRM</a>下載端點列表並上傳，即可更新「fireeye」資料，並顯示已更新數量。
@@ -43,7 +44,8 @@
                         <p><input type="submit" value="Upload" class="ui button" name="submit" style="margin-top:1em"/></p>
                         </form>
                         <div class="record_content"></div>
-                    </div><!--End of post_cell-->
+                    </div>
+                    -->
                 <?php endif ?>
             </div><!--End of post-->
         </div><!--End of sub-content-->

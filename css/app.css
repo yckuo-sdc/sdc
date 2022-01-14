@@ -385,6 +385,14 @@ div.header a{
 	display:block !important;
 }
 
+.ldap_tree_content .foldable.item{
+	display:none !important;
+}
+
+.ldap_tree_content .foldable.item.show{
+	display:block !important;
+}
+
 .ui.pagination.menu.mobile{
 	display:none;
 }

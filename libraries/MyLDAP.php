@@ -141,6 +141,7 @@ class MyLDAP {
 
     public function createSingleLevelComputerTree($base, $ou ,$description) {
         $html = "";
+        $computer_show_records = 3;
 
         // computer 
         $data_array = array();
@@ -152,8 +153,8 @@ class MyLDAP {
         if (!empty($computer_list)) {
             $computer_count = count($computer_list);
             $html .= "<div class='list'>";
-                $html .= "<div class='item'>共 " . $computer_count . " 筆資料 !</div>";
-                foreach($computer_list as $computer) {
+                $html .= "<div class='item'><i class='icon caret right'></i>共 " . $computer_count . " 筆資料 !</div>";
+                foreach($computer_list as $computer_index => $computer) {
                     if(isDisable($computer['useraccountcontrol'])){
                         $uac = false;
                         $uac_status = "__已停用";
@@ -165,7 +166,14 @@ class MyLDAP {
                     }
                     $computer_description = empty($computer['description']) ? "" : "(" . $computer['description'] . ")";
 
-                    $html .= "<div class='computer item' cn='" . $computer['cn'] . "' uac='" . $uac . "'>";
+                    if($computer_index < $computer_show_records) {
+                        $html .= "<div class='computer item' cn='" . $computer['cn'] . "' uac='" . $uac . "'>";
+                    } else if($computer_index == $computer_show_records) { 
+                        $html .= "<i class='ellipsis horizontal icon'></i>";
+                        $html .= "<div class='foldable computer item' cn='" . $computer['cn'] . "' uac='" . $uac . "'>";
+                    } else {
+                        $html .= "<div class='foldable computer item' cn='" . $computer['cn'] . "' uac='" . $uac . "'>";
+                    }		
                         $html .= $computer_icon . "&nbsp;";
                         $html .= $computer['cn'];
                         $html .= $computer_description;
@@ -221,6 +229,7 @@ class MyLDAP {
 
     public function createSingleLevelUserTree($base, $ou ,$description) {
         $html = "";
+        $user_show_records = 3;
 
         // user
         $data_array = array();
@@ -232,8 +241,8 @@ class MyLDAP {
         if (!empty($user_list)) {
             $user_count = count($user_list);
             $html .= "<div class='list'>";
-                $html .= "<div class='item'>共 " . $user_count . " 筆資料 !</div>";
-                foreach($user_list as $user) {
+                $html .= "<div class='item'><i class='icon caret right'></i>共 " . $user_count . " 筆資料 !</div>";
+                foreach($user_list as $user_index => $user) {
                     if (isDisable($user['useraccountcontrol'])) {
                         $uac = false;
                         $uac_status = "__已停用";
@@ -244,7 +253,15 @@ class MyLDAP {
                         $user_icon = "<i class='blue user icon'></i>";
                     }
                     $displayname = empty($user['displayname']) ? "" : "(" . $user['displayname'] . ")";
-                    $html .= "<div class='user item' cn='" . $user['cn'] . "' uac='" . $uac . "'>";
+
+                    if($user_index < $user_show_records) {
+                        $html .= "<div class='user item' cn='" . $user['cn'] . "' uac='" . $uac . "'>";
+                    } else if($user_index == $user_show_records) { 
+                        $html .= "<i class='ellipsis horizontal icon'></i>";
+                        $html .= "<div class='foldable user item' cn='" . $user['cn'] . "' uac='" . $uac . "'>";
+                    } else {
+                        $html .= "<div class='foldable user item' cn='" . $user['cn'] . "' uac='" . $uac . "'>";
+                    }		
                         $html .= $user_icon . "&nbsp;";
                         $html .= $user['cn'];
                         $html .= $displayname;

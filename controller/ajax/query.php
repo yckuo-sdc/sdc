@@ -3,7 +3,7 @@
 $v1 = 0; $v2 = 0;
 
 // Sanitizes data and converts strings to UTF-8 (if available), according to the provided field whitelist
-$whitelist = array("key", "keyword", "page", "jsonConditions", "type", "ap");
+$whitelist = array("key", "keyword", "page", "jsonConditions", "jsonSorts",  "type", "ap");
 $_GET = $gump->sanitize($_GET, $whitelist); 
 
 foreach ($_GET as $getKey => $val) {
@@ -20,11 +20,15 @@ if ($v1 && $v2) {
 	return;
 }
 
+$jsonSortsMap = array('ascending' => 'ASC', 'descending' => 'DESC');
+
 $page = isset($page) ? $page : 1;
 $ap = isset($ap) ? $ap : 'html';
 
 $jsonConditions = $gump->sanitize(json_decode(html_entity_decode($jsonConditions), true));
-$jsonSortsMap = array('ascending' => 'ASC', 'descending' => 'DESC');
+if (!empty($jsonSorts)) {
+    $jsonSorts = $gump->sanitize(json_decode(html_entity_decode($jsonSorts), true));
+}
 
 switch($type){
 	case 'event':
@@ -40,7 +44,7 @@ switch($type){
 	case 'contact':
 		$condition_table = "security_contact";
 		$table = "(select * from security_contact union select * from security_contact_extra)a";
-		$table = "(SELECT a.*, b.rank FROM( SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by OID asc,person_type asc )a LEFT JOIN security_rank AS b ON a.OID = b.OID)v";
+		$table = "(SELECT a.*, b.rank FROM( SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by oid asc,person_type asc )a LEFT JOIN security_rank AS b ON a.oid = b.oid)v";
 		$order_by = "oid, person_type";	
 		break;
 	case 'drip':
@@ -106,9 +110,8 @@ if (!empty($jsonConditions)) {
 }
 
 // get order_by
-if(!empty($jsonSorts)) {
-    $jsonSorts = json_decode($jsonSorts, true);
-    if(array_key_exists($jsonSorts['sort'], $jsonSortsMap)) {
+if (!empty($jsonSorts)) {
+    if (array_key_exists($jsonSorts['sort'], $jsonSortsMap)) {
         $order_by = $jsonSorts['label'] . " " . $jsonSortsMap[$jsonSorts['sort']];
     }
 }
@@ -271,8 +274,8 @@ if ($ap=='csv') {
 				<?php break; ?>
 			<?php case "contact": ?>
                 <?php 
-                $condition = $condition." GROUP BY OID";
-                $fields = "OID";
+                $condition = $condition." GROUP BY oid";
+                $fields = "oid";
                 $db->query($table, $condition, $order_by = "1", $fields, $limit = "", $data_array);
                 $oid_num = $db->getLastNumRows();
 		        ?>
@@ -293,8 +296,8 @@ if ($ap=='csv') {
                         </a>
                         <div class='description'>
                             <ol>
-                            <li>序號: <?=$contact['CID']?></li>
-                            <li>OID: <?=$contact['OID']?></li>
+                            <li>序號: <?=$contact['id']?></li>
+                            <li>OID: <?=$contact['oid']?></li>
                             <li>資安責任等級: <?=$contact['rank']?></li>
                             <li>機關名稱: <?=$contact['organization']?></li>
                             <li>單位名稱: <?=$contact['unit']?></li>
@@ -556,10 +559,8 @@ if ($ap=='csv') {
                     $condition = "edr_corecloud_id = :edr_corecloud_id";
                     $data_array = [':edr_corecloud_id' => $entry['id'] ];
                     $ip_array = $db->query($table, $condition, $order_by, $fields = "*", $limit = "", $data_array);
-                    //$IPs = array_map('trim', explode(',', $entry['ip'])); 
                     $edr = array();
                     $edr['icon'] = array_key_exists($entry['state'], $state_icon_map) ? $state_icon_map[$entry['state']]: ""; 
-                    //$edr['IPs'] = $IPs; 
                     $edr['id'] = $entry['id']; 
                     $edr['ip_array'] = $ip_array; 
                     $edr['host_name'] = $entry['host_name']; 

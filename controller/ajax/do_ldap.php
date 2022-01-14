@@ -62,7 +62,7 @@ switch ($type) {
 		if (!empty($moveOU)) {
 			$ou = explode("(", $moveOU);
 			$ou = $ou[0];	
-			$res = $ad->changeComputerOU($cn, $ou, $isYonghua);
+			$res = $ad->changeComputerOU($cn, $ou, $TopOU);
             echo createWebadMessageBox($res, "changeComputerOU");
 			$userAction->logger('callFunction', 'ad/change_computer_ou(account=' . $cn . ')res=' . $res);
             if($res != '"1."'){
