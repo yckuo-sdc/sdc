@@ -79,6 +79,8 @@ FROM
 			ou,
 			system_name
 	) B
+WHERE 
+    B.oid LIKE '2.16.886.101.90028.20002%' -- just show tainan gov
 GROUP BY
 	B.oid,
 	B.ou,

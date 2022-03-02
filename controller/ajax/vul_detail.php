@@ -11,7 +11,6 @@ if (!filter_var($url, FILTER_VALIDATE_URL)) {
 
 $parse = parse_url($url);
 $domain =  $parse['host'];
-//$domains = array('tainan-vsms.chtsecurity.com');
 $domains = array(ChtSecurity::DOMAIN);
 
 if (!in_array($domain, $domains)) {

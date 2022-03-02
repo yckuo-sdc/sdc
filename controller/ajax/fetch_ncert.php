@@ -21,7 +21,7 @@ $currentRow = 2;
 $spreadsheetId = '1lr_EHFxJp0KGErFt7L1oh7n7HIIh_YZtVWH4QBZhhME';
 ///測試用的範圍，可以填入試算表名字和 column、row
 // The range of A2:H will get columns A through H and all rows starting from row 2
-$range = '臺南市政府資安攻擊成功事件清單!A2:AD';
+$range = '臺南市政府資安攻擊成功事件清單!A2:AE';
 $rows = $sheets->spreadsheets_values->get($spreadsheetId, $range, ['majorDimension' => 'ROWS']);
 
 $count = 0;
@@ -37,7 +37,7 @@ if (isset($rows['values'])) {
 		}
 
 		//filter non-exist the data(ex: $row[15] is not exist)
-		for($i=0;$i<30;$i++){
+		for ($i=0; $i<31; $i++) {
 			$row[$i] = isset($row[$i]) ? $row[$i] : "";
             //filter empty values of datatime field
 			if( $i >= 20 && $i <= 25){ 
@@ -47,7 +47,7 @@ if (isset($rows['values'])) {
 			}
 		}
 
-		$event['IncidentID'] = $row[0];
+		$event['id'] = $row[0];
 		$event['Status'] = $row[1];
 		$event['NccstID'] = $row[2];
 		$event['NccstPT'] = $row[3];
@@ -77,6 +77,7 @@ if (isset($rows['values'])) {
 		$event['FinishExecutionTime'] = $row[27];
 		$event['SOCConfirmation'] = $row[28];
 		$event['ImprovementPlanTime'] = $row[29];
+		$event['Incident_id'] = $row[30];
 		
 		$db->insert($table, $event);
 		$count = $count + 1;

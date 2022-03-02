@@ -3,7 +3,7 @@
 		<div class="sub-content show">
 			<div class="post scanResult">
                 <?=$route->createBreadcrumbs(' > ');?>
-                <h2 class="ui dividing header">弱點查詢</h2>
+                <h2 class="ui dividing header">弱點查詢(雲嘉嘉南)</h2>
 				<div class="post_cell">
 					<form class="ui form" action="">
 					<div class="query_content"></div>

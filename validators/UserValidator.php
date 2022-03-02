@@ -9,7 +9,7 @@ class UserValidator {
     /**
      * 驗證是否已登入
      */
-    public function isLogin(){
+    public function isLogin() {
         if (isset($_SESSION['account'])) { 	//檢查session是否有值
             return true;
         }
@@ -26,6 +26,18 @@ class UserValidator {
             }
         }		
         
+        return false;
+    }	
+
+    /**
+     * 驗證是否為admin
+     */
+    public function isAdmin() {
+        if (isset($_SESSION['level'])) { 	//檢查session是否有值
+            if($_SESSION['level'] == 2) {
+                return true;
+            }
+        }
         return false;
     }	
 

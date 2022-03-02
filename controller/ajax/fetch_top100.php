@@ -57,7 +57,7 @@ $db->delete($table, $key_column, $id);
 //fetch traffic report of yonghua Paloalto
 $pa = new PaloAltoAPI('yonghua');
 $data = $pa->getAsyncReport($report_type = 'custom', $report_name = 'Traffic_Top100_last_24hour');
-print_r($data);
+//print_r($data);
 
 $count1 = 0;
 foreach($data['logs'] as $entry){
@@ -77,6 +77,7 @@ foreach($data['logs'] as $entry){
 //fetch traffic report of minjhih Paloalto
 $pa = new PaloAltoAPI('minjhih');
 $data = $pa->getAsyncReport($report_type = 'custom', $report_name = 'Traffic_Top100_last_24hour');
+//print_r($data);
 
 $count2 = 0;
 foreach($data['logs'] as $entry){

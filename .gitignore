@@ -28,3 +28,6 @@ vendor/
 # ignore package lock files
 composer.lock
 package-lock.json
+
+# igonre demo file
+demo.php

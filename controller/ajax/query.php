@@ -39,7 +39,7 @@ switch($type){
 	case 'ncert':
 		$condition_table = "security_ncert";
 		$table = "security_ncert";
-		$order_by = "IncidentID DESC, DiscoveryTime DESC";	
+		$order_by = "id DESC, DiscoveryTime DESC";	
 		break;
 	case 'contact':
 		$condition_table = "security_contact";
@@ -235,7 +235,7 @@ if ($ap=='csv') {
                         </a>
                         <div class='description'>
                             <ol>
-                            <li>編號:  <?=$incident['IncidentID'] ?></li>
+                            <li>編號:  <?=$incident['id'] ?></li>
                             <li>結案狀態: <?=$incident['Status'] ?></li>
                             <li>事件編號: <?=$incident['NccstID'] ?></li>
                             <li>行政院攻防演練: <?=$incident['NccstPT'] ?></li>
@@ -265,6 +265,7 @@ if ($ap=='csv') {
                             <li>結案執行時間(時: 分): <?=$incident['FinishExecutionTime'] ?></li>
                             <li>中華SOC複測結果: <?=$incident['SOCConfirmation'] ?></li>
                             <li>改善計畫提報日期: <?=$incident['ImprovementPlanTime'] ?></li>
+                            <li>通報單ID: <?=$incident['Incident_id'] ?></li>
                             </ol>
                         </div>
                         </div>

@@ -52,9 +52,7 @@
                 <div class="ui secondary pointing menu">
                     <a class="active item">TainanLocalUser</a>
                     <a class="item">TainanComputer</a>
-                    <?php if($_SESSION['level'] == 2):	?>
-                        <a class="item">Unassigned Computer</a>
-                    <?php endif ?>
+                    <a class="item">Unassigned Computer</a>
                 </div>
                 <div class="ui noborder bottom attached segment">
                     <div class="tab-content ldap_tainanlocalusers show">
@@ -97,82 +95,80 @@
                             </div>
                         </div><!--end of .post_cell-->
                     </div> <!-- end of .tabular-->
-                    <?php if($_SESSION['level'] == 2):	?>
-                        <div class="tab-content ldap_computers">
-                            <div class="post_cell ldap_computers">
-                                <?= flash() ?>
-                                <div class='ui centered grid'>
-                                    <div class='sixteen wide column' style='max-height: 50vh; overflow-x: hidden; overflow-y: auto;'>
-                                        <div class="ldap_tree_content ldap_defaultcomputers">
-                                            <div class="ui list">
-                                                <div class="item hide">
-                                                    <i class="plus square outline icon" base="<?=$default_computer_base?>" ou="<?=$default_computer_ou?>" description="<?=$default_computer_description?>"></i>
-                                                    <i class="folder icon"></i>
-                                                    <div class="content">
-                                                        <div class="header"><?=$default_computer_ou?>(<?=$default_computer_description?>)</div>
-                                                    </div>
+                    <div class="tab-content ldap_computers">
+                        <div class="post_cell ldap_computers">
+                            <?= flash() ?>
+                            <div class='ui centered grid'>
+                                <div class='sixteen wide column' style='max-height: 50vh; overflow-x: hidden; overflow-y: auto;'>
+                                    <div class="ldap_tree_content ldap_defaultcomputers">
+                                        <div class="ui list">
+                                            <div class="item hide">
+                                                <i class="plus square outline icon" base="<?=$default_computer_base?>" ou="<?=$default_computer_ou?>" description="<?=$default_computer_description?>"></i>
+                                                <i class="folder icon"></i>
+                                                <div class="content">
+                                                    <div class="header"><?=$default_computer_ou?>(<?=$default_computer_description?>)</div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <!--<div class="ldap_tree_content"></div>-->
                                     </div>
+                                    <!--<div class="ldap_tree_content"></div>-->
                                 </div>
-                                <div class="ui centered inline loader"></div>
-                                <div class="ui modal">
-                                    <i class="close icon"></i>
-                                    <div class="header">電腦編輯</div>
-                                    <div class="content">
-                                        <form class="ui form" action="/ajax/do_ldap" method="get">
-                                            <div class='fields'>
-                                                <div class='six wide field'>
-                                                    <i class="desktop blue icon"></i> <span name="cn"></span>
-                                                    <input type="hidden" name="cn">
-                                                    <input type="hidden" name="type" value="changecomputer">
-                                                </div>
-                                                <div class='ten wide field'>
-                                                    <div class='ui toggle checkbox'>
-                                                        <input type='checkbox' name='isActive' value="true">
-                                                        <label>是否啟用</label>
-                                                    </div>
-                                                </div>
+                            </div>
+                            <div class="ui centered inline loader"></div>
+                            <div class="ui modal">
+                                <i class="close icon"></i>
+                                <div class="header">電腦編輯</div>
+                                <div class="content">
+                                    <form class="ui form" action="/ajax/do_ldap" method="get">
+                                        <div class='fields'>
+                                            <div class='six wide field'>
+                                                <i class="desktop blue icon"></i> <span name="cn"></span>
+                                                <input type="hidden" name="cn">
+                                                <input type="hidden" name="type" value="changecomputer">
                                             </div>
-                                            <div class='inline fields'>
-                                                <label for='isYonghua'>市政中心</label>
-                                                <div class='field'>
-                                                    <div class='ui radio checkbox'>
-                                                        <input type='radio' name='TopOU' value='YongHua' checked='checked'>
-                                                        <label>永華</label>
-                                                    </div>
-                                                    <div class='ui radio checkbox'>
-                                                        <input type='radio' name='TopOU' value='MinJhih'>
-                                                        <label>民治</label>
-                                                    </div>
-                                                    <div class='ui radio checkbox'>
-                                                        <input type='radio' name='TopOU' value='District'>
-                                                        <label>公所</label>
-                                                    </div>
+                                            <div class='ten wide field'>
+                                                <div class='ui toggle checkbox'>
+                                                    <input type='checkbox' name='isActive' value="true">
+                                                    <label>是否啟用</label>
                                                 </div>
                                             </div>
-                                            <div class="field">
-                                                <label>移動單位</label>
-                                                <input list="brow" name="moveOU" placeholder='請選擇ou' >
-                                                <datalist id="brow" name="moveOU">
-                                                    <?php foreach($OUs as $ou): ?>
-                                                       <?php $ou['description'] = empty($ou['description']) ? "" : $ou['description']?> 
-                                                       <option value="<?=$ou['name']?>(<?=$ou['description']?>)"></option>
-                                                    <?php endforeach ?>
-                                                </datalist>
+                                        </div>
+                                        <div class='inline fields'>
+                                            <label for='isYonghua'>市政中心</label>
+                                            <div class='field'>
+                                                <div class='ui radio checkbox'>
+                                                    <input type='radio' name='TopOU' value='YongHua' checked='checked'>
+                                                    <label>永華</label>
+                                                </div>
+                                                <div class='ui radio checkbox'>
+                                                    <input type='radio' name='TopOU' value='MinJhih'>
+                                                    <label>民治</label>
+                                                </div>
+                                                <div class='ui radio checkbox'>
+                                                    <input type='radio' name='TopOU' value='District'>
+                                                    <label>公所</label>
+                                                </div>
                                             </div>
-                                        </form>
-                                    </div>
-                                    <div class="actions">
-                                        <div class="ui approve button">送出</div>
-                                        <div class="ui cancel button">取消</div>
-                                    </div>
+                                        </div>
+                                        <div class="field">
+                                            <label>移動單位</label>
+                                            <input list="brow" name="moveOU" placeholder='請選擇ou' >
+                                            <datalist id="brow" name="moveOU">
+                                                <?php foreach($OUs as $ou): ?>
+                                                   <?php $ou['description'] = empty($ou['description']) ? "" : $ou['description']?> 
+                                                   <option value="<?=$ou['name']?>(<?=$ou['description']?>)"></option>
+                                                <?php endforeach ?>
+                                            </datalist>
+                                        </div>
+                                    </form>
                                 </div>
-                            </div><!--end of .post_cell-->
-                        </div> <!-- end of .tabular-->
-                    <?php endif ?>
+                                <div class="actions">
+                                    <div class="ui approve button">送出</div>
+                                    <div class="ui cancel button">取消</div>
+                                </div>
+                            </div>
+                        </div><!--end of .post_cell-->
+                    </div> <!-- end of .tabular-->
                 </div> <!-- end of .attached.segment-->
 			</div><!--end of .post-->
 		</div><!--end of .sub-content-->

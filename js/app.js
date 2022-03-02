@@ -151,7 +151,7 @@ $(document).ready(function(){
 	});
 
 	// query.php's component action
-	$('.ou_vs_content').on('click', '.ou_block a', function() {
+	$('.post.vul_overview').on('click', '.ou_block a', function() {
 		var icon = $(this).find('i.icon');
 		var detail = $(this).closest('.ou_block').find('.description');
 		if(detail.hasClass('show')){
@@ -1031,7 +1031,7 @@ function ips_query_pagination_ajax(data_array) {
     });
  }
 
-function retrieve_ou_vul_ajax() {
+/*function retrieve_ou_vul_ajax() {
 	var url = location.origin + '/';
 	var selector = ".post.vul_overview ";
 	$(selector + '.ui.inline.loader').addClass('active');
@@ -1048,7 +1048,7 @@ function retrieve_ou_vul_ajax() {
     .fail(function(jqXHR) {
         ajax_check_user_logged_out(jqXHR);
     });
- }
+ }*/
 
 function fetch_data_ajax(type) {
     var fetch_url = "/ajax/fetch_" + type + "/";
@@ -1365,10 +1365,6 @@ function pageSwitch() {
                 var parameter = {type: item, ap: 'html', page: page, partial: false};
 				query_ajax(parameter);
 			});
-        	break;
-	 	// load ou vul
-     	case (mainpage == 'vul' && ['overview', ''].includes(subpage)):
-			retrieve_ou_vul_ajax();
         	break;
 		// load vul query
       	case (mainpage == 'vul' && subpage == 'search'):

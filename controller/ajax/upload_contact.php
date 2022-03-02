@@ -3,29 +3,42 @@ require_once __DIR__ .'/../../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-if($_SESSION['level'] != 2){
+if ($_SESSION['level'] != 2) {
 	return;
 }
 
 //PHP File Upload
 $target_dir = "upload/contact/";
-if(is_array($_FILES)) {
-	if(is_uploaded_file($_FILES["fileToUpload"]["tmp_name"])) {
+if (is_array($_FILES)) {
+	if (is_uploaded_file($_FILES["fileToUpload"]["tmp_name"])) {
 		$source_file = $_FILES["fileToUpload"]["tmp_name"];
 		$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-		$FileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+		$fileinfo = finfo_open(FILEINFO_MIME_TYPE);
+		$filetype = finfo_file($fileinfo, $source_file);
+        echo $filetype;
+
+		$allowedTypes = array(
+		   'application/vnd.ms-excel' => 'csv',
+		   'application/vnd.ms-excel' => 'xls',
+		   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheetimage/jpeg' => 'xlsx',
+           'application/octet-stream' => 'others',
+		);
+
 		$uploadOk = 1;
-		// Check if file already exists
+
 		// Check file size
 		if ($_FILES["fileToUpload"]["size"] > 500000) {
 			echo "Sorry, your file is too large.";
 			$uploadOk = 0;
 		}
+
 		// Allow certain file formats
-		if($FileType != "xls" && $FileType != "xlsx" && $FileType != "csv") {
-			echo "Sorry, only xls, xlsx and csv files are allowed.";
+        if (!in_array($filetype, array_keys($allowedTypes))) {
+			echo "Sorry, your file is not allowed.";
 			$uploadOk = 0;
 		}
+
 		// Check if $uploadOk is set to 0 by an error
 		if ($uploadOk == 0) {
 			echo "Sorry, your file was not uploaded.";
@@ -43,7 +56,7 @@ if(is_array($_FILES)) {
 $inputFileName = $target_file;
 $count = 0;
 
-if ($uploadOk == 1){
+if ($uploadOk == 1) {
 
     /** Load $inputFileName to a Spreadsheet Object  **/
     $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileName);

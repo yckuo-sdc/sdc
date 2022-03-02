@@ -34,7 +34,6 @@ if (($handle = fopen($file, "r")) !== FALSE) {
 			}
     }
     fclose($handle);
-	$nowTime = date("Y-m-d H:i:s");
 	$nowTime = date("Y-m-d H:i:s", filemtime($file));
 	echo "The ".$count." records have been inserted or updated into the antivirus_clinet_list on ".$nowTime."\n\r<br>";
 	$status = 200;

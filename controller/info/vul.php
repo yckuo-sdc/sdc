@@ -1,18 +1,58 @@
 <?php 
-$sql = "SELECT oid, ou, SUM(total_VUL) AS total_VUL, SUM(fixed_VUL) AS fixed_VUL, IFNULL(SUM(fixed_VUL)*100.0 / SUM(total_VUL), 0) AS total_completion, SUM(total_high_VUL) AS total_high_VUL, SUM(fixed_high_VUL) AS fixed_high_VUL, IFNULL(SUM(fixed_high_VUL)*100.0 / SUM(total_high_VUL), 0) AS high_completion, SUM(total_VUL - overdue_high_VUL - overdue_medium_VUL) AS non_overdue_VUL, IFNULL(SUM(total_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / SUM(total_VUL), 0) AS non_overdue_completion FROM view_system_vuls GROUP BY oid, ou ORDER BY total_completion ASC, oid ASC";
+// just show tainan gov
+$sql = 
+"SELECT 
+    oid,
+    ou,
+    SUM(number) AS number,
+    SUM(fixed_number) AS fixed_number,
+    SUM(high_risk_number) AS high_risk_number,
+    SUM(fixed_high_risk_number) AS fixed_high_risk_number,
+    SUM(number - overdue_high_risk_number - overdue_medium_risk_number) AS undue_number,
+    IFNULL(SUM(fixed_number)*100.0 / SUM(number), 0) AS completion,
+    IFNULL(SUM(fixed_high_risk_number)*100.0 / SUM(high_risk_number), 0) AS high_risk_completion,
+    IFNULL(SUM(number - overdue_high_risk_number - overdue_medium_risk_number)*100.0 / SUM(number), 0) AS undue_completion 
+FROM 
+    scan_stats
+WHERE 
+    oid LIKE '2.16.886.101.90028.20002%'
+GROUP BY 
+    oid, ou
+ORDER BY 
+    completion ASC, oid ASC";
 $ou_vul = $db->execute($sql, []);
 
-$sql = "SELECT SUM(total_VUL) AS total_VUL, SUM(fixed_VUL) AS fixed_VUL, IFNULL(SUM(fixed_VUL)*100.0 / SUM(total_VUL), 0) AS total_completion, SUM(total_high_VUL) AS total_high_VUL, SUM(fixed_high_VUL) AS fixed_high_VUL, IFNULL(SUM(fixed_high_VUL)*100.0 / SUM(total_high_VUL), 0) AS high_completion, SUM(total_VUL - overdue_high_VUL - overdue_medium_VUL) AS non_overdue_VUL, IFNULL(SUM(total_VUL - overdue_high_VUL - overdue_medium_VUL)*100.0 / SUM(total_VUL), 0) AS non_overdue_completion FROM view_system_vuls";
+$sql = 
+"SELECT 
+    SUM(number) AS number,
+    SUM(fixed_number) AS fixed_number,
+    SUM(high_risk_number) AS high_risk_number,
+    SUM(fixed_high_risk_number) AS fixed_high_risk_number,
+    SUM(number - overdue_high_risk_number - overdue_medium_risk_number) AS undue_number,
+    IFNULL(SUM(fixed_number)*100.0 / SUM(number), 0) AS completion,
+    IFNULL(SUM(fixed_high_risk_number)*100.0 / SUM(high_risk_number), 0) AS high_risk_completion,
+    IFNULL(SUM(number - overdue_high_risk_number - overdue_medium_risk_number)*100.0 / SUM(number), 0) AS undue_completion 
+FROM 
+    scan_stats
+WHERE 
+    oid LIKE '2.16.886.101.90028.20002%'";
 $total_vul = $db->execute($sql)[0];
 
-$sql = "SELECT COUNT(DISTINCT ip) AS host_num FROM scan_targets";
-$host_num = $db->execute($sql, [])[0]['host_num'];
+$sql = 
+"SELECT 
+    COUNT(DISTINCT ip) AS host_num, 
+    SUM(CASE domain WHEN '' THEN 0 ELSE LENGTH(domain)-LENGTH(REPLACE(domain,';',''))+1 END) AS url_num 
+FROM 
+    scan_targets
+WHERE 
+    oid LIKE '2.16.886.101.90028.20002%'";
+$targets = $db->execute($sql, [])[0];
+$host_num = $targets['host_num'];
+$url_num = $targets['url_num'];
 
-$sql = "SELECT SUM(CASE domain WHEN '' THEN 0 ELSE LENGTH(domain)-LENGTH(REPLACE(domain,';',''))+1 END) AS url_num FROM scan_targets";
-$url_num = $db->execute($sql, [])[0]['url_num'];
-$fixed_high_VUL	= $total_vul['fixed_high_VUL'];
-$total_high_VUL = $total_vul['total_high_VUL'];
-$high_completion = $total_vul['high_completion'];
+$fixed_high_VUL	= $total_vul['fixed_high_risk_number'];
+$total_high_VUL = $total_vul['high_risk_number'];
+$high_completion = $total_vul['high_risk_completion'];
 
 require 'view/header/default.php'; 
 require 'view/body/info/vul.php';

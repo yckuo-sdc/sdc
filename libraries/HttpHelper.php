@@ -1,21 +1,18 @@
 <?php
 class HttpHelper {
+
     /**
-     * 使用 print_r(curl('http://www.tainan.gov.tw/', [CURLINFO_HTTP_CODE, CURLINFO_EFFECTIVE_URL]));
-     * 
-     * 預設只取表頭
-     * 
-     * $getinfo:
-     *  透過curl_getinfo撈指定資料 ex.CURLINFO_HTTP_CODE、CURLINFO_EFFECTIVE_URL
-     *  if empty then return HEADER string, else if array then return array
-     *  see. https://www.php.net/manual/zh/function.curl-getinfo.php
-     * 
+     * @param string $url
+     * @param array $curlopt
+     * @param array $getinfo
+     *
+     * @return array $curl_info
      */
     public function getUrlResponse($url, $curlopt = array(), $getinfo = array()) {
         $agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
         $curl = curl_init();
         
-        $opt_array = array(
+        $opt_array = $curlopt + array(
             CURLOPT_URL => $url,
             CURLOPT_USERAGENT => $agent,
             CURLOPT_RETURNTRANSFER => true, //講curl_exec()獲取的信息以文件流的形式返回，而不是直接輸出。
@@ -31,24 +28,131 @@ class HttpHelper {
             CURLOPT_SSL_VERIFYHOST => FALSE, // 略過從證書中檢查SSL加密演算法是否存在
 		);
 
-        // 導入使用者設定
-        foreach ($curlopt as $key => $value) {
-            if (is_numeric($key)) {
-                $opt_array[$key] = $value;
-            } else if (is_string($key)) {
-                if (strpos($key, 'CURLOPT_') === false) {
-                    $key = 'CURLOPT_' . $key;
-                }
-                $opt_array[constant($key)] = $value;
-            }
-        }
-        
 		curl_setopt_array($curl, $opt_array);
 
         $result = curl_exec($curl);
-        $curl_info = curl_getinfo($curl);
+        $curl_info = array();
+        if (empty($getinfo)) {
+            $curl_info = curl_getinfo($curl);
+        } else {
+            $curl_info['header'] = $result;
+            foreach ($getinfo as $optKey) {
+                $curl_info[$optKey] = curl_getinfo($curl, $optKey);
+            }
+        }
+
         curl_close($curl);
 
         return $curl_info;
     }
-}
+
+    /**
+     * @param string $url
+     *
+     * @return array $ssl_date
+     */
+    public function getSSLDate($url) {
+        $host = parse_url($url, PHP_URL_HOST);
+        $get = stream_context_create( array(
+                "ssl" => array(
+                    "capture_peer_cert" => TRUE,
+                    "verify_peer"   => FALSE,
+                )
+            )
+        );
+
+		set_error_handler(function($errno, $errstr, $errfile, $errline) {
+			// error was suppressed with the @-operator
+			if (0 === error_reporting()) {
+				return false;
+			}
+		    
+            throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+        });
+
+        $ssl_date = array();
+        $ssl_date['status'] = "Failure";
+        $ssl_date['valid_from_time'] = NULL;
+        $ssl_date['valid_to_time'] = NULL;
+        try {
+            $timeout = 10; // seconds
+            $read = stream_socket_client("ssl://" . $host . ":443", $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $get);
+        } catch (ErrorException $e) {
+            $status = $e->getMessage();
+            //$ssl_date['status'] = str_replace("stream_socket_client():", "", $status);
+            $ssl_date['status'] = $status;
+        }
+
+        if (empty($read)) {
+            return $ssl_date;
+        }
+
+        $cert = stream_context_get_params($read);
+        $certinfo = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
+
+        $valid_from_time = date("Y-m-d H:i:s", $certinfo['validFrom_time_t']); 
+        $valid_to_time = date("Y-m-d H:i:s", $certinfo['validTo_time_t']); 
+
+        $ssl_date['status'] = "Success";
+        $ssl_date['valid_from_time'] = $valid_from_time;
+        $ssl_date['valid_to_time'] = $valid_to_time;
+
+        return $ssl_date;
+    }
+
+    /**
+     * @param string $url
+     * @param string &$status
+     *
+     * @return bool
+     */
+    public function isOnlyOrRedirectHttps($url = "", &$status) {
+		$status = "NULL";
+
+        if (empty($url)) {
+            return false;
+        }
+
+        $host = parse_url($url, PHP_URL_HOST);
+        $redirect_http_codes = array(301, 302);
+        $curlopt = array(
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT => 15,
+        );
+
+        // testing for http port
+        $response = $this->getUrlResponse("http://" . $host, $curlopt);
+
+        if (!empty($response['header_size'])) {
+
+            if (!in_array($response['http_code'], $redirect_http_codes)) {
+                $status = "The http service is running, but its response code is neither 301 nor 302";
+                return false;
+            }
+
+            $redirect_host = parse_url($response['redirect_url'], PHP_URL_HOST);
+            $redirect_scheme = parse_url($response['redirect_url'], PHP_URL_SCHEME);
+
+            if ($redirect_scheme !== "https" || $redirect_host !== $host) {
+                $status = "The http service is running, but it will redirect to http or different orgin";
+                return false;
+            }
+
+            $status = "Http2https";
+            return true;
+        }
+
+        // testing for https port
+        $response = $this->getUrlResponse("https://" . $host, $curlopt);
+
+        if (!empty($response['header_size'])) {
+            $status = "Onlyhttps";
+            return true;
+        }
+
+        return false;
+        $status = "No https or https service";
+    }
+
+} // End of class
