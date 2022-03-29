@@ -26,7 +26,7 @@
                                     <div class="ui list">
                                         <?php foreach($details as $detail): ?>
                                             <?php 
-                                            $render_system_name = empty($detail['living']) ? $detail['system_name'] . "&nbsp<div class='ui grey label'>已下架</div>" : $detail['system_name']; 
+                                            $render_system_name = empty($detail['system_living']) ? $detail['system_name'] . "&nbsp<div class='ui grey label'>已下架</div>" : $detail['system_name']; 
                                             ?>
                                             <div class="item">
                                                 <div class="header"><?=$render_system_name?></div>

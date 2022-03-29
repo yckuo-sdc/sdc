@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ .'/../../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 $db = Database::get();
 
-$file = "/var/www/html/sdc/upload/antivirus/antivirus_agent_list.csv";
+$file = __DIR__ . '/../../upload/antivirus/antivirus_agent_list.csv';
 $count = 0;
 if (($handle = fopen($file, "r")) !== FALSE) {
 	$table = "antivirus_client_list";
@@ -12,22 +12,23 @@ if (($handle = fopen($file, "r")) !== FALSE) {
 	$db->delete($table, $key_column, $id); 
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 			$num = count($data);
-			if($num >= 70){
-				$status['ClientName']= mb_convert_encoding($data[1], "utf-8", "big5");
-				$status['IP']= mb_convert_encoding($data[2], "utf-8", "big5");
-				$status['DomainLevel']= mb_convert_encoding($data[4], "utf-8", "big5");
-				$status['ConnectionState']= mb_convert_encoding($data[5], "utf-8", "big5");
-				$status['GUID']= mb_convert_encoding($data[6], "utf-8", "big5");
-				$status['ScanMethod']= mb_convert_encoding($data[7], "utf-8", "big5");
-				$status['DLPState']= mb_convert_encoding($data[8], "utf-8", "big5");
-				$status['VirusNum']= mb_convert_encoding($data[13], "utf-8", "big5");
-				$status['SpywareNum']= mb_convert_encoding($data[14], "utf-8", "big5");
-				$status['OS']= mb_convert_encoding($data[19], "utf-8", "big5");
-				$status['BitVersion']= mb_convert_encoding($data[20], "utf-8", "big5");
-				$status['MAC']= mb_convert_encoding($data[21], "utf-8", "big5");
-				$status['ClientVersion']= mb_convert_encoding($data[22], "utf-8", "big5");
-				$status['VirusPatternVersion']= mb_convert_encoding($data[24], "utf-8", "big5");
-				$status['LogonUser']= mb_convert_encoding($data[62], "utf-8", "big5");
+			if ($num >= 70) {
+                $data = mb_convert_encoding($data, "UTF-8", "BIG-5");
+				$status['ClientName']= $data[1];
+				$status['IP']= $data[2];
+				$status['DomainLevel']= $data[4];
+				$status['ConnectionState']= $data[5];
+				$status['GUID']= $data[6];
+				$status['ScanMethod']= $data[7];
+				$status['DLPState']= $data[8];
+				$status['VirusNum']= $data[13];
+				$status['SpywareNum']= $data[14];
+				$status['OS']= $data[19];
+				$status['BitVersion']= $data[20];
+				$status['MAC']= $data[21];
+				$status['ClientVersion']= $data[22];
+				$status['VirusPatternVersion']= $data[24];
+				$status['LogonUser']= $data[62];
 				
 				$db->insert($table, $status);
 				$count = $count + 1;							

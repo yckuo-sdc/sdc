@@ -111,7 +111,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!--<div class="ldap_tree_content"></div>-->
+                                    <p></p>
+                                    <div class="ldap_dist_computers_assign field">
+                                        <button type="button" class="ui button">Assign Dist Computers</button>
+                                        <div class="ui centered inline loader"></div>
+                                        <div class="record_content"></div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="ui centered inline loader"></div>

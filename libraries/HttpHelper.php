@@ -121,21 +121,21 @@ class HttpHelper {
             CURLOPT_TIMEOUT => 15,
         );
 
-        // testing for http port
+        // testing for http
         $response = $this->getUrlResponse("http://" . $host, $curlopt);
 
         if (!empty($response['header_size'])) {
 
             if (!in_array($response['http_code'], $redirect_http_codes)) {
-                $status = "The http service is running, but its response code is neither 301 nor 302";
+                $status = "The http response code is neither 301 nor 302";
                 return false;
             }
 
             $redirect_host = parse_url($response['redirect_url'], PHP_URL_HOST);
             $redirect_scheme = parse_url($response['redirect_url'], PHP_URL_SCHEME);
 
-            if ($redirect_scheme !== "https" || $redirect_host !== $host) {
-                $status = "The http service is running, but it will redirect to http or different orgin";
+            if (strcasecmp($redirect_scheme, "https") !=0  || strcasecmp($redirect_host, $host) != 0) {
+                $status = "The http response will redirect to http or different orgin";
                 return false;
             }
 
@@ -143,7 +143,7 @@ class HttpHelper {
             return true;
         }
 
-        // testing for https port
+        // testing for https
         $response = $this->getUrlResponse("https://" . $host, $curlopt);
 
         if (!empty($response['header_size'])) {
@@ -151,8 +151,8 @@ class HttpHelper {
             return true;
         }
 
+        $status = "No http or https";
         return false;
-        $status = "No https or https service";
     }
 
 } // End of class

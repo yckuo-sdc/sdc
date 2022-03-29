@@ -174,12 +174,14 @@ $db->delete($table, $key_column, $id);
 //insert the table 'scan_stats' 
 $sql = 
 "INSERT INTO 
-    scan_stats(oid, ou, system_name, living, number, fixed_number, high_risk_number, fixed_high_risk_number, overdue_high_risk_number, overdue_medium_risk_number)
+    scan_stats(oid, ou, system_name, manager, system_living, manager_living, number, fixed_number, high_risk_number, fixed_high_risk_number, overdue_high_risk_number, overdue_medium_risk_number)
 SELECT
     oid,
     ou,
     system_name,
-    living,
+    manager,
+    system_living,
+    manager_living,
     SUM(number) AS number,
     SUM(fixed_number) AS fixed_number,
     SUM(high_risk_number) AS high_risk_number,
@@ -192,7 +194,9 @@ FROM
             oid,
             ou,
             system_name,
-            1 AS living,
+            manager,
+            1 AS system_living,
+            1 AS manager_living,
             '0' AS number,
             '0' AS fixed_number,
             '0' AS high_risk_number,
@@ -206,10 +210,15 @@ FROM
             oid,
             ou,
             system_name,
+            manager,
             (
                 SELECT count(*) FROM scan_targets
                 WHERE INSTR(CONCAT(',', GROUP_CONCAT(distinct scan_results.ip), ','), CONCAT(',', ip, ','))
-            ) > 0 AS living,
+            ) > 0 AS system_living,
+            (
+                SELECT count(*) FROM scan_targets
+                WHERE manager = scan_results.manager AND system_name = scan_results.system_name
+            ) AS manager_living,
             COUNT(system_name) AS number,
             SUM(
                 CASE WHEN(status IN('已修補', '豁免', '誤判')) THEN 1 ELSE 0
@@ -252,7 +261,8 @@ FROM
         GROUP BY
             oid,
             ou,
-            system_name
+            system_name,
+            manager
     ) B
 -- WHERE 
     -- B.oid LIKE '2.16.886.101.90028.20002%' -- just show tainan gov
@@ -260,11 +270,14 @@ GROUP BY
     B.oid,
     B.ou,
     B.system_name,
-    B.living
+    B.manager,
+    B.system_living,
+    B.manager_living
 ORDER BY
     B.oid,
-    B.living DESC,
-    B.system_name";
+    B.system_living DESC,
+    B.system_name ASC,
+    B.manager_living DESC";
 $db->execute($sql, []);
 
 

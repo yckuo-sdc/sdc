@@ -64,7 +64,7 @@ foreach ($DNs as $dn){
 }		
 
 $error = $db->getErrorMessageArray();
-if(!empty($error)) {
+if (!empty($error)) {
 	return;
 }
 

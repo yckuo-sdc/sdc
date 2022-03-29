@@ -420,6 +420,12 @@ $(document).ready(function(){
 		ldap_ajax('bind_computer');	
 	});
 
+	// LDAP assign dist computers 
+	$('div.ldap_dist_computers_assign').on('click', '.button', function(){
+        var div = $(this).closest('.field');
+        ldap_dist_computers_assign_ajax(div); 
+	});
+
 	// LDAP save
 	$('.post_cell.ldap').on( 'click', '#ldap_save_btn' ,function(){
 		var form = $(this).closest('#form-ldap');
@@ -491,13 +497,13 @@ $(document).ready(function(){
 
 	$('.post.event').on('click','.button.edit', function(){
 		var id = $(this).attr('key');
-		modal_form_action_ajax(id, 'edit', 'event');
+		event_edit_ajax(id, 'edit', 'event');
     });	
 
 	$('.post.event').on('click','.button.delete', function(){
 		if(confirm('是否刪除此紀錄')) {
 			var id = $(this).attr('key');
-			modal_form_action_ajax(id, 'delete', 'event');
+			event_edit_ajax(id, 'delete', 'event');
 		}
     });	
 
@@ -1243,14 +1249,37 @@ function ldap_ajax(action) {
     });
 }
 
+function ldap_dist_computers_assign_ajax(div) {
+    var loader = $(div).find('.ui.inline.loader'); 
+    var content = $(div).find('.record_content');
+
+    $(loader).addClass('active');
+
+	$.ajax({
+		 url: '/ajax/ldap_dist_computers_assign/',
+		 cache: false,
+		 dataType:'html',
+		 type:'GET',
+    })
+    .done(function(data) {
+        $(loader).removeClass('active');
+        $(content).html(data);
+    })
+    .fail(function(jqXHR) {
+        ajax_check_user_logged_out(jqXHR);
+    });
+
+}
+
+
 // insert values form database into form inputs
-function modal_form_action_ajax(id, action, category) {
+function event_edit_ajax(id, action, category) {
 	var selector = ".ui.modal ";
 
 	switch(true) {
         case (action == "edit" && category == "event"):
 			$.ajax({
-				 url: '/ajax/modal_form_action/',
+				 url: '/ajax/event_edit/',
 				 cache: false,
 				 dataType:'json',
 				 type:'get',
@@ -1286,7 +1315,7 @@ function modal_form_action_ajax(id, action, category) {
 			break;
         case (action == "delete" && category == "event"):
 			$.ajax({
-				 url: '/ajax/modal_form_action/',
+				 url: '/ajax/event_edit/',
 				 cache: false,
 				 dataType:'html',
 				 type:'GET',
@@ -1301,7 +1330,7 @@ function modal_form_action_ajax(id, action, category) {
 			break;
         case (action == "edit" && category == "ldap_computer"):
 			$.ajax({
-				 url: '/ajax/modal_form_action/',
+				 url: '/ajax/event_edit/',
 				 cache: false,
 				 dataType:'json',
 				 type:'get',

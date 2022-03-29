@@ -17,7 +17,7 @@ $rowcount = $db->getLastNumRows();
 $sql_details = 
 "SELECT 
     system_name,
-    living,
+    system_living,
     SUM(number) AS number,
     SUM(fixed_number) AS fixed_number
 FROM 
@@ -25,9 +25,9 @@ FROM
 WHERE 
     oid LIKE :oid
 GROUP BY
-    system_name, living
+    system_name, system_living
 ORDER BY 
-    living DESC, system_name ASC";
+    system_living DESC, system_name ASC";
 
 $sql_targets = 
 "SELECT 
