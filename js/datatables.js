@@ -84,13 +84,20 @@ $(document).ready(function(){
 
             },
             { data: 
-                'edr_fireeye',
+                'edr_fireeye_concat',
 				render: function(data, type, row, meta) {
                     var render_data = data;
                     var label = data;
-                    if (data === "1") {
-                        render_data = "<div class='ui yellow circular label'>" + label + "</div>";
-                    }  
+                    var sections = data.split(',');
+                    var flag = sections[0];
+                    var unreported_day = sections[1];
+
+                    if (flag === "1") {
+                        render_data = "<div class='ui yellow circular label'>" + flag + "</div>";
+                        render_data += "<div class='ui circular label'><i class='eye slash icon'></i>" + unreported_day + "</div>";
+                    } else {
+                        render_data = "0";
+                    }
                     return render_data;
                 }
                 

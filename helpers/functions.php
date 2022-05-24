@@ -301,3 +301,22 @@ function xml2array ($xmlObject, $out = array()) {
 function array_keys_whitelist( array $array, array $keys ) {
    return array_intersect_key( $array, array_flip( $keys ) );
 }
+
+/**
+ * Checks if a given IP address matches the specified CIDR subnet/s
+ * 
+ * @param string $ip The IP address to check
+ * @param mixed $cidrs The IP subnet (string) or subnets (array) in CIDR notation
+ * @param string $match optional If provided, will contain the first matched IP subnet
+ * @return boolean TRUE if the IP matches a given subnet or FALSE if it does not
+ */
+function ipMatch($ip, $cidrs, &$match = null) {
+	foreach((array) $cidrs as $cidr) {
+		list($subnet, $mask) = explode('/', $cidr);
+		if(((ip2long($ip) & ($mask = ~ ((1 << (32 - $mask)) - 1))) == (ip2long($subnet) & $mask))) {
+			$match = $cidr;
+			return true;
+		}
+	}
+	return false;
+}

@@ -3,7 +3,53 @@ require_once __DIR__ .'/../../vendor/autoload.php';
 
 $db = Database::get();
 
-// fetch tndevs's json
+// drop table
+$table = "client_server_lists";
+$key_column = "1";
+$id = "1"; 
+$db->delete($table, $key_column, $id); 
+
+$sql = "INSERT INTO client_server_lists(type, ip, ou, name)
+SELECT 'client' as type, IP, OrgName, Owner FROM drip_client_list";
+$db->execute($sql);
+
+$sql = "UPDATE client_server_lists AS A
+JOIN drip_client_list AS B
+ON A.ip = B.IP AND (A.name IN('', '-') OR A.name IS NULL) AND B.MemoByMAC NOT LIKE ''  
+SET A.name = CONCAT('(ByMAC)', B.MemoByMAC)";
+$db->execute($sql);
+
+// fetch json of 'tndevs/api/4'
+$url = "https://tndev.tainan.gov.tw/api/values/4";
+$curl = curl_init();
+curl_setopt_array($curl, array(
+  CURLOPT_URL => $url,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_SSL_VERIFYPEER => false,
+  CURLOPT_SSL_VERIFYHOST => false,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_HTTPHEADER => array("Content-Type:: application/json")
+));
+$res = curl_exec($curl);
+curl_close($curl);
+
+$servers = json_decode($res, true);
+
+foreach($servers as $server){
+    $table = "client_server_lists";
+    $data_array = array();
+    $data_array['type'] = "server";
+    $data_array['ip'] = $server['ipv4'];
+    $data_array['ou'] = $server['ou'];
+    $data_array['name'] = $server['name'];
+    $db->insert($table, $data_array);
+}
+
+// fetch json of 'tndevs/api/5'
 $url = "https://tndev.tainan.gov.tw/api/values/5";
 $curl = curl_init();
 curl_setopt_array($curl, array(

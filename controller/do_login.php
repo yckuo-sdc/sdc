@@ -49,7 +49,14 @@ if($validated_data === false) {
             $result = $ldap->verifyUser($data_array, $user_attributes);
 
 			if($result && !empty($user[0]['SSOID'])) {
+				//if($_SERVER['REMOTE_ADDR'] !== $_SESSION['LAST_REMOTE_ADDR'] || $_SERVER['HTTP_USER_AGENT'] !== $_SESSION['LAST_USER_AGENT']) {
+				//   session_destroy();
+				//}
                 session_regenerate_id(); //Prevent Session Fixation with changing session id
+				//$_SESSION['LAST_REMOTE_ADDR'] = $_SERVER['REMOTE_ADDR'];
+				//$_SESSION['LAST_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
+
+
                 $username = empty($user_attributes) ? $user[0]['UserName'] : $user_attributes['username'];
                 $level = $user[0]['Level']; 
 

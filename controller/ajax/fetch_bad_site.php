@@ -46,6 +46,7 @@ foreach ($DNs as $dn){
 	
     for($i=0; $i<3; $i++) {
         $output = shell_exec("/usr/bin/dig +short ".$dn['name']." @172.16.0.251");
+        $output = trim($output);
         if (strpos($output, 'sinkhole') !== false || strpos($output, '72.5.65.111') !== false || strpos($output, '1.1.2.100') !== false) {
             $action = "deny";
             break;

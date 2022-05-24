@@ -149,7 +149,10 @@ Class PaloAltoAPI {
             $report['logs'] = $logs;
             return $report;
         } else {
+            sleep(3);
+            echo "before retrieveLogsByJobId" . PHP_EOL;
             $queried_log = $this->retrieveLogsByJobId($job_id, $type="report", $action="get");
+            echo "after retrieveLogsByJobId" . PHP_EOL;
             foreach($queried_log->result->report->entry as $entry){
                 foreach($entry as $key => $val){
                     $logs[$log_count][$key] = $val;
@@ -287,7 +290,7 @@ Class PaloAltoAPI {
 		  CURLOPT_SSL_VERIFYHOST => false,
 		  CURLOPT_ENCODING => "",
 		  CURLOPT_MAXREDIRS => 10,
-		  CURLOPT_TIMEOUT => 15,
+		  CURLOPT_TIMEOUT => 20,
 		  CURLOPT_FOLLOWLOCATION => true,
 		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		  CURLOPT_HTTPHEADER => array("Content-Type: application/json")
