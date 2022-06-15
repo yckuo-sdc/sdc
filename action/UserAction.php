@@ -4,7 +4,7 @@ class UserAction {
         $table = "logs";
         $data_array['type'] = $type;
         $data_array['ip'] = Ip::get();
-        $data_array['user'] = $_SESSION['account'] ;
+        $data_array['user'] = $_SESSION['username'] ;
         $data_array['msg'] = $msg;
         $data_array['time'] = date('Y-m-d H:i:s');
         Database::get()->insert($table, $data_array);

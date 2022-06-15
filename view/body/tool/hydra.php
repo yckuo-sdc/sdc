@@ -22,10 +22,10 @@
 						</div>
 					</div>
 			    	<div class="field">
-						<label>Account</label>
+						<label>Username</label>
 						<div class="ui input">
 							<?php $target = "admin";?>
-							<input type="text" name="account" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
+							<input type="text" name="username" value="<?php echo $target;?>" placeholder="<?php echo $target;?>">
 						</div>
 					</div>
 			    	<div class="inline fields">

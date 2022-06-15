@@ -1,6 +1,6 @@
 <?php 
 $target = "www.tainan.gov.tw";
-$server = "8.8.8.8";
+$server = "172.16.0.250";
 
 require 'view/header/default.php'; 
 require 'view/body/tool/nslookup.php';

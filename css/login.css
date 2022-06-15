@@ -1,0 +1,34 @@
+body {
+    background-color: #DADADA;
+}
+
+body > .grid {
+    height: 100%;
+}
+
+.image {
+    margin-top: -100px;
+}
+
+.column {
+    max-width: 450px;
+}
+
+.field.left{
+    text-align:left;
+}	
+
+.ui.sdc-blue.header {
+    color: #4798b3;
+}
+
+.ui.sdc-blue.button{
+    background-color: #4798b3;
+    color: #FFFFFF;
+}
+
+.ui.sdc-blue.button:hover {
+    background-color: #117692;
+    color: #FFFFFF;
+    text-shadow: none; 
+}

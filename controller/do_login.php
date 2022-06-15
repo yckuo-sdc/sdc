@@ -7,18 +7,21 @@ if(!isset($_POST['submit'])) {
 }
 
 $error = array(); 
-$_POST = $gump->sanitize($_POST); 
+
+// Sanitizes data and converts strings to UTF-8 (if available), according to the provided field whitelist
+$whitelist = array("authentication", "username", "password");
+$_POST = $gump->sanitize($_POST, $whitelist); 
 
 // set validation rules
 $validation_rules_array = array(
-	'account'    => 'required|alpha_numeric_dash',
+	'username'    => 'required|alpha_numeric_dash',
 	'password'   => 'required|min_len,8'
 );
 $gump->validation_rules($validation_rules_array);
 
 // set filter rules
 $filter_rules_array = array(
-	'account' => 'trim|sanitize_string',
+	'username' => 'trim|sanitize_string',
 	'password' => 'trim',
 );
 $gump->filter_rules($filter_rules_array);
@@ -34,7 +37,7 @@ if($validated_data === false) {
 
 	$table = "users";	
 	$condition = "SSOID = :SSOID";
-	$user = $db->query($table, $condition, $order_by = 1, $fields = "*", $limit = "", [':SSOID'=>$account]);
+	$user = $db->query($table, $condition, $order_by = 1, $fields = "*", $limit = "", [':SSOID' => $username]);
 	
 	$expire_time = 3600 * 24 * 30; //3600sec * 24hour * 30day
 
@@ -44,30 +47,25 @@ if($validated_data === false) {
             //Bind Smart Developement Center OU
             $data_array = array();
             $data_array['base'] = "ou=395000300A, ou=395002900-, ou=395000000A, ou=TainanLocalUser, dc=tainan, dc=gov, dc=tw";
-            $data_array['account'] = $account;
+            $data_array['username'] = $username;
             $data_array['password'] = $password;
             $result = $ldap->verifyUser($data_array, $user_attributes);
-
+            
 			if($result && !empty($user[0]['SSOID'])) {
-				//if($_SERVER['REMOTE_ADDR'] !== $_SESSION['LAST_REMOTE_ADDR'] || $_SERVER['HTTP_USER_AGENT'] !== $_SESSION['LAST_USER_AGENT']) {
-				//   session_destroy();
-				//}
+
                 session_regenerate_id(); //Prevent Session Fixation with changing session id
-				//$_SESSION['LAST_REMOTE_ADDR'] = $_SERVER['REMOTE_ADDR'];
-				//$_SESSION['LAST_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
 
-
-                $username = empty($user_attributes) ? $user[0]['UserName'] : $user_attributes['username'];
+                $displayname = empty($user_attributes) ? $user[0]['DisplayName'] : $user_attributes['displayname'];
                 $level = $user[0]['Level']; 
 
-				$_SESSION['account'] = $account;
 				$_SESSION['username'] = $username;
+				$_SESSION['displayname'] = $displayname;
 				$_SESSION['level'] = $level;
 
                 $userAction->logger('login', $_SERVER['REQUEST_URI']); 
 
 				if(isset($remember) && !empty($remember)) {
-                    $cookie = generateUserCookie($account, $username, $level);
+                    $cookie = generateUserCookie($username, $displayname, $level);
 					setcookie('rememberme', $cookie, time() + $expire_time, '/');
 				} else {
 					setcookie('rememberme', "", time() - $expire_time, '/');
@@ -77,21 +75,21 @@ if($validated_data === false) {
 			}
             break;
 		case "mail":
-			$pop = POP3::popBeforeSmtp('pop3.tainan.gov.tw', 110, 30, $account, $password, 1);
+			$pop = POP3::popBeforeSmtp('pop3.tainan.gov.tw', 110, 30, $username, $password, 1);
 			if($pop && isset($user[0]['SSOID']) && !empty($user[0]['SSOID'])){
                 session_regenerate_id(); //Prevent Session Fixation with changing session id
 
-                $username = $user[0]['UserName'];
+                $displayname= $user[0]['DisplayName'];
                 $level = $user[0]['Level']; 
 
-				$_SESSION['account'] = $account;
 				$_SESSION['username'] = $username;
+				$_SESSION['displayname'] = $displayname;
 				$_SESSION['level'] = $level;
 
                 $userAction->logger('login', $_SERVER['REQUEST_URI']); 
 
 				if (!empty($remember)) {
-                    $cookie = generateUserCookie($account, $username, $level);
+                    $cookie = generateUserCookie($username, $displayname, $level);
 					setcookie('rememberme', $cookie, time() + $expire_time, '/');
 				} else {
 					setcookie('rememberme', "", time() - $expire_time, '/');
@@ -102,7 +100,7 @@ if($validated_data === false) {
             break;
 	}
 
-    $error[] = "invalid account or password";
+    $error[] = "invalid username or password";
 
 }
 
@@ -112,4 +110,4 @@ if(!empty($error)) {
 	}
 }
 
-header("Location: ".$_SERVER['HTTP_REFERER']); 
+//header("Location: ".$_SERVER['HTTP_REFERER']); 

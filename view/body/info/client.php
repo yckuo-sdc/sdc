@@ -79,12 +79,17 @@
 				</div>
 				<div id="ad_post" class="post_title">AD</div>
 				<div class="post_cell">
-					<center>
-						<div class="ui statistic">
-						  <div class="value"><?=$ad_computer_num ?>  </div>
-						  <div class="label">電腦導入數</div>
-						</div>
-					</center>
+                    <center>
+                        <div class="ui statistic">
+                          <div class="value"><?=$ad_computer_num ?>  </div>
+                          <div class="label">computer 導入數</div>
+                        </div>
+                        <br>
+                        <div class="ui statistic">
+                          <div class="value"><?=$ad_user_num ?>  </div>
+                          <div class="label">user 導入數</div>
+                        </div>
+                    </center>
 			    </div>		
 				<div id="gcbPass_post" class="post_title">GCB通過率</div>
 				<div class="post_cell">

@@ -471,6 +471,9 @@ $(document).ready(function(){
 		e.preventDefault();
 	});
 	
+	// Initializing of semantic dropdown
+    $('.ui.profile.dropdown').dropdown();
+	
 	// semantic progress bar
 	$('.progress').progress({showActivity : false});
 	

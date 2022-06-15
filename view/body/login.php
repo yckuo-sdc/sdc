@@ -1,37 +1,3 @@
- <style type="text/css">
-    body {
-		background-color: #DADADA;
-	}
-	body > .grid {
-		height: 100%;
-	}
-	.image {
-		margin-top: -100px;
-	}
-	 .column {
-		max-width: 450px;
-	}
-
-	.field.left{
-		text-align:left;
-	}	
-
-	.ui.sdc-blue.header {
-		color: #4798b3;
-	}
-
-	.ui.sdc-blue.button{
-		background-color: #4798b3;
-		color: #FFFFFF;
-	}
-
-	.ui.sdc-blue.button:hover {
-    	background-color: #117692;
-    	color: #FFFFFF;
-		text-shadow: none; 
-	}
- </style>
-
 	<div class="ui middle aligned center aligned grid">
 	  <div class="column">
 		<h2 class="ui sdc-blue image header">
@@ -40,13 +6,6 @@
 		  </div>
 		</h2>
 		<?= flash() ?>
-		<?php
-		/*if(isset($_SESSION["error"])){
-			foreach($_SESSION["error"] as $error){
-				echo "<div class='ui error message'><i class='close icon'></i>".$error."</div>";
-			}
-		}*/
-		?>
 		<form class="ui large form" method="post" action="/do_login">
 		  <div class="ui stacked segment">
 			<div class="inline fields">
@@ -67,7 +26,7 @@
 			<div class="field">
 			  <div class="ui left icon input">
 				<i class="user icon"></i>
-				<input type="text" name="account" placeholder="Account" required>
+				<input type="text" name="username" placeholder="Username" required>
 			  </div>
 			</div>
 			<div class="field">

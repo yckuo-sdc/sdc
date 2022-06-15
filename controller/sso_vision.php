@@ -14,7 +14,7 @@ if (!isset($_GET['action'])) {
 switch($action){
 	case "logout":
 		session_start();
-		unset($_SESSION['account']);
+		unset($_SESSION['username']);
 		echo "logout";
 		break;
 	default:
@@ -33,27 +33,27 @@ switch($action){
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("token" => $encryToken))); 
-		$account = trim(curl_exec($ch)); 
+		$username = trim(curl_exec($ch)); 
 		curl_close($ch);
 		
-		if(empty($account)) {
+		if(empty($username)) {
 			header("Location: error"); 
 		    return ;	
 		}
 
 		$table = "users";
 		$condition = "SSOID = :SSOID";
-		$user = $db->query($table, $condition, $order_by = 1, $fields = "*", $limit = "", [':SSOID'=>$account])[0];
+		$user = $db->query($table, $condition, $order_by = 1, $fields = "*", $limit = "", [':SSOID' => $username])[0];
 			
-		if ($user['SSOID'] != $account) {
+		if ($user['SSOID'] != $username) {
 			header("Location: error");
 		    return ;	
 		}
 
 		# fetch the present Session ID
 		$sid = session_id();
-		$_SESSION['account'] = $account;
-		$_SESSION['username'] = $user['UserName'];
+		$_SESSION['username'] = $username;
+		$_SESSION['displayname'] = $user['DisplayName'];
 		$_SESSION['level'] = $user['Level'];
         $userAction->logger('ssoLogin', $_SERVER['REQUEST_URI']); 
 		

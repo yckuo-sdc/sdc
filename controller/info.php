@@ -14,5 +14,5 @@ $controller_array = array_change_key_case($controller_array, CASE_LOWER);
 if (in_array($subpage.'.php', $controller_array)) {
 	  require 'controller/info/'.$subpage.'.php';
 } else {
-	  require 'controller/info/enews.php';
+	  require 'controller/info/dashboard.php';
 }

@@ -17,9 +17,11 @@ $wsus_rate = round($wsus_num / $total_num*100, 2) . "%";
 $antivirus_rate = round($antivirus_num / $total_num*100, 2) . "%"; 
 $edr_rate = round($edr_num / $total_num*100, 2) . "%"; 
 
-$table = "ad_comupter_list";
-$db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "DISTINCT(CommonName)", $limit = "", [1]);
-$ad_computer_num = $db->getLastNumRows();
+$table = "ad_computers";
+$ad_computer_num = $db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "COUNT(DISTINCT(cn)) AS number", $limit = "", [1])[0]['number'];
+
+$table = "ad_users";
+$ad_user_num = $db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "COUNT(*) AS number", $limit = "", [1])[0]['number'];
 
 $sql = "SELECT COUNT(ID) as total_count, SUM(CASE WHEN GsAll_2 = GsAll_1 THEN 1 ELSE 0 END) as pass_count FROM gcb_client_list";
 $gcb = $db->execute($sql, [])[0];

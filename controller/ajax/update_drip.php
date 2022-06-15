@@ -31,15 +31,15 @@ $db->execute($sql);
 
 //update the column 'ad' from table 'ad_computer_list'
 $sql = "UPDATE drip_client_list AS A
-JOIN ad_comupter_list AS B 
-ON A.IP = B.IP
+JOIN ad_computers AS B 
+ON A.IP = B.ip
 SET A.ad = 1";
 $db->execute($sql);
 
 //update the column 'ad' from table 'ad_computer_list'
 $sql = "UPDATE drip_client_list AS A
-JOIN ad_comupter_list AS B
-ON A.ClientName = B.CommonName AND B.IP LIKE '' AND A.GroupName LIKE 'TAINAN'
+JOIN ad_computers AS B
+ON A.ClientName = B.cn AND B.ip LIKE '' AND A.GroupName LIKE 'TAINAN'
 SET A.ad = 1"; 
 $db->execute($sql);
 
@@ -80,14 +80,14 @@ $db->execute($sql);
 
 //update the column 'OrgName' from table 'ad_computer_list'
 $sql = "UPDATE drip_client_list AS A
-JOIN ad_comupter_list AS B 
-ON A.IP = B.IP AND A.OrgName IS NULL
-SET A.OrgName = CONCAT('(AD)', B.OrgName)";
+JOIN ad_computers AS B 
+ON A.IP = B.ip AND A.OrgName IS NULL
+SET A.OrgName = CONCAT('(AD)', B.orgname)";
 $db->execute($sql);
 
 //update the column 'OrgName' from table 'ad_computer_list'
 $sql = "UPDATE drip_client_list AS A
-JOIN ad_comupter_list AS B
-ON A.ClientName = B.CommonName AND A.OrgName IS NULL AND B.IP LIKE '' 
-SET A.OrgName = CONCAT('(AD)', B.OrgName)";
+JOIN ad_computers AS B
+ON A.ClientName = B.cn AND A.OrgName IS NULL AND B.ip LIKE '' 
+SET A.OrgName = CONCAT('(AD)', B.orgname)";
 $db->execute($sql);

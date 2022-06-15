@@ -3,12 +3,12 @@ function generateRandomToken() {
     return bin2hex(random_bytes($length=32));
 }
 
-function generateUserCookie($account, $username, $level) {
+function generateUserCookie($username, $displayname, $level) {
     $algo = "sha256";
     $key = "security";
 
     $token = generateRandomToken(); // generate a token, should be 128 - 256 bit
-    $userCookie = $account . ':' . $token. ':' . $username . ':' . $level;
+    $userCookie = $username . ':' . $token. ':' . $displayname . ':' . $level;
     $mac = hash_hmac($algo, $userCookie, $key);
     $userCookie .= ':' . $mac;
 	return $userCookie;
@@ -18,14 +18,14 @@ function decryptUserCookie($userCookie) {
     $algo = "sha256";
     $key = "security";
 
-    list ($account, $token, $username, $level, $mac) = explode(':', $userCookie);
-    $encrypted_data = $account . ':' . $token .':'. $username . ':' . $level;
+    list ($username, $token, $displayname, $level, $mac) = explode(':', $userCookie);
+    $encrypted_data = $username . ':' . $token .':'. $displayname . ':' . $level;
 
     $data_array = array();
     if (hash_equals(hash_hmac($algo, $encrypted_data, $key), $mac)) { 
         $data_array['isValid'] = true; 
-        $data_array['account'] = $account; 
         $data_array['username'] = $username; 
+        $data_array['displayname'] = $displayname; 
         $data_array['level'] = $level; 
     } else {
         $data_array['isValid'] = false; 

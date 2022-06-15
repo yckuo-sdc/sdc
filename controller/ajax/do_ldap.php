@@ -22,7 +22,7 @@ switch ($type) {
 		if (!empty($isActive)) {
 			$res = $ad->changeState($cn, 'false', $isActive, 'false');
             echo createWebadMessageBox($res, "changeState");
-			$userAction->logger('callFunction', 'ad/change_user_state(account=' . $cn . ')res=' . $res);
+			$userAction->logger('callFunction', 'ad/change_user_state(username=' . $cn . ')res=' . $res);
 		}
 
 		if (!empty($moveOU)) {
@@ -30,12 +30,12 @@ switch ($type) {
 			$ou = $ou[0];	
 			$res = $ad->changeUserOU($cn,$ou);
             echo createWebadMessageBox($res, "changeUserOU");
-			$userAction->logger('callFunction', 'ad/change_user_ou(account=' . $cn . ')res=' . $res);
+			$userAction->logger('callFunction', 'ad/change_user_ou(username=' . $cn . ')res=' . $res);
 		}
 
 		$res = $ad->editUser($cn, $new_password, $displayname, $title, $telephonenumber, $physicaldeliveryofficename, $mail, $isActive);
         echo createWebadMessageBox($res, "editUser");
-		$userAction->logger('callFunction', 'ad/edit_user(account=' . $cn . ')res=' . $res);
+		$userAction->logger('callFunction', 'ad/edit_user(username=' . $cn . ')res=' . $res);
 
 		break;
 	case "newuser":
@@ -48,13 +48,13 @@ switch ($type) {
 		$ou = $ou[0];	
 		$res = $ad->insertUser($cn, $new_password, $displayname, $title, $telephonenumber, $physicaldeliveryofficename, $mail, $ou);
         echo createWebadMessageBox($res, "insertUser");
-		$userAction->logger('callFunction', 'ad/new_user(account=' . $cn . ')res=' . $res);
+		$userAction->logger('callFunction', 'ad/new_user(username=' . $cn . ')res=' . $res);
 		break;
 	case "changecomputer":
 		if (!empty($isActive)) {
 			$res = $ad->changeState($cn, 'false', $isActive, 'false');
             echo createWebadMessageBox($res, "changeState");
-			$userAction->logger('callFunction', 'ad/change_user_state(account=' . $cn . ')res=' . $res);
+			$userAction->logger('callFunction', 'ad/change_user_state(username=' . $cn . ')res=' . $res);
             if($res != '"1."'){
                 $error[] = $res;
             }
@@ -64,7 +64,7 @@ switch ($type) {
 			$ou = $ou[0];	
 			$res = $ad->changeComputerOU($cn, $ou, $TopOU);
             echo createWebadMessageBox($res, "changeComputerOU");
-			$userAction->logger('callFunction', 'ad/change_computer_ou(account=' . $cn . ')res=' . $res);
+			$userAction->logger('callFunction', 'ad/change_computer_ou(username=' . $cn . ')res=' . $res);
             if($res != '"1."'){
                 $error[] = $res;
             }

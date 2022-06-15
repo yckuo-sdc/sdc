@@ -315,6 +315,85 @@ class MyLDAP {
         return $html;
     }
 
+    public function getAllComputersByRecursion($base, $ou ,$description) {
+
+        $computer_array = array();
+        // computer 
+        $data_array = array();
+        $data_array['base'] = $base;
+        $data_array['filter'] = "(objectCategory=computer)";
+        $data_array['attributes'] =  array("cn", "dnshostname", "operatingsystem", "operatingsystemversion", "distinguishedname", "lastlogon", "pwdlastset", "useraccountcontrol");
+        $computer_list = $this->getList($data_array);
+
+        if (!empty($computer_list)) {
+            $computer_array = array_merge($computer_array, $computer_list);
+        }
+
+        // ou
+        $data_array = array();
+        $data_array['base'] = $base;
+        $data_array['filter'] = "(objectCategory=organizationalUnit)";
+        $data_array['attributes'] = array("ou", "distinguishedname", "description");
+        $ou_list = $this->getList($data_array);
+
+        if (!empty($ou_list)) {
+            foreach($ou_list as $entry) {
+                $sub_base = $entry['distinguishedname'];
+                $sub_ou = $entry['ou'];
+                $sub_description = empty($entry["description"]) ?  "" : $entry["description"];
+                $sub_computer_array = $this->getAllComputersByRecursion($sub_base, $sub_ou ,$sub_description); 
+
+                if (empty($sub_computer_array)) {
+                    continue;
+                }
+                $computer_array = array_merge($computer_array, $sub_computer_array);
+            }
+        }
+
+        return $computer_array;
+  
+    }
+
+    public function getAllUsersByRecursion($base, $ou ,$description) {
+
+        $user_array = array();
+
+        // user 
+        $data_array = array();
+        $data_array['base'] = $base;
+        $data_array['filter'] = "(objectCategory=person)";
+        $data_array['attributes'] = array("cn", "title", "physicaldeliveryofficename", "telephonenumber", "distinguishedname", "displayname", "useraccountcontrol", "lastlogon", "pwdlastset", "mail");
+        $user_list = $this->getList($data_array);
+
+        if (!empty($user_list)) {
+            $user_array = array_merge($user_array, $user_list);
+        }
+
+        // ou
+        $data_array = array();
+        $data_array['base'] = $base;
+        $data_array['filter'] = "(objectCategory=organizationalUnit)";
+        $data_array['attributes'] = array("ou", "distinguishedname", "description");
+        $ou_list = $this->getList($data_array);
+
+        if (!empty($ou_list)) {
+            foreach($ou_list as $entry) {
+                $sub_base = $entry['distinguishedname'];
+                $sub_ou = $entry['ou'];
+                $sub_description = empty($entry["description"]) ?  "" : $entry["description"];
+                $sub_user_array = $this->getAllUsersByRecursion($sub_base, $sub_ou ,$sub_description); 
+
+                if(empty($sub_user_array)) {
+                    continue;
+                }
+                $user_array = array_merge($user_array, $sub_user_array);
+            }
+        }
+
+        return $user_array;
+  
+    }
+
     public function getSingleOUDescription($base, $distinguishedname){
         $description = "";
         $sections = explode(",", $distinguishedname);
@@ -353,19 +432,19 @@ class MyLDAP {
     public function verifyUser($data_array = array(), &$user_attributes){
         if(empty($data_array)) return false;
         $base = $data_array['base'];
-        $account = $data_array['account'];
+        $username = $data_array['username'];
         $password = $data_array['password'];
-        $ldaprdn = $account . "@" . LDAP::DOMAIN;
+        $ldaprdn = $username . "@" . LDAP::DOMAIN;
 
         try {
 			$ldapbind = @ldap_bind($this->ldapconn, $ldaprdn, $password);
             if ($ldapbind) {
                 $data_array = array();
                 $data_array['base'] = $base;
-                $data_array['filter'] = "(cn=" . $account . ")";
+                $data_array['filter'] = "(cn=" . $username . ")";
                 $data_array['attributes'] = array("cn", "displayname");
                 $data = $this->getData($data_array)[0];
-                $user_attributes = array('username' => $data['displayname']);
+                $user_attributes = array('displayname' => $data['displayname']);
 
                 return true;
             }
@@ -376,7 +455,6 @@ class MyLDAP {
 
         return false;	
     }
-
 
 }
 

@@ -10,15 +10,15 @@ class UserValidator {
      * 驗證是否已登入
      */
     public function isLogin() {
-        if (isset($_SESSION['account'])) { 	//檢查session是否有值
+        if (isset($_SESSION['username'])) { 	//檢查session是否有值
             return true;
         }
         
         if (isset($_COOKIE['rememberme'])) {	//使用者選擇記住登入狀態
             $user = decryptUserCookie($_COOKIE['rememberme']);
             if ($user['isValid']) {	//若為有效的使用者，把使用者的個人資料放到session裡面 
-                $_SESSION['account'] = $user['account'];   
-                $_SESSION['username'] = $user['username'];
+                $_SESSION['username'] = $user['username'];   
+                $_SESSION['displayname'] = $user['displayname'];
                 $_SESSION['level'] = $user['level'];
                 $userAction = new UserAction();
                 $userAction->logger('rememberLogin', $_SERVER['REQUEST_URI']);

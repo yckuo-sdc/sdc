@@ -67,9 +67,9 @@
 							</div>
 						</div> <!-- end of .card -->
 						<div class="card">
-							<a href="/images/mail.png" target="_blank">
+							<a href="/images/mail_relay.png" target="_blank">
 							<div class="image">
-								<img src="/images/mail.png">
+								<img src="/images/mail_relay.png">
 							</div>
 							</a>
 							<div class="content">

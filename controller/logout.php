@@ -1,5 +1,5 @@
 ﻿<?php 
-$account = isset($_SESSION['account']) ? $_SESSION['account'] : "";
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : "";
 $userAction->logger('logout', $_SERVER['REQUEST_URI']);
 $duration = 3600*24*30; //3600sec*24hour*30day
 setcookie('rememberme', '', time()-$duration, '/');
