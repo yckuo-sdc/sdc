@@ -43,7 +43,7 @@
                                         <?=$dashboad_number_array['vul']?>
                                     </div>
 								</div>
-								<div class="meta"> 弱點修補率 </div>
+								<div class="meta"> 弱點數 </div>
 								<div class="description">
                                     tccy-vsms 定期掃描主機或網站資產, 並請管理者依時程修補弱點
 								</div>

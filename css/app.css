@@ -385,6 +385,11 @@ div.header a{
 	display:block !important;
 }
 
+.ui.card .meta {
+    color: #767676;
+}
+
+
 .ldap_tree_content .foldable.item{
 	display:none !important;
 }
