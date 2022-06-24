@@ -6,8 +6,6 @@
 # 只忽略根目錄下的 TODO 檔案。 不包含子目錄下的 TODO
 /TODO
 
-# 忽略doc/notes.txt但不包含doc/server/arch.txt
-doc/*.txt
 # ignore all .txt files in the doc/ directory
 doc/**/*.txt
 
@@ -15,18 +13,19 @@ doc/**/*.txt
 config/
 upload/
 vendor/
-
+node_modules/
 
 # ignore all sub files
 *.inc.php
 *.csv
 *.xls*
+*.log
 
 # ignore env file
 .env
 
 # ignore package lock files
-# composer.lock
+# ignore composer.lock
 package-lock.json
 
 # igonre demo file

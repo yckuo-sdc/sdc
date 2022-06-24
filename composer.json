@@ -10,12 +10,12 @@
     ],
 	"description": "A simple web console for information security.",
     "require": {
-		"google/apiclient": "^2.7",
+        "google/apiclient":"^2.12.1",
         "wixel/gump": "^1.2",
 		"phpmailer/phpmailer": "^6.5",
 		"tamtamchik/simple-flash": "^2.0.0",
         "vlucas/phpdotenv": "^5.2",
-        "phpoffice/phpspreadsheet": "^1.16"
+        "phpoffice/phpspreadsheet": "^1.23"
 	},
 	"autoload": {
 		"classmap": [
