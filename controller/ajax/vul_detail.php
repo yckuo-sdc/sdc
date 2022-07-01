@@ -40,7 +40,14 @@ $nodes = $xpath->query("//input[@name='csrfToken']");
 $node = $nodes->item(0);
 $token = $node->getAttribute('value');
 
-$postinfo = "username=" . ChtSecurity::USERNAME . "&userpass=" . ChtSecurity::PASSWORD . "&csrfToken=" . $token . "&search2=確認";
+$query = array(
+    'username' => ChtSecurity::USERNAME,
+    'userpass' => ChtSecurity::PASSWORD,
+    'csrfToken' => $token,
+    'login_type' => 'normal',
+    'search2' => '確認', 
+);
+$postinfo = http_build_query($query);
 
 // Login action 
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

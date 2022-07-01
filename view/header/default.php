@@ -14,9 +14,9 @@
         <script src="/node_modules/jquery/dist/jquery.min.js"></script>
 
         <!-- node_modules-->
-        <script src="https://d3js.org/d3.v5.min.js"></script>
-        <link href="/node_modules/c3/c3.css" rel="stylesheet" type="text/css">
-        <script src="/node_modules/c3/c3.min.js"></script>
+        <script src="/node_modules/d3js/d3.min.js"></script>
+        <link href="/node_modules/c3js/c3.min.css" rel="stylesheet" type="text/css">
+        <script src="/node_modules/c3js/c3.min.js"></script>
         <script src="/node_modules/jquery-tablesort/jquery.tablesort.min.js"></script>
         <script src="https://www.gstatic.com/charts/loader.js"></script>
 
