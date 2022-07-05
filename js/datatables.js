@@ -31,7 +31,7 @@ $(document).ready(function(){
  
 
 	// DataTable
-    var table = $('#example_table').DataTable( {
+    var datatable = $('#example_table').DataTable( {
         processing: true,
         //serverSide: true,
         ajax: '/ajax/tndev/',
@@ -113,6 +113,7 @@ $(document).ready(function(){
                     return render_data;
                 }
             },
+            //{ data: 'shut_at' },
         ], 
 		columnDefs: [
 			{
@@ -122,7 +123,11 @@ $(document).ready(function(){
 			{
 				targets: 3,
 				width: "10%",
-			}
+			},
+            //{
+            //    target: 11,
+            //    visible: false,
+            //}
 		],
         order: [
             [1, 'asc'],
@@ -148,7 +153,7 @@ $(document).ready(function(){
 	// Add event listener for opening and closing details
     $('#example_table tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
-        var row = table.row( tr );
+        var row = datatable.row( tr );
         var td = $(tr).children().first();
  
         if ( row.child.isShown() ) {
@@ -164,5 +169,6 @@ $(document).ready(function(){
             $(td).html('<i class="red minus circle icon"></i>');
         }
     } );
+
 
 });

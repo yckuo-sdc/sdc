@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 $db = Database::get();
 
-$file = __DIR__ . '/../../upload/antivirus/antivirus_agent_list.csv';
+$file = __DIR__ . '/../../upload/antivirus/antivirus.csv';
 $count = 0;
 if (($handle = fopen($file, "r")) !== FALSE) {
 	$table = "antivirus_client_list";

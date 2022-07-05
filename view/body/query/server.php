@@ -15,8 +15,6 @@
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Owner</th>
-                                <!--<th>Tel</th>-->
-                                <!--<th>Mail</th>-->
                                 <th>Antivirus</th>
                                 <th>Corecloud</th>
                                 <th>Fireeye</th>
@@ -32,8 +30,6 @@
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Owner</th>
-                                <!--<th>Tel</th>-->
-                                <!--<th>Mail</th>-->
                                 <th>Antivirus</th>
                                 <th>Corecloud</th>
                                 <th>Fireeye</th>

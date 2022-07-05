@@ -38,7 +38,11 @@
                         </tbody>
                     </table>
 				</div><!--end of .post_cell-->
-                <div class="post_title">手動更新</div>
+                <div class="post_title">手動更新
+                    <div class="ui grey label">
+                        <?=$manual_apis_num?> / <?=$manual_apis_num?>
+                    </div>
+                </div>
                 <div class="post_cell">
                     <table class="ui celled table">
                         <thead>

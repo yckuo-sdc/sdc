@@ -28,6 +28,8 @@ $sql = "SELECT a.id, a.class, a.name, a.data_type, a.update_frequency, b.url, b.
         AND a.update_method = 'manual'";
 $manual_apis = $db->execute($sql);
 
+$manual_apis_num = count($manual_apis); 
+
 require 'view/header/default.php'; 
 require 'view/body/about/data.php';
 require 'view/footer/default.php'; 

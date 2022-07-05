@@ -22,7 +22,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>ad安裝數</td>
+						<td>ad 安裝數</td>
 						<td>
 						<div class="ui teal progress yckuo" data-percent="<?=$ad_rate?>" data-total="100" id="example1">
 						  <div class="bar"><div class="progress"></div></div>
@@ -31,7 +31,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>gcb安裝數</td>
+						<td>gcb 安裝數</td>
 						<td>
 						<div class="ui teal progress yckuo" data-percent="<?=$gcb_rate?>" data-total="100" id="example1">
 						  <div class="bar"><div class="progress"></div></div>
@@ -40,7 +40,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>wsus安裝數</td>
+						<td>wsus 安裝數</td>
 						<td>
 						<div class="ui teal progress yckuo" data-percent="<?=$wsus_rate?>" data-total="100" id="example1">
 						  <div class="bar"><div class="progress"></div></div>
@@ -49,7 +49,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>antivirus安裝數</td>
+						<td>antivirus 安裝數</td>
 						<td>
 						<div class="ui teal progress yckuo" data-percent="<?=$antivirus_rate?>" data-total="100" id="example1">
 						  <div class="bar"><div class="progress"></div></div>
@@ -58,7 +58,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>edr安裝數</td>
+						<td>edr 安裝數</td>
 						<td>
 						<div class="ui teal progress yckuo" data-percent="<?=$edr_rate?>" data-total="100" id="example1">
 						  <div class="bar"><div class="progress"></div></div>
@@ -69,7 +69,7 @@
 					</table>
 					</div>
 				</div>
-				<div id="drip_post" class="post_title">網段IP使用統計圖</div>
+				<div id="drip_post" class="post_title">網段 IP 使用統計圖</div>
 				<div class="post_cell">
 					<div id="drip_chart" class="chart"></div>	
 				</div>
@@ -91,7 +91,7 @@
                         </div>
                     </center>
 			    </div>		
-				<div id="gcbPass_post" class="post_title">GCB通過率</div>
+				<div id="gcbPass_post" class="post_title">GCB 通過率</div>
 				<div class="post_cell">
 					<center>
 						<div class="ui statistic">
@@ -101,7 +101,7 @@
 					</center>
 					<div id="gcbPass_chart" class="chart"></div>	
 				</div>
-				<div id="gcbOS_post" class="post_title">GCB作業系統統計圖</div>
+				<div id="gcbOS_post" class="post_title">GCB 作業系統統計圖</div>
 				<div class="post_cell">
 					<div id="gcbOS_chart" class="chart"></div>	
 			    </div>		
@@ -147,17 +147,17 @@
 						<td><?=$total_antivirus_rate ?></td>
 					</tr>
 					<tr>
-						<td>DLP安裝成功數</td>
+						<td>DLP 安裝成功數</td>
 						<td><?=$dlp_num ?></td>
 						<td><?=$dlp_rate ?></td>
 					</tr>
 					<tr>
-						<td>Client安裝數</td>
+						<td>Client 安裝數</td>
 						<td><?=$client_antivirus_num ?></td>
 						<td><?=$client_antivirus_rate ?></td>
 					</tr>
 					<tr>
-						<td>Server安裝數</td>
+						<td>Server 安裝數</td>
 						<td><?=$server_antivirus_num ?></td>
 						<td><?=$server_antivirus_rate ?></td>
 					</tr>
