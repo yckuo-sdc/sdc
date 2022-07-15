@@ -69,6 +69,7 @@
 					</table>
 					</div>
 				</div>
+                <div class="see_more" style="text-align:right"><a href="/query/client/">See More...</a></div>
 				<div id="drip_post" class="post_title">網段 IP 使用統計圖</div>
 				<div class="post_cell">
 					<div id="drip_chart" class="chart"></div>	

@@ -21,7 +21,7 @@ function format ( d ) {
     '</table>';
 }
 
-$(document).ready(function(){
+$(document).ready(function() {
 
 	// Setup - add a text input to each footer cell
     $('#example_table tfoot th:not(:first-child)').each( function () {
@@ -113,7 +113,7 @@ $(document).ready(function(){
                     return render_data;
                 }
             },
-            //{ data: 'shut_at' },
+            { data: 'shut_at' },
         ], 
 		columnDefs: [
 			{
@@ -124,10 +124,10 @@ $(document).ready(function(){
 				targets: 3,
 				width: "10%",
 			},
-            //{
-            //    target: 11,
-            //    visible: false,
-            //}
+            {
+                target: 11,
+                visible: false,
+            }
 		],
         order: [
             [1, 'asc'],
@@ -147,6 +147,7 @@ $(document).ready(function(){
                     }
                 } );
             } );
+
         },
     } );
 
@@ -170,5 +171,19 @@ $(document).ready(function(){
         }
     } );
 
+	// Add event listener for removing and adding shut hosts
+	$('input[name="include_shutdown_checkbox"]').click(function () {
+        if ($(this).prop("checked")) {
+			datatable
+                .column(11)
+                .search("")
+                .draw();
+        } else {
+			datatable
+                .column(11)
+                .search("^.{0}$", true, false)
+                .draw();
+        }
+    });
 
 });

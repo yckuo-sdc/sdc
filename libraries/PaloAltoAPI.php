@@ -309,7 +309,7 @@ Class PaloAltoAPI {
 }
 
 /** Usage
-require 'vendor/autoloader.php';
+require 'vendor/autoload.php';
 
 $hosts = ['yonghua', 'minjhih', 'idc', 'intrayonghua'];
 

@@ -5,6 +5,8 @@
                 <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">伺服器資安清單</h2>
 				<div class="post_cell">
+                    <input type="checkbox" name="include_shutdown_checkbox" checked="checked">
+                    <label for="include_shutdown_checkbox">Shutdown</label>
                     <table id="example_table" class="ui celled table" style="width:100%">
                         <thead>
                             <tr>
@@ -19,6 +21,7 @@
                                 <th>Corecloud</th>
                                 <th>Fireeye</th>
                                 <th>Gcb</th>
+                                <th>Shut_at</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -34,6 +37,7 @@
                                 <th>Corecloud</th>
                                 <th>Fireeye</th>
                                 <th>Gcb</th>
+                                <th>Shut_at</th>
                             </tr>
                         </tfoot>
                     </table>

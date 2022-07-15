@@ -4,16 +4,16 @@ require_once __DIR__ .'/../../vendor/autoload.php';
 $db = Database::get();
 
 // drop table
-$table = "client_server_lists";
+$table = "client_server_list";
 $key_column = "1";
 $id = "1"; 
 $db->delete($table, $key_column, $id); 
 
-$sql = "INSERT INTO client_server_lists(type, ip, ou, name)
+$sql = "INSERT INTO client_server_list(type, ip, ou, name)
 SELECT 'client' as type, IP, OrgName, Owner FROM drip_client_list";
 $db->execute($sql);
 
-$sql = "UPDATE client_server_lists AS A
+$sql = "UPDATE client_server_list AS A
 JOIN drip_client_list AS B
 ON A.ip = B.IP AND (A.name IN('', '-') OR A.name IS NULL) AND B.MemoByMAC NOT LIKE ''  
 SET A.name = CONCAT('(ByMAC)', B.MemoByMAC)";
@@ -40,7 +40,7 @@ curl_close($curl);
 $servers = json_decode($res, true);
 
 foreach($servers as $server){
-    $table = "client_server_lists";
+    $table = "client_server_list";
     $data_array = array();
     $data_array['type'] = "server";
     $data_array['ip'] = $server['ipv4'];

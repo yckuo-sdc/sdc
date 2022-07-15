@@ -60,9 +60,9 @@ if (!empty($data['logs'])) {
     }
 }
 
-//update the column 'ou','name','type' from table 'client_server_lists'
+//update the column 'ou','name','type' from table 'client_server_list'
 $sql = "UPDATE top_source_traffic AS A
-JOIN client_server_lists AS B 
+JOIN client_server_list AS B 
 ON A.src_ip = B.ip
 SET A.ou = B.ou, A.name = B.name, A.type = B.type";
 $db->execute($sql);

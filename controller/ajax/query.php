@@ -43,8 +43,8 @@ switch($type){
 		break;
 	case 'contact':
 		$condition_table = "security_contact";
-		$table = "(select * from security_contact union select * from security_contact_extra)a";
-		$table = "(SELECT a.*, b.rank FROM( SELECT * FROM security_contact UNION SELECT * FROM security_contact_extra ORDER by oid asc,person_type asc )a LEFT JOIN security_rank AS b ON a.oid = b.oid)v";
+		//$table = "(SELECT * FROM security_contact UNION SELECT * FROM security_contact_custom)a";
+		$table = "(SELECT a.*, b.rank FROM( SELECT * FROM security_contact UNION SELECT * FROM security_contact_custom ORDER by oid asc,person_type asc )a LEFT JOIN security_rank AS b ON a.oid = b.oid)v";
 		$order_by = "oid, person_type";	
 		break;
 	case 'drip':
