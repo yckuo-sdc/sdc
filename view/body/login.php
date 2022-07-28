@@ -49,4 +49,5 @@
 		 </div>
 	  </div>
 	</div>
+    <?=Ip::get()?>
 	<?php unset($_SESSION["error"]); ?>

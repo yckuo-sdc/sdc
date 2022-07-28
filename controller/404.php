@@ -1,4 +1,8 @@
 <?php
+if(!$userValidator->isLogin()){
+    header("Location: /logout"); 
+    return;
+}	
 /**
  * 載入頁面
  */
