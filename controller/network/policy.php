@@ -28,6 +28,8 @@ foreach($pa_hosts as $host) {
     $host_policy_results[$host] = $policy_results;
 }
 
+//var_dump($host_policy_results);
+
 // PAN-OS 8.0
 $pa_hosts = ['intrayonghua'];
 

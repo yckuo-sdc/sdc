@@ -25,7 +25,6 @@
         <link href="/css/app.css" rel="stylesheet"/>
 
         <!-- my js-->
-        <script src="/js/app.js"></script>
-
+        <script src="/js/my.js"></script>
     </head>
     <body style="background: #FFF">

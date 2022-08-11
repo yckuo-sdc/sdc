@@ -13,6 +13,8 @@ foreach($systems as $index => $system){
     $systems[$index]['size'] = $size;
 }
 
+$target = "localhost vision.tainan.gov.tw";
+
 require 'view/header/default.php'; 
 require 'view/body/tool/nmap.php';
 require 'view/footer/default.php'; 

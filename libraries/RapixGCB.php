@@ -6,6 +6,9 @@ class RapixGCB {
 	private $host;
 	private $token;
 
+    /**
+     * Constructor
+     */
     public function __construct() {
         $this->host = Rapix::HOST;
         $this->token = $this->getAccessToken(Rapix::APIKEY);
@@ -14,12 +17,19 @@ class RapixGCB {
         }
     }
 
+	/**
+     * Destructor
+     */
     public function __destruct() {
         $this->token = null;
     }
 
-    //get client_list
-    public function getClientList($limit) {
+    /**
+     * @param integer $limit
+     *
+     * @return array $clients
+     */
+    public function getClientList($limit = 20) {
         $url = $this->host . "/api/v1/client/list";
         $postField = json_encode(array(
                "kind" => "list&count",
@@ -55,7 +65,11 @@ class RapixGCB {
         return $response;
     }
 
-    //get client_detail
+    /**
+     * @param integer $client_id
+     *
+     * @return array $client_detail
+     */
     public function getClientDetail($client_id) {
         $url = $this->host . "/api/v1/client/detail/" . $client_id;
         $postField = json_encode(array("client_id" => $client_id));
@@ -63,7 +77,11 @@ class RapixGCB {
         return $response;
     }
 
-    //get gcb_scan result
+    /**
+     * @param integer $gs_id
+     *
+     * @return array $gcb_scan_results
+     */
     public function getGscanResult($gs_id) {
         $url = $this->host . "/api/v1/gscan/result/" . $gs_id;
         $postField = json_encode(array("gs_id" => $gs_id));
@@ -71,7 +89,11 @@ class RapixGCB {
         return $response;
     }
 
-    //get token
+    /**
+     * @param string $apikey
+     *
+     * @return string $token
+     */
     private function getAccessToken($apikey) {
         $url = $this->host . "/api/v1/token";
         $httpHeader = array("Content-Type: application/json");
@@ -89,6 +111,13 @@ class RapixGCB {
         return null;
    }
 
+    /**
+     * @param string $url
+     * @param array $postField
+     * @param array $httpHeader
+     *
+     * @return string $token
+     */
 	// send http request with bearer token 
 	private function sendHttpRequest($url, $postField, $httpHeader = array()) {
         if (empty($httpHeader)) {
@@ -96,18 +125,18 @@ class RapixGCB {
         }
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
-		  CURLOPT_URL => $url,
-		  CURLOPT_RETURNTRANSFER => true,
-		  CURLOPT_SSL_VERIFYPEER => false,
-		  CURLOPT_SSL_VERIFYHOST => false,
-		  CURLOPT_ENCODING => "",
-		  CURLOPT_MAXREDIRS => 10,
-		  CURLOPT_TIMEOUT => 30,
-		  CURLOPT_FOLLOWLOCATION => true,
-		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => $postField,
-          CURLOPT_HTTPHEADER => $httpHeader
+		    CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $postField,
+            CURLOPT_HTTPHEADER => $httpHeader
 		));
 		$res = curl_exec($curl);
 

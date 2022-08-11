@@ -21,7 +21,7 @@ Class PaloAltoAPI {
 	}
 
 	/**
-     * Destructor.
+     * Destructor
      */
     public function __destruct()
     {
