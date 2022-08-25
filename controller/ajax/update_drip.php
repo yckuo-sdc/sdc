@@ -44,10 +44,19 @@ SET A.ad = 1";
 $db->execute($sql);
 
 //update the column 'gcb','OrgName','Owner','UserName' from table 'gcb_client_list'
-$sql = "UPDATE drip_client_list AS A
-JOIN gcb_client_list AS B 
-ON A.IP = INET_NTOA(B.InternalIP)
-SET A.gcb = 1,A.OrgName=B.OrgName,A.Owner=B.Owner,A.UserName=B.UserName";
+$sql = "
+UPDATE 
+    drip_client_list AS a
+JOIN 
+    gcb_client_list AS b 
+ON 
+    a.IP = INET_NTOA(b.InternalIP)
+    AND 
+    b.ID IN(
+        SELECT MAX(ID) FROM gcb_client_list GROUP BY InternalIP
+    )
+SET 
+    a.gcb = 1, a.OrgName=b.OrgName, a.Owner=b.Owner, a.UserName=b.UserName";
 $db->execute($sql);
 
 //update the column 'wsus' from table 'wsus_computer_status'

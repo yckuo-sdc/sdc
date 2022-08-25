@@ -14,8 +14,9 @@ foreach($aps as $ap) {
 	$output = shell_exec("/usr/bin/nmap -Pn ".$ipv4);
 	$res = NmapParser($output);
 
-	foreach($res as $v1){
-		foreach($v1 as $v2){
+    $scan_time = date('Y-m-d H:i:s'); 
+	foreach($res as $v1) {
+		foreach($v1 as $v2) {
 			echo $v2." ";
 		}
 		echo "\n";
@@ -27,7 +28,7 @@ foreach($aps as $ap) {
 		$scan['protocol'] = $v1[1];
 		$scan['status'] = $v1[2];
 		$scan['service'] = $v1[3];
-		$scan['scan_time'] = date('Y-m-d h:i:s');	
+		$scan['scan_time'] = $scan_time;	
 
 		$table = "portscan_results";
 		$db->insert($table, $scan);

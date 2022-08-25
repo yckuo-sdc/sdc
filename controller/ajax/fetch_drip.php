@@ -65,7 +65,7 @@ foreach($Rows as $data) {
 }
 
 $nowTime = date("Y-m-d H:i:s", filemtime($inputFileName));
-echo "The ".$count." records have been inserted or updated into the drip_clinet_list on ".$nowTime."\n\r<br>";
+echo "The ".$count." records have been inserted or updated into the drip_ip_mac_used_list on ".$nowTime."\n\r<br>";
 $status = 200;
 
 $error = $db->getErrorMessageArray();

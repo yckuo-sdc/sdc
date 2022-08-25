@@ -7,7 +7,7 @@
 				<div class="post_cell">
 					<div class="ui secondary pointing menu">
 						<a class="active item">DrIP</a>
-						<a class="item">GCB</a>
+						<a class="item">GCB & VANS</a>
 						<a class="item">WSUS</a>
 						<a class="item">AntiVirus</a>
 						<a class="item">EDR</a>
@@ -71,6 +71,7 @@
                                 <option value="InternalIP" >內部IP</option>
                                 <option value="UserName" >使用者帳號</option>
                                 <option value="OrgName" >單位名稱</option>
+                                <option value="cpe_names" >資訊資產名稱</option>
                                 <option value="all" >全部</option>
                                 </select>
                             </div>

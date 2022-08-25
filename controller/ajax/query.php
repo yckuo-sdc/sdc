@@ -54,7 +54,32 @@ switch($type){
 		break;
 	case 'gcb':
 		$condition_table = "gcb_client_list";
-		$table = "(SELECT a.*,b.name as os_name,c.name as ie_name,ROUND(a.GsAll_1/a.GsAll_2*100,1) as GsPass FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id)A";
+		//$table = "(SELECT a.*,b.name as os_name,c.name as ie_name,ROUND(a.GsAll_1/a.GsAll_2*100,1) as GsPass FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id)A";
+        $table = "(
+		SELECT 
+			a.*, b.name AS os_name, c.name AS ie_name, ROUND(a.GsAll_1/a.GsAll_2*100,1) AS GsPass, GROUP_CONCAT(e.name) AS cpe_names
+		FROM 
+			gcb_client_list AS a 
+		LEFT JOIN 
+			gcb_os AS b 
+		ON 
+			a.OSEnvID = b.id 
+		LEFT JOIN 
+			gcb_ie AS c 
+		ON 
+			a.IEEnvID = c.id
+		LEFT JOIN
+			rapix_cpe_client_map AS d
+		ON 
+			a.ID = d.rapix_client_id
+		LEFT JOIN
+			rapix_cpes AS e
+		ON 
+			e.id = d.rapix_cpe_id
+		Group BY a.ID
+		)A";
+
+
 		if($keyword == 'ExternalIP' or $keyword == 'InternalIP') $key = ip2long($key);
 		$order_by = "ID";	
 		break;
@@ -416,26 +441,32 @@ if ($ap=='csv') {
                         </a>
                         <div class='description'>
                             <ol>
-                            <li><a href='/ajax/gcb_detail/?action=detail&id=<?=$client['ID']?>' target='_blank'>序號: <?=$client['ID']?>(用戶端資訊)&nbsp;<i class='external alternate icon'></i></a></li>
-                            <li>外部IP: <?=long2ip($client['ExternalIP'])?></li>
-                            <li>內部IP: <?=long2ip($client['InternalIP'])?></li>
-                            <li>電腦名稱: <?=$client['Name']?></li>
-                            <li>單位名稱: <?=$client['OrgName']?></li>
-                            <li>使用者帳號: <?=$client['UserName']?></li>
-                            <li>使用者名稱: <?=$client['Owner']?></li>
-                            <li>OS: <?=$client['os_name']?></li>
-                            <li>OS位元: <?=$client['OSArch']?></li>
-                            <li>IE: <?=$client['ie_name']?></li>
-                            <li>是否上線: <?=$client['IsOnline']?></li>
-                            <li>gcb總掃描數: <?=$client['GsAll_2']?></li>
-                            <li>gcb總通過數[包含例外]: <?=$client['GsAll_1']?></li>
-                            <li>gcb總通過數[未包含例外]: <?=$client['GsAll_0']?></li>
-                            <li>gcb例外數量: <?=$client['GsExcTot']?></li>
-                            <li>gcb通過率: <?=$client['GsPass']?>%</li>
-                            <li><a href='/ajax/gcb_detail/?action=gscan&id=<?=$client['GsID']?>' target='_blank'>gcb掃描編號: <?=$client['GsID']?>(掃描結果資訊)&nbsp;<i class='external alternate icon'></i></a></li>
-                            <li>gcb派送編號: <?=$client['GsSetDeployID']?></li>
-                            <li>gcb狀態: <?=$GsStatMap[$client['GsStat']]?></li>
-                            <li>gcb回報時間: <?=$client['GsUpdatedAt']?></li>
+								<li><a href='/ajax/gcb_detail/?action=detail&id=<?=$client['ID']?>' target='_blank'>序號: <?=$client['ID']?>(用戶端資訊)&nbsp;<i class='external alternate icon'></i></a></li>
+								<li>外部IP: <?=long2ip($client['ExternalIP'])?></li>
+								<li>內部IP: <?=long2ip($client['InternalIP'])?></li>
+								<li>電腦名稱: <?=$client['Name']?></li>
+								<li>單位名稱: <?=$client['OrgName']?></li>
+								<li>使用者帳號: <?=$client['UserName']?></li>
+								<li>使用者名稱: <?=$client['Owner']?></li>
+								<li>OS: <?=$client['os_name']?></li>
+								<li>OS位元: <?=$client['OSArch']?></li>
+								<li>IE: <?=$client['ie_name']?></li>
+								<li>是否上線: <?=$client['IsOnline']?></li>
+								<li>gcb總掃描數: <?=$client['GsAll_2']?></li>
+								<li>gcb總通過數[包含例外]: <?=$client['GsAll_1']?></li>
+								<li>gcb總通過數[未包含例外]: <?=$client['GsAll_0']?></li>
+								<li>gcb例外數量: <?=$client['GsExcTot']?></li>
+								<li>gcb通過率: <?=$client['GsPass']?>%</li>
+								<li><a href='/ajax/gcb_detail/?action=gscan&id=<?=$client['GsID']?>' target='_blank'>gcb掃描編號: <?=$client['GsID']?>(掃描結果資訊)&nbsp;<i class='external alternate icon'></i></a></li>
+								<li>gcb派送編號: <?=$client['GsSetDeployID']?></li>
+								<li>gcb狀態: <?=$GsStatMap[$client['GsStat']]?></li>
+								<li>gcb回報時間: <?=$client['GsUpdatedAt']?></li>
+								<li>資訊資產(僅列含cve漏洞): 
+									<?php $cpe_array = explode(",", $client['cpe_names']); ?>
+									<?php foreach($cpe_array as $cpe): ?>
+										<div class='ui brown label'><?=$cpe?></div>
+									<?php endforeach ?>
+								</li>
                             </ol>
                         </div>
                     </div>

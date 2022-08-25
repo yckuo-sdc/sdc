@@ -359,6 +359,10 @@ div.header a{
 	/*font-size: 2vmin;*/
 }
 
+.ui.list > .item .ui.label{
+    margin-bottom: 0.5em;
+}
+
 .ou_block .description{
 	display:none;
     overflow-x: hidden;
