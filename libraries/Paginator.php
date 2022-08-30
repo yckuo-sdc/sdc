@@ -15,12 +15,11 @@ class Paginator {
 		$this->query = $query;
         $query = "SELECT 1 FROM ($query) T";
 		$this->db->execute($query, $data_array);
-		#$this->db->execute($query, $data_array);
 		$this->total = $this->db->getLastNumRows();
 	} 
 
 	/**
-     * Destructor.
+     * Destructor
      */
 	public function __destruct() {
         $this->db = null;

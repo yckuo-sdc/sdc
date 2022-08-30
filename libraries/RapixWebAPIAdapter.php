@@ -11,6 +11,9 @@ class RapixWebAPIAdapter {
 	private $access_token = null;
 	private $refresh_token = null;
 
+	/**
+     * Constructor
+     */
     public function __construct() {
         $this->host = Rapix::HOST;
         $tokens = $this->getTokens(Rapix::USERNAME, Rapix::PASSWORD);
@@ -22,6 +25,15 @@ class RapixWebAPIAdapter {
         $this->access_token = $tokens['access_token'];
         $this->refresh_token = $tokens['refresh_token'];
     }
+
+	/**
+     * Destructor
+     */
+	public function __destruct() {
+        $this->host = "";
+        $this->access_token = null;
+        $this->refresh_token = null;
+	} 
 
     //function fetchClientListByCPEAsset($cpeAssetId) {
     //    if (empty($cpeAssetId)) return [];
