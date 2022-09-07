@@ -98,7 +98,7 @@ class MyLDAP {
                     if(!empty($lists)) {
                         $html .= "<div class='list'>";
                             foreach($lists as $list) {
-                                if(isDisable($list['useraccountcontrol'])){
+                                if(isDisabled($list['useraccountcontrol'])){
                                     $uac = false;
                                     $uac_status = "__已停用";
                                     $computer_icon = "<i class='desktop icon'></i>";
@@ -155,7 +155,7 @@ class MyLDAP {
             $html .= "<div class='list'>";
                 $html .= "<div class='item'><i class='icon caret right'></i>共 " . $computer_count . " 筆資料 !</div>";
                 foreach($computer_list as $computer_index => $computer) {
-                    if(isDisable($computer['useraccountcontrol'])){
+                    if(isDisabled($computer['useraccountcontrol'])){
                         $uac = false;
                         $uac_status = "__已停用";
                         $computer_icon = "<i class='desktop icon'></i>";
@@ -243,7 +243,7 @@ class MyLDAP {
             $html .= "<div class='list'>";
                 $html .= "<div class='item'><i class='icon caret right'></i>共 " . $user_count . " 筆資料 !</div>";
                 foreach($user_list as $user_index => $user) {
-                    if (isDisable($user['useraccountcontrol'])) {
+                    if (isDisabled($user['useraccountcontrol'])) {
                         $uac = false;
                         $uac_status = "__已停用";
                         $user_icon = "<i class='user icon'></i>";
@@ -391,6 +391,45 @@ class MyLDAP {
         }
 
         return $user_array;
+  
+    }
+
+    public function getAllOUsByRecursion($base, $ou, $description, $parent_ou, $level) {
+
+        $ou_array = array(
+            0 => array(
+                'ou' => $ou,
+                'description' => $description,
+                'parent_ou' => $parent_ou,
+                'level' => $level,
+            )
+        );
+
+        //var_dump($ou_array);
+
+        $data_array = array();
+        $data_array['base'] = $base;
+        $data_array['filter'] = "(objectCategory=organizationalUnit)";
+        $data_array['attributes'] = array("ou", "distinguishedname", "description");
+        $ou_list = $this->getList($data_array);
+
+        if (!empty($ou_list)) {
+            foreach($ou_list as $entry) {
+                $sub_base = $entry['distinguishedname'];
+                $sub_ou = $entry['ou'];
+                $sub_description = empty($entry["description"]) ?  "" : $entry["description"];
+                $sub_level = $level + 1;
+                $sub_ou_array = $this->getAllOUsByRecursion($sub_base, $sub_ou ,$sub_description, $ou, $sub_level); 
+
+                if (empty($sub_ou_array)) {
+                    continue;
+                }
+                $ou_array = array_merge($ou_array, $sub_ou_array);
+                //array_push($ou_array, $sub_ou_array);
+            }
+        }
+
+        return $ou_array;
   
     }
 

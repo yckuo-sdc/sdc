@@ -31,7 +31,7 @@ $input_array = array();
         endforeach; 
 
         $description = empty($entry['description']) ? "" : "(" . $entry['description'] . ")";
-        if (isDisable($entry['useraccountcontrol'])) {
+        if (isDisabled($entry['useraccountcontrol'])) {
             $uac_text = "__已停用";
             $uac_checkbox = "<input type='checkbox' name='isActive' value='true'>";
             $computer_icon = "<i class='desktop icon'></i>";

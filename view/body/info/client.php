@@ -81,14 +81,34 @@
 				<div id="ad_post" class="post_title">AD</div>
 				<div class="post_cell">
                     <center>
+                        <h4 class="ui header">COMPUTER</h4>
                         <div class="ui statistic">
-                          <div class="value"><?=$ad_computer_num ?>  </div>
-                          <div class="label">computer 導入數</div>
+                          <div class="value"><?=$ad_active_computer_num?></div>
+                          <div class="label">active</div>
+                        </div>
+                        <div class="ui statistic">
+                          <div class="value"><?=$ad_computer_num?></div>
+                          <div class="label">total</div>
                         </div>
                         <br>
+                        <h4 class="ui header">USER</h4>
                         <div class="ui statistic">
-                          <div class="value"><?=$ad_user_num ?>  </div>
-                          <div class="label">user 導入數</div>
+                          <div class="value"><?=$ad_active_user_num?></div>
+                          <div class="label">active</div>
+                        </div>
+                        <div class="ui statistic">
+                          <div class="value"><?=$ad_user_num?></div>
+                          <div class="label">total</div>
+                        </div>
+                        <br>
+                        <h4 class="ui header">OU</h4>
+                        <div class="ui statistic">
+                          <div class="value"><?=$ad_active_ou_num?></div>
+                          <div class="label">active</div>
+                        </div>
+                        <div class="ui statistic">
+                          <div class="value"><?=$ad_ou_num?></div>
+                          <div class="label">total</div>
                         </div>
                     </center>
 			    </div>		

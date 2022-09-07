@@ -134,16 +134,14 @@ function array_to_csv_download($array, $filename, $delimiter) {
 }
 
 // check the disabled of AD account
-function isDisable($useraccountcontrol){
-	$hexValue = dechex($useraccountcontrol);
-	$len = strlen($hexValue);
-	$accountdisable = $hexValue[$len-1];
+function isDisabled($useraccountcontrol) {
+	$accountdisable = 0x0002 & $useraccountcontrol;	
 
-	if($accountdisable == 2){
+    if ($accountdisable == 2) {
 		return true;
-	}else{
-		return false;
-	}
+    } 		
+    
+    return false;
 }
 
 function getUACDescription($useraccountcontrol){

@@ -30,7 +30,7 @@ $input_array = array("displayname", "title", "mail", "telephonenumber", "physica
         endforeach; 
 
         $displayname = empty($entry['displayname']) ? "" : "(" . $entry['displayname'] . ")";
-        if (isDisable($entry['useraccountcontrol'])) {
+        if (isDisabled($entry['useraccountcontrol'])) {
             $uac_text = "__已停用";
             $uac_checkbox = "<input type='checkbox' name='isActive' value='true'>";
             $user_icon = "<i class='user icon'></i>";
