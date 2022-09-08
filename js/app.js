@@ -225,13 +225,19 @@ $(document).ready(function(){
 
 	// ldap_tree.php's component action
 	$('.ldap_tree_content').on('click', '.computer.item', function() {
-		$('.ldap_tree_content .computer.item').removeClass('selected');
+		$('.ldap_tree_content .selected').removeClass('selected');
 		$(this).addClass('selected');
 	});
 
 	// ldap_tree.php's component action
 	$('.ldap_tree_content').on('click', '.user.item', function() {
-		$('.ldap_tree_content .user.item').removeClass('selected');
+		$('.ldap_tree_content .selected').removeClass('selected');
+		$(this).addClass('selected');
+	});
+
+	// ldap_tree.php's component action
+	$('.ldap_tree_content').on('click', '.ou.header', function() {
+		$('.ldap_tree_content .selected').removeClass('selected');
 		$(this).addClass('selected');
 	});
 
@@ -408,16 +414,6 @@ $(document).ready(function(){
 	// LDAP bind 
 	$('.post_cell.ldap #ldap_bind_btn').on('click', function() {
 		ldap_ajax('bind_item');	
-	});
-
-	// LDAP binduser
-	$('.post_cell.ldap_tainanlocalusers .edit_btn').on('click', function(){
-		ldap_ajax('bind_user');	
-	});
-
-	// LDAP bindcomputer
-	$('.post_cell.ldap_tainancomputers .edit_btn').on('click', function(){
-		ldap_ajax('bind_computer');	
 	});
 
 	// LDAP assign dist computers 
@@ -1211,19 +1207,44 @@ function ldap_ajax(action) {
         console.log(showTabClass);
         var bindItems = ['ldap_tainanlocalusers', 'ldap_tainancomputers', 'ldap_computers'];
         var bindItemsIndex = bindItems.indexOf(showTabClass);
+        var object = showTab.find('.selected');
+
+        if(object.length === 0) {
+            alert('no selection');
+            return;
+        }
+
+        var objectCategory = object.attr('class').split(' ')[0];
+        console.log(objectCategory);
 
         if (bindItemsIndex == 0) {
-            var input = [	
-                {name : "objectCategory", value: "user"},
-                {name : "target", value: showTab.find('.selected.item').attr('cn')},
-                {name : "action", value: "bind_user"}
-            ];
+            if (objectCategory == 'user') {
+                var input = [	
+                    {name : "objectCategory", value: "user"},
+                    {name : "target", value: object.attr('cn')},
+                    {name : "action", value: "bind_user"}
+                ];
+            } else if (objectCategory == 'ou') {
+                var input = [	
+                    {name : "objectCategory", value: "ou"},
+                    {name : "target", value: object.attr('ou')},
+                    {name : "action", value: "bind_ou"}
+                ];
+            }
         } else if (bindItemsIndex == 1) {
-            var input = [	
-                {name : "objectCategory", value: "computer"},
-                {name : "target", value: showTab.find('.selected.item').attr('cn')},
-                {name : "action", value: "bind_computer"}
-            ];
+            if (objectCategory == 'computer') {
+                var input = [	
+                    {name : "objectCategory", value: "computer"},
+                    {name : "target", value: object.attr('cn')},
+                    {name : "action", value: "bind_computer"}
+                ];
+            } else if (objectCategory == 'ou') {
+                var input = [	
+                    {name : "objectCategory", value: "ou"},
+                    {name : "target", value: object.attr('ou')},
+                    {name : "action", value: "bind_ou"}
+                ];
+            }
         } else if (bindItemsIndex == 2) {
             ldap_modal(showTab);
             return;

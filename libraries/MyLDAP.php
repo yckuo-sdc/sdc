@@ -208,7 +208,7 @@ class MyLDAP {
                         $html .= "<div class='item'>";
                             $html .= "<i class='folder icon'></i>";
                             $html .= "<div class='content'>";
-                                $html .= "<div class='header'>" . $ou . $text_description . "</div>";	
+                                $html .= "<div class='ou header' ou='computer " . $ou . "'>" . $ou . $text_description . "</div>";	
                             $html .= "</div>";
                         $html .= "</div>";
                     } else {
@@ -216,7 +216,7 @@ class MyLDAP {
                             $html .= "<i class='plus square outline icon' base='" . $base . "' ou='" . $ou . "' description='" . $description . "'></i>";
                             $html .= "<i class='folder icon'></i>";
                             $html .= "<div class='content'>";
-                                $html .= "<div class='header'>" . $ou . $text_description . "</div>";	
+                                $html .= "<div class='ou header' ou='computer " . $ou . "'>" . $ou . $text_description . "</div>";	
                             $html .= "</div>";
                         $html .= "</div>";
                     }
@@ -296,7 +296,7 @@ class MyLDAP {
                         $html .= "<div class='item'>";
                             $html .= "<i class='folder icon'></i>";
                             $html .= "<div class='content'>";
-                                $html .= "<div class='header'>" . $ou . $text_description . "</div>";	
+                                $html .= "<div class='ou header' ou='user " . $ou . "'>" . $ou . $text_description . "</div>";	
                             $html .= "</div>";
                         $html .= "</div>";
                     } else {
@@ -304,7 +304,7 @@ class MyLDAP {
                             $html .= "<i class='plus square outline icon' base='" . $base . "' ou='" . $ou . "' description='" . $description . "'></i>";
                             $html .= "<i class='folder icon'></i>";
                             $html .= "<div class='content'>";
-                                $html .= "<div class='header'>" . $ou . $text_description . "</div>";	
+                                $html .= "<div class='ou header' ou='user " . $ou . "'>" . $ou . $text_description . "</div>";	
                             $html .= "</div>";
                         $html .= "</div>";
                     }
@@ -362,7 +362,8 @@ class MyLDAP {
         $data_array = array();
         $data_array['base'] = $base;
         $data_array['filter'] = "(objectCategory=person)";
-        $data_array['attributes'] = array("cn", "title", "physicaldeliveryofficename", "telephonenumber", "distinguishedname", "displayname", "useraccountcontrol", "lastlogon", "pwdlastset", "mail");
+        //$data_array['attributes'] = array("cn", "title", "physicaldeliveryofficename", "telephonenumber", "distinguishedname", "displayname", "useraccountcontrol", "lastlogon", "pwdlastset", "mail");
+        $data_array['attributes'] = array("cn", "title", "physicaldeliveryofficename", "telephonenumber", "distinguishedname", "displayname", "useraccountcontrol", "lastlogon", "pwdlastset", "mail", "description");
         $user_list = $this->getList($data_array);
 
         if (!empty($user_list)) {
@@ -495,6 +496,25 @@ class MyLDAP {
         return false;	
     }
 
+
+    public function replaceUserAttributes($user_dn, $user_attributes) {
+        $result = ldap_mod_replace($this->ldapconn, $user_dn, $user_attributes);
+		if ($result) {
+            echo "User modified!" . PHP_EOL;
+		} else {
+            echo "There was a problem!" . PHP_EOL;
+        }
+    }
+
+    public function deleteUserAttributes($user_dn, $user_attributes) {
+        $result = ldap_mod_del($this->ldapconn, $user_dn, $user_attributes);
+		if ($result) {
+            echo "User modified!" . PHP_EOL;
+		} else {
+            echo "There was a problem!" . PHP_EOL;
+        }
+    }
+
 }
 
 /** Usage
@@ -522,4 +542,12 @@ $ou = "TainanLocalUser";
 $description = "永華及民治使用者AD帳號";
 echo $ldap->createSingleLevelUserTree($base, $ou, $description);		
 		
+// replace user attributes
+$user_attributes["description"] = "tainan user";
+$ld->replaceUserAttributes($user_dn, $user_attributes);
+
+// delete user attributes
+$user_attributes["description"] = array();
+$ld->deleteUserAttributes($user_dn, $user_attributes);
+
 **/

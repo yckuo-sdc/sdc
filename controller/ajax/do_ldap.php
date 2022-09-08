@@ -4,6 +4,7 @@ $ad = new ad\api\WebadAPI();
 if (!isset($_GET['isActive'])) {
     $_GET['isActive'] = "false";
 }
+
 echo createQueryStringTable($_GET);
 
 foreach ($_GET as $key => $value) {
@@ -76,6 +77,20 @@ switch ($type) {
 		$res = $ad->editOU($upperou, $name, $description);
         echo createWebadMessageBox($res, "editOU");
 		$userAction->logger('callFunction', 'ad/edit_ou(name=' . $name . ')res=' . $res);
+		break;
+	case "edituserou":
+        $upperou = explode("(", $upperou);
+        $upperou = $upperou[0];	
+		$res = $ad->editUserOU($upperou, $name, $description);
+        echo createWebadMessageBox($res, "editUserOU");
+		$userAction->logger('callFunction', 'ad/edit_user_ou(name=' . $name . ')res=' . $res);
+		break;
+	case "editcomputerou":
+        $upperou = explode("(", $upperou);
+        $upperou = $upperou[0];	
+		$res = $ad->editComputerOU($upperou, $name, $description);
+        echo createWebadMessageBox($res, "editComputerOU");
+		$userAction->logger('callFunction', 'ad/edit_computer_ou(name=' . $name . ')res=' . $res);
 		break;
 	case "newou":
         $upperou = explode("(", $upperou);

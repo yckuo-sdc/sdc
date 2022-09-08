@@ -94,6 +94,31 @@ class WebadAPI {
         return $response;
     }
 
+    // edit User OU
+    public function editUserOU ($upperou, $ou, $description) {
+        $url = $this->host . "/api/ChangeUpperOU";
+        $postField = json_encode(array(
+            "UpperOU" => $upperou,
+            "OU" => $ou,
+            "OUName" => $description
+        ));
+	    $response = $this->sendHttpRequest($url, $postField);
+        return $response;
+    }
+
+    // edit Computer OU
+    public function editComputerOU ($upperou, $ou, $description) {
+        //$url = $this->host . "/api/ChangeComputerOU";
+        //$postField = json_encode(array(
+        //    "UpperOU" => $upperou,
+        //    "OU" => $ou,
+        //    "OUName" => $description
+        //));
+	    //$response = $this->sendHttpRequest($url, $postField);
+        //return $response;
+        return "0.尚未實作";
+    }
+
     // insert OU
     public function insertOU ($upperou, $ou, $description) {
         $url = $this->host . "/api/NewOU";
