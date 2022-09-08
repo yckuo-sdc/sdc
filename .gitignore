@@ -30,3 +30,7 @@ package-lock.json
 
 # igonre demo file
 demo.*
+
+# igonre log file
+*log*
+
