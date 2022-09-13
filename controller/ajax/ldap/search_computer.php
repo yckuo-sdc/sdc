@@ -21,7 +21,7 @@ $data_ou = $ld->getData($data_array);
 $input_array = array();
 ?>
 
-<p><?=count($data)?> entries returned from <?=$search_ou?></p>
+<p class="header"><?=count($data)?> entries returned from <?=$search_ou?></p>
 
 <?php foreach($data as $data_index => $entry): ?>
     <?php 

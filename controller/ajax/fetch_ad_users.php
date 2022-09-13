@@ -22,6 +22,7 @@ if (empty($users)) {
     $db->delete($table, $key_column, $id); 
 
     foreach($users as $user) {
+        var_dump($user);
         $db->insert($table, $user);
         $count = $count + 1;
     }

@@ -4,7 +4,7 @@
 			<div class="post ldap">
                 <?=$route->createBreadcrumbs(' > ');?>
                 <h2 class="ui dividing header">LDAP</h2>
-				<div class="post_title">Search</div>
+				<div class="post_title">Operation</div>
 				<div class="post_cell ldap">
 					<form class="ui form" action="">
 						<div class="fields">
