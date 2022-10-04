@@ -50,14 +50,14 @@ switch($type){
 	case 'drip':
 		$condition_table = "drip_client_list";
 		$table = "drip_client_list";
-		$order_by = "DetectorName ,IP";	
+		$order_by = "DetectorName, IP";	
 		break;
 	case 'gcb':
 		$condition_table = "gcb_client_list";
 		//$table = "(SELECT a.*,b.name as os_name,c.name as ie_name,ROUND(a.GsAll_1/a.GsAll_2*100,1) as GsPass FROM gcb_client_list as a LEFT JOIN gcb_os as b ON a.OSEnvID = b.id LEFT JOIN gcb_ie as c ON a.IEEnvID = c.id)A";
         $table = "(
 		SELECT 
-			a.*, b.name AS os_name, c.name AS ie_name, ROUND(a.GsAll_1/a.GsAll_2*100,1) AS GsPass, GROUP_CONCAT(e.name) AS cpe_names
+			a.*, b.name AS os_name, c.name AS ie_name, ROUND(a.GsAll_1/a.GsAll_2*100,1) AS GsPass, GROUP_CONCAT(e.name) AS cpe_names, GROUP_CONCAT(e.number_of_cves ORDER BY e.number_of_cves DESC) AS number_of_cves
 		FROM 
 			gcb_client_list AS a 
 		LEFT JOIN 
@@ -461,10 +461,21 @@ if ($ap=='csv') {
 								<li>gcb派送編號: <?=$client['GsSetDeployID']?></li>
 								<li>gcb狀態: <?=$GsStatMap[$client['GsStat']]?></li>
 								<li>gcb回報時間: <?=$client['GsUpdatedAt']?></li>
-								<li>資訊資產(僅列含cve漏洞): 
+								<li>資訊資產: 
 									<?php $cpe_array = explode(",", $client['cpe_names']); ?>
-									<?php foreach($cpe_array as $cpe): ?>
-										<div class='ui brown label'><?=$cpe?></div>
+									<?php $number_of_cves_array = explode(",", $client['number_of_cves']); ?>
+									<?php foreach($cpe_array as $index => $cpe): ?>
+                                        <?php if($number_of_cves_array[$index] == 0): ?>
+                                            <div class='ui label'>
+                                        <?php else: ?>
+                                            <div class='ui brown label'>
+                                        <?php endif ?>
+                                            <?=$cpe?>
+                                            <div class="detail">
+                                                <i class="bug icon"></i>
+                                                <?=$number_of_cves_array[$index]?>
+                                            </div>
+                                        </div>
 									<?php endforeach ?>
 								</li>
                             </ol>

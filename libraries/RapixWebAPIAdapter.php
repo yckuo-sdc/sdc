@@ -58,7 +58,7 @@ class RapixWebAPIAdapter {
     public function fetchCPEAssets($data_array = array()) {
         $this->refreshTokens();
 
-        $defaultFilterType = 3; // 0:全部 1:僅顯示CPE比對成功結果 3:僅顯示有CVE弱點的項目
+        $defaultFilterType = 1; // 0:全部 1:僅顯示CPE比對成功結果 3:僅顯示有CVE弱點的項目
 
         if (empty($data_array)) {
             $data_array = array(
