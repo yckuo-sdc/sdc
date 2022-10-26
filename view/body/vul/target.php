@@ -115,7 +115,6 @@
                                         <th>system name</th>
                                         <th>manager</th>
                                         <th>url</th>
-                                        <th>valid</th>
                                         <th>status</th>
                                     </tr>
                                 </thead>
@@ -132,9 +131,6 @@
                                             <a href="<?=$redirect_to_https_failure['url']?>" target="_blank">
                                                 <?=$redirect_to_https_failure['url']?>
                                             </a>
-                                        </td>
-                                        <td>
-                                            <?=boolval($redirect_to_https_failure['valid']) ? 'true' : 'false'?>
                                         </td>
                                         <td><?=$redirect_to_https_failure['status']?></td>
                                     </tr>

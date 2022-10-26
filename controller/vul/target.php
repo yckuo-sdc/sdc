@@ -23,7 +23,7 @@ ON
 WHERE 
     valid_to_time <= (NOW() + INTERVAL 1 MONTH) OR status != 'Success'
 ORDER BY
-    oid";
+    status, date_diff";
 $web_cert_failures = $db->execute($sql);
 
 $failure_num = $db->getLastNumRows();
@@ -40,7 +40,7 @@ ON
 WHERE 
     valid = 0 
 ORDER BY
-    oid";
+    status";
 $redirect_to_https_failures = $db->execute($sql);
 $redirect_to_https_failure_num = $db->getLastNumRows();
 
