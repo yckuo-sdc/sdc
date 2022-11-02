@@ -35,6 +35,15 @@ $(document).ready(function() {
         processing: true,
         //serverSide: true,
         ajax: '/ajax/tndev/',
+        dom: 'Bfrtip',
+        buttons: [
+           'excel',
+			{
+			   extend: 'csv',
+			   charset: 'UTF-8',
+			   bom: true,
+			}
+        ],
 	    columns: [
 			{
                 data:	null,

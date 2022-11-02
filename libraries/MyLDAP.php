@@ -27,7 +27,10 @@ class MyLDAP {
         $attributes = empty($data_array['attributes']) ? array() : $data_array['attributes'];
         $sizelimit = empty($data_array['sizelimit']) ? -1 : $data_array['sizelimit'];
 
-	    $result = ldap_search($this->ldapconn, $base, $filter, $attributes, $attributes_only = 0, $sizelimit);
+	    $result = @ldap_search($this->ldapconn, $base, $filter, $attributes, $attributes_only = 0, $sizelimit); 
+        if (!$result) {
+           die("Error in search query: " . ldap_error($this->ldapconn));
+        }
         $entries = ldap_get_entries($this->ldapconn, $result);
 
         $data = array();

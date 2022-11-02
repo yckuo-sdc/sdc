@@ -1,6 +1,6 @@
 <?php
 
-/*** manual： https://172.16.254.209/php/rest/browse.php ***/
+/*** manual： https:// {{ host }} /php/rest/browse.php ***/
 
 Class PaloAltoAPI {
 
@@ -89,8 +89,8 @@ Class PaloAltoAPI {
         do {
             $queried_log = $this->retrieveLogsByJobId($job_id);
             $query_count = $query_count + 1;
-            if ($queried_log['status'] == 'success') {
-                if ($queried_log->result->job->status == 'FIN') {
+            if ($queried_log['@attributes']['status'] == 'success') {
+                if ($queried_log['result']['job']['status'] == 'FIN') {
                     $timeout = false;
                 }
             }
@@ -104,11 +104,11 @@ Class PaloAltoAPI {
         $data_array['log_count'] = 0;
         $data_array['logs'] = array();
 
-        if($queried_log['status'] != 'success'){
+        if ($queried_log['@attributes']['status'] != 'success') {
             return $data_array;
         }
 
-        $logs = xml2array($queried_log->result->log->logs);
+        $logs = $queried_log['result']['log']['logs'];
         $data_array['log_count'] = $logs['@attributes']['count'];
 
         if (empty($data_array['log_count'])) {
@@ -141,27 +141,51 @@ Class PaloAltoAPI {
         $job_id = $xml->result->job;
 
         $report = array();
+        $report['log_count'] = 0;
+        $report['logs'] = array();
+
+        if (empty($job_id)) {
+            echo "no job_id" . PHP_EOL;
+            return $report;
+        } 
+        
+        echo "job_id: " . $job_id . PHP_EOL;
+
+        $max_query_count = 5;
+        $query_count = 0;
+        $timeout = true;
+        do {
+            sleep(5);
+            $queried_log = $this->retrieveLogsByJobId($job_id, $type="report", $action="get");
+            echo "query" . $query_count + 1 . ". " . $queried_log['@attributes']['status'] . PHP_EOL;
+            $query_count = $query_count + 1;
+            if ($queried_log['@attributes']['status'] == 'success') {
+                if (empty($queried_log['result']['report']['entry'])) {
+                    echo "get 0 entries" . PHP_EOL;
+                } else {
+                    $timeout = false;
+                    echo "get " . count($queried_log['result']['report']['entry']) . " entries" . PHP_EOL;
+                }
+            }
+        } while ($timeout & $query_count < $max_query_count);
+
+        if ($timeout) {
+            echo "Timeout" . PHP_EOL;
+            return $report;
+        } 
+
         $logs = array();
         $log_count = 0; 
-        if (empty($job_id)) {
-            echo "no job_id";
-            $report['log_count'] = $log_count;
-            $report['logs'] = $logs;
-            return $report;
-        } else {
-            sleep(3);
-            echo "before retrieveLogsByJobId" . PHP_EOL;
-            $queried_log = $this->retrieveLogsByJobId($job_id, $type="report", $action="get");
-            echo "after retrieveLogsByJobId" . PHP_EOL;
-            foreach($queried_log->result->report->entry as $entry){
-                foreach($entry as $key => $val){
-                    $logs[$log_count][$key] = $val;
-                }
-                $log_count = $log_count + 1;
+        //foreach ($queried_log->result->report->entry as $entry) {
+        foreach ($queried_log['result']['report']['entry'] as $entry) {
+            foreach ($entry as $key => $val) {
+                $logs[$log_count][$key] = $val;
             }
-            $report['log_count'] = $log_count;
-            $report['logs'] = $logs;
+            $log_count = $log_count + 1;
         }
+        $report['log_count'] = $log_count;
+        $report['logs'] = $logs;
+
 		return $report;
 	}
 
@@ -247,9 +271,9 @@ Class PaloAltoAPI {
      * @param string $type
      * @param string $action
      *
-     * @return SimpleXMLElement $queried_log
+     * @return array $queried_log
      */
-	private function retrieveLogsByJobId($job_id, $type="log", $action="get", $max_query_count = 30) {
+	private function retrieveLogsByJobId($job_id, $type="log", $action="get") {
 		$host = $this->host;
 		$apikey = $this->apikey;
 		$args = array('type' => $type, 'action' => $action, );
@@ -257,7 +281,7 @@ Class PaloAltoAPI {
 		$xmlstr = $this->sendHttpRequest($url);
         $queried_log = simplexml_load_string($xmlstr) or die("Error: Cannot create object");
 
-		return $queried_log;
+		return xml2array($queried_log);
 	}
 
     /**

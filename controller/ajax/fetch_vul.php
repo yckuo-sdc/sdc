@@ -108,6 +108,7 @@ foreach($apis as $api) {
 					$sql = "DELETE FROM scan_targets WHERE oid LIKE :oid";
 					$db->execute($sql, [':oid' => $oid . '%']);
 					foreach($data_array as $scanTarget){
+                        var_dump($scanTarget);
 						$db->insert($table, $scanTarget);
 						$count = $count + 1;							
 					}

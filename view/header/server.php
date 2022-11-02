@@ -26,8 +26,12 @@
 
         <!-- datatables -->
         <link rel="stylesheet" type="text/css" href="/node_modules/datatables.net-dt/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" type="text/css" href="/node_modules/datatables.net-buttons/css/buttons.dataTables.min.css">
         <script src="/node_modules/datatables.net/js/jquery.dataTables.min.js"></script>
         <script src="/node_modules/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
+        <script src="/node_modules/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+        <script src="/node_modules/datatables.net-buttons/js/buttons.html5.min.js"></script>
+        <script src="/node_modules/jszip/dist/jszip.min.js"></script>
 
         <!-- template css-->
         <link href="/css/default.css" rel="stylesheet" type="text/css" media="all" />
