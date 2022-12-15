@@ -67,6 +67,7 @@ $(document).ready(function() {
                 }
            	}, 
             { data: 'name' },
+            { data: 'type' },
             { data: 'description' },
             { data: 'owner' },
             { data: 
@@ -80,14 +81,33 @@ $(document).ready(function() {
                     return render_data;
                 }
             },
+            //{ data: 
+            //    'edr_corecloud',
+			//	render: function(data, type, row, meta) {
+            //        var render_data = data;
+            //        var label = data;
+            //        if (data === "1") {
+            //            render_data = "<div class='ui orange circular label'>" + label + "</div>";
+            //        }  
+            //        return render_data;
+            //    }
+
+            //},
             { data: 
-                'edr_corecloud',
+                'edr_crowdstrike_concat',
 				render: function(data, type, row, meta) {
                     var render_data = data;
                     var label = data;
-                    if (data === "1") {
-                        render_data = "<div class='ui orange circular label'>" + label + "</div>";
-                    }  
+                    var sections = data.split(',');
+                    var flag = sections[0];
+                    var unreported_day = sections[1];
+
+                    if (flag === "1") {
+                        render_data = "<div class='ui orange circular label'>" + flag + "</div>";
+                        render_data += "<div class='ui circular label'><i class='eye slash icon'></i>" + unreported_day + "</div>";
+                    } else {
+                        render_data = "0";
+                    }
                     return render_data;
                 }
 
@@ -134,7 +154,7 @@ $(document).ready(function() {
 				width: "10%",
 			},
             {
-                target: 11,
+                target: 12,
                 visible: false,
             }
 		],
@@ -184,15 +204,29 @@ $(document).ready(function() {
 	$('input[name="include_shutdown_checkbox"]').click(function () {
         if ($(this).prop("checked")) {
 			datatable
-                .column(11)
+                .column(12)
                 .search("")
                 .draw();
         } else {
 			datatable
-                .column(11)
+                .column(12)
                 .search("^.{0}$", true, false)
                 .draw();
         }
     });
 
+	// Add event listener for removing and adding shut hosts
+	$('input[name="server_only_checkbox"]').click(function () {
+        if ($(this).prop("checked")) {
+			datatable
+                .column(5)
+                .search("SV")
+                .draw();
+        } else {
+			datatable
+                .column(5)
+                .search(".*", true, false)
+                .draw();
+        }
+    });
 });

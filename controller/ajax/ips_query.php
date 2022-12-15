@@ -110,6 +110,9 @@ $header_keys = ['receive_time', 'rule', 'src', 'dst', 'dport', 'app', 'subtype',
             <?php if (array_key_exists("rule", $header_array)): ?>
                 <?php $header_array['rule'] = "<div class='ui orange label'>" . $header_array['rule'] . "</div>"; ?>
             <?php endif ?>
+            <?php if (array_key_exists("action", $header_array)): ?>
+                <?php $header_array['action'] = "<div class='ui grey label'>" . $header_array['action'] . "</div>"; ?>
+            <?php endif ?>
             <?php $header_text = implode(" <font color='silver'>/</font> ", $header_array); ?>
 			<div class='item'>
                 <div class='content'>

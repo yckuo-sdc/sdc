@@ -44,7 +44,7 @@ foreach ($computer_array as $computer) {
     if (!$found) {
         continue;
     }
-    //echo $ou_key . "<br>";
+    //echo $ou_key . PHP_EOL;
 
     $TopOU = "District";
     $ou = $dist_ou_array[$ou_key];

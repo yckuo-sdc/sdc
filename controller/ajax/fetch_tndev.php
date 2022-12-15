@@ -92,6 +92,7 @@ foreach ($entries as $entry) {
     $data_array['id'] = $entry['id'];
     $data_array['ip'] = $entry['ipv4'];
     $data_array['name'] = $entry['svname'];
+    $data_array['type'] = $entry['type'];
     $data_array['description'] = $entry['usage']; 
     $data_array['owner'] = $entry['DEPT_USER'];
     $data_array['department'] = $entry['DEPT'];

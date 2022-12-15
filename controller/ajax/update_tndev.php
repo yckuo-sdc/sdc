@@ -30,6 +30,14 @@ $db->execute($sql);
 $sql = "UPDATE tndevs AS A
 JOIN tndev_ips AS B 
 ON A.id = B.tndev_id
+JOIN edr_crowdstrikes AS C 
+ON B.ip = C.internal_ip
+SET A.edr_crowdstrike = 1";
+$db->execute($sql);
+
+$sql = "UPDATE tndevs AS A
+JOIN tndev_ips AS B 
+ON A.id = B.tndev_id
 JOIN gcb_client_list AS C 
 ON B.ip = INET_NTOA(C.InternalIP) AND C.InternalIP != 0
 SET A.gcb = 1";

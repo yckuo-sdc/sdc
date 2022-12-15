@@ -3,7 +3,7 @@
 		<div class="sub-content show">
 			<div class="post">
                 <?=$route->createBreadcrumbs(' > ');?>
-                <h2 class="ui dividing header">應用程式核可清單(Client)</h2>
+                <h2 class="ui dividing header">應用程式群組(Client)</h2>
 				<div class="post_cell">
                 <?php if($status != 'success'): ?>
                     很抱歉，該分類目前沒有資料！
