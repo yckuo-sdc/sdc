@@ -87,6 +87,15 @@ ON A.IP = B.IP AND A.UserName IS NULL
 SET A.UserName = CONCAT('[防毒]', B.LogonUser)";
 $db->execute($sql);
 
+//update the column 'UserOrgName' from table 'ad_users', 'ad_ous'
+$sql = "UPDATE drip_client_list AS A
+JOIN ad_users AS B 
+ON A.UserName = B.cn
+JOIN ad_ous AS C
+ON B.belong_to_ou = C.id
+SET A.UserOrgName = C.name";
+$db->execute($sql);
+
 //update the column 'OrgName' from table 'ad_computer_list'
 $sql = "UPDATE drip_client_list AS A
 JOIN ad_computers AS B 

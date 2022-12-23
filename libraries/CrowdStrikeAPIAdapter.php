@@ -75,14 +75,13 @@ class CrowdStrikeAPIAdapter {
      * @return array $tokens
      */
     private function getTokens($client_id, $client_secret) {
-        $url = $this->host . '/oauth2/token/';
+        $url = $this->host . '/oauth2/token';
         $httpHeader = array(
             "Accept: application/json",
             "Content-Type: application/x-www-form-urlencoded"
          );
         $postField = http_build_query(array("client_id" => $client_id, "client_secret" => $client_secret));
 	    $response = $this->sendHttpRequest($url, $postField, $httpHeader);
-        //echo $response;
      
         $tokens = "";
         if(($data = json_decode($response,true)) == true) {
@@ -107,7 +106,7 @@ class CrowdStrikeAPIAdapter {
         if (empty($httpHeader)) {
             $httpHeader = array(
                 "Accept: application/json",
-                "Authorization: Bearer ".$this->access_token
+                "Authorization: Bearer " . $this->access_token
             );
         }
 
@@ -130,8 +129,6 @@ class CrowdStrikeAPIAdapter {
             $curl_opt_array[CURLOPT_CUSTOMREQUEST] = "POST";
             $curl_opt_array[CURLOPT_POSTFIELDS] = $postField;
         }
-
-        //var_dump($curl_opt_array);
 
 		$curl = curl_init();
 		curl_setopt_array($curl, $curl_opt_array);

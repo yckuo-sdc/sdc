@@ -22,6 +22,10 @@ if (empty($users)) {
     $db->delete($table, $key_column, $id); 
 
     foreach($users as $user) {
+        $sections = explode(",", $user['distinguishedname']);
+        if(substr_compare($sections[1], "OU", 0, 2) == 0) {
+            $user['belong_to_ou'] = substr($sections[1], 3);  
+        }
         $db->insert($table, $user);
         $count = $count + 1;
     }

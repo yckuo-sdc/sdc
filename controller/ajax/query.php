@@ -370,11 +370,29 @@ if ($ap=='csv') {
                                 <i class="<?=$state_icon_map['edr'][$client['edr']]?>"></i>
                                 <?=$client['DetectorName']?>&nbsp;&nbsp;
                                 <span style='background:#fde087'><?=$client['IP']?></span>&nbsp;&nbsp;
-                                <i class="<?=$state_icon_map['type'][$client['type']]?>"></i>
-                                <?=$client['ClientName']?>&nbsp;&nbsp;
-                                <span style='background:#fbc5c5'><?=$client['OrgName']?></span>&nbsp;&nbsp;
+                                <div class="ui label">
+                                    <i class="<?=$state_icon_map['type'][$client['type']]?>"></i>
+                                    <?=$client['ClientName']?>
+                                    <?php if(!empty($client['OrgName'])): ?>
+                                        <div class="detail">
+                                            <i class="sitemap icon"></i>
+                                            <?=$client['OrgName']?>
+                                        </div>
+                                    <?php endif ?>
+                                </div>
                                 <?=$client['Owner']?>&nbsp;&nbsp;
-                                <?=$client['UserName']?>&nbsp;&nbsp;
+                                <?php if(!empty($client['UserName'])): ?>
+                                    <div class="ui grey label">
+                                        <i class="user icon"></i>
+                                        <?=$client['UserName']?>
+                                        <?php if(!empty($client['UserOrgName'])): ?>
+                                            <div class="detail">
+                                                <i class="sitemap icon"></i>
+                                                <?=$client['UserOrgName']?>
+                                            </div>
+                                        <?php endif ?>
+                                    </div>
+                                <?php endif ?> 
                                 <i class='angle down icon'></i>
                             </a>
                             <div class='description'>
@@ -404,6 +422,7 @@ if ($ap=='csv') {
                                 <li>OrgName: <?=$client['OrgName']?></li>
                                 <li>Owner: <?=$client['Owner']?></li>
                                 <li>UserName: <?=$client['UserName']?></li>
+                                <li>UserOrgName: <?=$client['UserOrgName']?></li>
                                 </ol>
                             </div>
                         </div>

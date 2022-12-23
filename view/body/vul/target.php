@@ -6,9 +6,9 @@
                 <h2 class="ui dividing header">掃描資產(雲嘉嘉南)</h2>
 				<div class="post_cell">
 					<div class="ui secondary pointing menu">
-						<a class="active item">Targets</a>
-						<a class="item">Certificate warnings</a>
-						<a class="item">Insecure http services</a>
+						<a class="active item">資產</a>
+						<a class="item">TLS 憑證警示</a>
+						<a class="item">不安全網站連線</a>
 					</div>
 					<div class="ui noborder bottom attached segment">
 						<div class="tab-content yonghua show">
