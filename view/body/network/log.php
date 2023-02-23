@@ -71,6 +71,7 @@
 								<option value="rule" >規則</option>
 								<option value="app" >應用程式</option>
 								<option value="action" >動作</option>
+								<option value="receive_time">接收時間</option>
 								</select>
 							</div>
 							<div class="field">
@@ -78,6 +79,8 @@
 								<select name="operator" id="operator" class="ui fluid dropdown" required>
 								<option value="="  selected>=</option>
 								<option value="!=" >!=</option>
+								<option value=">=" >>=</option>
+								<option value="<=" ><=</option>
 								</select>
 							</div>
 							<div class="field">
@@ -114,6 +117,7 @@
 								<option value="rule" >規則</option>
 								<option value="app" >應用程式</option>
 								<option value="action" >動作</option>
+								<option value="receive_time">接收時間</option>
 								</select>
 							</div>
 							<div class="field">
@@ -121,6 +125,8 @@
 								<select name="operator" id="operator" class="ui fluid dropdown" required>
 								<option value="="  selected>=</option>
 								<option value="!=" >!=</option>
+								<option value=">=" >>=</option>
+								<option value="<=" ><=</option>
 								</select>
 							</div>
 							<div class="field">
@@ -157,6 +163,7 @@
 								<option value="rule">規則</option>
 								<option value="app">應用程式</option>
 								<option value="action">動作</option>
+								<option value="receive_time">接收時間</option>
 								</select>
 							</div>
 							<div class="field">
@@ -164,6 +171,8 @@
 								<select name="operator" id="operator" class="ui fluid dropdown" required>
 								<option value="="  selected>=</option>
 								<option value="!=" >!=</option>
+								<option value=">=" >>=</option>
+								<option value="<=" ><=</option>
 								</select>
 							</div>
 							<div class="field">

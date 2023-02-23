@@ -55,11 +55,15 @@ class CrowdStrikeAPIAdapter {
 
 	    $response = $this->sendHttpRequest($url, $postField = array());
         $response = json_decode($response, true);
+        var_dump($response);
 
         $resources = array();
         if (!empty($response['resources'])) {
             $resources = $response['resources'][0];
-            $resources['internal_ip'] = $resources['connection_ip'];
+            $resources['internal_ip'] = "";
+            if (!empty($resources['connection_ip'])) {
+                $resources['internal_ip'] = $resources['connection_ip'];
+            }
         }
         
         $keys = ['device_id', 'hostname', 'last_seen', 'status', 'external_ip', 'internal_ip'];
