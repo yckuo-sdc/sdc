@@ -77,22 +77,12 @@ $(document).ready(function() {
                     var label = data;
                     if (data === "1") {
                         render_data = "<div class='ui red circular label'>" + label + "</div>";
-                    }  
+                    } else {
+                        render_data = "-";
+                    }
                     return render_data;
                 }
             },
-            //{ data: 
-            //    'edr_corecloud',
-			//	render: function(data, type, row, meta) {
-            //        var render_data = data;
-            //        var label = data;
-            //        if (data === "1") {
-            //            render_data = "<div class='ui orange circular label'>" + label + "</div>";
-            //        }  
-            //        return render_data;
-            //    }
-
-            //},
             { data: 
                 'edr_crowdstrike_concat',
 				render: function(data, type, row, meta) {
@@ -105,31 +95,13 @@ $(document).ready(function() {
                     if (flag === "1") {
                         render_data = "<div class='ui orange circular label'>" + flag + "</div>";
                         render_data += "<div class='ui circular label'><i class='eye slash icon'></i>" + unreported_day + "</div>";
-                    } else {
-                        render_data = "0";
+                    } 
+                    else {
+                        render_data = "-";
                     }
                     return render_data;
                 }
 
-            },
-            { data: 
-                'edr_fireeye_concat',
-				render: function(data, type, row, meta) {
-                    var render_data = data;
-                    var label = data;
-                    var sections = data.split(',');
-                    var flag = sections[0];
-                    var unreported_day = sections[1];
-
-                    if (flag === "1") {
-                        render_data = "<div class='ui yellow circular label'>" + flag + "</div>";
-                        render_data += "<div class='ui circular label'><i class='eye slash icon'></i>" + unreported_day + "</div>";
-                    } else {
-                        render_data = "0";
-                    }
-                    return render_data;
-                }
-                
             },
             { data: 
                 'gcb',
@@ -138,7 +110,9 @@ $(document).ready(function() {
                     var label = data;
                     if (data === "1") {
                         render_data = "<div class='ui olive circular label'>" + label + "</div>";
-                    }  
+                    } else {
+                        render_data = "-";
+                    }
                     return render_data;
                 }
             },
@@ -154,7 +128,7 @@ $(document).ready(function() {
 				width: "10%",
 			},
             {
-                target: 12,
+                target: 11,
                 visible: false,
             }
 		],

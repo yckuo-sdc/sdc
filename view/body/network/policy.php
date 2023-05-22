@@ -14,12 +14,14 @@
                     <div class="tab-content yonghua show">
                        <div id="yonghuaJumpMenu">top
 							<ul>
+								<li><a href="#yonghuaExpiredSecurityRules">ExpiredSecurityRules</a></li> 
 								<li><a href="#yonghuaSecurityRules">SecurityRules</a></li>
 								<li><a href="#yonghuaNatRules">NatRules</a></li>
-							</ul> 
-						</div>
+                            </ul>
+                       </div>
                         <?php foreach($host_policy_results['yonghua'] as $policy_key => $policy_result): ?>
-                            <div id="yonghua<?=$policy_key?>" class="post_title"><?=$policy_key?></div>
+                            <div id="yonghua<?=$policy_key?>" class="post_title"><?=$policy_result['label']?></div>
+                            <?php $policy_result = $policy_result['data']; ?>
                             <div class="post_cell">
                             <?php if($policy_result['status'] != 'success'): ?>
                                 <p>很抱歉，該分類目前沒有資料！</p>
@@ -30,7 +32,13 @@
                                     <div class="item">
                                         <div class="content">
                                             <div class="header">
-                                                <?php if ($policy_key == "SecurityRules"): ?>
+                                                <?php if ($policy_key == "ExpiredSecurityRules"): ?>
+                                                    <div style="background-color:#db2828; color: white"><i class="exclamation circle icon"></i> 警告 &nbsp;|&nbsp;
+                                                        <?=$app['@name']?>&nbsp;|&nbsp;
+                                                        <?=$app['action']?>
+                                                        <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
+                                                    </div>
+                                                <?php elseif ($policy_key == "SecurityRules"): ?>
                                                     <?=$app['@name']?>&nbsp;|&nbsp;
                                                     <?=$app['action']?>
                                                     <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
@@ -65,12 +73,14 @@
                     <div class="tab-content minjhih">
                        <div id="minjhihJumpMenu">top
 							<ul>
+								<li><a href="#minjhihExpiredSecurityRules">ExpiredSecurityRules</a></li>
 								<li><a href="#minjhihSecurityRules">SecurityRules</a></li>
 								<li><a href="#minjhihNatRules">NatRules</a></li>
 							</ul> 
 						</div>
                         <?php foreach($host_policy_results['minjhih'] as $policy_key => $policy_result): ?>
-                            <div id="minjhih<?=$policy_key?>" class="post_title"><?=$policy_key?></div>
+                            <div id="minjhih<?=$policy_key?>" class="post_title"><?=$policy_result['label']?></div>
+                            <?php $policy_result = $policy_result['data']; ?>
                             <div class="post_cell">
                             <?php if($policy_result['status'] != 'success'): ?>
                                 <p>很抱歉，該分類目前沒有資料！</p>
@@ -81,7 +91,13 @@
                                     <div class="item">
                                         <div class="content">
                                             <div class="header">
-                                                <?php if ($policy_key == "SecurityRules"): ?>
+                                                <?php if ($policy_key == "ExpiredSecurityRules"): ?>
+                                                    <div style="background-color:#db2828; color: white"><i class="exclamation circle icon"></i> 警告 &nbsp;|&nbsp;
+                                                    <?=$app['@name']?>&nbsp;|&nbsp;
+                                                    <?=$app['action']?>
+                                                    <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
+                                                    </div>
+                                                <?php elseif ($policy_key == "SecurityRules"): ?>
                                                     <?=$app['@name']?>&nbsp;|&nbsp;
                                                     <?=$app['action']?>
                                                     <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
@@ -116,12 +132,14 @@
                     <div class="tab-content idc">
                        <div id="idcJumpMenu">top
 							<ul>
+								<li><a href="#idcExpiredSecurityRules">ExpiredSecurityRules</a></li>
 								<li><a href="#idcSecurityRules">SecurityRules</a></li>
 								<li><a href="#idcNatRules">NatRules</a></li>
 							</ul> 
 						</div>
                         <?php foreach($host_policy_results['idc'] as $policy_key => $policy_result): ?>
-                            <div id="idc<?=$policy_key?>" class="post_title"><?=$policy_key?></div>
+                            <div id="idc<?=$policy_key?>" class="post_title"><?=$policy_result['label']?></div>
+                            <?php $policy_result = $policy_result['data']; ?>
                             <div class="post_cell">
                             <?php if($policy_result['status'] != 'success'): ?>
                                 <p>很抱歉，該分類目前沒有資料！</p>
@@ -132,7 +150,13 @@
                                     <div class="item">
                                         <div class="content">
                                             <div class="header">
-                                                <?php if ($policy_key == "SecurityRules"): ?>
+                                                <?php if ($policy_key == "ExpiredSecurityRules"): ?>
+                                                    <div style="background-color:#db2828; color: white"><i class="exclamation circle icon"></i> 警告 &nbsp;|&nbsp;
+                                                    <?=$app['@name']?>&nbsp;|&nbsp;
+                                                    <?=$app['action']?>
+                                                    <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
+                                                    </div>
+                                                <?php elseif ($policy_key == "SecurityRules"): ?>
                                                     <?=$app['@name']?>&nbsp;|&nbsp;
                                                     <?=$app['action']?>
                                                     <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
@@ -167,12 +191,14 @@
                     <div class="tab-content intrayonghua">
                        <div id="intrayonghuaJumpMenu">top
 							<ul>
+								<li><a href="#intrayonghuaExpiredSecurityRules">ExpiredSecurityRules</a></li>
 								<li><a href="#intrayonghuaSecurityRules">SecurityRules</a></li>
 								<li><a href="#intrayonghuaNatRules">NatRules</a></li>
 							</ul> 
 						</div>
                         <?php foreach($host_policy_results['intrayonghua'] as $policy_key => $policy_result): ?>
-                            <div id="intrayonghua<?=$policy_key?>" class="post_title"><?=$policy_key?></div>
+                            <div id="intrayonghua<?=$policy_key?>" class="post_title"><?=$policy_result['label']?></div>
+                            <?php $policy_result = $policy_result['data']; ?>
                             <div class="post_cell">
                             <?php if($policy_result['status'] != 'success'): ?>
                                 <p>很抱歉，該分類目前沒有資料！</p>
@@ -183,7 +209,13 @@
                                     <div class="item">
                                         <div class="content">
                                             <div class="header">
-                                                <?php if ($policy_key == "SecurityRules"): ?>
+                                                <?php if ($policy_key == "ExpiredSecurityRules"): ?>
+                                                    <div style="background-color:#db2828; color: white"><i class="exclamation circle icon"></i> 警告 &nbsp;|&nbsp;
+                                                    <?=$app['@attributes']['name']?>&nbsp;|&nbsp;
+                                                    <?=$app['action']?>
+                                                    <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>
+                                                    </div>
+                                                <?php elseif ($policy_key == "SecurityRules"): ?>
                                                     <?=$app['@attributes']['name']?>&nbsp;|&nbsp;
                                                     <?=$app['action']?>
                                                     <?=empty($app['description']) ? "" : "&nbsp;|&nbsp;" . $app['description'] ?>

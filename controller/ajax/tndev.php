@@ -16,7 +16,9 @@ ON
 LEFT JOIN 
     edr_crowdstrikes AS C
 ON 
-    INSTR(CONCAT(',', A.ip, ','), CONCAT(',', C.internal_ip, ',')) > 0 ";
+    INSTR(CONCAT(',', A.ip, ','), CONCAT(',', C.internal_ip, ',')) > 0
+    OR 
+    INSTR(CONCAT(',', A.ip, ','), CONCAT(',', C.external_ip, ',')) > 0 ";
 $entries = $db->execute($sql);
 
 //$entries = $db->query($table, $condition = "1 = ?", $order_by = "1", $fields = "*", $limit = "", $data_array = [1]);

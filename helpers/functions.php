@@ -318,3 +318,11 @@ function ipMatch($ip, $cidrs, &$match = null) {
 	}
 	return false;
 }
+
+function getDaysAfterToday($target_time, $format='Y-m-d') {
+	$dtime = DateTime::createFromFormat($format, $target_time);
+	$now = new DateTime('now');
+	$interval = date_diff($now, $dtime);
+	$interval_days = $interval->format('%R%a');
+	return $interval_days;
+}

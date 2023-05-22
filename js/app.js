@@ -1214,43 +1214,47 @@ function ldap_ajax(action) {
             return;
         }
 
-        var objectCategory = object.attr('class').split(' ')[0];
-        console.log(objectCategory);
+        var objectCategory_array = object.attr('class').split(' ');
+        var input = new Array();
 
         if (bindItemsIndex == 0) {
-            if (objectCategory == 'user') {
-                var input = [	
-                    {name : "objectCategory", value: "user"},
-                    {name : "target", value: object.attr('cn')},
-                    {name : "action", value: "bind_user"}
-                ];
-            } else if (objectCategory == 'ou') {
-                var input = [	
-                    {name : "objectCategory", value: "ou"},
-                    {name : "target", value: object.attr('ou')},
-                    {name : "action", value: "bind_ou"}
-                ];
-            }
+			objectCategory_array.forEach(function(item) {
+                if (item == 'user') {
+                    input = [	
+                        {name : "objectCategory", value: "user"},
+                        {name : "target", value: object.attr('cn')},
+                        {name : "action", value: "bind_user"}
+                    ];
+                } else if (item == 'ou') {
+                    input = [	
+                        {name : "objectCategory", value: "ou"},
+                        {name : "target", value: object.attr('ou')},
+                        {name : "action", value: "bind_ou"}
+                    ];
+                }
+			});
         } else if (bindItemsIndex == 1) {
-            if (objectCategory == 'computer') {
-                var input = [	
-                    {name : "objectCategory", value: "computer"},
-                    {name : "target", value: object.attr('cn')},
-                    {name : "action", value: "bind_computer"}
-                ];
-            } else if (objectCategory == 'ou') {
-                var input = [	
-                    {name : "objectCategory", value: "ou"},
-                    {name : "target", value: object.attr('ou')},
-                    {name : "action", value: "bind_ou"}
-                ];
-            }
+			objectCategory_array.forEach(function(item) {
+                if (item == 'computer') {
+                    input = [	
+                        {name : "objectCategory", value: "computer"},
+                        {name : "target", value: object.attr('cn')},
+                        {name : "action", value: "bind_computer"}
+                    ];
+                } else if (item == 'ou') {
+                    input = [	
+                        {name : "objectCategory", value: "ou"},
+                        {name : "target", value: object.attr('ou')},
+                        {name : "action", value: "bind_ou"}
+                    ];
+                }
+			});
         } else if (bindItemsIndex == 2) {
             ldap_modal(showTab);
             return;
         }
     } else {
-        var input = $(selector + '> form').serializeArray();
+        input = $(selector + '> form').serializeArray();
         var parm = [ {name : "action", value: action} ];
         input = input.concat(parm);
     }

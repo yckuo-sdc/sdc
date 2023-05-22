@@ -10,13 +10,13 @@
 						<div class="field">
 							<label>欄位</label>
 							<select name="keyword" id="keyword" class="ui fluid dropdown" required>
-							<option value="PublicIP"  selected>IP/URL</option>
-							<option value="Status" >結案狀態</option>
-							<option value="Classification" >事故類型</option>
-							<option value="OrganizationName" >機關名稱</option>
-							<option value="NccstPT" >攻防演練(是/否)</option>
-							<option value="OccurrenceTime" >發現日期</option>
-							<option value="all" >全部</option>
+							<option value="PublicIP" selected>IP/URL</option>
+							<option value="Status">結案狀態</option>
+							<option value="Classification">事故類型</option>
+							<option value="OrganizationName">機關名稱</option>
+							<option value="NccstPT">攻防演練(是/否)</option>
+							<option value="DiscoveryTime">發現時間</option>
+							<option value="all">全部</option>
 							</select>
 						</div>
 						<div class="field">

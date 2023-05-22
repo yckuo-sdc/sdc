@@ -31,7 +31,7 @@ $sql = "UPDATE tndevs AS A
 JOIN tndev_ips AS B 
 ON A.id = B.tndev_id
 JOIN edr_crowdstrikes AS C 
-ON B.ip = C.internal_ip
+ON B.ip = C.internal_ip OR B.ip = C.external_ip
 SET A.edr_crowdstrike = 1";
 $db->execute($sql);
 

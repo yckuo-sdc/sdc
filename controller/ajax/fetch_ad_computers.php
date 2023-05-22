@@ -9,6 +9,13 @@ $computer_ou = "TainanComputer";
 $computer_description = "臺南市政府公務個人電腦";
 $computers = $ld->getAllComputersByRecursion($computer_base, $computer_ou, $computer_description);
 
+$unsigned_computer_base = "cn=Computers, dc=tainan, dc=gov, dc=tw";
+$unsigned_computer_ou = "Computers";
+$unsigned_computer_description = "網域新增電腦帳戶的預設容器";
+$unsigned_computers = $ld->getAllComputersByRecursion($unsigned_computer_base, $unsigned_computer_ou, $unsigned_computer_description);
+
+$computers = array_merge($computers, $unsigned_computers);
+
 $count = 0;
 echo count($computers) . " entries returned" . PHP_EOL;
 

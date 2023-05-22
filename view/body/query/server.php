@@ -22,7 +22,6 @@
                                 <th>Owner</th>
                                 <th>Antivirus</th>
                                 <th>EDR_CS</th>
-                                <th>EDR_FE</th>
                                 <th>GCB</th>
                                 <th>Shut_at</th>
                             </tr>
@@ -38,9 +37,8 @@
                                 <th>Description</th>
                                 <th>Owner</th>
                                 <th>Antivirus</th>
-                                <th>Edr_cs</th>
-                                <th>Edr_fe</th>
-                                <th>Gcb</th>
+                                <th>EDR_CS</th>
+                                <th>GCB</th>
                                 <th>Shut_at</th>
                             </tr>
                         </tfoot>
