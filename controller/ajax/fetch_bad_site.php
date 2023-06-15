@@ -2,7 +2,7 @@
 require_once __DIR__ .'/../../vendor/autoload.php';
 
 $db = Database::get();
-$pa = new PaloAltoAPI();
+$pa = new PaloAltoAPI("minjhih");
 
 // Retrieve paloAlto's data
 $type = "ip";
@@ -13,7 +13,7 @@ $cmd = "<request><system><external-list><show><type><".$type."><name>".$name."</
 $record = $pa->getXmlCmdResponse($xml_type, $cmd);
 $xml = simplexml_load_string($record) or die("Error: Cannot create object");
 
-if($xml['status'] != 'success'){
+if ($xml['status'] != 'success') {
 	echo "很抱歉，該分類分頁目前沒有資料！";
 	return ;
 }
