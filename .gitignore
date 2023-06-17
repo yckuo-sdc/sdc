@@ -34,3 +34,7 @@ demo.*
 # igonre log file
 *log*
 
+# igonre sql file
+*.sql
+
+
