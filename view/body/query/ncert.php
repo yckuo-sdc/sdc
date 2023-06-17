@@ -3,7 +3,7 @@
 		<div class="sub-content show">
 			<div class="post ncert">
                 <?=$route->createBreadcrumbs(' > ');?>
-                <h2 class="ui dividing header">技服資安通報</h2>
+                <h2 class="ui dividing header">資安通報</h2>
 				<div class="post_cell">
 					<form class="ui form" action="">
 					<div class="fields">
